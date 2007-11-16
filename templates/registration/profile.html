@@ -1,0 +1,95 @@
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url members_profile %}">profil</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Velkommen {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}</h2>
+{% endblock %}
+
+{% block content %}
+<p>Dette er din bruger portal hvor du kan se alle de informationer vi har tilknyttet dit medlemsskab, samt de relevante tilbud vi kan tilbyde dig.</p>
+
+<h3>Personoplysninger</h3>
+
+<table class="vertical">
+<tr>
+    <th>Navn</th>
+    <td>{{user.first_name}} {{user.last_name}}</td>
+</tr>
+<tr>
+    <th>Fødselsdag</th>
+    <td>{{user.get_profile.dateofbirth}}</td>
+</tr>
+<tr>
+    <th>Alder</th>
+    <td>{{user.get_profile.age}}</td>
+</tr>
+<tr>
+    <th>Email</th>
+    <td>{{user.email}}</td>
+</tr>
+<tr>
+    <th>Telefon #</th>
+    <td >{% if user.get_profile.phonenumber %}{{user.get_profile.phonenumber}}{% endif %}</td>
+</tr>
+<tr>
+    <th>Gade</th>
+    <td >{{user.get_profile.street}}</td>
+</tr>
+<tr>
+    <th>Postnummer &amp; by</th>
+    <td>{% if user.get_profile.postalcode %}{{user.get_profile.postalcode}}{% endif %} {{user.get_profile.city}}</td>
+</tr>
+</table>
+<ul class="table-options">
+    <li>&#187; <a href="{% url members_editprofile %}">Ændre brugeroplysninger</a></li>
+    <li>&#187; <a href="{% url members_change_email %}">Skift email</a></li>
+</ul>
+
+<h3>Brugeroplysninger</h3>
+<table class="vertical">
+<tr>
+    <th>Brugernavn</th>
+    <td>{{user.username}}</td>
+</tr>
+<tr>
+    <th>Kodeord</th>
+    <td>**********</td>
+</tr>
+</table>
+<ul class="table-options">
+    <li>&#187; <a href="{% url auth_password_change %}">Skift kodeord</a></li>
+</ul>
+
+
+<h3>Arrangementer</h3>
+    <table class="horizontal">
+    <tr>
+        <th>Navn</th>
+        <th>Dato</th>
+        <th>År</th>
+        <th>&nbsp;
+    </tr>
+    
+    {% for event in events_new %}
+        <tr>
+            <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
+            <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
+            <td>{{event.startdate.year}}</td>
+            <td>{% if event.registration_open %}Åben for tilmelding{% endif %}</td>
+        </tr>
+    {% endfor %}
+    
+    {% for event in events_visited %}
+        <tr>
+            <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
+            <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
+            <td>{{event.startdate.year}}</td>
+            <td>Tilmeldt{% if event.hasBeenHeld %} / Afholdt{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    
+{% endblock %}

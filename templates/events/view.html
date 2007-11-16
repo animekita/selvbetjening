@@ -1,0 +1,67 @@
+{% load markup %}
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url events_view event.id %}">{{event.title}}</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>{{event.title|escape}}</h2>
+<p>Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>
+{% endblock %}
+
+{% block content %}
+{{event.description|textile}}
+    
+{% if event.isRegistrationOpen %}
+
+    {% if user.is_authenticated and not userIsSignedup %}
+        <ul class="table-options">
+            <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig dette event</a></li>
+        </ul>
+    {% endif %}
+    
+    {% if not user.is_authenticated %}
+        <ul class="table-options">
+            <li>&#187; <a href="{% url registration_register %}">Bliv medlem</a></li>       
+            <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig nu. (kræver medlemsskab)</a></li>
+        </ul>    
+    {% endif %}
+
+{% else %}
+
+    <p>Der er ikke mulighed for at tilmelde sig dette event pånuværende tidspunkt.</p>
+    
+{% endif %}
+
+{% if event.signups.all %}
+
+    <table class="horizontal">
+        <tr>
+            <th>#</th>
+            <th>Navn</th>
+            <th>Brugernavn</th>
+        </tr>
+    
+    {% for guest in guests %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{% ifequal guest.id user.id %}<b>{% endifequal %}
+                        {{guest.first_name}} {{guest.last_name}}
+                    {% ifequal guest.id user.id %}</b>{% endifequal %}</td>
+            <td>{% ifequal guest.id user.id %}<b>{% endifequal %}
+                        {{guest.username}}
+                    {% ifequal guest.id user.id %}</b>{% endifequal %}</td>                    
+        </tr>
+    {% endfor %}
+    
+    </table>
+    
+    
+
+{% else %}
+    <p>Ingen tilmeldte.</p>
+{% endif %}
+
+{% endblock %}

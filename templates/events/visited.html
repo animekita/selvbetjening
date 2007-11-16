@@ -1,0 +1,14 @@
+{% extends "events/list.html" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url events_view_visited %}">besøgte</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Besøgte arrangementer</h2>
+{% endblock %}
+
+{% block description %}
+<p>Du har besøgt, eller er tilmeldt de følgende arrangementer.</p>
+{% endblock %}

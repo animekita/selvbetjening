@@ -1,0 +1,17 @@
+{% load uniform %}
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url members_profile %}">profil</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url members_change_email %}">skift email</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Skift email</h2>
+{% endblock %}
+
+{% block content %}
+
+    {{ form|uniform:"Skift kodeord" }}
+
+{% endblock %}

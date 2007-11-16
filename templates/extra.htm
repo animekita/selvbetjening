@@ -1,0 +1,77 @@
+{% load core_tags %}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<base href="http://localhost:8000/" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/default.css" />
+		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/extra.css" />
+		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/uni-form.css">
+		<script type="text/javascript" src="http://static.anime-kita.dk/dev/js/datepicker.js"></script>
+		<link href="http://static.anime-kita.dk/dev/css/datepicker.css" rel="stylesheet" type="text/css" />		
+		{% block javascript %}
+		{% endblock %}
+		<title>Anime Kita</title>
+	</head>
+	<body>
+		<div id="banner" class="center">
+			<h1>Anime Kita</h1>
+		</div>
+		
+		<div id="breadcrumbs" class="center">
+			<ul id="breadcrumbs">
+				<li><a href="http://www.anime-kita.dk/">anime-kita.dk</a>&nbsp;&gt;&nbsp;</li>
+				<li><a href="http://selvbetjening.anime-kita.dk/">selvbetjening</a>&nbsp;&gt;&nbsp;</li>
+				{% block breadcrumbs %}{% endblock %}
+			</ul>
+		</div>
+		
+		<div id="container" class="center">
+		<div id="container-inner">	
+		
+			<div id="menu">
+				{% block navigation %}
+				<ul>
+					<li><a href="{% url home %}">Home</a></li>
+					
+					{% if user.is_authenticated %}
+					<li><a href="{% url members_profile %}">Bruger portal</a></li>
+					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+					<li><a href="{% url auth_logout %}">Log ud</a></li>
+					{% else %}
+					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+					<li><a href="{% url registration_register %}">Bliv medlem</a></li>
+					<li><a href="{% url auth_login %}">Log ind</a></li>
+					{% endif %}
+					
+				</ul>
+				{% endblock %}
+			</div>
+
+			<div id="content">
+				{% block contenthead %}{% endblock %}
+			
+				{% if messages %}
+				<ul>
+					 {% for message in messages %}
+				<li>{{ message }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+				
+				{% block content %}{% endblock %}
+			</div>
+
+		</div>
+		</div>
+		
+		<p id="footer" class="center">
+			Anime-Kita, {% copyright_time 2007 %} © All rights reserved.<br />
+			Design by Louise Johansen
+		</p>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+{% load uniform %}
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url registration_register %}">bliv medlem</a></li>
+{% endblock %}
+
+{% block content %}
+<h2>Bliv passivt medlem</h2>
+<p>Ved at udfylde det nedenstående skema vil du blive indmeldt i Anime Kita som et passivt medlem, og derved få adgang til at skrive på vores forum og tilmelde dig arrangementer.</p>
+
+<p>Hvis du er i tvivl om hvad det betyder at være passivt medlem, så kan du læse mere om det <a href="#">her</a>.</p>
+ 
+{{ form|uniform:"opret bruger" }}
+    
+{% endblock %}

@@ -1,0 +1,20 @@
+{% load uniform %}
+
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url events_signup event.id %}">tilmeld dig {{event.title}}</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Tilmeld arrangement</h2>
+{% endblock %}
+
+{% block content %}
+
+    <p>For at deltage til vores events skal du være medlem samt acceptere de ordensregler der er forbundet med vores events. Læs mere om medlemsskab <a href="#" >her</a>, vores event regler kan læses <a href="#">her</a>.</p>
+    
+{{form|uniform:"Tilmeld"}}
+
+{% endblock %}

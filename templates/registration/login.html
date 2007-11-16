@@ -1,0 +1,38 @@
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url auth_login %}">login</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Login</h2>
+{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<p>Det indtastede brugernavn eller kodeord var ikke korrekt, prøv venligst igen.</p>
+{% endif %}
+
+<form method="POST" action="" class="uniForm">
+
+<fieldset class="inlineLabels">
+<legend>Log på</legend>
+
+<div class="ctrlHolder">
+  <label for="id_username">brugernavn:</label>
+  <input name="username" maxlength="50" type="text" class="textInput" id="id_username" />
+</div>
+
+<div class="ctrlHolder">
+<label for="id_password">kodeord</label>
+<input id="id_password" type="password" class="textInput" name="password" />
+</div>
+</fieldset>
+
+<fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">log på</button></div></fieldset>
+</form>
+
+<p><a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></p>
+
+{% endblock %}

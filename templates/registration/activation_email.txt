@@ -1,0 +1,6 @@
+Hej {{first_name}} {{last_name}}
+
+For at aktivere din bruger på Anime Kita og derved blive passivt medlem skal du besøge den følgende url inden {{expiration_days}} dage: {{site_url}}{% url registration_activate activation_key %}
+
+Hilsen
+Anime Kita
