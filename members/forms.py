@@ -14,8 +14,6 @@ from django.core.urlresolvers import reverse
 
 from members.models import RegistrationProfile, UserProfile, EmailChangeRequest
 
-from WTForm import WTForm, Fieldset, Columns
-
 from core import models as coremodel
 
 attrs_dict = { 'class': 'required' }
