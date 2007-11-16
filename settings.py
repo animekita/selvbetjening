@@ -9,14 +9,14 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'animekita'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'root'             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_HOST = 'localhost'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-FORUM_DATABASE_NAME = DATABASE_NAME
+FORUM_DATABASE_NAME = "9_vanilla"
 FORUM_DATABASE_USER = DATABASE_USER
 FORUM_DATABASE_PASSWORD = DATABASE_PASSWORD
 FORUM_DATABASE_HOST = DATABASE_HOST
@@ -91,7 +91,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    'DIR TO TEMPLATES'
+    '/home/semadk/Workspace/devrepo/python/anime-kita.dk/kita-site/templates'
 )
 
 INSTALLED_APPS = (
