@@ -275,6 +275,10 @@ class EmailChangeRequestManager(models.Manager):
         ecr.user.email = ecr.new_email
         ecr.user.save()
         
+        # set the new email for the forum system
+        vf = coremodels.VanillaForum()
+        vf.changeUserEmail(ecr.user.username, ecr.new_email)
+        
         # delete the ecr request
         ecr.delete()
         

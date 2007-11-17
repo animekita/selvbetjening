@@ -257,3 +257,7 @@ class PasswordChangeForm(forms.Form):
         """
         self.user.set_password(self.cleaned_data["new_password1"])
         self.user.save()
+        
+        # set the new password for the forum
+        vf = coremodel.VanillaForum()
+        vf.changeUserPassword(self.user.username, self.cleaned_data["new_password1"])
