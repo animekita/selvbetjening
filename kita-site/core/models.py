@@ -17,13 +17,14 @@ class VanillaForum:
         
         return (result != None)
     
-    def createUser(self, Name, Password, Email, FirstName, LastName):
+    def createUser(self, Name, Password, Email, FirstName, LastName, RoleID=3, StyleID=0):
         """
-        Password needs to be a MD5 has
+        Password needs to be a MD5 hash. The RoleID is set to 3, (member) by default. StyleID must be 0, otherwise a very ugly forum is shown ;D
+        Dammit, there are to many "magic" values in this system...
         
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO LUM_User (Name, Password, Email, FirstName, LastName) VALUES (%s, %s, %s, %s, %s)", (Name, Password, Email, FirstName, LastName))
+        cursor.execute("INSERT INTO LUM_User (Name, Password, Email, FirstName, LastName, RoleID, StyleID) VALUES (%s, %s, %s, %s, %s, %s, %s)", (Name, Password, Email, FirstName, LastName, RoleID, StyleID))
         cursor.close()
     
     def changeUserEmail(self, username, email):
