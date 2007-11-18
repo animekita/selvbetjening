@@ -1,0 +1,232 @@
+# translation of Anime Kita Selvbetjening.
+# Copyright (C) 2007 THE Anime Kita Selvbetjening'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Anime Kita Selvbetjening package.
+# Casper Jensen <sema@semaprojects.net>, 2007.
+# , fuzzy
+# 
+#
+msgid ""
+msgstr "" 
+"Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-18 19:54+0100\n"
+"PO-Revision-Date: 2007-11-18 20:11+0100\n"
+"Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding:8bit "
+
+#: events/forms.py:17
+msgid "I accept the given terms"
+msgstr "Jeg acceptere de givne betingelser."
+
+#: events/forms.py:26
+msgid "You must accept the rules to participate in the event"
+msgstr "Du skal acceptere de givne regler for at deltage i eventet."
+
+#: events/models.py:16
+msgid "title"
+msgstr "titel"
+
+#: events/models.py:17
+msgid "description"
+msgstr "beskrivelse"
+
+#: events/models.py:18
+msgid "start date"
+msgstr "start dato"
+
+#: events/models.py:19
+msgid "end date"
+msgstr "slut dato"
+
+#: events/models.py:21
+msgid "registration open"
+msgstr "tilmelding åben"
+
+#: events/models.py:24
+msgid "event"
+msgstr "event"
+
+#: events/models.py:25
+msgid "events"
+msgstr "events"
+
+#: events/models.py:40
+#, python-format
+msgid "Event %s"
+msgstr "Event %s"
+
+#: events/views.py:85
+msgid "You are now signed up to the event."
+msgstr "Du er nu tilmeldt eventet."
+
+#: members/forms.py:27 members/forms.py:125 members/models.py:289
+msgid "email"
+msgstr "email"
+
+#: members/forms.py:30 members/forms.py:121 members/forms.py:190
+msgid "password"
+msgstr "kodeord"
+
+#: members/forms.py:41
+msgid "Wrong password"
+msgstr "Forkert kodeord"
+
+#: members/forms.py:59
+msgid "first name"
+msgstr "fornavn"
+
+#: members/forms.py:63
+msgid "last name"
+msgstr "efternavn"
+
+#: members/forms.py:66 members/models.py:198
+msgid "date of birth"
+msgstr "fødselsdag"
+
+#: members/forms.py:68
+#, python-format
+msgid "State your date of birth using the format %(format)s."
+msgstr "Angiv din fødselsdato i datoformatet %(format)s."
+
+#: members/forms.py:72 members/models.py:199
+msgid "street"
+msgstr "vej"
+
+#: members/forms.py:74 members/models.py:200
+msgid "postal code"
+msgstr "postnummer"
+
+#: members/forms.py:78 members/models.py:201
+msgid "city"
+msgstr "by"
+
+#: members/forms.py:80 members/models.py:202
+msgid "phonenumber"
+msgstr "telefonnummer"
+
+#: members/forms.py:83
+msgid "Personal information"
+msgstr "Personoplysninger"
+
+#: members/forms.py:84 members/models.py:211
+msgid "Address"
+msgstr "Adresse"
+
+#: members/forms.py:118
+msgid "username"
+msgstr "brugernavn"
+
+#: members/forms.py:119
+msgid ""
+"Your username can only contain the characters a-z, underscore and numbers."
+msgstr "Dit brugernavn må kun indeholde tegnene a-z 0-9 og _"
+
+#: members/forms.py:123 members/forms.py:192
+msgid "verify password"
+msgstr "bekræft kodeord"
+
+#: members/forms.py:128
+msgid "personal information"
+msgstr "personoplysninger"
+
+#: members/forms.py:129
+msgid "address"
+msgstr "adresse"
+
+#: members/forms.py:130 members/models.py:159 members/models.py:197
+#: members/models.py:288
+msgid "user"
+msgstr "bruger"
+
+#: members/forms.py:140
+msgid "Usernames can only contain letters, numbers and underscores"
+msgstr "Brugernavne kan kun indeholde tegnene a-z 0-9 og _"
+
+#: members/forms.py:145 members/forms.py:154
+msgid "This username is already taken. Please choose another."
+msgstr "Dette brugernavn er allerede i brug. Vælg venligst et andet."
+
+#: members/forms.py:164 members/forms.py:213
+msgid "You must type the same password each time"
+msgstr "De to indtastede kodeord stemmer ikke overens."
+
+#: members/forms.py:191
+msgid "new password"
+msgstr "nyt kodeord"
+
+#: members/forms.py:205
+msgid "Your old password was entered incorrectly. Please enter it again."
+msgstr "Dit gamle kodeord var ikke korrekt. Indtast det venligst igen."
+
+#: members/models.py:160
+msgid "activation key"
+msgstr "aktiverings nøgle"
+
+#: members/models.py:161
+msgid "vanilla forum password"
+msgstr "vanilla forum kodeord"
+
+#: members/models.py:166
+msgid "registration profile"
+msgstr "registrerings profil"
+
+#: members/models.py:167
+msgid "registration profiles"
+msgstr "registrerings profiler"
+
+#: members/models.py:174
+#, python-format
+msgid "Registration information for %s"
+msgstr "Registrerings information for %s"
+
+#: members/models.py:205
+msgid "user profile"
+msgstr "bruger profil"
+
+#: members/models.py:206
+msgid "user profiles"
+msgstr "bruger profiler"
+
+#: members/models.py:217
+#, python-format
+msgid "Registration profile for %s"
+msgstr "Registreringsprofil for %s"
+
+#: members/models.py:290
+msgid "key"
+msgstr "nøgle"
+
+#: members/models.py:291
+msgid "timestamp"
+msgstr ""
+
+#: members/models.py:300
+msgid "email change request"
+msgstr "forespørgsel om ændring af email"
+
+#: members/models.py:301
+msgid "email change requests"
+msgstr "forespørgsler om ændring af email"
+
+#: members/models.py:307
+#, python-format
+msgid "Email change request or %s"
+msgstr "Forespørgsel om ændring af email for %s"
+
+#: members/views.py:132
+msgid "Personal information updated"
+msgstr "Personoplysninger opdateret"
+
+#: members/views.py:158
+msgid ""
+"An email has been sent to you containing further instructions to activate "
+"your account."
+msgstr "En email er blevet sendt til dig med videre instrukser for at aktivere din bruger."
+
+#: members/views.py:180
+msgid "Your password have been changed"
+msgstr "Dit kodeord er blevet ændret"
+

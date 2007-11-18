@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 
 from datetime import date
 
@@ -81,7 +82,7 @@ def signup(request,
         form = form_class(request.POST)
         if form.is_valid():
             event.signups.add(request.user)
-            request.user.message_set.create(message="Du er nu blevet tilmeldt eventet")
+            request.user.message_set.create(message=_(u"You are now signed up to the event."))
             return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
     else:
         form = form_class()

@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
@@ -12,16 +13,16 @@ class Event(models.Model):
     
     """
     
-    title = models.CharField(u'title', maxlength=255)
-    description = models.TextField(u'description', blank=True)
-    startdate = models.DateField(u'start date', blank=True, null=True)
-    enddate = models.DateField(u'end date', blank=True, null=True)
+    title = models.CharField(_(u"title"), maxlength=255)
+    description = models.TextField(_(u"description"), blank=True)
+    startdate = models.DateField(_(u"start date"), blank=True, null=True)
+    enddate = models.DateField(_(u"end date"), blank=True, null=True)
     signups = models.ManyToManyField(User, filter_interface=models.HORIZONTAL, blank=True)
-    registration_open = models.BooleanField(u'registration open')
+    registration_open = models.BooleanField(_(u"registration open"))
     
     class Meta:
-        verbose_name = u'event'
-        verbose_name_plural = u'events'
+        verbose_name = _(u"event")
+        verbose_name_plural = _(u"events")
     
     class Admin:
         date_hierarchy = 'startdate'
@@ -36,4 +37,4 @@ class Event(models.Model):
         return self.startdate < date.today()
     
     def __unicode__(self):
-        return u"Event %s" % self.title
+        return _(u"Event %s") % self.title
