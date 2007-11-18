@@ -1,0 +1,7 @@
+#
+# Tthe following three lines to force the use of SSL 
+# encryption.
+#
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
