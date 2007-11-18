@@ -56,9 +56,9 @@
 				{% block contenthead %}{% endblock %}
 			
 				{% if messages %}
-				<ul>
+				<ul id="messages">
 					 {% for message in messages %}
-				<li>{{ message }}</li>
+					<li>{{ message }}</li>
 					{% endfor %}
 				</ul>
 				{% endif %}
