@@ -17,12 +17,15 @@ class VanillaForum:
         
         return (result != None)
     
-    def createUser(self, Name, Password, Email, FirstName, LastName, RoleID=3, StyleID=0):
+    def createUser(self, Name, Password, Email, FirstName, LastName, RoleID=3, StyleID=None):
         """
         Password needs to be a MD5 hash. The RoleID is set to 3, (member) by default. StyleID must be 0, otherwise a very ugly forum is shown ;D
         Dammit, there are to many "magic" values in this system...
         
         """
+        if not StyleID:
+            StyleID = self.getLatestStyleID()
+        
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO LUM_User (Name, Password, Email, FirstName, LastName, RoleID, StyleID) VALUES (%s, %s, %s, %s, %s, %s, %s)", (Name, Password, Email, FirstName, LastName, RoleID, StyleID))
         cursor.close()
@@ -39,4 +42,10 @@ class VanillaForum:
         cursor.execute("UPDATE LUM_User SET Password=%s WHERE Name=%s", (passwd.hexdigest(), username))
         cursor.close()
     
+    def getLatestStyleID(self):
+        cursor = self.db.cursor()
+        cursor.execute("SELECT StyleID FROM LUM_Style ORDER BY StyleID DESC LIMIT 1")
+        
+        result = cursor.fetchone()
+        return result[0]
     
