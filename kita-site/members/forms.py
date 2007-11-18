@@ -24,10 +24,10 @@ class ProfileChangeEmailForm(forms.Form):
     """
     new_email = forms.EmailField(max_length=75,
                                 widget=forms.TextInput(),
-                                label=_(u'Email'))
+                                label=_(u'email'))
     password = forms.CharField(max_length=255,
                                widget=forms.PasswordInput(),
-                               label=_(u'Kodeord'))
+                               label=_(u'password'))
     
     def __init__(self, data=None, auto_id='id_%s', prefix=None, initial=None, user=None):
         super(ProfileChangeEmailForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
@@ -56,32 +56,32 @@ class ProfileForm(forms.Form):
     """
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(attrs=attrs_dict),
-                          label=_(u'Fornavn'),
+                          label=_(u'first name'),
                           required=True)
     last_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(attrs=attrs_dict),
-                          label=_(u'Efternavn'), 
+                          label=_(u'last name'), 
                           required=True)    
     dateofbirth = forms.DateField(widget=forms.TextInput(attrs=attrs_dict),
-                                  label=_(u'Fødselsdato'), 
+                                  label=_(u'date of birth'), 
                                   input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
-                                  help_text="Angiv din fødselsdag i formatet dd-mm-yyyy.")
+                                  help_text=_(u"State your date of birth using the format %(format)s.") % {"format" : "dd-mm-yyyy"})
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
-                             label=_(u'Gade'),
+                             label=_(u"street"),
                              required=False)
-    postalcode = forms.IntegerField(label=_(u'Postnummer'), required=False)
+    postalcode = forms.IntegerField(label=_(u"postal code"), required=False)
     
     city = forms.CharField(max_length=255,
                            widget=forms.TextInput(),
-                           label=_(u'By'),
+                           label=_(u"city"),
                            required=False)
-    phonenumber = forms.IntegerField(label=_(u'Telefon #'), required=False)
+    phonenumber = forms.IntegerField(label=_(u"phonenumber"), required=False)
     
     class Meta:
-        layout = ((u'Person oplysninger', ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (u'Addresse', ('street', 'city',  'postalcode')),
+        layout = ((_(u"Personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
+                  (_(u"Address"), ('street', 'city',  'postalcode')),
                        )
     
     def save(self, user):
@@ -115,19 +115,19 @@ class RegistrationForm(ProfileForm):
 
     username = forms.CharField(max_length=30,
                                widget=forms.TextInput(attrs=attrs_dict),
-                               label=u'username',
-                               help_text=u'Dit brugernavn må kun bestå af karakterne a-z')
+                               label=_(u"username"),
+                               help_text=_(u"Your username can only contain the characters a-z, underscore and numbers."))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict),
-                                label=u'password')
+                                label=_(u"password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict),
-                                label=u'password (again)')
+                                label=_(u"verify password"))
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
-                             label=u'email address')
+                             label=_(u"email"))
     
     class Meta:
-        layout = ((u'Person oplysninger', ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email')),
-                  (u'Addresse', ('street', 'city',  'postalcode')),
-                  (u'Bruger', ('username', 'password1', 'password2'))
+        layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email')),
+                  (_(u"address"), ('street', 'city',  'postalcode')),
+                  (_(u"user"), ('username', 'password1', 'password2'))
                        )
         
     def clean_username(self):
@@ -161,7 +161,7 @@ class RegistrationForm(ProfileForm):
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] == self.cleaned_data['password2']:
                 return self.cleaned_data['password2']
-            raise forms.ValidationError(_(u'You must type the same password each time'))
+            raise forms.ValidationError(_(u"You must type the same password each time"))
     
     def save(self):
         """
@@ -180,44 +180,6 @@ class RegistrationForm(ProfileForm):
                                                                     city=self.cleaned_data['city'],
                                                                     phonenumber=self.cleaned_data['phonenumber'],
                                                                 )
-
-
-class RegistrationFormTermsOfService(RegistrationForm):
-    """
-    Subclass of ``RegistrationForm`` which adds a required checkbox
-    for agreeing to a site's Terms of Service.
-    
-    """
-    tos = forms.BooleanField(widget=forms.CheckboxInput(attrs=attrs_dict),
-                             label=_(u'I have read and agree to the Terms of Service'))
-    
-    def clean_tos(self):
-        """
-        Validates that the user accepted the Terms of Service.
-        
-        """
-        if self.cleaned_data.get('tos', False):
-            return self.cleaned_data['tos']
-        raise forms.ValidationError(_(u'You must agree to the terms to register'))
-
-
-class RegistrationFormUniqueEmail(RegistrationForm):
-    """
-    Subclass of ``RegistrationForm`` which enforces uniqueness of
-    email addresses.
-    
-    """
-    def clean_email(self):
-        """
-        Validates that the supplied email address is unique for the
-        site.
-        
-        """
-        try:
-            user = User.objects.get(email__exact=self.cleaned_data['email'])
-        except User.DoesNotExist:
-            return self.cleaned_data['email']
-        raise forms.ValidationError(_(u'This email address is already in use. Please supply a different email address.'))
     
 class PasswordChangeForm(forms.Form):
     """
@@ -225,9 +187,9 @@ class PasswordChangeForm(forms.Form):
     Stolen from the django.contrib.auth package and rewritten to use newforms.
     """
 
-    old_password = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=u"Nuværende kodeord")
-    new_password1 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=u"Nyt kodeord")
-    new_password2 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=u"Bekræft kodeord")
+    old_password = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"password"))
+    new_password1 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"new password"))
+    new_password2 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"verify password"))
     
     def __init__(self, *args, **kwargs): 
         self.user= kwargs["user"]
@@ -248,7 +210,7 @@ class PasswordChangeForm(forms.Form):
         """
         if "new_password1" in self.cleaned_data and  "new_password2" in self.cleaned_data:
             if self.cleaned_data["new_password1"] != self.cleaned_data["new_password2"]:
-                raise forms.ValidationError("Dit nye kodeord og din bekræftigelse er ikke identiske.")
+                raise forms.ValidationError(_(u"You must type the same password each time"))
     
         return self.cleaned_data
 

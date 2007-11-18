@@ -10,6 +10,8 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 
+from django.utils.translation import ugettext as _
+
 from django import oldforms
 
 from django.contrib.auth.forms import PasswordResetForm
@@ -127,7 +129,7 @@ def profile_edit(request,
         form = form_class(request.POST)
         if form.is_valid():
             form.save(request.user)
-            request.user.message_set.create(message="Stamoplysninger opdateret")
+            request.user.message_set.create(message=_(u"Personal information updated"))
             return HttpResponseRedirect(reverse(success_page))
     else:
         user = request.user
@@ -153,7 +155,7 @@ def profile_change_email(request,
         form = form_class(request.POST, user=request.user)
         if form.is_valid():
             form.save()
-            request.user.message_set.create(message=u'En email er blevet send till dig, følg instrukserne i denne.')
+            request.user.message_set.create(message=_(u"An email has been sent to you containing further instructions to activate your account."))
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = form_class()
@@ -175,7 +177,7 @@ def password_change(request, template_name='registration/password_change_form.ht
         form = PasswordChangeForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
-            request.user.message_set.create(message=u'Dit kodeord er blevet skiftet')
+            request.user.message_set.create(message=_(u"Your password have been changed"))
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = PasswordChangeForm(user=request.user)

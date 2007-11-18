@@ -171,7 +171,7 @@ class RegistrationProfile(models.Model):
         search_fields = ('user__username', 'user__first_name')
         
     def __unicode__(self):
-        return u"Registration information for %s" % self.user
+        return _(u"Registration information for %s") % self.user
     
     def activation_key_expired(self):
         """
@@ -194,27 +194,27 @@ class UserProfile(models.Model):
     Model containing user data
     
     """
-    user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
-    dateofbirth = models.DateField(_('date of birth'))
-    street = models.CharField(_('street'), max_length=255, blank=True)
-    postalcode = models.PositiveIntegerField(_('postal code'), blank=True, null=True)
-    city = models.CharField(_('city'), max_length=255, blank=True)
-    phonenumber = models.PositiveIntegerField(_('phonenumber'), blank=True, null=True)
+    user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'))
+    dateofbirth = models.DateField(_(u'date of birth'))
+    street = models.CharField(_(u'street'), max_length=255, blank=True)
+    postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
+    city = models.CharField(_(u'city'), max_length=255, blank=True)
+    phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
     
     class Meta:
-        verbose_name = _('user profile')
-        verbose_name_plural = _('user profiles')
+        verbose_name = _(u'user profile')
+        verbose_name_plural = _(u'user profiles')
     
     class Admin:
         fields = (
             (None, {'fields' : ('user', 'dateofbirth', 'phonenumber')}),
-            ('Address', {'classes' : 'collapse', 
+            (_(u'Address'), {'classes' : 'collapse', 
                          'fields' : ('street', 'postalcode', 'city')}
             ),
         )
 
     def __unicode__(self):
-        return u"Registration profile for %s" % self.user
+        return _(u"Registration profile for %s") % self.user
     
     def age (self, d=datetime.date.today()):
         bday = self.dateofbirth
@@ -227,7 +227,7 @@ class EmailChangeRequestManager(models.Manager):
         Creates a new email change request, and returns the key
         """
         timestamp = datetime.datetime.now()
-        key = sha.new(timestamp.__str__() + new_email + "very secret text 123").hexdigest()
+        key = sha.new(timestamp.__str__() + new_email).hexdigest()
         ecr = EmailChangeRequest.objects.create(user=user, new_email=new_email, key=key, timestamp=timestamp)
         
         from django.core.mail import EmailMultiAlternatives, SMTPConnection
@@ -285,10 +285,10 @@ class EmailChangeRequestManager(models.Manager):
         return True
 
 class EmailChangeRequest(models.Model):
-    user = models.ForeignKey(User, verbose_name=_('user'))
-    new_email= models.CharField(_('email'), max_length=75)
-    key = models.CharField(_('key'), max_length=40)
-    timestamp = models.DateTimeField(_('timestamp'))
+    user = models.ForeignKey(User, verbose_name=_(u'user'))
+    new_email= models.CharField(_(u'email'), max_length=75)
+    key = models.CharField(_(u'key'), max_length=40)
+    timestamp = models.DateTimeField(_(u'timestamp'))
 
     objects = EmailChangeRequestManager()
 
@@ -297,13 +297,13 @@ class EmailChangeRequest(models.Model):
     get_absolute_url = permalink(get_absolute_url)
 
     class Meta:
-        verbose_name = _('email change request')
-        verbose_name_plural = _('email change requests')
+        verbose_name = _(u'email change request')
+        verbose_name_plural = _(u'email change requests')
         
     class Admin:
         pass
     
     def __unicode__(self):
-        return u'Email change request or %s' % self.user
+        return _(u"Email change request or %s") % self.user
     
     
