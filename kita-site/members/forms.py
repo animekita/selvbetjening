@@ -64,7 +64,8 @@ class ProfileForm(forms.Form):
                           required=True)    
     dateofbirth = forms.DateField(widget=forms.TextInput(attrs=attrs_dict),
                                   label=_(u'Fødselsdato'), 
-                                  input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'))
+                                  input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
+                                  help_text="Angiv din fødselsdag i formatet dd-mm-yyyy.")
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
