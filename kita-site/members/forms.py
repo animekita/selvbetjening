@@ -80,8 +80,8 @@ class ProfileForm(forms.Form):
     phonenumber = forms.IntegerField(label=_(u"phonenumber"), required=False)
     
     class Meta:
-        layout = ((_(u"Personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (_(u"Address"), ('street', 'city',  'postalcode')),
+        layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
+                  (_(u"address"), ('street', 'city',  'postalcode')),
                        )
     
     def save(self, user):
