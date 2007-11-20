@@ -1,4 +1,4 @@
-{% load uniform %}
+{% load uniform webdesign %}
 {% extends "extra.htm" %}
 
 {% block breadcrumbs %}
@@ -7,9 +7,7 @@
 
 {% block content %}
 <h2>Bliv passivt medlem</h2>
-<p>Ved at udfylde det nedenstående skema vil du blive indmeldt i Anime Kita som et passivt medlem, og derved få adgang til at skrive på vores forum og tilmelde dig arrangementer.</p>
-
-<p>Hvis du er i tvivl om hvad det betyder at være passivt medlem, så kan du læse mere om det <a href="#">her</a>.</p>
+<p>{% lorem 30 w %}</p>
  
 {{ form|uniform:"opret bruger" }}
     

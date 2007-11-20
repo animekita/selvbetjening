@@ -1,3 +1,5 @@
+{% load webdesign %}
+
 {% extends "extra.htm" %}
 
 {% block breadcrumbs %}
@@ -9,14 +11,14 @@
 {% endblock %}
 
 {% block content %}
-<p>Dette er Anime Kitas selvbetjenings system, hvor du kan melde dig ind i foreningen samt tilmelde dig de arrangementer vi afholder for medlemmer.</p>
+<p>{% lorem %}</p>
 
 <h3>Bliv medlem</h3>
-<p>For at benytte dig af vores forum samt nyhedsbrev er det nødvendig at have et medlemskab hos os. Det er gratis at være et passivt meldem i foreningen, og du binder dig ikke til noget.</p>
+<p>{% lorem 20 w %}</p>
 
 <ul>
-    <li><a href="#">Læs mere om passivt og aktivt medlemskab</a></li>
-    <li><a href="{% url registration_register %}">Bliv passivt medlem</a></li>
+    <li><a href="#">{% lorem 6 w %}</a></li>
+    <li><a href="{% url registration_register %}">Bliv medlem</a></li>
 </ul>
 
 <h3>Arrangementer</h3>
