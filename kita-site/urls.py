@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     
     (r'^', include('kita-site.members.urls')),
     (r'^events/', include('kita-site.events.urls')),
+    (r'^migrate/', include('kita-site.migration.urls')),
 
     # Admin urls
     (r'^admin/', include('django.contrib.admin.urls')),

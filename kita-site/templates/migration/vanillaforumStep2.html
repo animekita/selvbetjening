@@ -1,0 +1,15 @@
+{% load uniform %}
+
+{% extends "extra.htm" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url migrate_vanillaforum_step2 %}">migrer bruger</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Bruger migrering</h2>
+{% endblock %}
+
+{% block content %}
+{{form|uniform:"Opret ny bruger"}}
+{% endblock %}

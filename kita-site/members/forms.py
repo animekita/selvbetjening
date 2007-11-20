@@ -16,8 +16,6 @@ from members.models import RegistrationProfile, UserProfile, EmailChangeRequest
 
 from core import models as coremodel
 
-attrs_dict = { 'class': 'required' }
-
 class ProfileChangeEmailForm(forms.Form):
     """
     Change email form
@@ -55,14 +53,14 @@ class ProfileForm(forms.Form):
     Form for editing the user profile information
     """
     first_name = forms.CharField(max_length=50,
-                          widget=forms.TextInput(attrs=attrs_dict),
+                          widget=forms.TextInput(),
                           label=_(u'first name'),
                           required=True)
     last_name = forms.CharField(max_length=50,
-                          widget=forms.TextInput(attrs=attrs_dict),
+                          widget=forms.TextInput(),
                           label=_(u'last name'), 
                           required=True)    
-    dateofbirth = forms.DateField(widget=forms.TextInput(attrs=attrs_dict),
+    dateofbirth = forms.DateField(widget=forms.TextInput(),
                                   label=_(u'date of birth'), 
                                   input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
                                   help_text=_(u"State your date of birth using the format %(format)s.") % {"format" : "dd-mm-yyyy"})
@@ -114,14 +112,14 @@ class RegistrationForm(ProfileForm):
     """
 
     username = forms.CharField(max_length=30,
-                               widget=forms.TextInput(attrs=attrs_dict),
+                               widget=forms.TextInput(),
                                label=_(u"username"),
                                help_text=_(u"Your username can only contain the characters a-z, underscore and numbers."))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict),
+    password1 = forms.CharField(widget=forms.PasswordInput(),
                                 label=_(u"password"))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict),
+    password2 = forms.CharField(widget=forms.PasswordInput(),
                                 label=_(u"verify password"))
-    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
+    email = forms.EmailField(widget=forms.TextInput(attrs=dict(maxlength=75)),
                              label=_(u"email"))
     
     class Meta:

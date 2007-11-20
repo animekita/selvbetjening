@@ -16,6 +16,31 @@ class VanillaForum:
         result = cursor.fetchone()
         
         return (result != None)
+
+    def authenticateUser(self, username, password):
+        cursor = self.db.cursor()
+        cursor.execute("SELECT Name FROM LUM_User where Name=%s AND Password=%s", (username, md5.new(password).hexdigest()))
+        result = cursor.fetchone()
+        cursor.close()
+        
+        return (result != None)         
+    
+    def fetchUser(self, username):
+        """
+        Fetch the username, fist name, last name and email for a given user on the forum.
+        The returend data are not filtered / escaped in any way, so be careful.
+        
+        returned index:: 0 : Username, 1 : First name, 2: Last name, 3: Email
+        """
+        cursor = self.db.cursor()
+        cursor.execute("SELECT Name, FirstName, LastName, Email FROM LUM_User where Name=%s", (username, ))
+        result = cursor.fetchone()
+        cursor.close()
+        
+        # Lets trust the vanilla forum data, the forum should have escaped the data for html entities
+        # Worst case: The data are shown in a form, where it is escaped, and later validated before it is saved in the database again.
+        
+        return result
     
     def createUser(self, Name, Password, Email, FirstName, LastName, RoleID=3, StyleID=None):
         """
@@ -30,6 +55,12 @@ class VanillaForum:
         cursor.execute("INSERT INTO LUM_User (Name, Password, Email, FirstName, LastName, RoleID, StyleID) VALUES (%s, %s, %s, %s, %s, %s, %s)", (Name, Password, Email, FirstName, LastName, RoleID, StyleID))
         cursor.close()
     
+    def updateUser(self, Username, Password, Email, FirstName, LastName):
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE LUM_User SET Password=%s, Email=%s, FirstName=%s, LastName=%s WHERE Name=%s", 
+                       (md5.new(Password).hexdigest(), Email, FirstName, LastName, Username))
+        cursor.close()
+    
     def changeUserEmail(self, username, email):
         cursor = self.db.cursor()
         cursor.execute("UPDATE LUM_User SET Email=%s WHERE Name=%s", (email, username))
@@ -40,7 +71,7 @@ class VanillaForum:
         
         cursor = self.db.cursor()
         cursor.execute("UPDATE LUM_User SET Password=%s WHERE Name=%s", (passwd.hexdigest(), username))
-        cursor.close()
+        cursor.close()   
     
     def getLatestStyleID(self):
         cursor = self.db.cursor()
