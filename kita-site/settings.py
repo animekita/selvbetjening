@@ -101,6 +101,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.markup',
+    'django.contrib.webdesign',
     'kita-site.members',
     'kita-site.events',
     'kita-site.forms',
