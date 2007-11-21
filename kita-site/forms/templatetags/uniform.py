@@ -30,6 +30,15 @@ def uniform_formrendering(form, submitText):
     
     return safestring.mark_safe(render + '</form>')
 
+@register.tag
+def uniform_header(parser, token):
+        return UniformHeaderNode()
+
+class UniformHeaderNode(template.Node):
+    
+        def render(self, context):
+                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/uni-form.css">\n<script type="text/javascript" src="http://static.anime-kita.dk/dev/js/datepicker.js"></script>\n<link href="http://static.anime-kita.dk/dev/css/datepicker.css" rel="stylesheet" type="text/css" />')
+
 def render_input(item):
     
     if isinstance(item.field.widget, (forms.TextInput, forms.PasswordInput)):

@@ -1,6 +1,10 @@
 {% load uniform webdesign %}
 {% extends "extra.htm" %}
 
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
 {% block breadcrumbs %}
 <li><a href="{% url registration_register %}">bliv medlem</a></li>
 {% endblock %}

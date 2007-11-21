@@ -1,10 +1,11 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic.simple import redirect_to
+from django.core.urlresolvers import reverse
 
 urlpatterns = patterns('',
     url(r'^$',
-        direct_to_template,
-        {'template' : 'index.html'},
+        redirect_to,
+        {'url' : '/login/'},
         name = 'home'),
     
     (r'^', include('kita-site.members.urls')),

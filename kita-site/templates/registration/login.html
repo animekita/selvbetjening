@@ -1,4 +1,10 @@
+{% load uniform %}
+
 {% extends "extra.htm" %}
+
+{% block extraheader %}
+{% uniform_header %}
+{% endblock %}
 
 {% block breadcrumbs %}
 <li><a href="{% url auth_login %}">login</a></li>

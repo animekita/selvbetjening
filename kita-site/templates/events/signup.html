@@ -2,6 +2,10 @@
 
 {% extends "extra.htm" %}
 
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
 {% block breadcrumbs %}
 <li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
 <li><a href="{% url events_signup event.id %}">tilmeld dig {{event.title}}</a></li>

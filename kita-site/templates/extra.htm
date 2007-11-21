@@ -10,11 +10,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/default.css" />
 		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/extra.css" />
-		<link rel="stylesheet" type="text/css" href="http://static.anime-kita.dk/dev/css/uni-form.css">
-		<script type="text/javascript" src="http://static.anime-kita.dk/dev/js/datepicker.js"></script>
-		<link href="http://static.anime-kita.dk/dev/css/datepicker.css" rel="stylesheet" type="text/css" />		
-		{% block javascript %}
-		{% endblock %}
+		{% block extraheader %}
+		{% endblock %}		
 		<title>Anime Kita</title>
 	</head>
 	<body>
@@ -36,7 +33,6 @@
 			<div id="menu">
 				{% block navigation %}
 				<ul>
-					<li><a href="{% url home %}">Home</a></li>
 					
 					{% if user.is_authenticated %}
 					<li><a href="{% url members_profile %}">Bruger portal</a></li>
