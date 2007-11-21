@@ -68,7 +68,7 @@ SECRET_KEY = '!*n#*(r@4-bqd)$ek)w0wvl*m51^-ak-6&26mseg#*=ezruo%a'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-    'django.template.loaders.eggs.load_template_source',
+#    'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,7 +91,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/semadk/Workspace/devrepo/python/anime-kita.dk/kita-site/templates'
+    #'/path/to/templates'
 )
 
 INSTALLED_APPS = (
@@ -106,4 +106,5 @@ INSTALLED_APPS = (
     'kita-site.events',
     'kita-site.forms',
     'kita-site.core',
+    'kita-site.migration',
 )
