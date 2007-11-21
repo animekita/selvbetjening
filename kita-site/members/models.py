@@ -51,9 +51,10 @@ class RegistrationManager(models.Manager):
                 user.is_active = True
                 user.save()
                 
-                # create forum user
+                # create forum user, first ensure the forums user are not already created (If the user has migrated from the forum, this would be the case).
                 vf = coremodels.VanillaForum()
-                vf.createUser(Name = user.username, Password=profile.forumPass, Email=user.email, FirstName=user.first_name, LastName=user.last_name)
+                if not vf.userExists(user.username):
+                    vf.createUser(Name = user.username, Password=profile.forumPass, Email=user.email, FirstName=user.first_name, LastName=user.last_name)
                 
                 profile.delete()
                 return user
