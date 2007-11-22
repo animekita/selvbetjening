@@ -2,6 +2,10 @@
 
 {% extends "extra.htm" %}
 
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
 {% block breadcrumbs %}
 <li><a href="{% url migrate_vanillaforum_step2 %}">migrer bruger</a></li>
 {% endblock %}

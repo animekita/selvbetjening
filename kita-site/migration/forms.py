@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
-from members import forms as memberforms
-from members.models import RegistrationProfile
+from registration.forms import RegistrationForm
+from registration.models import RegistrationProfile
 
 from core import models as coremodels
 
@@ -34,7 +34,7 @@ class VanillaForumForm(forms.Form):
         
         return self.cleaned_data
 
-class MigrationForm(memberforms.RegistrationForm):
+class MigrationForm(RegistrationForm):
 
     username = forms.CharField(max_length=30,
                                widget=forms.TextInput(attrs={"disabled":"true"}),
@@ -44,7 +44,7 @@ class MigrationForm(memberforms.RegistrationForm):
         self.currentUsername = kwargs["user"]
         del kwargs["user"]
         
-        super(memberforms.RegistrationForm, self).__init__(*args, **kwargs)
+        super(RegistrationForm, self).__init__(*args, **kwargs)
 
     def clean_username(self):
   
