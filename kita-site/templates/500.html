@@ -1,15 +1,14 @@
+{% load webdesign %}
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url auth_logout %}">logud</a></li>
+<li><span>500 der er sket en alvorlig fejl</span></li>
 {% endblock %}
 
 {% block contenthead %}
-<h2>Logud</h2>
+<h2>500 - Der er sket en alvorlig fejl</h2>
 {% endblock %}
 
 {% block content %}
-
-<p>Du er nu logget af...</p>
-
+<p>{% lorem %}</p>
 {% endblock %}
