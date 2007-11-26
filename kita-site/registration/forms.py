@@ -34,7 +34,7 @@ class RegistrationForm(ProfileForm):
     
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email')),
-                  (_(u"address"), ('street', 'city',  'postalcode')),
+                  (_(u"address"), ('street', 'postalcode', 'city')),
                   (_(u"user"), ('username', 'password1', 'password2'))
                        )
         
