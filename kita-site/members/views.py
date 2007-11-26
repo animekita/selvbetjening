@@ -51,7 +51,7 @@ def profile_edit(request,
         profile = user.get_profile()
         form = form_class(initial={'first_name':user.first_name, 
                                    'last_name':user.last_name, 
-                                   'dateofbirth':profile.dateofbirth,
+                                   'dateofbirth':profile.dateofbirth.strftime('%d-%m-%Y'),
                                    'street':profile.street,
                                    'city':profile.city,
                                    'postalcode':profile.postalcode,
