@@ -22,11 +22,11 @@ urlpatterns = patterns('',
                        
     url(r'^skift-kodeord/$',
         password_change,
-        {'template_name': 'registration/changePassword.html'},
+        {'template_name': 'members/changePassword.html'},
         name='auth_password_change'),
     
     url(r'^skift-kodeord/done/$',
         auth_views.password_change_done,
-        {'template_name': 'registration/changePasswordDone.html'},
+        {'template_name': 'members/changePasswordDone.html'},
         name='auth_password_change_done'),
 )
