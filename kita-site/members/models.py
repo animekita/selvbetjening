@@ -1,13 +1,17 @@
 # coding=UTF-8
 
-import datetime
+import datetime, sha
 
 from django.db import models
 from django.db.models import permalink
 
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User                                     # for the  userprofile's foreignkey field
+from django.template.loader import render_to_string
 
+from core import models as coremodels
 
 class UserProfile(models.Model):
     """
@@ -53,18 +57,18 @@ class EmailChangeRequestManager(models.Manager):
         from django.core.mail import EmailMultiAlternatives, SMTPConnection
         current_site = Site.objects.get_current()
         
-        subject = render_to_string('registration/change_email_subject.txt',
+        subject = render_to_string('members/change_email_subject.txt',
                                    { 'site': current_site })
         subject = ''.join(subject.splitlines()) # remove newlines from subject
         
-        message = render_to_string('registration/change_email.txt',
+        message = render_to_string('members/change_email.txt',
                                    { 'key': key,
                                      'user':user,
                                      'ecr':ecr,
                                      'new_email':new_email,
                                      'site': current_site,
                                  "site_url":settings.SITE_URL})
-        message_html = render_to_string('registration/change_email.html.txt',
+        message_html = render_to_string('members/change_email.html.txt',
                                    { 'key': key,
                                      'user':user,
                                      'ecr':ecr,
