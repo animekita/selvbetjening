@@ -75,6 +75,16 @@ class ProfileForm(forms.Form):
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
                   (_(u"address"), ('street', 'city',  'postalcode')),
                        )
+        
+    def clean_dateofbirth(self):
+        """
+        The strftime function is used on the datetime object, so it is not allowed to be dated before 1900.
+        
+        """
+        if self.cleaned_data['dateofbirth'].year < 1900:
+            raise forms.ValidationError(_(u'Your birthday is not allowed to be dated before 1900'))
+        
+        return self.cleaned_data['dateofbirth']
     
     def save(self, user):
         """
