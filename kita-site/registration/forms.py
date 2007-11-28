@@ -48,18 +48,19 @@ class RegistrationForm(ProfileForm):
             raise forms.ValidationError(_(u'Usernames can only contain letters, numbers and underscores'))
         
         # Check the vanilla forum for existing users
-        vf = coremodel.VanillaForum()
-        if vf.userExists(self.cleaned_data["username"]):
+        if not self.hook_valid_forum_username(self.cleaned_data["username"]):
             raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
         
         # Check the "selvbetjening" database for existing users
-        # All users should have a forum and selvbetjening account, so this step is redundant. 
-        # But just in case, check both databases.
         try:
             user = User.objects.get(username__exact=self.cleaned_data['username'])
         except User.DoesNotExist:
             return self.cleaned_data['username']
         raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
+    
+    def hook_valid_forum_username(self, checkUsername):
+        vf = coremodel.VanillaForum()
+        return not vf.userExists(checkUsername)
     
     def clean_password2(self):
         """

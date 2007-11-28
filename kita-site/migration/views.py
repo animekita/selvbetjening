@@ -34,14 +34,11 @@ def vanillaforumStep2(request, template_name="migration/vanillaforumStep2.html",
         
         # Check if the forum user still hasent been migrated, if it has been migrated redirect to the done page.
         if userHasMigrated(request.session["migration.userUsername"]):
+                request.session["migration.userAuthnticated"] = False
                 return HttpResponseRedirect(reverse("migrate_vanillaforum_done"))
         
         if request.method == 'POST':
-                # Inject the username into the form, forcing the user to register with this username.
-                post = request.POST.copy()
-                post.appendlist("username", request.session["migration.userUsername"])
-                
-                form = form_class(post, user=request.session["migration.userUsername"])
+                form = form_class(request.POST, user=request.session["migration.userUsername"])
                 if form.is_valid():
                         # Save the forum user and create a new selvbetjening user
                         form.save()
@@ -65,9 +62,20 @@ def vanillaforumStep2(request, template_name="migration/vanillaforumStep2.html",
                                   context_instance=RequestContext(request))        
 
 def userHasMigrated(username):
+        """
+        We can detect user migration in two ways.
+        
+        1. The user has changed his name, and the username has thus dissapeared from the forum database        
+        2. An user with the same username has appeared in the selvbetjening database
+        
+        """
+        vf = coremodels.VanillaForum()
+        if not vf.userExists(username):
+                return True # User has dissapeared from the forum database
+        
         try:
                 user = User.objects.get(username__exact=username)
         except User.DoesNotExist:
-                return False
+                return False # User does not exist in selvbetjening, so he hasent migrated yet
         
         return True

@@ -11,6 +11,13 @@ from registration.models import RegistrationProfile
 from core import models as coremodels
 
 class VanillaForumForm(forms.Form):
+    """
+    Login form for the migrations script
+    
+    Is valid if the given credentials matches an existing forum user,
+    a selvbetjening user with the same username does not exist.
+    
+    """
     username = forms.CharField(max_length=30,
                                widget=forms.TextInput(),
                                label=_(u"username"))
@@ -29,32 +36,30 @@ class VanillaForumForm(forms.Form):
     
     def clean(self):
         vf = coremodels.VanillaForum()
-        if hasattr(self.cleaned_data, "username") and hasattr(self.cleaned_data, "password") and not vf.authenticateUser(self.cleaned_data["username"], self.cleaned_data["password"]):
+        if not vf.authenticateUser(self.cleaned_data.get('username'), self.cleaned_data.get('password')):
             raise forms.ValidationError(_(u"Please enter a correct username and password."))
-        
+
         return self.cleaned_data
 
 class MigrationForm(RegistrationForm):
-
-    username = forms.CharField(max_length=30,
-                               widget=forms.TextInput(attrs={"disabled":"true"}),
-                               label=_(u"username"))
 
     def __init__(self, *args, **kwargs): 
         self.currentUsername = kwargs["user"]
         del kwargs["user"]
         
-        super(RegistrationForm, self).__init__(*args, **kwargs)
+        RegistrationForm.__init__(self, *args, **kwargs)
 
-    def clean_username(self):
-  
-        return self.cleaned_data["username"]
+    def hook_valid_forum_username(self, checkUsername):
+        if checkUsername == self.currentUsername:
+            return True
         
+        return RegistrationForm.hook_valid_forum_username(self, checkUsername)
     
     def save(self):
         # update the forum profile
         vf = coremodels.VanillaForum()
-        vf.updateUser(self.currentUsername, 
+        vf.updateUser(self.currentUsername,
+                      self.cleaned_data["username"],
                       self.cleaned_data["password1"], 
                       self.cleaned_data["email"],
                       self.cleaned_data["first_name"], 

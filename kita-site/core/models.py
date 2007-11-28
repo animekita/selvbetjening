@@ -55,10 +55,10 @@ class VanillaForum:
         cursor.execute("INSERT INTO LUM_User (Name, Password, Email, FirstName, LastName, RoleID, StyleID) VALUES (%s, %s, %s, %s, %s, %s, %s)", (Name, Password, Email, FirstName, LastName, RoleID, StyleID))
         cursor.close()
     
-    def updateUser(self, Username, Password, Email, FirstName, LastName):
+    def updateUser(self, OldUsername, Username, Password, Email, FirstName, LastName):
         cursor = self.db.cursor()
-        cursor.execute("UPDATE LUM_User SET Password=%s, Email=%s, FirstName=%s, LastName=%s WHERE Name=%s", 
-                       (md5.new(Password).hexdigest(), Email, FirstName, LastName, Username))
+        cursor.execute("UPDATE LUM_User SET Name=%s, Password=%s, Email=%s, FirstName=%s, LastName=%s WHERE Name=%s", 
+                       (Username, md5.new(Password).hexdigest(), Email, FirstName, LastName, OldUsername))
         cursor.close()
     
     def changeUserEmail(self, username, email):
