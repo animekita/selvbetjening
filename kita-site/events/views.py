@@ -17,6 +17,7 @@ from events.forms import SignupForm
 from django.contrib.auth.models import User
 
 TEMPLATE_NO_EVENT='events/noevent.html'
+TEMPLATE_CANT_SIGNUP='events/cantsignup.html'
 
 @login_required
 def visited(request, template_name='events/visited.html'):
@@ -65,7 +66,8 @@ def signup(request,
     
     - User must be logged in to view the page
     - Show confirmation page
-    - If the user already is signed up to the event, or the event does not exist show error pages (TEMPLATE_ALREADY_SIGNEDUP and TEMPLATE_NO_EVENT)
+    - If the user already is signed up to the event, the event hasent opened for registration
+    or the event does not exist show error pages (TEMPLATE_ALREADY_SIGNEDUP, TEMPLATE_CANT_SIGNUP and TEMPLATE_NO_EVENT)
     
     @todo Requre login
     """
@@ -74,6 +76,9 @@ def signup(request,
         event = Event.objects.get(id=eventId)
     except ObjectDoesNotExist:
         return render_to_response(TEMPLATE_NO_EVENT, context_instance=RequestContext(request))
+    
+    if not event.isRegistrationOpen():
+        return render_to_response(TEMPLATE_CANT_SIGNUP, context_instance=RequestContext(request))
     
     if event.signups.filter(id=request.user.id):
         return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))

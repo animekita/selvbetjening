@@ -73,7 +73,7 @@ class ProfileForm(forms.Form):
     
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (_(u"address"), ('street', 'city',  'postalcode')),
+                  (_(u"address"), ('street', 'postalcode', 'city')),
                        )
         
     def clean_dateofbirth(self):
