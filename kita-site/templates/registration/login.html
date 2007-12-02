@@ -7,26 +7,32 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url auth_login %}">login</a></li>
+<li><a href="{% url auth_login %}">log på</a></li>
 {% endblock %}
 
 {% block contenthead %}
-<h2>Login</h2>
+<h2>Log på selvbetjening</h2>
 {% endblock %}
 
 {% block content %}
 
-{% if form.has_errors %}
-<p>Det indtastede brugernavn eller kodeord var ikke korrekt, prøv venligst igen.</p>
-{% endif %}
+<p>Har du ikke en selvbetjening bruger, kan du oprette en <a href="{% url registration_register %}">her</a>. Har du en bruger på vores forum, kan du migrere denne bruger til selvbetjening ved hjælp af vore <a href="{% url migrate_vanillaforum %}">migrerings værktøj</a>.</p>
 
 <form method="POST" action="" class="uniForm">
+
+{% if form.has_errors %}
+<div id="errorMsg">
+  <ul class="errorlist">
+    <li>Det indtastede brugernavn eller kodeord var ikke korrekt, prøv venligst igen.</li>
+  </ul>
+</div>
+{% endif %}
 
 <fieldset class="inlineLabels">
 <legend>Log på</legend>
 
 <div class="ctrlHolder">
-  <label for="id_username">brugernavn:</label>
+  <label for="id_username">brugernavn</label>
   <input name="username" maxlength="50" type="text" class="textInput" id="id_username" />
 </div>
 
@@ -38,7 +44,8 @@
 
 <fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">log på</button></div></fieldset>
 </form>
-
-<p><a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></p>
+<ul class="table-options">
+    <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>
+</ul>
 
 {% endblock %}

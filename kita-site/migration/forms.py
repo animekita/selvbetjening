@@ -36,7 +36,7 @@ class VanillaForumForm(forms.Form):
     
     def clean(self):
         vf = coremodels.VanillaForum()
-        if not vf.authenticateUser(self.cleaned_data.get('username'), self.cleaned_data.get('password')):
+        if not vf.authenticateUser(self.cleaned_data.get('username', ''), self.cleaned_data.get('password', '')):
             raise forms.ValidationError(_(u"Please enter a correct username and password."))
 
         return self.cleaned_data
