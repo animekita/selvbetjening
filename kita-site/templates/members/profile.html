@@ -49,7 +49,7 @@
     <li>&#187; <a href="{% url members_editprofile %}">Ændre brugeroplysninger</a></li>
     <li>&#187; <a href="{% url members_change_email %}">Skift email</a></li>
 </ul>
-
+<br />
 <h3>Brugeroplysninger</h3>
 <table class="vertical">
 <tr>
@@ -64,7 +64,7 @@
 <ul class="table-options">
     <li>&#187; <a href="{% url auth_password_change %}">Skift kodeord</a></li>
 </ul>
-
+<br />
 
 <h3>Arrangementer</h3>
     <table class="horizontal">
@@ -92,6 +92,12 @@
             <td>Tilmeldt{% if event.hasBeenHeld %} / Afholdt{% endif %}</td>
         </tr>
     {% endfor %}
+    
+    {% if not events_visited and not events_new %}
+        <tr>
+            <td colspan="4">Ingen nævnværdige arrangementer.</td>
+        </tr>
+    {% endif %}
     </table>
     
 {% endblock %}

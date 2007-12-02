@@ -1,7 +1,9 @@
 Hej {{first_name}} {{last_name}}
 
-For at aktivere din bruger på Anime Kita og derved blive passivt medlem skal du besøge den følgende url inden <b>{{expiration_days}}</b> dage: 
+For at aktivere din selvbetjening bruger på <a href="https://selvbetjening.anime-kita.dk">selvbetjening.anime-kita.dk</a> skal du trykke på det følgende link:<br /><br /> 
 <a href="{{site_url}}{% url registration_activate activation_key %}">{{site_url}}{% url registration_activate activation_key %}</a>
+
+Hvis du ikke aktivere din bruger inden {{expiration_days}} dage vil overstående link ikke længere fungere, og det vil igen være muligt for alle at registrere en bruger med det valgte brugernavn.
 
 Hilsen
 Anime Kita

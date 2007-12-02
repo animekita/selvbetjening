@@ -1,12 +1,8 @@
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url registration_register %}">bliv medlem</a>&nbsp;&gt;&nbsp;</li>
-        {% if success %}
-        <li><span>bruger aktiveret</span></li>
-        {% else %}
-        <li><span>fejl ved aktivering</span></li>
-        {% endif %}
+<li><a href="{% url registration_register %}">opret bruger</a>&nbsp;&gt;&nbsp;</li>
+<li><span>bruger aktiveret</span></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -19,13 +15,13 @@
     
 {% block content %}
         {% if success %}
-        <p>Din bruger er nu aktiveret og kan bruges på vores <a href="http://www.anime-kita.dk/forum/">forum</a> samt på <a href="{% url home %}">Kita selvbetjening</a>.
+        <p>Din selvbetjening bruger er nu aktiveret, besøg din egen bruger portal ved at logge på <a href="{% url home %}">her<a>. I forbindelse med din aktivering har vi oprettet en <a href="http://www.anime-kita.dk/forum/">forum</a> bruger til dig, hvilket giver dig mulighed for at deltage i diskussionerne på forummet.</p>
         {% else %}
-        <p>Vi kunne ikke finde din aktiveringsnøgle i databasen. Prøv at gøre følgende.</p>
+        <p>Vi kunne ikke finde din aktiverings-nøgle. Prøv at gøre følgende.</p>
         <ul>
-                <li>Se om den url du har indtastet svarer til den du har modtaget på din email.</li>
-                <li>Det kan ske tidsfristen er udløbet for at aktivere din bruger, prøv eventuelt at ansøge igen <a href="{% url registration_register %}">her</a>.</li>
-                <li>Hvis overstående ikke løser problemet, så kontakt os <a href="http://www.anime-kita.dk/kontakt/">her</a>, så vil vi hjælpe dig.</li>
+                <li>Se om den url du har indtastet svarer til den vi har tilsendt din email.</li>
+                <li>Tidsfristen for aktivering kan være udløbet. Du kan derfor være nød til at oprette en ny bruger igen <a href="{% url registration_register %}">her</a>.</li>
+                <li>Hvis overstående ikke løser problemet, så kontakt os <a href="http://www.anime-kita.dk/kontakt/">her</a>, så vil vi hjælpe dig videre.</li>
         </ul>
         {% endif %}
 {% endblock %}
