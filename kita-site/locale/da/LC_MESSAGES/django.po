@@ -23,35 +23,35 @@ msgstr "Jeg acceptere de givne betingelser."
 
 #: events/forms.py:26
 msgid "You must accept the rules to participate in the event"
-msgstr "Du skal acceptere de givne regler for at deltage i eventet."
+msgstr "Du skal acceptere reglerne for at deltage i eventet."
 
 #: events/models.py:16
 msgid "title"
-msgstr "titel"
+msgstr "Titel"
 
 #: events/models.py:17
 msgid "description"
-msgstr "beskrivelse"
+msgstr "Beskrivelse"
 
 #: events/models.py:18
 msgid "start date"
-msgstr "start dato"
+msgstr "Start dato"
 
 #: events/models.py:19
 msgid "end date"
-msgstr "slut dato"
+msgstr "Slut dato"
 
 #: events/models.py:21
 msgid "registration open"
-msgstr "tilmelding åben"
+msgstr "Tilmelding åben"
 
 #: events/models.py:24
 msgid "event"
-msgstr "event"
+msgstr "Event"
 
 #: events/models.py:25
 msgid "events"
-msgstr "events"
+msgstr "Events"
 
 #: events/models.py:40
 #, python-format
@@ -64,69 +64,69 @@ msgstr "Du er nu tilmeldt eventet."
 
 #: members/forms.py:19 members/models.py:113 registration/forms.py:33
 msgid "email"
-msgstr "email"
+msgstr "E-mail"
 
 #: members/forms.py:22 members/forms.py:119 migration/forms.py:26
 #: registration/forms.py:29
 msgid "password"
-msgstr "kodeord"
+msgstr "Kodeord"
 
 #: members/forms.py:33
 msgid "Wrong password"
-msgstr "Forkert kodeord"
+msgstr "Du har angivet et forkert kodeord."
 
 #: members/forms.py:51
 msgid "first name"
-msgstr "fornavn"
+msgstr "Fornavn"
 
 #: members/forms.py:55
 msgid "last name"
-msgstr "efternavn"
+msgstr "Efternavn"
 
 #: members/forms.py:58 members/models.py:22
 msgid "date of birth"
-msgstr "fødselsdag"
+msgstr "Fødselsdag"
 
 #: members/forms.py:60
 #, python-format
 msgid "State your date of birth using the format %(format)s."
-msgstr "Angiv din fødselsdato i datoformatet %(format)s."
+msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
 
 #: members/forms.py:64 members/models.py:23
 msgid "street"
-msgstr "vej"
+msgstr "Vej"
 
 #: members/forms.py:66 members/models.py:24
 msgid "postal code"
-msgstr "postnummer"
+msgstr "Postnummer"
 
 #: members/forms.py:70 members/models.py:25
 msgid "city"
-msgstr "by"
+msgstr "By"
 
 #: members/forms.py:72 members/models.py:26
 msgid "phonenumber"
-msgstr "telefonnummer"
+msgstr "Telefonnummer"
 
 #: members/forms.py:75 registration/forms.py:36
 msgid "personal information"
-msgstr "personoplysninger"
+msgstr "Personoplysninger"
 
 #: members/forms.py:76 registration/forms.py:37
 msgid "address"
-msgstr "adresse"
+msgstr "Adresse"
 
 #: members/forms.py:85
 msgid "Your birthday is not allowed to be dated before 1900"
-msgstr "Du kan ikke angive din fødselsdag til at være før år 1900"
+msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
 #: members/forms.py:120
 msgid "new password"
-msgstr "nyt kodeord"
+msgstr "Nyt kodeord"
 
 #: members/forms.py:121 registration/forms.py:31
 msgid "verify password"
-msgstr "bekræft kodeord"
+msgstr "Gentag kodeord"
 
 #: members/forms.py:134
 msgid "Your old password was entered incorrectly. Please enter it again."
@@ -139,15 +139,15 @@ msgstr "De to indtastede kodeord stemmer ikke overens."
 #: members/models.py:21 members/models.py:112 registration/forms.py:38
 #: registration/models.py:162
 msgid "user"
-msgstr "bruger"
+msgstr "Bruger"
 
 #: members/models.py:29
 msgid "user profile"
-msgstr "bruger profil"
+msgstr "Bruger profil"
 
 #: members/models.py:30
 msgid "user profiles"
-msgstr "bruger profiler"
+msgstr "Bruger profiler"
 
 #: members/models.py:35
 msgid "Address"
@@ -160,7 +160,7 @@ msgstr "Registreringsprofil for %s"
 
 #: members/models.py:114
 msgid "key"
-msgstr "nøgle"
+msgstr "Nøgle"
 
 #: members/models.py:115
 msgid "timestamp"
@@ -168,36 +168,36 @@ msgstr ""
 
 #: members/models.py:124
 msgid "email change request"
-msgstr "forespørgsel om ændring af email"
+msgstr "Forespørgsel om ændring af e-mail"
 
 #: members/models.py:125
 msgid "email change requests"
-msgstr "forespørgsler om ændring af email"
+msgstr "Forespørgsler om ændring af e-mail"
 
 #: members/models.py:131
 #, python-format
 msgid "Email change request or %s"
-msgstr "Forespørgsel om ændring af email for %s"
+msgstr "Forespørgsel om ændring af e-mail for %s"
 
 #: members/views.py:47
 msgid "Personal information updated"
-msgstr "Personoplysninger opdateret"
+msgstr "Dine personlige oplysniner er blevet opdateret."
 
 #: members/views.py:73
 msgid ""
 "An email has been sent to you containing further instructions to activate "
 "your account."
 msgstr ""
-"En email er blevet sendt til dig med videre instrukser for at aktivere din "
+"En e-mail er blevet sendt til dig med videre instrukser for at aktivere din "
 "bruger."
 
 #: members/views.py:95
 msgid "Your password have been changed"
-msgstr "Dit kodeord er blevet ændret"
+msgstr "Dit kodeord er blevet ændret."
 
 #: migration/forms.py:23 registration/forms.py:26
 msgid "username"
-msgstr "brugernavn"
+msgstr "Brugernavn"
 
 #: migration/forms.py:35
 msgid "This user has already migrated."
@@ -205,7 +205,7 @@ msgstr "Denne bruger er allerede blevet migreret."
 
 #: migration/forms.py:40
 msgid "Please enter a correct username and password."
-msgstr "Indtast venligst korrekt brugernavn og kodeord."
+msgstr "Indtast venligst et korrekt brugernavn og kodeord."
 
 #: registration/forms.py:27
 msgid ""
@@ -214,7 +214,7 @@ msgstr "Dit brugernavn må kun indeholde tegnene a-z 0-9 og _"
 
 #: registration/forms.py:48
 msgid "Usernames can only contain letters, numbers and underscores"
-msgstr "Brugernavne kan kun indeholde tegnene a-z 0-9 og _"
+msgstr "Brugernavne kan kun indeholde tegnene a-z 0-9 og _."
 
 #: registration/forms.py:52 registration/forms.py:59
 msgid "This username is already taken. Please choose another."
@@ -222,19 +222,19 @@ msgstr "Dette brugernavn er allerede i brug. Vælg venligst et andet."
 
 #: registration/models.py:163
 msgid "activation key"
-msgstr "aktiverings nøgle"
+msgstr "Aktiverings nøgle"
 
 #: registration/models.py:164
 msgid "vanilla forum password"
-msgstr "vanilla forum kodeord"
+msgstr "Vanilla forum kodeord"
 
 #: registration/models.py:169
 msgid "registration profile"
-msgstr "registrerings profil"
+msgstr "Registrerings profil"
 
 #: registration/models.py:170
 msgid "registration profiles"
-msgstr "registrerings profiler"
+msgstr "Registrerings profiler"
 
 #: registration/models.py:177
 #, python-format
@@ -242,4 +242,4 @@ msgid "Registration information for %s"
 msgstr "Registrerings information for %s"
 
 #~ msgid "Personal information"
-#~ msgstr "Personoplysninger"
+#~ msgstr "Dine personlige oplysninger"

@@ -7,16 +7,16 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url auth_login %}">log på</a></li>
+<li><a href="{% url auth_login %}">log ind</a></li>
 {% endblock %}
 
 {% block contenthead %}
-<h2>Log på selvbetjening</h2>
+<h2>Log ind</h2>
 {% endblock %}
 
 {% block content %}
 
-<p>Har du ikke en selvbetjening bruger, kan du oprette en <a href="{% url registration_register %}">her</a>. Har du en bruger på vores forum, kan du migrere denne bruger til selvbetjening ved hjælp af vore <a href="{% url migrate_vanillaforum %}">migrerings værktøj</a>.</p>
+<p>Hvis du ikke har oprettet ind bruger på vores hjemmeside, kan du gøre det <a href="{% url registration_register %}">her</a>. Har du en bruger på vores forum, kan du migrere denne bruger til selve hjemmsiden ved hjælp af vore <a href="{% url migrate_vanillaforum %}">migrerings værktøj</a>.</p>
 
 <form method="POST" action="" class="uniForm">
 
@@ -32,17 +32,17 @@
 <legend>Log på</legend>
 
 <div class="ctrlHolder">
-  <label for="id_username">brugernavn</label>
+  <label for="id_username">Brugernavn</label>
   <input name="username" maxlength="50" type="text" class="textInput" id="id_username" />
 </div>
 
 <div class="ctrlHolder">
-<label for="id_password">kodeord</label>
+<label for="id_password">Kodeord</label>
 <input id="id_password" type="password" class="textInput" name="password" />
 </div>
 </fieldset>
 
-<fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">log på</button></div></fieldset>
+<fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">Log ind</button></div></fieldset>
 </form>
 <ul class="table-options">
     <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>
