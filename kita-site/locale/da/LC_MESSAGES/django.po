@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-28 16:24+0100\n"
-"PO-Revision-Date: 2007-11-28 16:26+0100\n"
+"POT-Creation-Date: 2007-12-14 18:03+0100\n"
+"PO-Revision-Date: 2007-12-14 22:57+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,15 +58,15 @@ msgstr "Events"
 msgid "Event %s"
 msgstr "Event %s"
 
-#: events/views.py:85
+#: events/views.py:90
 msgid "You are now signed up to the event."
-msgstr "Du er nu tilmeldt eventet."
+msgstr "Du er nu tilmeldt arrangementet."
 
-#: members/forms.py:19 members/models.py:113 registration/forms.py:33
-msgid "email"
-msgstr "E-mail"
+#: members/forms.py:19
+msgid "new email"
+msgstr "Ny email"
 
-#: members/forms.py:22 members/forms.py:119 migration/forms.py:26
+#: members/forms.py:22 members/forms.py:118 migration/forms.py:26
 #: registration/forms.py:29
 msgid "password"
 msgstr "Kodeord"
@@ -120,24 +120,24 @@ msgstr "Adresse"
 msgid "Your birthday is not allowed to be dated before 1900"
 msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
-#: members/forms.py:120
+#: members/forms.py:119
 msgid "new password"
 msgstr "Nyt kodeord"
 
-#: members/forms.py:121 registration/forms.py:31
+#: members/forms.py:120 registration/forms.py:31
 msgid "verify password"
 msgstr "Gentag kodeord"
 
-#: members/forms.py:134
+#: members/forms.py:133
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "Dit gamle kodeord var ikke korrekt. Indtast det venligst igen."
 
-#: members/forms.py:142 registration/forms.py:73
+#: members/forms.py:141 registration/forms.py:73
 msgid "You must type the same password each time"
 msgstr "De to indtastede kodeord stemmer ikke overens."
 
 #: members/models.py:21 members/models.py:112 registration/forms.py:38
-#: registration/models.py:162
+#: registration/models.py:161
 msgid "user"
 msgstr "Bruger"
 
@@ -158,6 +158,10 @@ msgstr "Adresse"
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
 
+#: members/models.py:113 registration/forms.py:33
+msgid "email"
+msgstr "Email"
+
 #: members/models.py:114
 msgid "key"
 msgstr "Nøgle"
@@ -168,28 +172,25 @@ msgstr ""
 
 #: members/models.py:124
 msgid "email change request"
-msgstr "Forespørgsel om ændring af e-mail"
+msgstr "Forespørgsel om ændring af email"
 
 #: members/models.py:125
 msgid "email change requests"
-msgstr "Forespørgsler om ændring af e-mail"
+msgstr "Forespørgsler om ændring af email"
 
 #: members/models.py:131
 #, python-format
 msgid "Email change request or %s"
-msgstr "Forespørgsel om ændring af e-mail for %s"
+msgstr "Forespørgsel om ændring af email for %s"
 
 #: members/views.py:47
 msgid "Personal information updated"
-msgstr "Dine personlige oplysniner er blevet opdateret."
+msgstr "Dine personoplysninger er blevet opdateret"
 
 #: members/views.py:73
-msgid ""
-"An email has been sent to you containing further instructions to activate "
-"your account."
+msgid "An email has been sent to your old email to verify your email change."
 msgstr ""
-"En e-mail er blevet sendt til dig med videre instrukser for at aktivere din "
-"bruger."
+"En email er blevet sendt til din gamle email for at godkende dit skift af email adresse."
 
 #: members/views.py:95
 msgid "Your password have been changed"
@@ -220,23 +221,23 @@ msgstr "Brugernavne kan kun indeholde tegnene a-z 0-9 og _."
 msgid "This username is already taken. Please choose another."
 msgstr "Dette brugernavn er allerede i brug. Vælg venligst et andet."
 
-#: registration/models.py:163
+#: registration/models.py:162
 msgid "activation key"
 msgstr "Aktiverings nøgle"
 
-#: registration/models.py:164
+#: registration/models.py:163
 msgid "vanilla forum password"
 msgstr "Vanilla forum kodeord"
 
-#: registration/models.py:169
+#: registration/models.py:168
 msgid "registration profile"
 msgstr "Registrerings profil"
 
-#: registration/models.py:170
+#: registration/models.py:169
 msgid "registration profiles"
 msgstr "Registrerings profiler"
 
-#: registration/models.py:177
+#: registration/models.py:176
 #, python-format
 msgid "Registration information for %s"
 msgstr "Registrerings information for %s"

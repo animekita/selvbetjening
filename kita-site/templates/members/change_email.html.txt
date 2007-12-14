@@ -1,5 +1,5 @@
-Hej {{ user.first_name }} {{ user.last_name }}
+<h1>Hej {{ user.first_name }} {{ user.last_name }}</h1>
 
-Du har bedt os om at skifte den tilknyttede email for din bruger <b>{{user.username}}</b> til at være <b>{{ new_email }}</b>. Hvis du ikke ønsker at skifte email alligevel så ignorer venligst denne email.<br /><br />
+<p>Du har bedt os om at skifte den tilknyttede email for din bruger <b>{{user.username}}</b> til at være <b>{{ new_email }}</b>. Hvis du ikke ønsker at skifte email alligevel så ignorer venligst denne email.</p>
 
-Følg dette link for at skifte email: <a href="{{site_url}}{{ecr.get_absolute_url}}">{{site_url}}{{ecr.get_absolute_url}}</a>
+<p>For at godkende den nye email skal du besøge denne side: <a href="{{site_url}}{{ecr.get_absolute_url}}">{{site_url}}{{ecr.get_absolute_url}}</a></p>

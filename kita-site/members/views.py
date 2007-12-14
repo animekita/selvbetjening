@@ -70,7 +70,7 @@ def profile_change_email(request,
         form = form_class(request.POST, user=request.user)
         if form.is_valid():
             form.save()
-            request.user.message_set.create(message=_(u"An email has been sent to you containing further instructions to activate your account."))
+            request.user.message_set.create(message=_(u"An email has been sent to your old email to verify your email change."))
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = form_class()

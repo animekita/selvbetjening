@@ -16,7 +16,7 @@ class ProfileChangeEmailForm(forms.Form):
     """
     new_email = forms.EmailField(max_length=75,
                                 widget=forms.TextInput(),
-                                label=_(u'email'))
+                                label=_(u'new email'))
     password = forms.CharField(max_length=255,
                                widget=forms.PasswordInput(),
                                label=_(u'password'))
@@ -109,7 +109,6 @@ class ProfileForm(forms.Form):
                                        postalcode=postalcode, 
                                        phonenumber=phonenumber)
     
-
 class PasswordChangeForm(forms.Form):
     """
     A form that lets a user change his password.
