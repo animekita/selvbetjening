@@ -1,3 +1,3 @@
 def site_urls(request):
     from django.conf import settings
-    return {'media_url': settings.MEDIA_URL, 'site_url' : settings.SITE_URL}
+    return {'MEDIA_URL': settings.MEDIA_URL, 'SITE_URL' : settings.SITE_URL}
