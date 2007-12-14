@@ -1,4 +1,5 @@
 # coding=UTF-8
+from datetime import date
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -31,8 +32,8 @@ class Event(models.Model):
             (None, { 'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open') } ), )
 
     def isRegistrationOpen(self):
-        return self.registration_open
-
+        return (self.startdate > date.today() and self.registration_open)
+    
     def hasBeenHeld(self):
         return self.startdate < date.today()
     

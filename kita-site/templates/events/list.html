@@ -24,7 +24,7 @@
         <th>Navn</th>
         <th>Dato</th>
         <th>År</th>
-        <th>&nbsp;</th>
+        <th style="width:30%">&nbsp;</th>
     </tr>
     
     {% for event in events %}
@@ -32,7 +32,7 @@
             <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
             <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
             <td>{{event.startdate.year}}</td>
-            <td>{% if event.registration_open %}Åben for tilmelding{% endif %}</td>
+            <td>{% if event.isRegistrationOpen %}Åben for tilmelding{% endif %}</td>
         </tr>
     {% endfor %}
     </table>
