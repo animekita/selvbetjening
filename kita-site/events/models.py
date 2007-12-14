@@ -13,7 +13,7 @@ class Event(models.Model):
     
     """
     
-    title = models.CharField(_(u"title"), maxlength=255)
+    title = models.CharField(_(u"title"), max_length=255)
     description = models.TextField(_(u"description"), blank=True)
     startdate = models.DateField(_(u"start date"), blank=True, null=True)
     enddate = models.DateField(_(u"end date"), blank=True, null=True)

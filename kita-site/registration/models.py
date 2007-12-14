@@ -158,8 +158,8 @@ class RegistrationProfile(models.Model):
     
     """
     user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
-    activation_key = models.CharField(_('activation key'), maxlength=40)
-    forumPass = models.CharField(_('vanilla forum password'), maxlength=40)
+    activation_key = models.CharField(_('activation key'), max_length=40)
+    forumPass = models.CharField(_('vanilla forum password'), max_length=40)
     
     objects = RegistrationManager()
     
