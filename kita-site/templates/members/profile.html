@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block contenthead %}
-<h2>Velkommen {% if user.first_name %}{{user.first_name}} {{user.lastname}}{% else %}{{user.username}}{% endif %}</h2>
+<h2>Velkommen {% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}</h2>
 {% endblock %}
 
 {% block content %}
-<p>På denne side kan du se de oplysninger vi har registreret for din bruger. Vi beder dig venligst holde disse oplysninger opdateret. Nederst på siden kan du også de de arrangementer som du har deltaget i, er tilmeldt eller kan tilmelde dig.</p>
+<p>På denne side kan du se de oplysninger vi har registreret for din bruger. Vi beder dig venligst holde disse oplysninger opdateret. Nederst på siden kan du også se de arrangementer som du har deltaget i, er tilmeldt eller kan tilmelde dig.</p>
 
 <h3>Personoplysninger</h3>
 

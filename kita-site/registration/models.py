@@ -102,6 +102,7 @@ class RegistrationManager(models.Manager):
                                    { 'activation_key': registration_profile.activation_key,
                                      'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
                                      'first_name': first_name,
+                                     'last_name': last_name,
                                      'username': username,
                                      'site': current_site,
                                      'site_url':settings.SITE_URL}) 
