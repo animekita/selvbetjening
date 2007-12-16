@@ -8,7 +8,9 @@ class VanillaForum:
         self.db = MySQLdb.connect(host=settings.FORUM_DATABASE_HOST, 
                                   user=settings.FORUM_DATABASE_USER,
                                   passwd=settings.FORUM_DATABASE_PASSWORD,
-                                  db=settings.FORUM_DATABASE_NAME)
+                                  db=settings.FORUM_DATABASE_NAME,
+                                  use_unicode=True,
+                                  charset='utf8')
     
     def userExists(self, username):
         cursor = self.db.cursor()
