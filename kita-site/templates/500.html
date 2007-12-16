@@ -1,14 +1,71 @@
-{% load webdesign %}
-{% extends "site.html" %}
+{% load core_tags %}
 
-{% block breadcrumbs %}
-<li><span>500 der er sket en alvorlig fejl</span></li>
-{% endblock %}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<base href="https://selvbetjening.anime-kita.dk/" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="https://static.anime-kita.dk/css/default.css" />
+		<link rel="stylesheet" type="text/css" href="https://static.anime-kita.dk/css/extra.css" />
+		<title>Anime Kita</title>
+	</head>
+	<body>
+		<div id="banner" class="center">
+			<h1>Anime Kita</h1>
+		</div>
+		
+		<div id="breadcrumbs" class="center">
+			<ul id="breadcrumbs">
+				<li><a href="http://www.anime-kita.dk/">anime-kita.dk</a>&nbsp;&gt;&nbsp;</li>
+				<li><a href="https://selvbetjening.anime-kita.dk/">selvbetjening</a>&nbsp;&gt;&nbsp;</li>
+				<li><span>500 der er sket en alvorlig fejl</span></li>
+			</ul>
+		</div>
+		
+		<div id="container" class="center">
+		<div id="container-inner">	
+		
+			<div id="menu">
+				{% block navigation %}
+				<ul>
+					
+					{% if user.is_authenticated %}
+					<li><a href="{% url members_profile %}">Bruger portal</a></li>
+					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+					<li><a href="{% url auth_logout %}">Log ud</a></li>
+					{% else %}
+					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+					<li><a href="{% url registration_register %}">Opret bruger</a></li>
+					<li><a href="{% url auth_login %}">Log ind</a></li>
+					{% endif %}
+					
+				</ul>
+				{% endblock %}
+			</div>
 
-{% block contenthead %}
-<h2>500 - Der er sket en alvorlig fejl</h2>
-{% endblock %}
+			<div id="content">
+				<h2>500 - Der er sket en alvorlig fejl</h2>
+			
+				{% if messages %}
+				<ul id="messages">
+					 {% for message in messages %}
+					<li>{{ message }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+				
+				<p>Der skete en alvorlig fejl på siden, en besked er blevet sendt til en administrator omkring denne hændelse. Hvis du fortsat har problemer kan du kontakte os <a href="http://www.anime-kita.dk/kontakt.html">her</a>.
+			</div>
 
-{% block content %}
-<p>{% lorem %}</p>
-{% endblock %}
+		</div>
+		</div>
+		
+		<p id="footer" class="center">
+			Anime-Kita, {% copyright_time 2007 %} © All rights reserved.<br />
+			Design by Louise Johansen
+		</p>
+	</body>
+</html>
