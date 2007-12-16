@@ -80,7 +80,7 @@ def signup(request,
     if not event.isRegistrationOpen():
         return render_to_response(TEMPLATE_CANT_SIGNUP, context_instance=RequestContext(request))
     
-    if event.signups.filter(id=request.user.id):
+    if event.signups.filter(id=request.user.id): # user already signed up to the event
         return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
     
     if request.method == 'POST':
@@ -92,4 +92,7 @@ def signup(request,
     else:
         form = form_class()
     
-    return render_to_response(template_name, {'event' : event, 'form' : form}, context_instance=RequestContext(request))
+    # is the user underaged at the time
+    is_underaged = request.user.get_profile().isUnderaged(date = event.startdate)
+    
+    return render_to_response(template_name, {'event' : event, 'form' : form, 'is_underaged' : is_underaged}, context_instance=RequestContext(request))

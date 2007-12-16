@@ -44,6 +44,9 @@ class UserProfile(models.Model):
         bday = self.dateofbirth
         return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
     
+    def isUnderaged(self, date = datetime.date.today()):
+        return (self.age(date) < 15)
+    
 class EmailChangeRequestManager(models.Manager):
     
     def create_request(self, user, new_email):

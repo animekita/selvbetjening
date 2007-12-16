@@ -32,7 +32,7 @@ class Event(models.Model):
             (None, { 'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open') } ), )
 
     def isRegistrationOpen(self):
-        return (self.startdate > date.today() and self.registration_open)
+        return (self.registration_open and not self.hasBeenHeld())
     
     def hasBeenHeld(self):
         return self.startdate < date.today()

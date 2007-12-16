@@ -33,6 +33,17 @@ urlpatterns = patterns('',
     (r'^events/', include('kita-site.events.urls')),
     (r'^migrate/', include('kita-site.migration.urls')),
 
+    # Main site redirection urls
+    url(r'^goto/ordensregler/$',
+        redirect_to,
+        {'url' : 'http://www.anime-kita.dk/regler.html'},
+        name = 'goto_eventrules'),
+    
+    url(r'goto/vedtaegter/$',
+        redirect_to,
+        {'url' : 'http://www.anime-kita.dk/vedtaegter.html'},
+        name = 'goto_regulations'),
+
     # Admin urls
     (r'^admin/', include('django.contrib.admin.urls')),
 )
