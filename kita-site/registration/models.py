@@ -128,7 +128,7 @@ class RegistrationManager(models.Manager):
         salt = sha.new(str(random.random())).hexdigest()[:5]
         return self.create(user=user,
                            activation_key = sha.new(salt+user.username).hexdigest(),
-                           forumPass = md5.new(forumPassword).hexdigest())
+                           forumPass = md5.new(forumPassword.encode('utf-8')).hexdigest())
         
     def delete_expired_users(self):
         """
