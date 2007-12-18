@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import redirect_to
+from django.views.generic.simple import redirect_to, direct_to_template
 from django.contrib.auth import views as auth_views
 
 urlpatterns = patterns('',
@@ -27,6 +27,11 @@ urlpatterns = patterns('',
         auth_views.password_reset_done,
         {'template_name':'registration/resetPasswordDone.html'},
         name='auth_password_reset_done'),    
+
+    url(r'^regler-for-personoplysninger/$',
+        direct_to_template,
+        {'template' : 'data-rules.html'},
+        name='data_rules'),
     
     (r'^profil/', include('kita-site.members.urls')),
     (r'^bliv-medlem/', include('kita-site.registration.urls')),    
