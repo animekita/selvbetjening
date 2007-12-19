@@ -36,7 +36,7 @@ class RegistrationForm(ProfileForm):
                              label=_(u"I allow Anime Kita to store my personal information."))    
     
     class Meta:
-        layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email')),
+        layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email', 'send_me_email')),
                   (_(u"address"), ('street', 'postalcode', 'city')),
                   (_(u"user"), ('username', 'password1', 'password2')),
                (_(u"data management terms"), ('tos', ))
@@ -96,4 +96,5 @@ class RegistrationForm(ProfileForm):
                                                                     postalcode=self.cleaned_data['postalcode'],
                                                                     city=self.cleaned_data['city'],
                                                                     phonenumber=self.cleaned_data['phonenumber'],
+                                                                    send_me_email=self.cleaned_data['send_me_email'],
                                                                 )

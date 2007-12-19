@@ -71,9 +71,14 @@ class ProfileForm(forms.Form):
                            required=False)
     phonenumber = forms.IntegerField(label=_(u"phonenumber"), required=False)
     
+    send_me_email = forms.BooleanField(widget=forms.CheckboxInput(), 
+                             label=_(u"Inform me about events and other important changes in Anime Kita."), initial=True)    
+    
+    
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
                   (_(u"address"), ('street', 'postalcode', 'city')),
+                  (_(u"other"), ('send_me_email', ))
                        )
         
     def clean_dateofbirth(self):
@@ -101,13 +106,15 @@ class ProfileForm(forms.Form):
             profile.postalcode = self.cleaned_data['postalcode']
             profile.city = self.cleaned_data['city']
             profile.phonenumber = self.cleaned_data['phonenumber']
+            profile.send_me_email = self.cleaned_data['send_me_email']
             profile.save()
         else:
             UserProfile.objects.create(user=user, 
                                        dateofbirth=dateofbirth, 
                                        city=city, street=street, 
                                        postalcode=postalcode, 
-                                       phonenumber=phonenumber)
+                                       phonenumber=phonenumber,
+                                   send_me_email=send_me_email)
     
 class PasswordChangeForm(forms.Form):
     """

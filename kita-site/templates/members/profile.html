@@ -33,6 +33,10 @@
     <td>{{user.email}}</td>
 </tr>
 <tr>
+    <th>Må vi sende emails til dig?</th>
+    <td>{{user.get_profile.send_me_email|yesno}}</td>
+</tr>
+<tr>
     <th>Telefon #</th>
     <td >{% if user.get_profile.phonenumber %}{{user.get_profile.phonenumber}}{% endif %}</td>
 </tr>

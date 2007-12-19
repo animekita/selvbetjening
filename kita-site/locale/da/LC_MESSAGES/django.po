@@ -9,13 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-19 22:56+0100\n"
-"PO-Revision-Date: 2007-12-19 22:31+0100\n"
+"POT-Creation-Date: 2007-12-19 23:19+0100\n"
+"PO-Revision-Date: 2007-12-19 23:19+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: "
 
 #: events/forms.py:17
 msgid "I have read and accept the above described terms"
@@ -66,7 +66,7 @@ msgstr "Du er nu tilmeldt arrangementet."
 msgid "new email"
 msgstr "Ny email"
 
-#: members/forms.py:22 members/forms.py:118 migration/forms.py:26
+#: members/forms.py:22 members/forms.py:123 migration/forms.py:26
 #: registration/forms.py:29
 msgid "password"
 msgstr "Kodeord"
@@ -108,31 +108,39 @@ msgstr "By"
 msgid "phonenumber"
 msgstr "Telefonnummer"
 
-#: members/forms.py:75 registration/forms.py:39
+#: members/forms.py:75
+msgid "Inform me about events and other important changes in Anime Kita."
+msgstr "Informer mig omkring arrangementer og andre tiltag i Anime Kita."
+
+#: members/forms.py:79 registration/forms.py:39
 msgid "personal information"
 msgstr "Personoplysninger"
 
-#: members/forms.py:76 registration/forms.py:40
+#: members/forms.py:80 registration/forms.py:40
 msgid "address"
 msgstr "Adresse"
 
-#: members/forms.py:85
+#: members/forms.py:81
+msgid "other"
+msgstr "Andet"
+
+#: members/forms.py:90
 msgid "Your birthday is not allowed to be dated before 1900"
 msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
-#: members/forms.py:119
+#: members/forms.py:124
 msgid "new password"
 msgstr "Nyt kodeord"
 
-#: members/forms.py:120 registration/forms.py:31
+#: members/forms.py:125 registration/forms.py:31
 msgid "verify password"
 msgstr "Gentag kodeord"
 
-#: members/forms.py:133
+#: members/forms.py:138
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "Dit gamle kodeord var ikke korrekt. Indtast det venligst igen."
 
-#: members/forms.py:141 registration/forms.py:81
+#: members/forms.py:146 registration/forms.py:81
 msgid "You must type the same password each time"
 msgstr "De to indtastede kodeord stemmer ikke overens."
 

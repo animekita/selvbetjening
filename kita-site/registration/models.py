@@ -63,7 +63,7 @@ class RegistrationManager(models.Manager):
             
             return False
     
-    def create_inactive_user(self, username, password, email, dateofbirth, last_name, first_name, city, street, postalcode, phonenumber):
+    def create_inactive_user(self, username, password, email, dateofbirth, last_name, first_name, city, street, postalcode, phonenumber, send_me_email):
         """
         Creates a new, inactive ``User``, generates a
         ``RegistrationProfile`` and emails its activation key to the
@@ -78,7 +78,7 @@ class RegistrationManager(models.Manager):
         
         registration_profile = self.create_profile(new_user, password)
         
-        UserProfile.objects.create(user=new_user, dateofbirth=dateofbirth, city=city, street=street, postalcode=postalcode, phonenumber=phonenumber)
+        UserProfile.objects.create(user=new_user, dateofbirth=dateofbirth, city=city, street=street, postalcode=postalcode, phonenumber=phonenumber, send_me_email=send_me_email)
         
         # send email
         from django.core.mail import EmailMultiAlternatives, SMTPConnection

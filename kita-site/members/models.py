@@ -24,6 +24,7 @@ class UserProfile(models.Model):
     postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
     city = models.CharField(_(u'city'), max_length=255, blank=True)
     phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
+    send_me_email = models.BooleanField(_(u'Send mig emails'))
     
     class Meta:
         verbose_name = _(u'user profile')
@@ -31,7 +32,7 @@ class UserProfile(models.Model):
     
     class Admin:
         fields = (
-            (None, {'fields' : ('user', 'dateofbirth', 'phonenumber')}),
+            (None, {'fields' : ('user', 'dateofbirth', 'phonenumber', 'send_me_email')}),
             (_(u'Address'), {'classes' : 'collapse', 
                          'fields' : ('street', 'postalcode', 'city')}
             ),
