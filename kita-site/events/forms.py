@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 class SignupForm(forms.Form):
     
     tos = forms.BooleanField(widget=forms.CheckboxInput(), 
-                             label=_(u"I accept the given terms"))
+                             label=_(u"I have read and accept the above described terms"))
     
     def clean_tos(self):
         """
@@ -23,7 +23,7 @@ class SignupForm(forms.Form):
         """
         if self.cleaned_data.get('tos', False):
             return self.cleaned_data['tos']
-        raise forms.ValidationError(_(u"You must accept the rules to participate in the event"))
+        raise forms.ValidationError(_(u"You must accept to participate in the event"))
     
     def save(self):
         pass

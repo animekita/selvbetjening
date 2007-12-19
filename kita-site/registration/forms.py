@@ -31,13 +31,21 @@ class RegistrationForm(ProfileForm):
                                 label=_(u"verify password"))
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(maxlength=75)),
                              label=_(u"email"))
+
+    tos = forms.BooleanField(widget=forms.CheckboxInput(), 
+                             label=_(u"I allow Anime Kita to store my personal information."))    
     
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email')),
                   (_(u"address"), ('street', 'postalcode', 'city')),
-                  (_(u"user"), ('username', 'password1', 'password2'))
+                  (_(u"user"), ('username', 'password1', 'password2')),
+               (_(u"data management terms"), ('tos', ))
                        )
-        
+   
+    def clean_tos(self):
+        if self.cleaned_data.get('tos', False):
+            return self.cleaned_data['tos']
+        raise forms.ValidationError(_(u"You must allow us to store your information to create an account."))     
     def clean_username(self):
         """
         Validates that the username is alphanumeric and is not already
@@ -89,4 +97,3 @@ class RegistrationForm(ProfileForm):
                                                                     city=self.cleaned_data['city'],
                                                                     phonenumber=self.cleaned_data['phonenumber'],
                                                                 )
-    
