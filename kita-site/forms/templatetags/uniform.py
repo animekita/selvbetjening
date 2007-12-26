@@ -65,7 +65,7 @@ def render_TextInput(field):
     else:
         render += field.label_tag() + '\n'
      
-    attrs = {'class' : 'textInput'}
+    attrs = {'class' : 'textInput text'}
 
     if isinstance(field.field, forms.DateField):
         attrs['class'] += ' w8em format-d-m-y divider-dash highlight-days-67'

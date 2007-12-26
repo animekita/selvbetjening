@@ -2,74 +2,81 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<base href="{{SITE_URL}}/" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css" />
-		<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/extra.css" />
-		{% block extraheader %}
-		{% endblock %}		
-		<title>Anime Kita</title>
-	</head>
-	<body>
-		<div id="banner" class="center">
-			<h1>Anime Kita</h1>
-		</div>
+<head>
+	<base href="{{SITE_URL}}/" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Anime Kita</title>
+	<link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/screen.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/print.css" type="text/css" media="print" />
+	<link rel="stylesheet" href="{{ MEDIA_URL }}css/print.css" type="text/css" media="print" />
+	<!--[if IE]><link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/lib/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css" media="screen, projecton"/>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/extra.css" media="screen, projecton"/>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/uni-form.css" media="screen, projecton"/>
+	{% block extraheader %}
+	{% endblock %}	
+</head>
+<body>
+<div class="container">
+	<h1 id="banner" class="column span-7 last"><a href="http://www.anime-kita.dk/">Anime Kita<	/a></h1>
 		
-		<div id="breadcrumbs" class="center">
-			<ul id="breadcrumbs">
-				<li><a href="http://www.anime-kita.dk/">anime-kita.dk</a>&nbsp;&gt;&nbsp;</li>
-				<li><a href="http://selvbetjening.anime-kita.dk/">selvbetjening</a>&nbsp;&gt;&nbsp;</li>
-				{% block breadcrumbs %}{% endblock %}
-			</ul>
-		</div>
+	<div id="breadcrumbs" class="column span-7 last small">
+		<ul>
+			<li><a href="http://www.anime-kita.dk/">anime-kita.dk</a>&nbsp;&gt;&nbsp;</li>
+			<li><a href="http://selvbetjening.anime-kita.dk/">selvbetjening</a>&nbsp;&gt;&nbsp;</li>
+			{% block breadcrumbs %}{% endblock %}
+		</ul>
+	</div>
 		
-		<div id="container" class="center">
-		<div id="container-inner">	
-		
-			<div id="menu">
-				{% block navigation %}
-				<ul>
+	<div id="container" class="column span-7 last">
+	<div id="container-inner" class="column span-7 last">
+	
+	<div id="menu" class="column span-2">
+		{% block navigation %}
+		<ul>
 					
-					{% if user.is_authenticated %}
-					<li><a href="{% url members_profile %}">Brugerportal</a></li>
-					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
-					<li><a href="{% url data_rules %}">Databehandling</a></li>
-					<li><a href="{% url auth_logout %}">Log ud</a></li>
-					{% else %}
-					<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
-					<li><a href="{% url registration_register %}">Opret bruger</a></li>
-					<li><a href="{% url data_rules %}">Databehandling</a></li>
-					<li><a href="{% url auth_login %}">Log ind</a></li>
-					{% endif %}
+			{% if user.is_authenticated %}
+			<li><a href="{% url members_profile %}">Brugerportal</a></li>
+			<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+			<li><a href="{% url data_rules %}">Databehandling</a></li>
+			<li><a href="{% url auth_logout %}">Log ud</a></li>
+			{% else %}
+			<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
+			<li><a href="{% url registration_register %}">Opret bruger</a></li>
+			<li><a href="{% url data_rules %}">Databehandling</a></li>
+			<li><a href="{% url auth_login %}">Log ind</a></li>
+			{% endif %}
 					
-				</ul>
-				{% endblock %}
-			</div>
+		</ul>
+		{% endblock %}
+	</div>
 
-			<div id="content">
-				{% block contenthead %}{% endblock %}
+	<div id="content" class="column span-5 last">
+		{% block contenthead %}{% endblock %}
 			
-				{% if messages %}
-				<ul id="messages">
-					 {% for message in messages %}
-					<li>{{ message }}</li>
-					{% endfor %}
-				</ul>
-				{% endif %}
+		{% if messages %}
+		<ul id="messages">
+			 {% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 				
-				{% block content %}{% endblock %}
-			</div>
+		{% block content %}{% endblock %}
+	</div>
 
-		</div>
-		</div>
+	</div>
+	</div>
 		
-		<p id="footer" class="center">
-			Anime-Kita, {% copyright_time 2007 %} © All rights reserved.<br />
-			Design by Louise Johansen
+		<p id="footer" class="column span-7 last small">
+			Anime-Kita, 2007 &copy; All rights reserved<br />
+			<span class="site-copy">Design by Louise Johansen</span>
 		</p>
-	</body>
+</div>
+</body>
 </html>
+
+
