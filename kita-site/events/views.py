@@ -1,4 +1,5 @@
 # coding=UTF-8
+from datetime import date
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -8,13 +9,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-
-from datetime import date
+from django.contrib.auth.models import User
 
 from events.models import Event
 from events.forms import SignupForm
-
-from django.contrib.auth.models import User
+from accounting import models as accounting_models
 
 TEMPLATE_NO_EVENT='events/noevent.html'
 TEMPLATE_CANT_SIGNUP='events/cantsignup.html'
@@ -95,4 +94,6 @@ def signup(request,
     # is the user underaged at the time
     is_underaged = request.user.get_profile().isUnderaged(date = event.startdate)
     
-    return render_to_response(template_name, {'event' : event, 'form' : form, 'is_underaged' : is_underaged}, context_instance=RequestContext(request))
+    membership_state = accounting_models.Payment.objects.get_membership_state(request.user)
+    
+    return render_to_response(template_name, {'event' : event, 'form' : form, 'is_underaged' : is_underaged, 'membership_state' : membership_state}, context_instance=RequestContext(request))

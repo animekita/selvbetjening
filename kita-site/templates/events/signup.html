@@ -26,6 +26,19 @@
 <p>I henhold til foreningens <a href="{% url goto_regulations %}">vedtægter, &sect;3 stk. 2</a>, skal alle personer under 15 år være i følgeskab med et myndigt medlem til arrangementer. Hvis du er under 15 år kan du sagtens tilmelde dig dette arrangement men når du kommer til arrangementet skal denne person være med dig. Det vil være bedst hvis denne person også husker at tilmelde sig arrangementet.</p>
 {% endif %}
 
+{% ifnotequal membership_state 'ACTIVE' %}
+{% ifnotequal membership_state 'CONDITIONAL_ACTIVE' %}
+<h3>Medlemskab</h3>
+<p>Bemærk at du skal være betalende medlem af Anime Kita for at deltage i dette arrangement. Der er muliged for at betale kontingent ved arrangementet.</p>
+{% endifnotequal %}
+{% endifnotequal %}
+
+{% ifequal membership_state 'CONDITIONAL_ACTIVE' %}
+<h3>Medlemskab</h3>
+<p>Bemærk at du skal betale anden del af dit kontingent til dette arrangement. Der er muliged for at betale dette ved arrangementet.</p>
+{% endifequal %}
+
+
 {{form|uniform:"tilmeld"}}
 
 {% endblock %}
