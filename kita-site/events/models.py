@@ -1,7 +1,7 @@
 # coding=UTF-8
 from datetime import date
 
-from django.db import models
+from django.db import models, connection
 from django.contrib.auth.models import User
 from datetime import date
 from django.utils.translation import ugettext_lazy as _
@@ -36,6 +36,11 @@ class Event(models.Model):
     
     def hasBeenHeld(self):
         return self.startdate < date.today()
+    
+    def get_guests(self):
+        cursor = connection.cursor()
+        cursor.execute("SELECT user.id as id, user.username as username, user.first_name as first_name, user.last_name as last_name FROM auth_user as user, events_event_signups as signups WHERE user.id=signups.user_id AND signups.event_id=%s ORDER BY signups.id ASC", [self.id])
+        return cursor.fetchall()
     
     def __unicode__(self):
         return _(u"Event %s") % self.title

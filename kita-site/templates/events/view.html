@@ -47,12 +47,12 @@
     {% for guest in guests %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{% ifequal guest.id user.id %}<b>{% endifequal %}
-                        {{guest.first_name}} {{guest.last_name}}
-                    {% ifequal guest.id user.id %}</b>{% endifequal %}</td>
-            <td>{% ifequal guest.id user.id %}<b>{% endifequal %}
-                        {{guest.username}}
-                    {% ifequal guest.id user.id %}</b>{% endifequal %}</td>                    
+            <td>{% ifequal guest.0 user.id %}<b>{% endifequal %}
+                        {{guest.2}} {{guest.3}}
+                    {% ifequal guest.0 user.id %}</b>{% endifequal %}</td>
+            <td>{% ifequal guest.0 user.id %}<b>{% endifequal %}
+                        {{guest.1}}
+                    {% ifequal guest.0 user.id %}</b>{% endifequal %}</td>                    
         </tr>
     {% endfor %}
     
