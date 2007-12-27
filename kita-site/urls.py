@@ -28,7 +28,7 @@ urlpatterns = patterns('',
         {'template_name':'registration/resetPasswordDone.html'},
         name='auth_password_reset_done'),    
 
-    url(r'^regler-for-personoplysninger/$',
+    url(r'^behandling-af-personoplysninger/$',
         direct_to_template,
         {'template' : 'data-rules.html'},
         name='data_rules'),
