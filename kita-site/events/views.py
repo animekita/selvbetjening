@@ -51,7 +51,7 @@ def view(request, eventId=None, template_name='events/view.html'):
     return render_to_response(template_name, 
                               {'event' : event, 
                                 'userIsSignedup' : event.signups.filter(id=request.user.id),
-                                'guests' : User.objects.order_by('id').filter(event__id=event.id)}, 
+                                'guests' : Event.objects.get(id=event.id).signups.order_by('id')}, 
                               context_instance=RequestContext(request))
 
 @login_required
