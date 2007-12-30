@@ -76,5 +76,6 @@ class MigrationForm(RegistrationForm):
                                                                  postalcode=self.cleaned_data['postalcode'],
                                                                  city=self.cleaned_data['city'],
                                                                  phonenumber=self.cleaned_data['phonenumber'],
+                                                                 send_me_email=self.cleaned_data['send_me_email'],
                                                              )
     
