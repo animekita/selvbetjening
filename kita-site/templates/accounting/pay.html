@@ -1,0 +1,24 @@
+{% load uniform %}
+{% extends 'site.html' %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url accounting_list %}">accounting</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url accounting_pay username %}">betal kontingent</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Betal kontingent</h2>
+{% endblock %}
+
+{% block content %}
+
+{% if no_options %}
+    <p>Denne bruger har allerede betalt kontingent.</p>
+{% else %}
+    {{ form|uniform:"betal" }}
+{% endif %}
+{% endblock %}

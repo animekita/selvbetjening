@@ -22,7 +22,7 @@
 </tr>
 <tr>
     <th>Fødselsdag</th>
-    <td>{{user.get_profile.dateofbirth}}</td>
+    <td>{{user.get_profile.dateofbirth|date:"d/m - Y"}}</td>
 </tr>
 <tr>
     <th>Alder</th>
@@ -69,6 +69,23 @@
     <li>&#187; <a href="{% url auth_password_change %}">Ændre kodeord</a></li>
 </ul>
 <br />
+
+{% ifnotequal membership_status "INACTIVE" %}
+
+<h3>Medlemsstatus</h3>
+{% ifequal membership_status "ACTIVE" %}
+<p>Du har betalt kontingent den {{membership_date.date|date:"d/m Y"}} og dit kontingent gælder indtil den {{membership_to|date:"d/m Y"}}.</p>
+{% endifequal %}
+
+{% ifequal membership_status "CONDITIONAL_ACTIVE" %}
+<p>Du har betalt første halvdel af dit kontingent den {{membership_date.date|date:"d/m Y"}} og dit kontingent gælder indtil den {{membership_to|date:"d/m Y"}}.</p>
+{% endifequal %}
+
+{% ifequal membership_status "PASSIVE" %}
+<p>Du har ikke fornyet dit kontingent, du vil derfor blive regnet som passivt medlem indtil den {{membership_passive_to|date:"d/m Y"}}.</p>
+{% endifequal %}
+
+{% endifnotequal %}
 
 <h3>Arrangementer</h3>
     <table class="horizontal">

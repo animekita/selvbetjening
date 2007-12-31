@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     
     url(r'^logud/$',
         auth_views.logout,
-        {'template_name': 'registration/logout.html'},
+        {'template_name': 'registration/logout.html', 'next_page' : '/login/'},
         name='auth_logout'),  
     
     url(r'^nulstil-kodeord/$',
@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     (r'^bliv-medlem/', include('kita-site.registration.urls')),    
     (r'^events/', include('kita-site.events.urls')),
     (r'^migrate/', include('kita-site.migration.urls')),
+    (r'^accounting/', include('kita-site.accounting.urls')),
 
     # Main site redirection urls
     url(r'^goto/ordensregler/$',

@@ -1,0 +1,37 @@
+{% load core_tags %}
+
+{% extends "site.html" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url accounting_list %}">accounting</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Accounting</h2>
+{% endblock %}
+
+{% block content %}
+
+<table>
+<tr>
+    <th>Navn</th>
+    <th>Brugernavn</th>
+    <th>Medlemsstatus</th>
+    <th>&nbsp;</th>
+</tr>
+{% for member in users %}
+<tr>
+    <td>{{member.first_name}} {{member.last_name}}</td>
+    <td>{{member.username}}</td>
+    <td>{{member.get_profile.get_membership_state|translate:"membership_state"}}</td>
+    <td>
+        {% icon_link "betalings historie" book accounting_history member.username %}
+        {% ifnotequal member.get_profile.get_membership_state "ACTIVE" %}
+        {% icon_link "betal kontingent" money_add accounting_pay member.username %}
+        {% endifnotequal %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

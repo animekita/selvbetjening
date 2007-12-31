@@ -26,7 +26,7 @@ class RegistartionModelTestCase(TestCase):
         self.assertTrue(rp.activation_key_expired())
         
     def testCreateInactiveUser(self):
-        u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212')
+        u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212', True)
         
         # check for registration profile
         try:
@@ -44,7 +44,7 @@ class RegistartionModelTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
     
     def testActivateUser(self):
-        u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212')
+        u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212', True)
         
         p = models.RegistrationProfile.objects.get(user=u)
         
@@ -63,7 +63,8 @@ class RegistrationFormTestCase(TestCase):
                         'first_name' : 'test',
                         'last_name' : 'test',
                         'email' : 'user@example.org', 
-                        'dateofbirth' : '14-10-1987'}
+                        'dateofbirth' : '14-10-1987',
+                        'tos' : True,}
     
     def testValidUser(self):
         form = forms.RegistrationForm(self.userData)
@@ -105,21 +106,3 @@ class RegistrationFormTestCase(TestCase):
             models.RegistrationProfile.objects.get(user=user)
         except models.RegistrationForm.DoesNotExist:
             self.fail(msg = 'Registration profile were not created')
-    
-    
-class RegistrationViewTestCase(TestCase):
-    def testActivateUser(self):
-        pass
-    
-    def testActivateUserInvalidKey(self):
-        pass
-    
-    def testActivateUserDouble(self):
-        pass
-    
-    def testRegisterUser(self):
-        pass
-    
-    def testRegisterInvalidUser(self):
-        pass
-    

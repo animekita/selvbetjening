@@ -66,16 +66,5 @@ class MigrationForm(RegistrationForm):
                       self.cleaned_data["last_name"])
         
         # save the normal user profile, and let him verify his email before being able to use the main account...
-        return RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
-                                                                 password=self.cleaned_data['password1'],
-                                                                 email=self.cleaned_data['email'],
-                                                                 dateofbirth=self.cleaned_data['dateofbirth'],
-                                                                 first_name=self.cleaned_data['first_name'],
-                                                                 last_name=self.cleaned_data['last_name'],
-                                                                 street=self.cleaned_data['street'],
-                                                                 postalcode=self.cleaned_data['postalcode'],
-                                                                 city=self.cleaned_data['city'],
-                                                                 phonenumber=self.cleaned_data['phonenumber'],
-                                                                 send_me_email=self.cleaned_data['send_me_email'],
-                                                             )
+        return RegistrationForm.save(self)
     

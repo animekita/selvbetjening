@@ -3,7 +3,34 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth import models as auth_models
 
-from accounting import models
+from accounting import models, forms
+
+class AccountingPaymentFormTestCase(TestCase):
+    
+    def setUp(self):
+        self.user1 = auth_models.User.objects.create_user('user1', 'user1', 'user@example.org')
+
+    def test_valid_options(self):
+        f = forms.PaymentForm({'type' : 'FULL'}, user=self.user1)
+        
+        self.assertTrue(f.is_valid())
+    
+    def test_impossible_option(self):
+        f = forms.PaymentForm({'type' : 'SRATE'}, user=self.user1)
+        
+        self.assertFalse(f.is_valid())
+    
+    def test_invalid_option(self):
+        f = forms.PaymentForm({'type' : 'DOH'}, user=self.user1)
+        
+        self.assertFalse(f.is_valid())
+    
+    def test_save(self):
+        f = forms.PaymentForm({'type' : 'FULL'}, user=self.user1)
+        f.is_valid()        
+        f.save()
+        
+        self.assertEqual(1, len(self.user1.payment_set.all()))
 
 class AccountingModelTestCase(TestCase):
     
@@ -76,5 +103,3 @@ class AccountingModelTestCase(TestCase):
     def test_srate_payment_active(self):
         self.assertEqual(models.MembershipState.ACTIVE,
                          models.Payment.objects.get_membership_state(self.user10))
-    
-    

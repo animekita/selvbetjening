@@ -9,13 +9,67 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-19 23:19+0100\n"
-"PO-Revision-Date: 2007-12-19 23:19+0100\n"
+"POT-Creation-Date: 2007-12-31 19:27+0100\n"
+"PO-Revision-Date: 2007-12-31 19:27+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: "
+
+#: accounting/forms.py:15
+msgid "Full subscription"
+msgstr "Fuldt kontingent"
+
+#: accounting/forms.py:16 core/templatetags/core_tags.py:67
+msgid "First rate"
+msgstr "Første rate"
+
+#: accounting/forms.py:17 core/templatetags/core_tags.py:69
+msgid "Second rate"
+msgstr "Anden rate"
+
+#: accounting/forms.py:20
+msgid "Payment type"
+msgstr "Betalingstype"
+
+#: accounting/forms.py:45
+msgid "Payment type not valid"
+msgstr "Betalingstype ikke mulig"
+
+#: accounting/models.py:85 members/models.py:22 members/models.py:120
+#: registration/forms.py:41 registration/models.py:162
+msgid "user"
+msgstr "Bruger"
+
+#: accounting/models.py:99
+#, python-format
+msgid "Yearly rate for %s"
+msgstr "Årlig rate for %s"
+
+#: accounting/views.py:35
+msgid "Payment noted"
+msgstr "Betaling noteret"
+
+#: core/templatetags/core_tags.py:55
+msgid "Active member"
+msgstr "Aktivt medlem"
+
+#: core/templatetags/core_tags.py:57
+msgid "Conditional active member"
+msgstr "Betinget aktivt medlem"
+
+#: core/templatetags/core_tags.py:59
+msgid "Passive member"
+msgstr "Passivt medlem"
+
+#: core/templatetags/core_tags.py:61
+msgid "Inactive member"
+msgstr "Inaktivt medlem"
+
+#: core/templatetags/core_tags.py:65
+msgid "Full payment"
+msgstr "Fuldt kontingent"
 
 #: events/forms.py:17
 msgid "I have read and accept the above described terms"
@@ -53,12 +107,12 @@ msgstr "Event"
 msgid "events"
 msgstr "Events"
 
-#: events/models.py:41
+#: events/models.py:46
 #, python-format
 msgid "Event %s"
 msgstr "Event %s"
 
-#: events/views.py:90
+#: events/views.py:89
 msgid "You are now signed up to the event."
 msgstr "Du er nu tilmeldt arrangementet."
 
@@ -66,7 +120,7 @@ msgstr "Du er nu tilmeldt arrangementet."
 msgid "new email"
 msgstr "Ny email"
 
-#: members/forms.py:22 members/forms.py:123 migration/forms.py:26
+#: members/forms.py:22 members/forms.py:125 migration/forms.py:26
 #: registration/forms.py:29
 msgid "password"
 msgstr "Kodeord"
@@ -83,7 +137,7 @@ msgstr "Fornavn"
 msgid "last name"
 msgstr "Efternavn"
 
-#: members/forms.py:58 members/models.py:22
+#: members/forms.py:58 members/models.py:23
 msgid "date of birth"
 msgstr "Fødselsdag"
 
@@ -92,19 +146,19 @@ msgstr "Fødselsdag"
 msgid "State your date of birth using the format %(format)s."
 msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
 
-#: members/forms.py:64 members/models.py:23
+#: members/forms.py:64 members/models.py:24
 msgid "street"
 msgstr "Vej"
 
-#: members/forms.py:66 members/models.py:24
+#: members/forms.py:66 members/models.py:25
 msgid "postal code"
 msgstr "Postnummer"
 
-#: members/forms.py:70 members/models.py:25
+#: members/forms.py:70 members/models.py:26
 msgid "city"
 msgstr "By"
 
-#: members/forms.py:72 members/models.py:26
+#: members/forms.py:72 members/models.py:27
 msgid "phonenumber"
 msgstr "Telefonnummer"
 
@@ -128,80 +182,79 @@ msgstr "Andet"
 msgid "Your birthday is not allowed to be dated before 1900"
 msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
-#: members/forms.py:124
+#: members/forms.py:126
 msgid "new password"
 msgstr "Nyt kodeord"
 
-#: members/forms.py:125 registration/forms.py:31
+#: members/forms.py:127 registration/forms.py:31
 msgid "verify password"
 msgstr "Gentag kodeord"
 
-#: members/forms.py:138
+#: members/forms.py:140
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "Dit gamle kodeord var ikke korrekt. Indtast det venligst igen."
 
-#: members/forms.py:146 registration/forms.py:81
+#: members/forms.py:148 registration/forms.py:81
 msgid "You must type the same password each time"
 msgstr "De to indtastede kodeord stemmer ikke overens."
 
-#: members/models.py:21 members/models.py:115 registration/forms.py:41
-#: registration/models.py:162
-msgid "user"
-msgstr "Bruger"
+#: members/models.py:28
+msgid "Send me emails"
+msgstr "Send mig emails"
 
-#: members/models.py:29
+#: members/models.py:31
 msgid "user profile"
 msgstr "Bruger profil"
 
-#: members/models.py:30
+#: members/models.py:32
 msgid "user profiles"
 msgstr "Bruger profiler"
 
-#: members/models.py:35
+#: members/models.py:37
 msgid "Address"
 msgstr "Adresse"
 
-#: members/models.py:41
+#: members/models.py:43
 #, python-format
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
 
-#: members/models.py:116 registration/forms.py:33
+#: members/models.py:121 registration/forms.py:33
 msgid "email"
 msgstr "Email"
 
-#: members/models.py:117
+#: members/models.py:122
 msgid "key"
 msgstr "Nøgle"
 
-#: members/models.py:118
+#: members/models.py:123
 msgid "timestamp"
 msgstr ""
 
-#: members/models.py:127
+#: members/models.py:132
 msgid "email change request"
 msgstr "Forespørgsel om ændring af email"
 
-#: members/models.py:128
+#: members/models.py:133
 msgid "email change requests"
 msgstr "Forespørgsler om ændring af email"
 
-#: members/models.py:134
+#: members/models.py:139
 #, python-format
 msgid "Email change request or %s"
 msgstr "Forespørgsel om ændring af email for %s"
 
-#: members/views.py:47
+#: members/views.py:51
 msgid "Personal information updated"
 msgstr "Dine personoplysninger er blevet opdateret"
 
-#: members/views.py:73
+#: members/views.py:77
 msgid "An email has been sent to your old email to verify your email change."
 msgstr ""
 "En email er blevet sendt til din gamle email for at godkende dit skift af "
 "email adresse."
 
-#: members/views.py:95
+#: members/views.py:99
 msgid "Your password have been changed"
 msgstr "Dit kodeord er blevet ændret."
 

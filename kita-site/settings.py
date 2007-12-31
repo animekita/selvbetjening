@@ -108,4 +108,6 @@ INSTALLED_APPS = (
     'kita-site.forms',
     'kita-site.core',
     'kita-site.migration',
+    'kita-site.accounting',
+    'kita-site.eventmode',
 )

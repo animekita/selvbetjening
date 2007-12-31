@@ -80,5 +80,8 @@ class VanillaForum:
         cursor.execute("SELECT StyleID FROM LUM_Style ORDER BY StyleID DESC LIMIT 1")
         
         result = cursor.fetchone()
-        return result[0]
+        if result is not None:
+            return result[0]
+        else:
+            return 0
     

@@ -15,7 +15,6 @@
 	<!--[if IE]><link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/lib/ie.css" type="text/css" media="screen, projection"><![endif]-->
 	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css" media="screen, projecton"/>
 	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/extra.css" media="screen, projecton"/>
-	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/uni-form.css" media="screen, projecton"/>
 	{% block extraheader %}
 	{% endblock %}	
 </head>
@@ -40,13 +39,20 @@
 					
 			{% if user.is_authenticated %}
 			<li><a href="{% url members_profile %}">Brugerportal</a></li>
+			{% else %}
+			<li><a href="{% url registration_register %}">Opret bruger</a></li>
+			{% endif %}
+			
+			{% if perms.accounting.add_payment %}
+			<li><a href="{% url accounting_list %}">Accounting</a></li>
+			{% endif %}
+			
 			<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
 			<li><a href="{% url data_rules %}">Databehandling</a></li>
+
+			{% if user.is_authenticated %}
 			<li><a href="{% url auth_logout %}">Log ud</a></li>
 			{% else %}
-			<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
-			<li><a href="{% url registration_register %}">Opret bruger</a></li>
-			<li><a href="{% url data_rules %}">Databehandling</a></li>
 			<li><a href="{% url auth_login %}">Log ind</a></li>
 			{% endif %}
 					

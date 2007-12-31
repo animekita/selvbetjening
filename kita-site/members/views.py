@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required
 
 from members.forms import ProfileForm, ProfileChangeEmailForm, PasswordChangeForm, EmailChangeRequest
 from registration.models import RegistrationProfile
-
+from accounting.models import Payment
 from events.models import Event
 
 @login_required
@@ -31,7 +31,11 @@ def profile(request, template_name='members/profile.html'):
         visited_keys.append(event.id)
 
     return render_to_response(template_name, 
-                              {'events_visited' : visited,
+                              {'membership_status' : Payment.objects.get_membership_state(request.user),
+                               'membership_date' : Payment.objects.member_since(request.user),
+                               'membership_to' : Payment.objects.member_to(request.user),
+                               'membership_passive_to' : Payment.objects.passive_to(request.user),
+                               'events_visited' : visited,
                                 'events_new' : Event.objects.exclude(id__in=visited_keys).filter(registration_open__exact=1) },
                               context_instance=RequestContext(request))
 

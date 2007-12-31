@@ -31,6 +31,35 @@ class PaymentManager(models.Manager):
             else:
                 return MembershipState.CONDITIONAL_ACTIVE
     
+    def member_since(self, user):
+        payments = user.payment_set.order_by('-timestamp')
+        if len(payments) == 0:
+            return None
+        
+        if payments[0].type == 'SRATE':
+            pay = payments[1]
+        else:
+            pay = payments[0]
+    
+        if self.total_quaters(pay.timestamp) + 4 <= self.total_quaters(datetime.now()):
+            return None
+        else:
+            return pay.timestamp
+    
+    def member_to(self, user):
+        timestamp = self.member_since(user)
+        if timestamp is not None:
+            return datetime(timestamp.year + 1, (self.to_quarter(timestamp) - 1) * 3 + 1, 1).date() - timedelta(days=1)
+        else:
+            return None
+    
+    def passive_to(self, user):
+        timestamp = self.member_since(user)
+        if timestamp is not None:
+            return datetime(timestamp.year + 2, (self.to_quarter(timestamp) - 1) * 3 + 1, 1).date() - timedelta(days=1)
+        else:
+            return None
+    
     def to_quarter(self, date):
         return ((date.month-1) / 3) + 1
     

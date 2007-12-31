@@ -12,6 +12,7 @@ from django.contrib.auth.models import User                                     
 from django.template.loader import render_to_string
 
 from core import models as coremodels
+from accounting.models import Payment
 
 class UserProfile(models.Model):
     """
@@ -24,7 +25,7 @@ class UserProfile(models.Model):
     postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
     city = models.CharField(_(u'city'), max_length=255, blank=True)
     phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
-    send_me_email = models.BooleanField(_(u'Send mig emails'))
+    send_me_email = models.BooleanField(_(u'Send me emails'))
     
     class Meta:
         verbose_name = _(u'user profile')
@@ -47,6 +48,9 @@ class UserProfile(models.Model):
     
     def isUnderaged(self, date = datetime.date.today()):
         return (self.age(date) < 15)
+    
+    def get_membership_state(self):
+        return Payment.objects.get_membership_state(self.user)
     
 class EmailChangeRequestManager(models.Manager):
     

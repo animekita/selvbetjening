@@ -1,0 +1,29 @@
+{% load core_tags %}
+
+{% extends 'site.html' %}
+
+{% block breadcrumbs %}
+<li><a href="{% url accounting_list %}">accounting</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url accounting_history username %}">betalings historie</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Betalings historie</h2>
+{% endblock %}
+
+{% block content %}
+
+<table>
+<tr>
+    <th>Betalings type</th>
+    <th>Tidspunkt</th>
+</tr>
+{% for payment in payments %}
+<tr>
+    <td>{{ payment.type|translate:"payment_type"}}</td>
+    <td>{{ payment.timestamp }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
