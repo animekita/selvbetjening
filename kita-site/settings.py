@@ -39,6 +39,8 @@ TIME_ZONE = 'Denmark/Copenhagen'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'da-dk' # default en-us
 
+GOOGLE_ANALYTICS_ACCOUNT = 'UA-300839-6'
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -49,12 +51,12 @@ SITE_URL = 'http://localhost:8000'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = 'http://static.anime-kita.dk/'
+MEDIA_ROOT = 'http://static.anime-kita.dk/v2.1/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://static.anime-kita.dk/'
+MEDIA_URL = 'http://static.anime-kita.dk/v2.1/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -110,4 +112,5 @@ INSTALLED_APPS = (
     'kita-site.migration',
     'kita-site.accounting',
     'kita-site.eventmode',
+    'kita-site.booking',
 )
