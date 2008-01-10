@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-31 19:27+0100\n"
-"PO-Revision-Date: 2007-12-31 19:27+0100\n"
+"POT-Creation-Date: 2008-01-10 23:00+0100\n"
+"PO-Revision-Date: 2008-01-10 23:01+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,64 @@ msgstr "Årlig rate for %s"
 msgid "Payment noted"
 msgstr "Betaling noteret"
 
+#: booking/forms.py:12 booking/models.py:38
+msgid "movie title"
+msgstr "Film titel"
+
+#: booking/forms.py:13 booking/models.py:39 events/models.py:18
+msgid "description"
+msgstr "Beskrivelse"
+
+#: booking/forms.py:14 events/models.py:19
+msgid "start date"
+msgstr "Start dato"
+
+#: booking/forms.py:15 booking/models.py:6 booking/models.py:36
+msgid "start time"
+msgstr "Start tidspunkt"
+
+#: booking/forms.py:16 booking/forms.py:19
+msgid ""
+"provide the time in the format HH:MM, minutes must be given in whole "
+"quarters."
+msgstr "Angiv tidspunkt som TT:MM, minutter skal angives i hele kvater. F.eks. 14:30 eller 12:15."
+
+#: booking/forms.py:17 events/models.py:20
+msgid "end date"
+msgstr "Slut dato"
+
+#: booking/forms.py:18 booking/models.py:7 booking/models.py:37
+msgid "end time"
+msgstr "Slut tidspunkt"
+
+#: booking/forms.py:41
+msgid "reservation"
+msgstr "Reservation"
+
+#: booking/forms.py:42
+msgid "time"
+msgstr "Tidspunkt"
+
+#: booking/forms.py:47 booking/forms.py:53
+msgid "Enter a valid date."
+msgstr "Indtast en gyldig dato."
+
+#: booking/forms.py:59 booking/forms.py:65
+msgid "Minutes must be dividable by 15"
+msgstr "Minutterne skal være dividerbare med 15."
+
+#: booking/forms.py:75
+msgid "desired reservation interval not possible"
+msgstr "Det ønskede reservationstidspunkt er ikke muligt."
+
+#: booking/models.py:5
+msgid "cinema name"
+msgstr "Biografnavn"
+
+#: booking/models.py:8
+msgid "open for reservations"
+msgstr "Åben for reservationer"
+
 #: core/templatetags/core_tags.py:55
 msgid "Active member"
 msgstr "Aktivt medlem"
@@ -82,18 +140,6 @@ msgstr "Du skal acceptere for at deltage i arrangementet."
 #: events/models.py:17
 msgid "title"
 msgstr "Titel"
-
-#: events/models.py:18
-msgid "description"
-msgstr "Beskrivelse"
-
-#: events/models.py:19
-msgid "start date"
-msgstr "Start dato"
-
-#: events/models.py:20
-msgid "end date"
-msgstr "Slut dato"
 
 #: events/models.py:22
 msgid "registration open"
@@ -229,7 +275,7 @@ msgstr "Nøgle"
 
 #: members/models.py:123
 msgid "timestamp"
-msgstr ""
+msgstr "Tidspunkt"
 
 #: members/models.py:132
 msgid "email change request"
@@ -316,6 +362,13 @@ msgstr "Registrerings profiler"
 #, python-format
 msgid "Registration information for %s"
 msgstr "Registrerings information for %s"
+
+#~ msgid "minutes can be 00, 15, 30 or 45"
+#~ msgstr "Minutterne kan sættes til 00, 15, 30 eller 45."
+
+#, fuzzy
+#~ msgid "descriptionbb"
+#~ msgstr "Beskrivelse"
 
 #~ msgid ""
 #~ "I allow Anime Kita to store my personal information. Read more about our "

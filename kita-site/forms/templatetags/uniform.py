@@ -20,7 +20,10 @@ def uniform_formrendering(form, submitText):
         for section in form.Meta.layout:
             render += '<fieldset class="inlineLabels"><legend>' + section[0] + '</legend>\n'
             for item_name in section[1]:
-                render += render_input(form[item_name])
+                if isinstance(item_name, tuple):
+                    render += render_input(form[item_name[0]], args=item_name[1])
+                else:
+                    render += render_input(form[item_name])
             render += '</fieldset>\n'
             
     else:
@@ -43,13 +46,13 @@ class UniformHeaderNode(template.Node):
                 return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/uni-form.css">\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/datepicker.css" rel="stylesheet" type="text/css" />' % 
                                             (settings.MEDIA_URL, settings.MEDIA_URL, settings.MEDIA_URL))
 
-def render_input(item):
+def render_input(item, args={ }):
     if isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
-        return UniformInputSelectbox(item).render()
+        return UniformInputSelectbox(item, args=args).render()
     elif isinstance(item.field.widget, (forms.TextInput, forms.PasswordInput)):
-        return UniformInputText(item).render()
+        return UniformInputText(item, args=args).render()
     elif isinstance(item.field.widget, (forms.CheckboxInput)):
-        return UniformInputCheckbox(item).render()
+        return UniformInputCheckbox(item, args=args).render()
     else:
         return '<div style="color: red">ERROR: UNKNOWN INPUT TYPE %s</div>\n' % item.name
 

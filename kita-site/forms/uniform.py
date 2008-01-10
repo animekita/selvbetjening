@@ -2,9 +2,10 @@ from django import newforms as forms
 
 class UniformInputBase(object):
     
-    def __init__(self, input):
+    def __init__(self, input, args={ }):
         self.attrs = { }
         self.input = input
+        self.args = args
     
     def error_list(self):
         if self.input.errors:
@@ -39,6 +40,9 @@ class UniformInputText(UniformInputBase):
     
     def render(self):
         self.attrs = {'class' : 'textInput text'}
+
+        if self.args.get('title', False):
+            self.attrs['class'] += ' title'
         
         if isinstance(self.input.field, forms.DateField):
             self.attrs['class'] += ' w8em format-d-m-y divider-dash highlight-days-67'

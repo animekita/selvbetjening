@@ -38,7 +38,8 @@ urlpatterns = patterns('',
     (r'^events/', include('kita-site.events.urls')),
     (r'^migrate/', include('kita-site.migration.urls')),
     (r'^accounting/', include('kita-site.accounting.urls')),
-
+    (r'^booking/', include('kita-site.booking.urls')),
+    
     # Main site redirection urls
     url(r'^goto/ordensregler/$',
         redirect_to,

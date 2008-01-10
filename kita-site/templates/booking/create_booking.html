@@ -1,0 +1,26 @@
+{% load uniform %}
+
+{% extends "site.html" %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url booking_view_cinema cinema.name %}">biograf</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url booking_create_booking cinema.name %}">reserver tid</a></li>
+{% endblock %}
+
+{% block contenthead %}
+        <h2>Reserver tid</h2>
+{% endblock %}
+    
+{% block content %}
+        <p><b>Du skal være opmærksom på at du selv har ansvaret for at den film eller anime du angiver er medbragt arrangementet</b>. Biografen er udstyret med en regionsfri dvdafspiller, så vi skulle kunne afspille det meste.</p>
+        
+<p>Kun købte dvder må afspilles i biografen, vi tillader ikke brændte dvder eller tilslutning af computerudstyr.</p>
+
+<p>Anime Kitas bestyrelse kan gå ind og lave ændringer i reservationer hvis de vurdere at en reservation er uhensigtsmæssig.</p>
+
+        {{ form|uniform:"Reserver tid" }}
+{% endblock %}
