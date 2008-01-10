@@ -10,7 +10,9 @@
     
 {% block content %}
 
-<p>Her kan du se en liste over de reserverede tider, samt hvad der vises i biografen. Har du en film eller anime du gerne vil reservere biografen for at se kan dette gøres <a href="{% url booking_create_booking cinema.name %}">her</a>.<p>
+<p>Her kan du se en liste over de reserverede tider, samt hvad der vises i biografen. Har du en film eller anime du gerne vil reservere biografen for at se kan dette gøres <a href="{% url booking_create_booking cinema.name %}">her</a>.</p>
+
+<p>Biografen er åben fra {{cinema.starttime|date:"l \k\l. H"}} til {{cinema.endtime|date:"l \k\l. H"}}.<p>
 
 <table>
 {% for reservation in reservations %}
