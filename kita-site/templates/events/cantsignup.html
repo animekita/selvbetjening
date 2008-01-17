@@ -2,15 +2,16 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_signup event.id %}">arrangement ikke åben for tilmelding</a></li>
+<li><a href="{% url events_signup event.id %}">tilmeld</a></li>
 {% endblock %}
 
 {% block contenthead %}
-<h2>Arrangement ikke åben for tilmelding</h2>
+<h2>Du kan ikke tilmelde dig dette arrangement</h2>
 {% endblock %}
 
 {% block content %}
 
-    <p>Det arrangement du forsøger at tilmelde dig har ikke åbnet for tilmelding.</p>
+    <p>Det arrangement du forsøger at tilmelde dig har enten ikke åbnet for tilmelding, eller så er
+    du allerede tilmeldt dette arrangement.</p>
 
 {% endblock %}

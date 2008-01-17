@@ -6,5 +6,6 @@ urlpatterns = patterns('',
                        url(r'^se/alle/$', events_views.list, name="events_view_all"),
                        url(r'^se/(?P<eventId>[0-9]+)/$', events_views.view, name="events_view"),
                        url(r'^se/(?P<eventId>[0-9]+)/tilmeld/$', events_views.signup, name="events_signup"),
+                       url(r'^se/(?P<eventId>[0-9]+)/afmeld/$', events_views.signoff, name="events_signoff"),
                        url(r'^se/visited/$', events_views.visited, name="events_view_visited"),
 )

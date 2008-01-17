@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-10 23:00+0100\n"
-"PO-Revision-Date: 2008-01-10 23:01+0100\n"
+"POT-Creation-Date: 2008-01-17 22:11+0100\n"
+"PO-Revision-Date: 2008-01-17 22:12+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,9 @@ msgstr "Start tidspunkt"
 msgid ""
 "provide the time in the format HH:MM, minutes must be given in whole "
 "quarters."
-msgstr "Angiv tidspunkt som TT:MM, minutter skal angives i hele kvater. F.eks. 14:30 eller 12:15."
+msgstr ""
+"Angiv tidspunkt som TT:MM, minutter skal angives i hele kvater. F.eks. 14:30 "
+"eller 12:15."
 
 #: booking/forms.py:17 events/models.py:20
 msgid "end date"
@@ -133,9 +135,13 @@ msgstr "Fuldt kontingent"
 msgid "I have read and accept the above described terms"
 msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
 
-#: events/forms.py:26
+#: events/forms.py:26 events/forms.py:43
 msgid "You must accept to participate in the event"
 msgstr "Du skal acceptere for at deltage i arrangementet."
+
+#: events/forms.py:34
+msgid "Yes, remove me from the event"
+msgstr "Ja, afmeld mig fra dette arrangement"
 
 #: events/models.py:17
 msgid "title"
@@ -158,9 +164,13 @@ msgstr "Events"
 msgid "Event %s"
 msgstr "Event %s"
 
-#: events/views.py:89
+#: events/views.py:86
 msgid "You are now signed up to the event."
 msgstr "Du er nu tilmeldt arrangementet."
+
+#: events/views.py:115
+msgid "You are now removed from the event."
+msgstr "Du er nu afmeldt dette arrangementet."
 
 #: members/forms.py:19
 msgid "new email"

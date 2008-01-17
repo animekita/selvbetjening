@@ -27,3 +27,21 @@ class SignupForm(forms.Form):
     
     def save(self):
         pass
+
+class SignoffForm(forms.Form):
+    
+    confirm = forms.BooleanField(widget=forms.CheckboxInput(), 
+                             label=_(u"Yes, remove me from the event"))
+    
+    def clean_tos(self):
+        """
+        Validates that the user accepted the Terms of Service.
+        
+        """
+        if self.cleaned_data.get('tos', False):
+            return self.cleaned_data['tos']
+        raise forms.ValidationError(_(u"You must accept to participate in the event"))
+    
+    def save(self):
+        pass
+    

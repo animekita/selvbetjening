@@ -13,13 +13,19 @@
 
 {% block content %}
 {{event.description|textile}}
-    
+
 {% if event.isRegistrationOpen %}
 
-    {% if user.is_authenticated and not userIsSignedup %}
+    {% if user.is_authenticated %}
+        {% if not userIsSignedup %}
         <ul class="table-options">
             <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig dette arrangement</a></li>
         </ul>
+        {% else %}
+        <ul class="table-options">
+            <li>&#187; <a href="{% url events_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
+        </ul>        
+        {% endif %}
     {% endif %}
     
     {% if not user.is_authenticated %}
