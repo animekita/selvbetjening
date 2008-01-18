@@ -21,7 +21,7 @@ def create_booking(request, cinema_name, template_name='booking/create_booking.h
     if request.method == 'POST':
         form = forms.ReservationForm(request.POST, cinema=cinema)
         if form.is_valid():
-            form.save()
+            form.save(user=request.user)
             return HttpResponseRedirect(reverse('booking_view_cinema', kwargs={'cinema_name' : cinema.name}))
     else:
         form = forms.ReservationForm(cinema=cinema)

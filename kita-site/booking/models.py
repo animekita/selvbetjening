@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User  
 
 class Cinema(models.Model):
     name = models.CharField(_('cinema name'), max_length=40, unique=True)
@@ -33,6 +34,7 @@ class Cinema(models.Model):
 
 class Reservation(models.Model):
     cinema = models.ForeignKey(Cinema)
+    owner = models.ForeignKey(User)
     starttime = models.DateTimeField(_('start time'))
     endtime = models.DateTimeField(_('end time'))
     movie_title = models.CharField(_('movie title'), max_length=200)

@@ -8,26 +8,30 @@ from booking import models, forms
 class CinemaModelTestCase(TestCase):
  
     def setUp(self):
-                self.cinema = models.Cinema.objects.create(name='c1', 
+        self.user = auth_models.User.objects.create_user('user1', 'user1', 'user@example.org')
+        
+        self.cinema = models.Cinema.objects.create(name='c1', 
                                               starttime=datetime(2008, 2, 1, 13), 
                                               endtime=datetime(2008, 2, 3, 18), 
                                               open_for_reservations=True)
                 
-                self.cinema2 = models.Cinema.objects.create(name='c2', 
+        self.cinema2 = models.Cinema.objects.create(name='c2', 
                                               starttime=datetime(2008, 2, 1, 13), 
                                               endtime=datetime(2008, 2, 3, 18), 
                                               open_for_reservations=True)
                 
-                models.Reservation.objects.create(cinema=self.cinema2,
+        models.Reservation.objects.create(cinema=self.cinema2,
                                                   starttime=datetime(2008, 2, 1, 14),
                                                   endtime=datetime(2008, 2, 1, 16),
                                                   movie_title='movie 1',
-                                                  description='desc')
-                models.Reservation.objects.create(cinema=self.cinema2,
+                                                  description='desc',
+                                                  owner=self.user)
+        models.Reservation.objects.create(cinema=self.cinema2,
                                                   starttime=datetime(2008, 2, 1, 19),
                                                   endtime=datetime(2008, 2, 1, 21),
                                                   movie_title='movie 2',
-                                                  description='desc')
+                                                  description='desc',
+                                                  owner=self.user)
     
     def test_valid_booking_no_reservations(self):
         self.assertTrue(self.cinema.is_valid_reservation(datetime(2008, 2, 2, 13), 

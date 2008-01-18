@@ -76,10 +76,11 @@ class ReservationForm(forms.Form):
         
         return self.cleaned_data
     
-    def save(self):
+    def save(self, user):
         models.Reservation.objects.create(cinema=self.cinema, 
                                           starttime=self.startdatetime, 
                                           endtime=self.enddatetime, 
                                           movie_title=self.cleaned_data['movie_title'], 
-                                          description=self.cleaned_data['description'])
+                                          description=self.cleaned_data['description'],
+                                          owner=user)
         
