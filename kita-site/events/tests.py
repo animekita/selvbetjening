@@ -58,3 +58,13 @@ class EventModelTestCase(TestCase):
         
         self.event3.remove_attendee(self.user1)
         self.assertEqual(len(self.event3.get_attendees()), 0)
+        
+    def test_attendee_order(self):
+        self.event3.add_attendee(self.user1, has_attended=False)
+        self.event3.add_attendee(self.user2, has_attended=False)
+        self.event3.add_attendee(self.user3, has_attended=False)
+        
+        attendees = self.event3.get_attendees()
+        self.assertEqual(attendees[0].user, self.user1)
+        self.assertEqual(attendees[1].user, self.user2)
+        self.assertEqual(attendees[2].user, self.user3)

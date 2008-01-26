@@ -37,7 +37,7 @@ class Event(models.Model):
         return self.startdate < date.today()
     
     def get_attendees(self):
-        return self.attend_set.all()
+        return self.attend_set.all().order_by('id')
     
     def add_attendee(self, user, has_attended=False):
         Attend.objects.create(user=user, has_attended=has_attended, event=self)

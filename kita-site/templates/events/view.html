@@ -53,12 +53,12 @@
     {% for attendee in attendees %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{% ifequal attendee.user.username user.id %}<b>{% endifequal %}
+            <td>{% ifequal attendee.user.id user.id %}<b>{% endifequal %}
                         {{attendee.user.first_name}} {{attendee.user.last_name}}
-                    {% ifequal attendee.user.username user.id %}</b>{% endifequal %}</td>
-            <td>{% ifequal attendee.user.username user.id %}<b>{% endifequal %}
+                    {% ifequal attendee.user.id user.id %}</b>{% endifequal %}</td>
+            <td>{% ifequal attendee.user.id user.id %}<b>{% endifequal %}
                         {{attendee.user.username}}
-                    {% ifequal attendee.user.username user.id %}</b>{% endifequal %}</td>                    
+                    {% ifequal attendee.user.id user.id %}</b>{% endifequal %}</td>                    
         </tr>
     {% endfor %}
     
