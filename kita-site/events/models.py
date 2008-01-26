@@ -18,7 +18,6 @@ class Event(models.Model):
     description = models.TextField(_(u"description"), blank=True)
     startdate = models.DateField(_(u"start date"), blank=True, null=True)
     enddate = models.DateField(_(u"end date"), blank=True, null=True)
-    signups = models.ManyToManyField(User, filter_interface=models.HORIZONTAL, blank=True)
     registration_open = models.BooleanField(_(u"registration open"))
     
     class Meta:
@@ -30,17 +29,30 @@ class Event(models.Model):
         list_display = ('title', 'registration_open')
         fields = (
             (None, { 'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open') } ), )
-
-    def isRegistrationOpen(self):
-        return (self.registration_open and not self.hasBeenHeld())
     
-    def hasBeenHeld(self):
+    def is_registration_open(self):
+        return (self.registration_open and not self.has_been_held())
+    
+    def has_been_held(self):
         return self.startdate < date.today()
     
-    def get_guests(self):
-        cursor = connection.cursor()
-        cursor.execute("SELECT user.id as id, user.username as username, user.first_name as first_name, user.last_name as last_name FROM auth_user as user, events_event_signups as signups WHERE user.id=signups.user_id AND signups.event_id=%s ORDER BY signups.id ASC", [self.id])
-        return cursor.fetchall()
+    def get_attendees(self):
+        return self.attend_set.all()
+    
+    def add_attendee(self, user, has_attended=False):
+        Attend.objects.create(user=user, has_attended=has_attended, event=self)
+    
+    def remove_attendee(self, user):
+        self.attend_set.filter(user=user).delete()
+    
+    def is_attendee(self, user):
+        return (len(self.attend_set.filter(user=user)) == 1)
     
     def __unicode__(self):
         return _(u"Event %s") % self.title
+
+class Attend(models.Model):
+    
+    event = models.ForeignKey(Event)
+    user = models.ForeignKey(User)
+    has_attended = models.BooleanField()

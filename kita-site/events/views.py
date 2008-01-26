@@ -15,10 +15,6 @@ from events.models import Event
 from events.forms import SignupForm, SignoffForm
 from accounting import models as accounting_models
 
-TEMPLATE_NO_EVENT='events/noevent.html'
-TEMPLATE_CANT_SIGNUP='events/cantsignup.html'
-TEMPLATE_CANT_SIGNOFF='events/cantsignoff.html'
-
 @login_required
 def visited(request, template_name='events/visited.html'):
     """
@@ -51,38 +47,31 @@ def view(request, eventId=None, template_name='events/view.html'):
     
     return render_to_response(template_name, 
                               {'event' : event, 
-                                'userIsSignedup' : event.signups.filter(id=request.user.id),
-                                'guests' : Event.objects.get(id=event.id).get_guests()}, 
+                                'userIsSignedup' : event.is_attendee(request.user),
+                                'attendees' : event.get_attendees()}, 
                               context_instance=RequestContext(request))
 
 @login_required
 def signup(request, 
            eventId=None, 
            template_name='events/signup.html', 
+           template_cant_signup='events/cantsignup.html',
            form_class=SignupForm,
            success_page='events_view'):
     """
-    Let a user sign up to the event
-    
-    - User must be logged in to view the page
-    - Show confirmation page
-    - If the user already is signed up to the event, the event hasent opened for registration
-    or the event does not exist show error pages (TEMPLATE_ALREADY_SIGNEDUP, TEMPLATE_CANT_SIGNUP and TEMPLATE_NO_EVENT)
+    Let a user sign up to the event.
     
     """
     
-    try:
-        event = Event.objects.get(id=eventId)
-    except ObjectDoesNotExist:
-        return render_to_response(TEMPLATE_NO_EVENT, context_instance=RequestContext(request))
+    event = get_object_or_404(Event, id=eventId)
     
-    if not event.isRegistrationOpen() or event.signups.filter(id=request.user.id):
-        return render_to_response(TEMPLATE_CANT_SIGNUP, context_instance=RequestContext(request))
+    if not event.is_registration_open() or event.is_attendee(request.user):
+        return render_to_response(template_cant_signup, context_instance=RequestContext(request))
     
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            event.signups.add(request.user)
+            event.add_attendee(request.user)
             request.user.message_set.create(message=_(u"You are now signed up to the event."))
             return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
     else:
@@ -99,19 +88,24 @@ def signup(request,
 def signoff(request,
            eventId=None, 
            template_name='events/signoff.html', 
+           template_cant_signoff='events/cantsignoff.html',
            success_page='events_view',
            form_class=SignoffForm):
+    """
+    Let a user remove herself from an event.
+    
+    """
 
     event = get_object_or_404(Event, id=eventId)
     
-    if not event.isRegistrationOpen() or not event.signups.filter(id=request.user.id): 
+    if not event.is_registration_open() or not event.is_attendee(request.user): 
         # registratio not open or user not signed up to the event
-        return render_to_response(TEMPLATE_CANT_SIGNOFF, context_instance=RequestContext(request))
+        return render_to_response(template_cant_signoff, context_instance=RequestContext(request))
     
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            event.signups.remove(request.user)
+            event.remove_attendee(request.user)
             request.user.message_set.create(message=_(u"You are now removed from the event."))
             return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
     else:

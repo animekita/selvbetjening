@@ -14,7 +14,7 @@
 {% block content %}
 {{event.description|textile}}
 
-{% if event.isRegistrationOpen %}
+{% if event.is_registration_open %}
 
     {% if user.is_authenticated %}
         {% if not userIsSignedup %}
@@ -41,7 +41,7 @@
     
 {% endif %}
 
-{% if event.signups.all %}
+{% if attendees %}
 
     <table class="horizontal">
         <tr>
@@ -50,15 +50,15 @@
             <th>Brugernavn</th>
         </tr>
     
-    {% for guest in guests %}
+    {% for attendee in attendees %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{% ifequal guest.0 user.id %}<b>{% endifequal %}
-                        {{guest.2}} {{guest.3}}
-                    {% ifequal guest.0 user.id %}</b>{% endifequal %}</td>
-            <td>{% ifequal guest.0 user.id %}<b>{% endifequal %}
-                        {{guest.1}}
-                    {% ifequal guest.0 user.id %}</b>{% endifequal %}</td>                    
+            <td>{% ifequal attendee.user.username user.id %}<b>{% endifequal %}
+                        {{attendee.user.first_name}} {{attendee.user.last_name}}
+                    {% ifequal attendee.user.username user.id %}</b>{% endifequal %}</td>
+            <td>{% ifequal attendee.user.username user.id %}<b>{% endifequal %}
+                        {{attendee.user.username}}
+                    {% ifequal attendee.user.username user.id %}</b>{% endifequal %}</td>                    
         </tr>
     {% endfor %}
     

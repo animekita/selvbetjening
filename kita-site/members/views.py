@@ -25,18 +25,18 @@ from events.models import Event
 @login_required
 def profile(request, template_name='members/profile.html'):
 
-    visited = request.user.event_set.all()
+    attends = request.user.attend_set.all().order_by('-event_id')
     visited_keys = []
-    for event in visited:
-        visited_keys.append(event.id)
+    for attend in attends:
+        visited_keys.append(attend.event.id)
 
     return render_to_response(template_name, 
                               {'membership_status' : Payment.objects.get_membership_state(request.user),
                                'membership_date' : Payment.objects.member_since(request.user),
                                'membership_to' : Payment.objects.member_to(request.user),
                                'membership_passive_to' : Payment.objects.passive_to(request.user),
-                               'events_visited' : visited,
-                                'events_new' : Event.objects.exclude(id__in=visited_keys).filter(registration_open__exact=1) },
+                               'attends' : attends,
+                               'events_new' : Event.objects.exclude(id__in=visited_keys).filter(registration_open__exact=1) },
                               context_instance=RequestContext(request))
 
 @login_required
