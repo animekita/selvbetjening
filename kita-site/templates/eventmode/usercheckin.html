@@ -1,0 +1,38 @@
+{% load core_tags uniform %}
+{% extends "site.html" %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
+<li><span>checkin</span>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_checkin event.id %}">{{event.title}}</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_usercheckin event.id,user.id %}">{{user.username}}</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>{{event.title}} : {{user.first_name}} {{user.last_name}} &lt;{{user.username}}&gt;</h2>
+{% endblock %}
+
+{% block content %}
+
+<p>{{user.username}}'s medlemsstatus er <b>{{user.get_profile.get_membership_state|translate:"membership_state"}}</b></p>
+
+{% if needsToPay %}
+
+    <p class="warning">Denne bruger skal betale for medlemskab før han kan deltage</p>
+    
+    {{ form|uniform:"betal" }}
+    
+{% else %}
+
+    <p>Denne bruger har betalt kontingent</p>
+    
+    {{ form|uniform:"checkin"}}
+
+{% endif %}
+
+
+{% endblock %}
