@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-17 22:11+0100\n"
-"PO-Revision-Date: 2008-01-17 22:12+0100\n"
+"POT-Creation-Date: 2008-01-30 14:54+0100\n"
+"PO-Revision-Date: 2008-01-30 14:55+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,11 +51,11 @@ msgstr "Årlig rate for %s"
 msgid "Payment noted"
 msgstr "Betaling noteret"
 
-#: booking/forms.py:12 booking/models.py:38
+#: booking/forms.py:12 booking/models.py:40
 msgid "movie title"
 msgstr "Film titel"
 
-#: booking/forms.py:13 booking/models.py:39 events/models.py:18
+#: booking/forms.py:13 booking/models.py:41 events/models.py:18
 msgid "description"
 msgstr "Beskrivelse"
 
@@ -63,7 +63,7 @@ msgstr "Beskrivelse"
 msgid "start date"
 msgstr "Start dato"
 
-#: booking/forms.py:15 booking/models.py:6 booking/models.py:36
+#: booking/forms.py:15 booking/models.py:7 booking/models.py:38
 msgid "start time"
 msgstr "Start tidspunkt"
 
@@ -79,7 +79,7 @@ msgstr ""
 msgid "end date"
 msgstr "Slut dato"
 
-#: booking/forms.py:18 booking/models.py:7 booking/models.py:37
+#: booking/forms.py:18 booking/models.py:8 booking/models.py:39
 msgid "end time"
 msgstr "Slut tidspunkt"
 
@@ -103,11 +103,11 @@ msgstr "Minutterne skal være dividerbare med 15."
 msgid "desired reservation interval not possible"
 msgstr "Det ønskede reservationstidspunkt er ikke muligt."
 
-#: booking/models.py:5
+#: booking/models.py:6
 msgid "cinema name"
 msgstr "Biografnavn"
 
-#: booking/models.py:8
+#: booking/models.py:9
 msgid "open for reservations"
 msgstr "Åben for reservationer"
 
@@ -131,13 +131,17 @@ msgstr "Inaktivt medlem"
 msgid "Full payment"
 msgstr "Fuldt kontingent"
 
-#: events/forms.py:17
-msgid "I have read and accept the above described terms"
-msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
+#: eventmode/forms.py:13
+msgid "This user has participated in the event"
+msgstr "Denne bruger deltager i arrangementet"
 
-#: events/forms.py:26 events/forms.py:43
+#: events/forms.py:23
 msgid "You must accept to participate in the event"
 msgstr "Du skal acceptere for at deltage i arrangementet."
+
+#: events/forms.py:30
+msgid "I have read and accept the above described terms"
+msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
 
 #: events/forms.py:34
 msgid "Yes, remove me from the event"
@@ -147,28 +151,28 @@ msgstr "Ja, afmeld mig fra dette arrangement"
 msgid "title"
 msgstr "Titel"
 
-#: events/models.py:22
+#: events/models.py:21
 msgid "registration open"
 msgstr "Tilmelding åben"
 
-#: events/models.py:25
+#: events/models.py:24
 msgid "event"
 msgstr "Event"
 
-#: events/models.py:26
+#: events/models.py:25
 msgid "events"
 msgstr "Events"
 
-#: events/models.py:46
+#: events/models.py:52
 #, python-format
 msgid "Event %s"
 msgstr "Event %s"
 
-#: events/views.py:86
+#: events/views.py:75
 msgid "You are now signed up to the event."
 msgstr "Du er nu tilmeldt arrangementet."
 
-#: events/views.py:115
+#: events/views.py:109
 msgid "You are now removed from the event."
 msgstr "Du er nu afmeldt dette arrangementet."
 

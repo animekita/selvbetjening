@@ -53,3 +53,8 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
                               {'user' : attend.user, 'event' : attend.event, 'attend' : attend,
                                'form' : form, 'needs_to_pay' : needsToPay},
                               context_instance=RequestContext(request))
+
+@permission_required('events.change_attend')
+def event_list(request, template_name='eventmode/list.html'):
+    return render_to_response(template_name, {'events' : Event.objects.all()},
+                              context_instance=RequestContext(request))

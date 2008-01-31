@@ -44,10 +44,6 @@
 			<li><a href="{% url registration_register %}">Opret bruger</a></li>
 			{% endif %}
 			
-			{% if perms.accounting.add_payment %}
-			<li><a href="{% url accounting_list %}">Accounting</a></li>
-			{% endif %}
-			
 			<li><a href="{% url events_view_all %}">Se arrangementer</a></li>
 			<li><a href="{% url data_rules %}">Databehandling</a></li>
 
@@ -55,6 +51,18 @@
 			<li><a href="{% url auth_logout %}">Log ud</a></li>
 			{% else %}
 			<li><a href="{% url auth_login %}">Log ind</a></li>
+			{% endif %}
+			
+			{% if perms.accounting.add_payment or perms.events.change_attend %}
+			<li><b>Administration</b></li>
+			{% endif %}
+			
+			{% if perms.accounting.add_payment %}
+			<li><a href="{% url accounting_list %}">Medlemskaber</a></li>
+			<li><a href="{% url accounting_payments %}">Betalinger</a></li>
+			{% endif %}
+			{% if perms.events.change_attend %}
+			<li><a href="{% url eventmode_list %}">Event check-in</a></li>
 			{% endif %}
 					
 		</ul>

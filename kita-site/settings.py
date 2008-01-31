@@ -1,6 +1,6 @@
 # Django settings for membersite project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -27,6 +27,8 @@ DEFAULT_FROM_EMAIL = 'noreply@anime-kita.dk'
 AUTH_PROFILE_MODULE = 'members.UserProfile'
 LOGIN_REDIRECT_URL = "/profil/"
 LOGIN_URL = "/login/"
+
+LOG_FILE = '/home/semadk/Workspace/kita/selvbetjening/trunk/kita-site/log.log'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -114,3 +116,17 @@ INSTALLED_APPS = (
     'kita-site.eventmode',
     'kita-site.booking',
 )
+
+# Initialize Logging
+import logging
+
+logging.basicConfig(
+    level=logging.NOTSET,
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    datefmt='%m-%d %H:%M',
+    #change as needed
+    filename=LOG_FILE, 
+    filemode='a'
+)
+logging.getLogger('').setLevel(logging.NOTSET)
+

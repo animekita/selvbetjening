@@ -60,11 +60,16 @@ class EventModelTestCase(TestCase):
         self.assertEqual(len(self.event3.get_attendees()), 0)
         
     def test_attendee_order(self):
+        self.userarray = []
+        for i in range(30):
+            self.userarray.append(auth_models.User.objects.create_user(i, 'user1', 'user@example.org'))
+            self.event3.add_attendee(self.userarray[i], has_attended=False)
+            
         self.event3.add_attendee(self.user1, has_attended=False)
-        self.event3.add_attendee(self.user2, has_attended=False)
-        self.event3.add_attendee(self.user3, has_attended=False)
         
         attendees = self.event3.get_attendees()
-        self.assertEqual(attendees[0].user, self.user1)
-        self.assertEqual(attendees[1].user, self.user2)
-        self.assertEqual(attendees[2].user, self.user3)
+        
+        for i in range(30):
+            self.assertEqual(attendees[i].user, self.userarray[i])
+            
+        self.assertEqual(attendees[30].user, self.user1)

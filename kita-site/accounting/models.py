@@ -84,9 +84,16 @@ class Payment(models.Model):
     
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     timestamp = models.DateTimeField()
-    type = models.CharField(max_length=5)
+    type = 	models.CharField(max_length=5)
     
     objects = PaymentManager()
+    
+    def get_ammount(self):
+        yearlyRate = YearlyRate.objects.filter(year=self.timestamp.year)[0]
+        if self.type == 'FULL':
+            return yearlyRate.rate
+        else:
+            return yearlyRate.rate / 2
     
     class Admin:
         pass

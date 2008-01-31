@@ -46,3 +46,12 @@ class PaymentForm(forms.Form):
     
     def save(self):
         self.user.payment_set.create(type=self.cleaned_data['type'], timestamp=datetime.now())
+        
+class PaymentsIntervalForm(forms.Form):
+    
+    startdate = forms.DateField(
+        input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'))
+    enddate = forms.DateField(
+        input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'))
+    
+    
