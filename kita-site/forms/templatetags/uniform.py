@@ -27,10 +27,13 @@ def uniform_formrendering(form, submitText):
             render += '</fieldset>\n'
             
     else:
-        render += '<fieldset class="inlineLabels">'
+        items = ''
+        
         for item in form:
-            render += render_input(item)
-        render += '</fieldset>\n'
+            items += render_input(item)
+        
+        if items != '':
+            render += '<fieldset class="inlineLabels">' + items + '</fieldset>\n'
     
     render += render_Submit(submitText)
     
@@ -53,6 +56,8 @@ def render_input(item, args={ }):
         return UniformInputText(item, args=args).render()
     elif isinstance(item.field.widget, (forms.CheckboxInput)):
         return UniformInputCheckbox(item, args=args).render()
+    elif isinstance(item.field.widget, (forms.Textarea)):
+        return UniformInputTextarea(item, args=args).render()
     else:
         return '<div style="color: red">ERROR: UNKNOWN INPUT TYPE %s</div>\n' % item.name
 

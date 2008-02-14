@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     (r'^accounting/', include('kita-site.accounting.urls')),
     (r'^booking/', include('kita-site.booking.urls')),
     (r'^eventmode/', include('kita-site.eventmode.urls')),
+    (r'^mailcenter/', include('kita-site.mailcenter.urls')),
     
     # Main site redirection urls
     url(r'^goto/ordensregler/$',

@@ -27,6 +27,8 @@ class UniformInputBase(object):
         cls = ''
         if self.input.errors:
             cls = ' error'
+        if self.args.get('display', False):
+            cls += ' blockLabels'
             
         return '<div class="ctrlHolder%s">\n' % cls + content + '</div>\n\n'
 
@@ -48,6 +50,13 @@ class UniformInputText(UniformInputBase):
             self.attrs['class'] += ' w8em format-d-m-y divider-dash highlight-days-67'
     
         return UniformInputBase.render(self)
+ 
+class UniformInputTextarea(UniformInputBase): 
+   
+    def render(self):
+        self.attrs = {'class' : 'text'}
+    
+        return UniformInputBase.render(self)    
     
 class UniformInputCheckbox(UniformInputBase):
     

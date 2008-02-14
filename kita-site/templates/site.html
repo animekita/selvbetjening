@@ -53,7 +53,7 @@
 			<li><a href="{% url auth_login %}">Log ind</a></li>
 			{% endif %}
 			
-			{% if perms.accounting.add_payment or perms.events.change_attend %}
+			{% if perms.accounting.add_payment or perms.events.change_attend or perms.mailcenter.add_mail %}
 			<li><b>Administration</b></li>
 			{% endif %}
 			
@@ -63,6 +63,9 @@
 			{% endif %}
 			{% if perms.events.change_attend %}
 			<li><a href="{% url eventmode_list %}">Event check-in</a></li>
+			{% endif %}
+			{% if perms.mailcenter.add_mail %}
+			<li><a href="{% url mailcenter_list %}">Nyhedsbrev</a></li>
 			{% endif %}
 					
 		</ul>

@@ -1,0 +1,24 @@
+{% load core_tags uniform markup %}
+
+{% extends "site.html" %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url mailcenter_list %}">e-mails</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url mailcenter_view mail.id %}">{{mail.subject}}</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>E-mail</h2>
+{% endblock %}
+
+{% block content %}
+
+<h3>{{mail.subject}}</h3>
+
+{{mail.body|restructuredtext}}
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% load core_tags uniform %}
+
+{% extends "site.html" %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url mailcenter_list %}">e-mails</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>E-mails</h2>
+{% endblock %}
+
+{% block content %}
+
+<table>
+<tr>
+    <th>&nbsp;</th>
+    <th>Subject</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>&nbsp;</th>
+</tr>
+{% for mail in mails %}
+<tr>
+    <td>{% icon "email" email_open email %}</td>
+    <td>{{mail.subject}}</td>
+    <td>{{mail.date_created}}</td>
+    <td>{% if mail.is_draft %}draft{% else %}sendt{% endif %}</td>
+    <td>
+        {% icon_link "vis" email mailcenter_view mail.id %}
+        {% icon_link "rediger" email_edit mailcenter_edit mail.id %}
+        {% icon_link "send" email_go mailcenter_send mail.id %}
+        {% icon_link "send draft" email_error mailcenter_send_test mail.id %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{{form|uniform:"skriv ny e-mail"}}
+
+{% endblock %}
