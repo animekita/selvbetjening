@@ -1,7 +1,7 @@
 {% load markup %}
 
 <style>
-p {
+p, div, a {
   font-family: Verdana, sans-serif;
   color: #3E3E3E;
 }
