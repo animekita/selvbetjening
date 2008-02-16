@@ -1,0 +1,23 @@
+{% load core_tags uniform markup %}
+
+{% extends "site.html" %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url mailcenter_list %}">e-mails</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url mailcenter_view mail.id %}">{{mail.subject}}</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url mailcenter_send mail.id %}">send</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Send e-mail</h2>
+{% endblock %}
+
+{% block content %}
+
+{{form|uniform:"send"}}
+
+{% endblock %}

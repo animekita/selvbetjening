@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 14:54+0100\n"
-"PO-Revision-Date: 2008-01-30 14:55+0100\n"
+"POT-Creation-Date: 2008-02-16 18:09+0100\n"
+"PO-Revision-Date: 2008-02-16 18:13+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "Full subscription"
 msgstr "Fuldt kontingent"
 
-#: accounting/forms.py:16 core/templatetags/core_tags.py:67
+#: accounting/forms.py:16 core/templatetags/core_tags.py:82
 msgid "First rate"
 msgstr "Første rate"
 
-#: accounting/forms.py:17 core/templatetags/core_tags.py:69
+#: accounting/forms.py:17 core/templatetags/core_tags.py:84
 msgid "Second rate"
 msgstr "Anden rate"
 
@@ -42,12 +42,12 @@ msgstr "Betalingstype ikke mulig"
 msgid "user"
 msgstr "Bruger"
 
-#: accounting/models.py:99
+#: accounting/models.py:106
 #, python-format
 msgid "Yearly rate for %s"
 msgstr "Årlig rate for %s"
 
-#: accounting/views.py:35
+#: accounting/views.py:38
 msgid "Payment noted"
 msgstr "Betaling noteret"
 
@@ -111,23 +111,23 @@ msgstr "Biografnavn"
 msgid "open for reservations"
 msgstr "Åben for reservationer"
 
-#: core/templatetags/core_tags.py:55
+#: core/templatetags/core_tags.py:70
 msgid "Active member"
 msgstr "Aktivt medlem"
 
-#: core/templatetags/core_tags.py:57
+#: core/templatetags/core_tags.py:72
 msgid "Conditional active member"
 msgstr "Betinget aktivt medlem"
 
-#: core/templatetags/core_tags.py:59
+#: core/templatetags/core_tags.py:74
 msgid "Passive member"
 msgstr "Passivt medlem"
 
-#: core/templatetags/core_tags.py:61
+#: core/templatetags/core_tags.py:76
 msgid "Inactive member"
 msgstr "Inaktivt medlem"
 
-#: core/templatetags/core_tags.py:65
+#: core/templatetags/core_tags.py:80
 msgid "Full payment"
 msgstr "Fuldt kontingent"
 
@@ -175,6 +175,41 @@ msgstr "Du er nu tilmeldt arrangementet."
 #: events/views.py:109
 msgid "You are now removed from the event."
 msgstr "Du er nu afmeldt dette arrangementet."
+
+#: mailcenter/forms.py:26
+msgid "e-mail"
+msgstr "e-mail"
+
+#: mailcenter/forms.py:32
+msgid "Recipient group"
+msgstr "Modtager gruppe"
+
+#: mailcenter/forms.py:37
+msgid "All users"
+msgstr "Alle brugere"
+
+#: mailcenter/forms.py:40
+#, python-format
+msgid "Event: %s"
+msgstr "Arrangement: %s"
+
+#: mailcenter/forms.py:66
+msgid "Send emails to the selected individuals"
+msgstr "Send e-mails til de valgte personer"
+
+#: mailcenter/forms.py:80
+msgid "You must confirm the list of recipients before sending to them."
+msgstr "Du skal bekræfte at du vil sende emails til de valgte personer."
+
+#: mailcenter/views.py:71
+#, python-format
+msgid "E-mails have been sent to %s persons"
+msgstr "E-mails er blevet sendt til %s personer."
+
+#: mailcenter/views.py:92
+#, python-format
+msgid "A draft email has been sent to %s"
+msgstr "En test email er blevet sendt til %s"
 
 #: members/forms.py:19
 msgid "new email"

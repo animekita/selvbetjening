@@ -27,16 +27,22 @@ class UniformInputBase(object):
         cls = ''
         if self.input.errors:
             cls = ' error'
-        if self.args.get('display', False):
+        if self.args.get('display', '') == 'block':
             cls += ' blockLabels'
             
         return '<div class="ctrlHolder%s">\n' % cls + content + '</div>\n\n'
-
+    
+    def render_input_hidden(self):
+        return self.input.as_widget(widget=forms.widgets.HiddenInput())
+    
     def render_input(self):
         return self.input.as_widget(attrs=self.attrs)
 
     def render(self):
-        return self.render_container(self.error_list() + self.label() + self.render_input() + self.help_text())
+        if self.args.get('display', '') == 'hidden':
+            return self.render_input_hidden()
+        else:
+            return self.render_container(self.error_list() + self.label() + self.render_input() + self.help_text())
     
 class UniformInputText(UniformInputBase):
     
