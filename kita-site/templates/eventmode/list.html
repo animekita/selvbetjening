@@ -1,6 +1,6 @@
 {% extends "site.html" %}
 
-{% load markup %}
+{% load markup core_tags %}
 
 {% block breadcrumbs %}
 <li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
@@ -26,10 +26,13 @@
     
     {% for event in events %}
         <tr>
-            <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
+            <td>{{event.title}}</td>
             <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
             <td>{{event.startdate.year}}</td>
-            <td><a href="{% url eventmode_checkin event.id %}">Checkin</a></td>
+            <td>
+            {% icon_link "checkin" user_go eventmode_checkin event.id %}
+            {% icon_link "tilvalg" book_open eventmode_options event.id %}
+            </td>
         </tr>
     {% endfor %}
     </table>

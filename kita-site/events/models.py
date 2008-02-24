@@ -44,6 +44,8 @@ class Event(models.Model):
     
     def remove_attendee(self, user):
         self.attend_set.filter(user=user).delete()
+        for option in self.option_set.all():
+            option.users.remove(user)
     
     def is_attendee(self, user):
         return (len(self.attend_set.filter(user=user)) == 1)
@@ -56,3 +58,19 @@ class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
     has_attended = models.BooleanField()
+
+class Option(models.Model):
+    event = models.ForeignKey(Event)
+    users = models.ManyToManyField(User, blank=True)
+    description = models.CharField(_('Description'), max_length=255)
+    order = models.IntegerField(_('Order'))
+    
+    def count(self):
+        return len(self.users.all())
+    
+    class Admin:
+        list_display = ('event', 'description', 'order')
+        fields = (
+            (None, { 'fields' : ('description', 'order', 'event') } ), )
+    
+    

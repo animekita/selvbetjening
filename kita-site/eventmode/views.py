@@ -8,8 +8,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.shortcuts import get_object_or_404
 
-from events.models import Event, Attend
+from events.models import Event, Attend, Option
 from eventmode.forms import CheckinForm
 from accounting.forms import PaymentForm
 from accounting.models import MembershipState
@@ -53,6 +54,26 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
                               {'user' : attend.user, 'event' : attend.event, 'attend' : attend,
                                'form' : form, 'needs_to_pay' : needsToPay},
                               context_instance=RequestContext(request))
+
+@permission_required('events.change_attend')
+def event_options(request, event_id, template_name='eventmode/options.html'):
+    
+    event = get_object_or_404(Event, id=event_id)
+    
+    return render_to_response(template_name,
+                              {'event' : event, 'options' : event.option_set.all()},
+                              context_instance=RequestContext(request))
+
+@permission_required('events.change_attend')
+def event_options_detail(request, event_id, option_id, 
+                             template_name='eventmode/options_detail.html'):
+    
+    option = get_object_or_404(Option, id=option_id)
+    
+    return render_to_response(template_name,
+                              {'event' : option.event, 'option' : option, 
+                               'users' : option.users.all()},
+                              context_instance=RequestContext(request))    
 
 @permission_required('events.change_attend')
 def event_list(request, template_name='eventmode/list.html'):

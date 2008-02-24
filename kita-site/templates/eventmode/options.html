@@ -1,0 +1,42 @@
+{% extends "site.html" %}
+
+{% load markup core_tags %}
+
+{% block breadcrumbs %}
+<li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_options event.id %}">{{event.title}} tilvalg</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Tilvalg</h2>
+{% endblock %}
+
+{% block content %}
+
+{% if options %}
+
+    <table class="horizontal">
+    <tr>
+        <th>Beskrivelse</th>
+        <th>Valgte</th>
+        <th style="width:30%">&nbsp;</th>
+    </tr>
+    
+    {% for option in options %}
+        <tr>
+            <td>{{option.description}}</td>
+            <td>{{option.count}}</td>
+            <td>
+                {% icon_link "detaljer" page_white_text eventmode_options_detail event.id option.id %}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    
+{% else %}
+
+    <p>Ingen tilføjede tilvalg.</p>
+
+{% endif %}
+
+{% endblock %}

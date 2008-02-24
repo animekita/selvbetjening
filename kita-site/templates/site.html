@@ -62,7 +62,7 @@
 			<li><a href="{% url accounting_payments %}">Betalinger</a></li>
 			{% endif %}
 			{% if perms.events.change_attend %}
-			<li><a href="{% url eventmode_list %}">Event check-in</a></li>
+			<li><a href="{% url eventmode_list %}">Event info</a></li>
 			{% endif %}
 			{% if perms.mailcenter.add_mail %}
 			<li><a href="{% url mailcenter_list %}">Nyhedsbrev</a></li>

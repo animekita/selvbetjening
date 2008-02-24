@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
+from django.newforms import BooleanField
 
 from events.models import Event
 from events.forms import SignupForm, SignoffForm
@@ -68,15 +69,27 @@ def signup(request,
     if not event.is_registration_open() or event.is_attendee(request.user):
         return render_to_response(template_cant_signup, context_instance=RequestContext(request))
     
+    def add_dynamic_options(form):
+        for option in event.option_set.all():
+            form.fields['option_' + str(option.pk)] = BooleanField(label=option.description, required=False)
+
+    def fetch_and_store_options(form):
+        for option in event.option_set.all():
+            if form.cleaned_data.get('option_' + str(option.pk), False):
+                option.users.add(request.user)
+            
     if request.method == 'POST':
         form = form_class(request.POST)
+        add_dynamic_options(form)
         if form.is_valid():
             event.add_attendee(request.user)
+            fetch_and_store_options(form)
             request.user.message_set.create(message=_(u"You are now signed up to the event."))
             return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
     else:
         form = form_class()
-    
+        add_dynamic_options(form)
+
     # is the user underaged at the time
     is_underaged = request.user.get_profile().isUnderaged(date = event.startdate)
     
