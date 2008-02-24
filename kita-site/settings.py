@@ -115,6 +115,7 @@ INSTALLED_APPS = (
     'kita-site.accounting',
     'kita-site.eventmode',
     'kita-site.booking',
+    'kita-site.mailcenter',
 )
 
 # Initialize Logging
