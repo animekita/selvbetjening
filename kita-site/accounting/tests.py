@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta
 
 from django.test import TestCase
+from django.test.client import Client
 from django.contrib.auth import models as auth_models
+from django.core.urlresolvers import reverse
 
 from accounting import models, forms
+from members.models import UserProfile
 
 class AccountingPaymentFormTestCase(TestCase):
     
@@ -27,7 +30,7 @@ class AccountingPaymentFormTestCase(TestCase):
     
     def test_save(self):
         f = forms.PaymentForm({'type' : 'FULL'}, user=self.user1)
-        f.is_valid()        
+        self.assertTrue(f.is_valid())
         f.save()
         
         self.assertEqual(1, len(self.user1.payment_set.all()))
@@ -103,3 +106,34 @@ class AccountingModelTestCase(TestCase):
     def test_srate_payment_active(self):
         self.assertEqual(models.MembershipState.ACTIVE,
                          models.Payment.objects.get_membership_state(self.user10))
+        
+class AccountingViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user1 = auth_models.User.objects.create_user('user1', 'user@example.org', 'user1')
+        self.user1.user_permissions.add(auth_models.Permission.objects.filter(codename='add_payment')[0])
+        UserProfile.objects.create(user=self.user1, dateofbirth='2008-02-25', city='', street='', postalcode='0', phonenumber='0', send_me_email=True)
+        
+        self.c = Client()
+        self.c.login(username='user1', password='user1')
+        
+    def test_payment_history(self):
+        response = self.c.get(reverse('accounting_history', 
+                                      kwargs={'user' : self.user1.username}))
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounting/history.html')
+    
+    def test_pay_normal(self):
+        response = self.c.get(reverse('accounting_pay', 
+                                      kwargs={'user' : self.user1.username}))
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounting/pay.html')
+        
+    def test_pay_post(self):
+        response = self.c.post(reverse('accounting_pay', 
+                                      kwargs={'user' : self.user1.username}),
+                                {'type' : 'FULL'})
+        
+        self.assertEqual(response.status_code, 302)
