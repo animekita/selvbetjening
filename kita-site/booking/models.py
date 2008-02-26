@@ -8,9 +8,6 @@ class Cinema(models.Model):
     endtime = models.DateTimeField(_('end time'))
     open_for_reservations = models.BooleanField(_('open for reservations'))
     
-    class Admin:
-        pass
-    
     def is_valid_reservation(self, startdatetime, enddatetime):
         """
         First check that the reservation is inside the cinema open time slot. Then check all
@@ -31,6 +28,9 @@ class Cinema(models.Model):
                 return False
             
         return True
+    
+    class Admin:
+        pass
 
 class Reservation(models.Model):
     cinema = models.ForeignKey(Cinema)

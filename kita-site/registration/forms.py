@@ -8,7 +8,6 @@ from django import newforms as forms
 from django.core.validators import alnum_re
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 
 from members.forms import ProfileForm
 from members.models import UserProfile, EmailChangeRequest

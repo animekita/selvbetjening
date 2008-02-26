@@ -1,10 +1,8 @@
 # coding=UTF-8
 
 from django import newforms as forms
-from django.core.validators import alnum_re
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 
 from members.models import UserProfile, EmailChangeRequest
 from registration.models import RegistrationProfile
