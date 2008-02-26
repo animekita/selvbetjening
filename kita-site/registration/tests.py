@@ -12,20 +12,20 @@ class RegistartionModelTestCase(TestCase):
     def setUp(self):
         self.user = auth_models.User.objects.create_user('user', 'user', 'user@example.org')
     
-    def testActivationKeyNotExpired(self):
-        rp = models.RegistrationProfile.objects.create_profile(user = self.user, forumPassword = 'ddd')
+    def test_activationkey_not_expired(self):
+        rp = models.RegistrationProfile.objects.create_registration_profile(user = self.user, forumPassword = 'ddd')
         
         self.assertFalse(rp.activation_key_expired())
     
-    def testActivationKeyExpired(self):
+    def test_activationkey_expired(self):
         self.user.date_joined = datetime.now() - timedelta(days=settings.ACCOUNT_ACTIVATION_DAYS, minutes = 1)
         self.user.save()
         
-        rp = models.RegistrationProfile.objects.create_profile(user = self.user, forumPassword = 'ddd')
+        rp = models.RegistrationProfile.objects.create_registration_profile(user = self.user, forumPassword = 'ddd')
         
         self.assertTrue(rp.activation_key_expired())
         
-    def testCreateInactiveUser(self):
+    def test_create_inactive_user(self):
         u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212', True)
         
         # check for registration profile
@@ -43,17 +43,27 @@ class RegistartionModelTestCase(TestCase):
         # check for registration email
         self.assertEqual(len(mail.outbox), 1)
     
-    def testActivateUser(self):
+    def test_activate_user(self):
         u = models.RegistrationProfile.objects.create_inactive_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212', True)
         
         p = models.RegistrationProfile.objects.get(user=u)
         
         self.assertEquals(u, models.RegistrationProfile.objects.activate_user(p.activation_key))
     
-    def testActivateNonExistingUser(self):
-        self.assertFalse(models.RegistrationProfile.objects.activate_user(''))
-
-
+    def test_activate_nonexisting_user(self):
+        self.assertEqual(models.RegistrationProfile.objects.activate_user(''), None)
+    
+    def test_create_user(self):
+        u = models.RegistrationProfile.objects.create_user('newuser', 'newuser', 'newuser@example.org', datetime.now(), 'newuser', 'newuser', 'd', 'd', '9000', '12121212', True)
+        
+        self.assertTrue(isinstance(u, auth_models.User))
+        
+        self.assertTrue(u.is_active)
+        
+        try:
+            p = u.get_profile()
+        except auth_models.SiteProfileNotAvailable:
+            self.fail(msg = 'Profile not created')
 
 class RegistrationFormTestCase(TestCase):
     def setUp(self):
@@ -66,12 +76,12 @@ class RegistrationFormTestCase(TestCase):
                         'dateofbirth' : '14-10-1987',
                         'tos' : True,}
     
-    def testValidUser(self):
+    def test_valid_user(self):
         form = forms.RegistrationForm(self.userData)
         
         self.assertTrue(form.is_valid())
     
-    def testInvalidUsername(self):
+    def test_invalid_username(self):
         self.userData['username'] = 'invalid usernames are cool!'
         form = forms.RegistrationForm(self.userData)
         
@@ -83,20 +93,20 @@ class RegistrationFormTestCase(TestCase):
         
         self.assertFalse(form.is_valid())        
         
-    def testInvalidPasswordVerify(self):
+    def test_invalid_password_verify(self):
         self.userData['password2'] = 'testtesttest'
         form = forms.RegistrationForm(self.userData)
         
         self.assertFalse(form.is_valid())
     
-    def testInvalidEmptyPassword(self):
+    def test_invalid_empty_password(self):
         self.userData['password1'] = ''
         self.userData['password2'] = ''
         form = forms.RegistrationForm(self.userData)
         
         self.assertFalse(form.is_valid())
     
-    def testSave(self):
+    def test_save(self):
         form = forms.RegistrationForm(self.userData)
         
         self.assertTrue(form.is_valid())
