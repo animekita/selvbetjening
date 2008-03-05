@@ -11,9 +11,11 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 
 from events.models import Event, Attend, Option
-from eventmode.forms import CheckinForm
+from eventmode.forms import CheckinForm, EventmodeAccessForm
+from eventmode.decorators import eventmode_required
 from accounting.forms import PaymentForm
 from accounting.models import MembershipState
+from core import logger
 
 @permission_required('events.change_attend')
 def event_checkin(request, event_id, template_name='eventmode/checkin.html'):
@@ -79,3 +81,29 @@ def event_options_detail(request, event_id, option_id,
 def event_list(request, template_name='eventmode/list.html'):
     return render_to_response(template_name, {'events' : Event.objects.all()},
                               context_instance=RequestContext(request))
+
+def activate_mode(request, template_name='eventmode/activate_mode.html',
+                  form_class=EventmodeAccessForm, success_page='home'):  
+
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            request.eventmode.activate(form.cleaned_data['passphrase'])
+            logger.info(request, 'client activated event-mode for event %s',
+                        request.eventmode.get_model().event.id)
+            return HttpResponseRedirect(reverse(success_page))
+    else:
+        form = form_class()
+    
+    return render_to_response(template_name,
+                              {'form' : form},
+                              context_instance=RequestContext(request))
+
+def deactivate_mode(request):  
+    request.eventmode.deactivate()
+    
+    return HttpResponseRedirect(reverse('home'))
+
+def info(request, template_name='eventmode/info.html'):
+    return render_to_response(template_name, {},
+                              context_instance=RequestContext(request))   

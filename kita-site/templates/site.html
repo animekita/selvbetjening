@@ -20,6 +20,12 @@
 	{% endblock %}
 </head>
 <body>
+{% if EVENTMODE %}
+<div class="modebar">
+<p>Denne maskine er i event-mode (<a href="{% url eventmode_info %}">hvad betyder dette?</a>)</p>
+</div>
+{% endif %}
+<div class="site">
 <div class="container">
 	<h1 id="banner" class="column span-7 last"><a href="http://www.anime-kita.dk/">Anime Kita</a></h1>
 		
@@ -67,6 +73,11 @@
 			{% if perms.mailcenter.add_mail %}
 			<li><a href="{% url mailcenter_list %}">Nyhedsbrev</a></li>
 			{% endif %}
+			
+			{% if EVENTMODE %}
+			<li><b>Event værktøjer</b></li>
+			<li><a href="{% url eventmode_deactivate %}">Forlad event-mode</a></li>
+			{% endif %}
 					
 		</ul>
 		{% endblock %}
@@ -107,6 +118,7 @@ pageTracker._trackPageview();
 </script>
 {% endif %}
 
+</div>
 </body>
 </html>
 

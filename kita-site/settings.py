@@ -79,6 +79,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'eventmode.middleware.EventmodeMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
 
@@ -123,7 +124,7 @@ import logging
 
 logging.basicConfig(
     level=logging.NOTSET,
-    format='%(asctime)s %(levelname)-8s %(message)s',
+    format='%(asctime)s %(clientip)s %(user)s %(levelname)-8s %(message)s',
     datefmt='%m-%d %H:%M',
     #change as needed
     filename=LOG_FILE, 

@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import permission_required
 
 from django import oldforms
 
@@ -37,6 +38,23 @@ def register(request, success_page='registration_complete',
     Allows a new user to register an account.
     
     """
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            return HttpResponseRedirect(reverse(success_page))
+    else:
+        form = form_class()
+        
+    return render_to_response(template_name,
+                              { 'form': form },
+                              context_instance=RequestContext(request))
+
+@permission_required('auth.add_user')
+def create(request, success_page='user_created.html',
+             form_class=RegistrationForm,
+             template_name='registration/registration_form.html'):
+
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
