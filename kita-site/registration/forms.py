@@ -13,6 +13,7 @@ from members.forms import ProfileForm
 from members.models import UserProfile, EmailChangeRequest
 from registration.models import RegistrationProfile
 from core import models as coremodel
+from events.forms import SignupForm
 
 class RegistrationForm(ProfileForm):
     """
@@ -97,3 +98,25 @@ class RegistrationForm(ProfileForm):
             city=self.cleaned_data['city'],
             phonenumber=self.cleaned_data['phonenumber'],
             send_me_email=self.cleaned_data['send_me_email'])
+
+class CreateForm(RegistrationForm):
+    """
+    Create user and skips email validation.
+    
+    """
+    
+    def save(self):
+        return RegistrationProfile.objects.create_user(
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password1'],
+            email=self.cleaned_data['email'],
+            dateofbirth=self.cleaned_data['dateofbirth'],
+            first_name=self.cleaned_data['first_name'],
+            last_name=self.cleaned_data['last_name'],
+            street=self.cleaned_data['street'],
+            postalcode=self.cleaned_data['postalcode'],
+            city=self.cleaned_data['city'],
+            phonenumber=self.cleaned_data['phonenumber'],
+            send_me_email=self.cleaned_data['send_me_email'])
+    
+        

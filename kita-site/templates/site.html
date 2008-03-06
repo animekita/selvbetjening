@@ -76,6 +76,7 @@
 			
 			{% if EVENTMODE %}
 			<li><b>Event værktøjer</b></li>
+			<li><a href="{% url registration_create_and_signup %}">Nyt medlem</a></li>
 			<li><a href="{% url eventmode_deactivate %}">Forlad event-mode</a></li>
 			{% endif %}
 					
@@ -86,11 +87,14 @@
 	<div id="content" class="column span-5 last">
 		{% block contenthead %}{% endblock %}
 			
-		{% if messages %}
+		{% if messages or session_message %}
 		<ul id="messages">
-			 {% for message in messages %}
+			{% for message in messages %}
 			<li>{{ message }}</li>
 			{% endfor %}
+			{% if session_message %}
+			<li>{{session_message}}</li>
+			{% endif %}
 		</ul>
 		{% endif %}
 				

@@ -4,9 +4,11 @@ from django.conf import settings
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
 from django.core import mail
+from django.core.urlresolvers import reverse
 
 from registration import forms
 from registration import models
+from eventmode.tests import DatabaseSetup
 
 class RegistartionModelTestCase(TestCase):
     def setUp(self):
@@ -65,16 +67,19 @@ class RegistartionModelTestCase(TestCase):
         except auth_models.SiteProfileNotAvailable:
             self.fail(msg = 'Profile not created')
 
+def get_user_data():
+    return {'username' : 'unittest_test', 
+            'password1' : 'test*', 
+            'password2' : 'test*', 
+            'first_name' : 'test',
+            'last_name' : 'test',
+            'email' : 'user@example.org', 
+            'dateofbirth' : '14-10-1987',
+            'tos' : True}
+            
 class RegistrationFormTestCase(TestCase):
     def setUp(self):
-        self.userData = {'username' : 'unittest_test', 
-                        'password1' : 'test*', 
-                        'password2' : 'test*', 
-                        'first_name' : 'test',
-                        'last_name' : 'test',
-                        'email' : 'user@example.org', 
-                        'dateofbirth' : '14-10-1987',
-                        'tos' : True,}
+        self.userData = get_user_data()
     
     def test_valid_user(self):
         form = forms.RegistrationForm(self.userData)
@@ -87,7 +92,7 @@ class RegistrationFormTestCase(TestCase):
         
         self.assertFalse(form.is_valid())
     
-    def testDuplicateUsername(self):
+    def test_duplicate_username(self):
         auth_models.User.objects.create_user('unittest_test', 'test@example.org', 'test')
         form = forms.RegistrationForm(self.userData)
         
@@ -114,5 +119,52 @@ class RegistrationFormTestCase(TestCase):
         
         try:
             models.RegistrationProfile.objects.get(user=user)
-        except models.RegistrationForm.DoesNotExist:
+        except models.RegistrationProfile.DoesNotExist:
             self.fail(msg = 'Registration profile were not created')
+
+class CreateFormTestCase(TestCase):
+    def setUp(self):
+        self.user_data = get_user_data()
+    
+    def test_save(self):
+        form = forms.CreateForm(self.user_data)
+        
+        self.assertTrue(form.is_valid())
+        user = form.save()
+        
+        try:
+            models.RegistrationProfile.objects.get(user=user)
+            self.fail(msg = 'Registration profile were not created') 
+        except models.RegistrationProfile.DoesNotExist:
+            pass
+        
+        self.assertTrue(user.is_active)
+
+class ViewTestCase(TestCase):
+    def setUp(self):
+        self.user_data = get_user_data()
+        DatabaseSetup.setUp(self)
+
+    def _activate_eventmode(self):
+        self.client.post(reverse('eventmode_activate'), {'passphrase' : 'ww'})
+        
+    def test_create_user_no_eventmode(self):
+        response = self.client.get(reverse('registration_create_and_signup'))
+        
+        self.assertEqual(response.status_code, 302)   
+        
+    def test_create_user_eventmode(self):
+        self._activate_eventmode()
+        
+        response = self.client.get(reverse('registration_create_and_signup'))
+        
+        self.assertEqual(response.status_code, 200) 
+        
+    def test_create_user(self):
+        self._activate_eventmode()
+        
+        response = self.client.post(reverse('registration_create_and_signup'), self.user_data)
+        
+        self.assertEqual(response.status_code, 302)
+        
+        

@@ -11,11 +11,14 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth import login, authenticate
 
 from django import oldforms
 
+from eventmode.decorators import eventmode_required
 from registration.models import RegistrationProfile
-from registration.forms import RegistrationForm
+from registration.forms import RegistrationForm, CreateForm
+from core import messaging
 
 def activate(request, activation_key, template_name='registration/activate.html'):
     """
@@ -50,16 +53,20 @@ def register(request, success_page='registration_complete',
                               { 'form': form },
                               context_instance=RequestContext(request))
 
-@permission_required('auth.add_user')
-def create(request, success_page='user_created.html',
-             form_class=RegistrationForm,
+@eventmode_required
+def create_and_signup(request,
+             form_class=CreateForm,
              template_name='registration/registration_form.html'):
 
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
             new_user = form.save()
-            return HttpResponseRedirect(reverse(success_page))
+            login(request, authenticate(username=form.cleaned_data['username'], 
+                                        password=form.cleaned_data['password1']))
+            messaging.write(request, _('Your user account has been created.'))
+            return HttpResponseRedirect(reverse('events_signup', 
+                                                kwargs={'eventId' : request.eventmode.get_model().event.id}))
     else:
         form = form_class()
         

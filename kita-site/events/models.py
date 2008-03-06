@@ -34,7 +34,7 @@ class Event(models.Model):
         return (self.registration_open and not self.has_been_held())
     
     def has_been_held(self):
-        return self.startdate < date.today()
+        return self.enddate < date.today()
     
     def get_attendees(self):
         return self.attend_set.all().order_by('id')
