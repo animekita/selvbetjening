@@ -2,10 +2,11 @@ from django.conf.urls.defaults import *
 from django.views.generic.simple import redirect_to, direct_to_template
 from django.contrib.auth import views as auth_views
 
+from core.views import frontpage
+
 urlpatterns = patterns('',
     url(r'^$',
-        redirect_to,
-        {'url' : '/login/'},
+        frontpage,
         name = 'home'),
     
     url(r'^login/$',
