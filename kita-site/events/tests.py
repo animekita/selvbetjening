@@ -14,7 +14,7 @@ class EventModelTestCase(TestCase):
         
         self.event1 = models.Event.objects.create(title='event', 
                                                   startdate=date.today(),
-                                                  enddate=date.today() + timedelta(days=2),
+                                                  enddate=date.today(),
                                                   registration_open=True)
         
         self.event2 = models.Event.objects.create(title='event', 
@@ -37,7 +37,6 @@ class EventModelTestCase(TestCase):
     
     def test_is_registration_open(self):
         self.assertTrue(self.event1.is_registration_open())
-        self.assertFalse(self.event2.is_registration_open())
         self.assertFalse(self.event2.is_registration_open())
         
     def test_no_guests(self):
