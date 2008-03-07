@@ -7,9 +7,8 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
-<li><span>checkin</span>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventmode_checkin event.id %}">{{event.title}}</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_list %}">event info</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_checkin event.id %}">{{event.title}} checkin</a>&nbsp;&gt;&nbsp;</li>
 <li><a href="{% url eventmode_usercheckin event.id,user.id %}">{{user.username}}</a></li>
 {% endblock %}
 
@@ -21,7 +20,7 @@
 
 <p>{{user.username}}'s medlemsstatus er <b>{{user.get_profile.get_membership_state|translate:"membership_state"}}</b></p>
 
-{% if needsToPay %}
+{% if needs_to_pay %}
 
     <p class="warning">Denne bruger skal betale for medlemskab før han kan deltage</p>
     

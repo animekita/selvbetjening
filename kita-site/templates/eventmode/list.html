@@ -3,9 +3,7 @@
 {% load markup core_tags %}
 
 {% block breadcrumbs %}
-<li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
-<li><span>checkin</span>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventmode_checkin event.id %}">{{event.title}}</a></li>
+<li><a href="{% url eventmode_list %}">event info</a></li>
 {% endblock %}
 
 {% block contenthead %}

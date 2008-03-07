@@ -3,9 +3,8 @@
 {% load markup %}
 
 {% block breadcrumbs %}
-<li><span>eventmode</span>&nbsp;&gt;&nbsp;</li>
-<li><span>checkin</span>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventmode_checkin event.id %}">{{event.title}}</a></li>
+<li><a href="{% url eventmode_list %}">event info</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventmode_checkin event.id %}">{{event.title}} checkin</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -18,6 +17,7 @@
 
     <table class="horizontal">
         <tr>
+            <th>#</th>
             <th>Navn</th>
             <th>Brugernavn</th>
             <th>&nbsp;</th>
@@ -25,6 +25,7 @@
     
     {% for attendee in attendees %}
         <tr>
+            <td>{{forloop.counter}}</td>
             <td>{% ifequal attendee.user.id user.id %}<b>{% endifequal %}
                         {{attendee.user.first_name}} {{attendee.user.last_name}}
                     {% ifequal attendee.user.id user.id %}</b>{% endifequal %}</td>
