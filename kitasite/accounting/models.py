@@ -21,9 +21,12 @@ class PaymentManager(models.Manager):
         else:
             pay = payments[0]   
     
-        if self.total_quaters(pay.timestamp) + 8 <= self.total_quaters(datetime.now()):
+        payment_quater = self.total_quaters(pay.timestamp)
+        date_in_quaters = self.total_quaters(datetime.now())
+            
+        if payment_quater + 8 <= date_in_quaters:
             return MembershipState.INACTIVE
-        elif self.total_quaters(pay.timestamp) + 4 <= self.total_quaters(datetime.now()):
+        elif payment_quater + 4 <= date_in_quaters:
             return MembershipState.PASSIVE
         else:
             if payments[0].type == 'FULL' or payments[0].type == 'SRATE':
@@ -41,7 +44,9 @@ class PaymentManager(models.Manager):
         else:
             pay = payments[0]
     
-        if self.total_quaters(pay.timestamp) + 4 <= self.total_quaters(datetime.now()):
+        payment_quater = self.total_quaters(pay.timestamp)
+        
+        if payment_quater + 4 <= self.total_quaters(datetime.now()):
             return None
         else:
             return pay.timestamp
@@ -49,14 +54,18 @@ class PaymentManager(models.Manager):
     def member_to(self, user):
         timestamp = self.member_since(user)
         if timestamp is not None:
-            return datetime(timestamp.year + 1, (self.to_quarter(timestamp) - 1) * 3 + 1, 1).date() - timedelta(days=1)
+            year = timestamp.year + 1
+            month = (self.to_quarter(timestamp) - 1) * 3 + 1
+            return datetime(year, month, 1).date() - timedelta(days=1)
         else:
             return None
     
     def passive_to(self, user):
         timestamp = self.member_since(user)
         if timestamp is not None:
-            return datetime(timestamp.year + 2, (self.to_quarter(timestamp) - 1) * 3 + 1, 1).date() - timedelta(days=1)
+            year = timestamp.year + 2
+            month = (self.to_quarter(timestamp) - 1) * 3 + 1
+            return datetime(year, month, 1).date() - timedelta(days=1)
         else:
             return None
     

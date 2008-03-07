@@ -1,6 +1,6 @@
 # Django settings for membersite project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -90,7 +90,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     )
 
-ROOT_URLCONF = 'kita-site.urls'
+ROOT_URLCONF = 'kitasite.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -107,16 +107,16 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.markup',
     'django.contrib.webdesign',
-    'kita-site.registration',
-    'kita-site.members',
-    'kita-site.events',
-    'kita-site.forms',
-    'kita-site.core',
-    'kita-site.migration',
-    'kita-site.accounting',
-    'kita-site.eventmode',
-    'kita-site.booking',
-    'kita-site.mailcenter',
+    'kitasite.registration',
+    'kitasite.members',
+    'kitasite.events',
+    'kitasite.forms',
+    'kitasite.core',
+    'kitasite.migration',
+    'kitasite.accounting',
+    'kitasite.eventmode',
+    'kitasite.booking',
+    'kitasite.mailcenter',
 )
 
 # Initialize Logging
