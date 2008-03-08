@@ -23,7 +23,7 @@
 <tr>
     <td>{{member.first_name}} {{member.last_name}}</td>
     <td>{{member.username}}</td>
-    <td>{{member.get_profile.get_membership_state|translate:"membership_state"}}</td>
+    <td>{{member.get_profile.get_membership_state|translate:"membership_state_short"}}</td>
     <td>
         {% icon_link "betalings historie" book accounting_history member.username %}
         {% ifnotequal member.get_profile.get_membership_state "ACTIVE" %}

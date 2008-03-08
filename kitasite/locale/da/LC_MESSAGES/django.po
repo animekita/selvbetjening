@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-07 19:17+0100\n"
-"PO-Revision-Date: 2008-03-07 19:26+0100\n"
+"POT-Creation-Date: 2008-03-08 19:55+0100\n"
+"PO-Revision-Date: 2008-03-08 19:56+0100\n"
 "Last-Translator: Casper Jensen <sema@semaprojects.net>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "Full subscription"
 msgstr "Fuldt kontingent"
 
-#: accounting/forms.py:15 core/templatetags/core_tags.py:82
+#: accounting/forms.py:15 core/templatetags/core_tags.py:92
 msgid "First rate"
 msgstr "Første rate"
 
-#: accounting/forms.py:16 core/templatetags/core_tags.py:84
+#: accounting/forms.py:16 core/templatetags/core_tags.py:94
 msgid "Second rate"
 msgstr "Anden rate"
 
@@ -37,12 +37,12 @@ msgstr "Betalingstype"
 msgid "Payment type not valid"
 msgstr "Betalingstype ikke mulig"
 
-#: accounting/models.py:85 members/models.py:22 members/models.py:120
+#: accounting/models.py:94 members/models.py:22 members/models.py:120
 #: registration/forms.py:41 registration/models.py:155
 msgid "user"
 msgstr "Bruger"
 
-#: accounting/models.py:106
+#: accounting/models.py:115
 #, python-format
 msgid "Yearly rate for %s"
 msgstr "Årlig rate for %s"
@@ -136,6 +136,22 @@ msgid "Inactive member"
 msgstr "Inaktivt medlem"
 
 #: core/templatetags/core_tags.py:80
+msgid "Active"
+msgstr "Aktiv"
+
+#: core/templatetags/core_tags.py:82
+msgid "Conditional active"
+msgstr "Betinget aktiv"
+
+#: core/templatetags/core_tags.py:84
+msgid "Passive"
+msgstr "Passiv"
+
+#: core/templatetags/core_tags.py:86
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: core/templatetags/core_tags.py:90
 msgid "Full payment"
 msgstr "Fuldt kontingent"
 
