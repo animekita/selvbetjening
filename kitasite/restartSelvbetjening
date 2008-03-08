@@ -2,7 +2,7 @@
 
 # Replace these three settings.
 TMPDIR="/tmp"
-PROJDIR="/var/www/anime-kita.dk/selvbetjening/django/kita-site"
+PROJDIR="/var/www/anime-kita.dk/selvbetjening/django/kitasite"
 PIDFILE="$TMPDIR/selvkita.pid"
 SOCKET="$TMPDIR/selvkita.socket"
 
