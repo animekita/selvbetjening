@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 
 def frontpage(request):
     if isinstance(request.user, AnonymousUser):
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('auth_login'))
     else:
         return HttpResponseRedirect(reverse('members_profile'))
 
