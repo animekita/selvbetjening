@@ -66,7 +66,7 @@ def create_and_signup(request,
                                         password=form.cleaned_data['password1']))
             messaging.write(request, _('Your user account has been created.'))
             return HttpResponseRedirect(reverse('events_signup', 
-                                                kwargs={'eventId' : request.eventmode.get_model().event.id}))
+                                                kwargs={'event_id' : request.eventmode.get_model().event.id}))
     else:
         form = form_class()
         

@@ -25,13 +25,16 @@
         {% else %}
         <ul class="table-options">
             <li>&#187; <a href="{% url events_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
+            {% if has_options %}
+            <li>&#187; <a href="{% url events_change_options event.id %}">Ændre tilvalg</a></li>
+            {% endif %}
         </ul>        
         {% endif %}
     {% endif %}
     
     {% if not user.is_authenticated %}
         <ul class="table-options">
-            <li>&#187; <a href="{% url registration_register %}">Bliv medlem</a></li>       
+            <li>&#187; <a href="{% url registration_register %}">Bliv medlem</a></li>
             <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig nu. (kræver medlemsskab)</a></li>
         </ul>    
     {% endif %}

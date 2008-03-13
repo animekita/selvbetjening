@@ -6,12 +6,11 @@
 {% endblock %}
 
 {% block contenthead %}
-<h2>Du kan ikke tilmelde dig dette arrangement</h2>
+<h2>Du er allerede tilmeldt dette arrangement</h2>
 {% endblock %}
 
 {% block content %}
 
-    <p>Det arrangement du forsøger at tilmelde dig har enten ikke åbnet for tilmelding, eller så er
-    du allerede tilmeldt dette arrangement.</p>
+    <p>Du er allerede tilmeldt dette arrangement, følg <a href="{% url events_view event.id %}">dette link</a> for at se en liste over deltagere til arrangementet.</p>
 
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends "site.html" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url events_view event.id %}">kræver tilmelding</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Tilmelding påkrævet</h2>
+{% endblock %}
+
+{% block content %}
+
+    <p>Du skal være tilmeldt dette arrangement for at få adgang til denne side.</p>
+
+{% endblock %}

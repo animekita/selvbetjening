@@ -13,13 +13,15 @@ from django.contrib.auth.models import User
 from django.newforms import BooleanField
 
 from events.models import Event
-from events.forms import SignupForm, SignoffForm
+from events.forms import SignupForm, SignoffForm, OptionsForm
+from events.decorators import event_registration_open_required, event_attendance_required
 from accounting import models as accounting_models
 
 @login_required
 def visited(request, template_name='events/visited.html'):
     """
-    View all the events the currently logged in user has participated in
+    View all the events the currently logged-in user has participated in
+    
     """
     return render_to_response(template_name, 
                               {'events' : request.user.event_set.all() }, 
@@ -27,34 +29,27 @@ def visited(request, template_name='events/visited.html'):
 
 def list(request, template_name='events/list.html'):
     """
-    View detailed information about an event
+    Show list of events
+    
     """
     return render_to_response(template_name,
                               { 'events' : Event.objects.order_by('-startdate') },
                               context_instance=RequestContext(request))
 
-def view(request, eventId=None, template_name='events/view.html'):
-    """
-    View event
+def view(request, event_id, template_name='events/view.html'):
     
-    - Show signup field if user is logged in and not signedup to the event
-    - If event does not exist in the database, show error page (TEMPLATE_NO_EVENT)
-    """
-    
-    try:
-        event = Event.objects.get(id=eventId)
-    except ObjectDoesNotExist:
-        return render_to_response(TEMPLATE_NO_EVENT, context_instance=RequestContext(request))
+    event = get_object_or_404(Event, id=event_id)
     
     return render_to_response(template_name, 
-                              {'event' : event, 
-                                'userIsSignedup' : event.is_attendee(request.user),
-                                'attendees' : event.get_attendees()}, 
-                              context_instance=RequestContext(request))
+                              {'event' : event,
+                               'has_options' : (len(event.option_set.all()) > 0),
+                               'userIsSignedup' : event.is_attendee(request.user),
+                               'attendees' : event.get_attendees()}, 
+                               context_instance=RequestContext(request))
 
 @login_required
-def signup(request, 
-           eventId=None, 
+@event_registration_open_required
+def signup(request, event_id, 
            template_name='events/signup.html', 
            template_cant_signup='events/cantsignup.html',
            form_class=SignupForm,
@@ -64,10 +59,12 @@ def signup(request,
     
     """
     
-    event = get_object_or_404(Event, id=eventId)
+    event = get_object_or_404(Event, id=event_id)
     
-    if not event.is_registration_open() or event.is_attendee(request.user):
-        return render_to_response(template_cant_signup, context_instance=RequestContext(request))
+    if event.is_attendee(request.user):
+        return render_to_response(template_cant_signup, 
+                                  {'event' : event},
+                                  context_instance=RequestContext(request))
     
     def add_dynamic_options(form):
         for option in event.option_set.all():
@@ -85,7 +82,7 @@ def signup(request,
             event.add_attendee(request.user)
             fetch_and_store_options(form)
             request.user.message_set.create(message=_(u"You are now signed up to the event."))
-            return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
+            return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
         form = form_class()
         add_dynamic_options(form)
@@ -98,10 +95,10 @@ def signup(request,
     return render_to_response(template_name, {'event' : event, 'form' : form, 'is_underaged' : is_underaged, 'membership_state' : membership_state}, context_instance=RequestContext(request))
 
 @login_required
-def signoff(request,
-           eventId=None, 
+@event_registration_open_required
+@event_attendance_required
+def signoff(request, event_id, 
            template_name='events/signoff.html', 
-           template_cant_signoff='events/cantsignoff.html',
            success_page='events_view',
            form_class=SignoffForm):
     """
@@ -109,19 +106,35 @@ def signoff(request,
     
     """
 
-    event = get_object_or_404(Event, id=eventId)
-    
-    if not event.is_registration_open() or not event.is_attendee(request.user): 
-        # registratio not open or user not signed up to the event
-        return render_to_response(template_cant_signoff, context_instance=RequestContext(request))
+    event = get_object_or_404(Event, id=event_id)
     
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
             event.remove_attendee(request.user)
             request.user.message_set.create(message=_(u"You are now removed from the event."))
-            return HttpResponseRedirect(reverse(success_page, kwargs={'eventId':event.id}))
+            return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
         form = form_class()
     
     return render_to_response(template_name, {'event' : event, 'form' : form}, context_instance=RequestContext(request))   
+
+@login_required
+@event_registration_open_required
+@event_attendance_required
+def change_options(request, event_id, form=OptionsForm,
+                   success_page='events_view',
+                   template_name='events/change_options.html'):
+    event = get_object_or_404(Event, id=event_id)
+    
+    if request.method == 'POST':
+        form = OptionsForm(request.user, event, request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
+    else:
+        form = OptionsForm(request.user, event)
+    
+    return render_to_response(template_name, 
+                              {'form' : form, 'event' : event }, 
+                              context_instance=RequestContext(request))
