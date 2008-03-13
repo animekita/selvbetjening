@@ -11,8 +11,11 @@ from django.utils.translation import ugettext as _
 
 from forms import PaymentForm, PaymentsIntervalForm
 from models import Payment
+from core.decorators import log_access
+from core import logger
 
 @permission_required('accounting.add_payment')
+@log_access
 def payment_history(request, user, template_name='accounting/history.html'):
     userobj = get_object_or_404(User, username=user)
     return render_to_response(template_name,
@@ -20,6 +23,7 @@ def payment_history(request, user, template_name='accounting/history.html'):
                               context_instance=RequestContext(request))
 
 @permission_required('accounting.add_payment')
+@log_access
 def pay(request, user, template_name='accounting/pay.html', success_page='accounting_list'):
     userobj = get_object_or_404(User, username=user)
 
@@ -32,6 +36,7 @@ def pay(request, user, template_name='accounting/pay.html', success_page='accoun
         form = PaymentForm(request.POST, user=userobj)
         if form.is_valid():
             form.save()
+            logger.info(request, 'client registered payment for user_id %s' % userobj.id)
             request.user.message_set.create(message=_(u'Payment noted'))
             return HttpResponseRedirect(reverse(success_page))
     else:
@@ -42,12 +47,14 @@ def pay(request, user, template_name='accounting/pay.html', success_page='accoun
                               context_instance=RequestContext(request))
 
 @permission_required('accounting.add_payment')
+@log_access
 def list(request, template_name='accounting/list.html'):
     return render_to_response(template_name,
                               {'users' : User.objects.all()},
                               context_instance=RequestContext(request))
 
 @permission_required('accounting.add_payment')
+@log_access
 def payments(request, template_name='accounting/payments.html', 
              form_class=PaymentsIntervalForm):
 
@@ -63,6 +70,7 @@ def payments(request, template_name='accounting/payments.html',
                               context_instance=RequestContext(request))
 
 @permission_required('accounting.add_payment')
+@log_access
 def payments_detail(request, startdate, enddate, 
                     template_name='accounting/payments_detail.html'):
 

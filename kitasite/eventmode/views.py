@@ -16,8 +16,10 @@ from eventmode.decorators import eventmode_required
 from accounting.forms import PaymentForm
 from accounting.models import MembershipState
 from core import logger
+from core.decorators import log_access
 
 @permission_required('events.change_attend')
+@log_access
 def event_checkin(request, event_id, template_name='eventmode/checkin.html'):
     
     event = shortcuts.get_object_or_404(Event, id=event_id)
@@ -27,6 +29,7 @@ def event_checkin(request, event_id, template_name='eventmode/checkin.html'):
                               context_instance=RequestContext(request))
 
 @permission_required('events.change_attend')
+@log_access
 def event_usercheckin(request, event_id, user_id, template_name='eventmode/usercheckin.html'):
     
     attend = shortcuts.get_object_or_404(Attend, event=event_id, user=user_id)
@@ -58,6 +61,7 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
                               context_instance=RequestContext(request))
 
 @permission_required('events.change_attend')
+@log_access
 def event_options(request, event_id, template_name='eventmode/options.html'):
     
     event = get_object_or_404(Event, id=event_id)
@@ -67,6 +71,7 @@ def event_options(request, event_id, template_name='eventmode/options.html'):
                               context_instance=RequestContext(request))
 
 @permission_required('events.change_attend')
+@log_access
 def event_options_detail(request, event_id, option_id, 
                              template_name='eventmode/options_detail.html'):
     
@@ -78,6 +83,7 @@ def event_options_detail(request, event_id, option_id,
                               context_instance=RequestContext(request))    
 
 @permission_required('events.change_attend')
+@log_access
 def event_list(request, template_name='eventmode/list.html'):
     return render_to_response(template_name, {'events' : Event.objects.all()},
                               context_instance=RequestContext(request))
