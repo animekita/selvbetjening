@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.filter(name='uniform')
 def uniform_formrendering(form, submitText):
-    render = '<form method="POST" action="" class="uniForm">\n\n'
+    render = '<form method="post" action="" class="uniForm">\n\n'
 
     if form.non_field_errors():
         render += '<div id="errorMsg">\n'
@@ -46,7 +46,7 @@ def uniform_header(parser, token):
 class UniformHeaderNode(template.Node):
     
         def render(self, context):
-                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/uni-form.css">\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/datepicker.css" rel="stylesheet" type="text/css" />' % 
+                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/uni-form.css" />\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/datepicker.css" rel="stylesheet" type="text/css" />' % 
                                             (settings.MEDIA_URL, settings.MEDIA_URL, settings.MEDIA_URL))
 
 def render_input(item, args={ }):

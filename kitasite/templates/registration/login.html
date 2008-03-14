@@ -18,7 +18,7 @@
 
 <p>Hvis du ikke har oprettet en bruger på vores hjemmeside, kan du gøre det <a href="{% url registration_register %}">her</a>. Har du en bruger på vores forum, kan du migrere denne bruger til selve hjemmsiden ved hjælp af vore <a href="{% url migrate_vanillaforum %}">migreringsværktøj</a>.</p>
 
-<form method="POST" action="" class="uniForm">
+<form method="post" action="" class="uniForm">
 
 {% if form.has_errors %}
 <div id="errorMsg">
