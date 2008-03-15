@@ -46,7 +46,7 @@ def uniform_header(parser, token):
 class UniformHeaderNode(template.Node):
     
         def render(self, context):
-                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/uni-form.css" media="screen, projection" />\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/datepicker.css" rel="stylesheet" type="text/css" />' % 
+                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/compressed/uni-form.css" media="screen, projection" />\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/compressed/datepicker.css" rel="stylesheet" type="text/css" />' % 
                                             (settings.MEDIA_URL, settings.MEDIA_URL, settings.MEDIA_URL))
 
 def render_input(item, args={ }):
