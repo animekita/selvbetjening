@@ -16,6 +16,7 @@ from events.models import Event
 from events.forms import SignupForm, SignoffForm, OptionsForm
 from events.decorators import event_registration_open_required, event_attendance_required
 from accounting import models as accounting_models
+from core import logger
 
 @login_required
 def visited(request, template_name='events/visited.html'):
@@ -79,6 +80,7 @@ def signup(request, event_id,
         form = form_class(request.POST)
         add_dynamic_options(form)
         if form.is_valid():
+            logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
             event.add_attendee(request.user)
             fetch_and_store_options(form)
             request.user.message_set.create(message=_(u"You are now signed up to the event."))
@@ -111,6 +113,7 @@ def signoff(request, event_id,
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
+            logger.info(request, 'client signed user_id %s off event_id %s' % (request.user.id, event.id))
             event.remove_attendee(request.user)
             request.user.message_set.create(message=_(u"You are now removed from the event."))
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
