@@ -2,7 +2,7 @@
 from datetime import date
 
 from django.db import models, connection
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from datetime import date
 from django.utils.translation import ugettext_lazy as _
 
@@ -48,7 +48,10 @@ class Event(models.Model):
             option.users.remove(user)
     
     def is_attendee(self, user):
-        return (len(self.attend_set.filter(user=user)) == 1)
+        if isinstance(user, AnonymousUser):
+            return False
+        else:
+            return (len(self.attend_set.filter(user=user)) == 1)
     
     def __unicode__(self):
         return _(u"Event %s") % self.title
