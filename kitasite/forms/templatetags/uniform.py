@@ -7,9 +7,18 @@ from forms.uniform import *
 
 register = template.Library()
 
+class IncompatibleFormError:
+    pass
+
 @register.filter(name='uniform')
 def uniform_formrendering(form, submitText):
-    render = '<form method="post" action="" class="uniForm">\n\n'
+    if not isinstance(form, forms.Form):
+        raise IncompatibleFormError()
+    
+    if form.is_multipart:
+        render = '<form enctype="multipart/form-data" method="post" action="" class="uniForm">\n\n'
+    else:
+        render = '<form method="post" action="" class="uniForm">\n\n'
 
     if form.non_field_errors():
         render += '<div id="errorMsg">\n'
@@ -58,6 +67,8 @@ def render_input(item, args={ }):
         return UniformInputCheckbox(item, args=args).render()
     elif isinstance(item.field.widget, (forms.Textarea)):
         return UniformInputTextarea(item, args=args).render()
+    elif isinstance(item.field.widget, (forms.FileInput)):
+        return UniformInputFile(item, args=args).render()
     else:
         return '<div style="color: red">ERROR: UNKNOWN INPUT TYPE %s</div>\n' % item.name
 

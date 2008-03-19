@@ -82,3 +82,10 @@ class UniformInputSelectbox(UniformInputBase):
         self.attrs = {'class' : 'selectInput'}
         
         return self.input.as_widget(widget=forms.widgets.Select(choices=self.input.field.choices), attrs=self.attrs)
+    
+class UniformInputFile(UniformInputText):
+    
+    def __init__(self, *args, **kwargs):
+        super(UniformInputFile, self).__init__(*args, **kwargs)
+        
+        self.attrs = {'class' : 'fileUpload text'}
