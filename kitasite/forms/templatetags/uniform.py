@@ -12,7 +12,7 @@ class IncompatibleFormError:
 
 @register.filter(name='uniform')
 def uniform_formrendering(form, submitText):
-    if not isinstance(form, forms.Form):
+    if not isinstance(form, forms.Form) and not isinstance(form, forms.ModelForm):
         raise IncompatibleFormError()
     
     if form.is_multipart:
