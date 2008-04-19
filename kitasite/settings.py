@@ -4,19 +4,19 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('sema', 'the@sema.dk'),
+    ('admin', 'admin@example.org'),
 )
 
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'animekita'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'root'             # Not used with sqlite3.
+DATABASE_NAME = ''             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = 'localhost'             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-FORUM_DATABASE_NAME = "9_vanilla"
+FORUM_DATABASE_NAME = ''
 FORUM_DATABASE_USER = DATABASE_USER
 FORUM_DATABASE_PASSWORD = DATABASE_PASSWORD
 FORUM_DATABASE_HOST = DATABASE_HOST
@@ -28,7 +28,7 @@ AUTH_PROFILE_MODULE = 'members.UserProfile'
 LOGIN_REDIRECT_URL = "/profil/"
 LOGIN_URL = "/login/"
 
-LOG_FILE = '/home/semadk/Workspace/kita/selvbetjening/trunk/kita-site/log.log'
+LOG_FILE = '/path/to/log.log'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -41,7 +41,7 @@ TIME_ZONE = 'Denmark/Copenhagen'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'da-dk' # default en-us
 
-GOOGLE_ANALYTICS_ACCOUNT = 'UA-300839-6'
+GOOGLE_ANALYTICS_ACCOUNT = ''
 
 SITE_ID = 1
 
@@ -49,16 +49,16 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-SITE_URL = 'http://localhost:8000'
+SITE_URL = 'http://siteurl'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = 'http://static.anime-kita.dk/v2.1/'
+MEDIA_ROOT = '/path/to/static/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://static.anime-kita.dk/v2.1/'
+MEDIA_URL = 'https://path/to/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -84,7 +84,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'kita-site.context_processors.site_urls', 
+    'kitasite.context_processors.site_urls', 
     'django.core.context_processors.i18n',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
@@ -96,7 +96,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/semadk/Workspace/kita/selvbetjening/trunk/kita-site/templates'
+    '/path/to/templates'
 )
 
 INSTALLED_APPS = (
@@ -106,7 +106,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.markup',
-    'django.contrib.webdesign',
     'kitasite.registration',
     'kitasite.members',
     'kitasite.events',
