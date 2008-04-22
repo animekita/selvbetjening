@@ -6,11 +6,11 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib import units
 
-users = [] # contains utf strings u'username firstname lastname' or (u'username firstname lastname', usernameSize, nameSize)
+users = ['  '] # contains utf strings u'username firstname lastname' or (u'username firstname lastname', usernameSize, nameSize)
 
 def drawCard(canvas, x, y, name, alias, usernameSize, nameSize):
     elements = []
-    elements.append(Image('idkort.jpg', units.toLength('75mm'), units.toLength('40mm')))
+    elements.append(Image('idkort-blue.jpg', units.toLength('75mm'), units.toLength('40mm')))
 
     frame = Frame(x, y, 75 * units.mm, 40 * units.mm, showBoundary=0, leftPadding=0, bottomPadding=0, rightPadding=0, topPadding=0)
     frame.addFromList(elements, canvas)
