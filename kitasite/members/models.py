@@ -52,6 +52,9 @@ class UserProfile(models.Model):
     def get_membership_state(self):
         return Payment.objects.get_membership_state(self.user)
     
+    def member_since(self):
+        return Payment.objects.member_since(self.user)
+    
 class EmailChangeRequestManager(models.Manager):
     
     def create_request(self, user, new_email):

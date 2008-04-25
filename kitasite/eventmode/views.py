@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import shortcuts
 from django.shortcuts import render_to_response
 from django.conf import settings
@@ -35,7 +37,11 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
     attend = shortcuts.get_object_or_404(Attend, event=event_id, user=user_id)
     
     membershipState = attend.user.get_profile().get_membership_state()
-    if membershipState == MembershipState.INACTIVE or membershipState == MembershipState.PASSIVE or membershipState == MembershipState.CONDITIONAL_ACTIVE:
+    if membershipState == MembershipState.CONDITIONAL_ACTIVE:
+        if attend.user.get_profile().member_since() == datetime.today():
+            membershipState == MembershipState.ACTIVE
+    
+    if membershipState == MembershipState.INACTIVE or membershipState == MembershipState.PASSIVE:
         needsToPay = True
         if request.method == 'POST':
             form = PaymentForm(request.POST, user=attend.user)

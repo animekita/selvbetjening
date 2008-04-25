@@ -33,7 +33,7 @@ class PaymentManager(models.Manager):
                 return MembershipState.ACTIVE
             else:
                 return MembershipState.CONDITIONAL_ACTIVE
-    
+            
     def member_since(self, user):
         payments = user.payment_set.order_by('-timestamp')
         if len(payments) == 0:
