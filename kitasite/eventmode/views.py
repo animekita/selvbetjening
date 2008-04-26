@@ -40,7 +40,7 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
     
     if membershipState == MembershipState.CONDITIONAL_ACTIVE:
         if attend.user.get_profile().member_since() == datetime.today():
-            membershipState == MembershipState.ACTIVE
+            membershipState = MembershipState.ACTIVE
     
     if membershipState == MembershipState.INACTIVE or membershipState == MembershipState.PASSIVE or membershipState == MembershipState.CONDITIONAL_ACTIVE:
         needsToPay = True
