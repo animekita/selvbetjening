@@ -39,7 +39,7 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
     membershipState = attend.user.get_profile().get_membership_state()
     
     if membershipState == MembershipState.CONDITIONAL_ACTIVE:
-        if attend.user.get_profile().member_since() == datetime.today():
+        if attend.user.get_profile().member_since().date() == datetime.today().date():
             membershipState = MembershipState.ACTIVE
     
     if membershipState == MembershipState.INACTIVE or membershipState == MembershipState.PASSIVE or membershipState == MembershipState.CONDITIONAL_ACTIVE:
