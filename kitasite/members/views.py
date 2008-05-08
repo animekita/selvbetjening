@@ -25,7 +25,7 @@ from events.models import Event
 @login_required
 def profile(request, template_name='members/profile.html'):
 
-    attends = request.user.attend_set.all().order_by('-event_id')
+    attends = request.user.attend_set.all().order_by('-event__id')
     visited_keys = []
     for attend in attends:
         visited_keys.append(attend.event.id)
