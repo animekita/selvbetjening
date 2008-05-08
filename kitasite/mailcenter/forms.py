@@ -23,7 +23,7 @@ class EditMailForm(forms.ModelForm):
         self.instance.date_created = datetime.date.today()
         
     class Meta:
-        layout = ((_('e-mail'), (('subject', {'title' : True, 'display' : 'wide'}), ('body', {'display':'wide'}))),
+        layout = ((_('e-mail'), (('subject', {'title' : True, 'display' : 'block'}), ('body', {'display':'block'}))),
               )
         model = Mail
         fields = ('subject', 'body')

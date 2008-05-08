@@ -47,10 +47,15 @@ class UniformInputBase(object):
 class UniformInputText(UniformInputBase):
     
     def render(self):
-        self.attrs = {'class' : 'textInput text'}
+        self.attrs = {'class' : 'text'}
 
         if self.args.get('title', False):
             self.attrs['class'] += ' title'
+        
+        if self.args.get('display', '') == 'block':
+            self.attrs['class'] += ' textInputWide'
+        else:
+            self.attrs['class'] += ' textInput'
         
         if isinstance(self.input.field, forms.DateField):
             self.attrs['class'] += ' w8em format-d-m-y divider-dash highlight-days-67'
@@ -61,6 +66,9 @@ class UniformInputTextarea(UniformInputBase):
    
     def render(self):
         self.attrs = {'class' : 'text'}
+        
+        if self.args.get('display', '') == 'block':
+            self.attrs['class'] += ' textInputWide'
     
         return UniformInputBase.render(self)    
     
