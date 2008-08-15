@@ -65,12 +65,17 @@ class OptionsForm(forms.Form):
                         selected += 1
 
                 if selected < optiongroup.minimum_selected:
-                    raise forms.ValidationError(ungettext('You need to select one option from the group %(group)s',
-                                                          'You need to select %(count)d options from the group %(group)s',
-                                                          optiongroup.minimum_selected) % {
-                                                              'count' :optiongroup.minimum_selected,
-                                                              'group' : optiongroup.name
-                                                          })
+
+                    args = {'count' :optiongroup.minimum_selected,
+                            'group' : optiongroup.name
+                            }
+
+                    if optiongroup.minimum_selected == 1:
+                        error = _('You need to select one option from the group %(group)s') % args
+                    else:
+                        error = _('You need to select %(count)d options from the group %(group)s') % args
+
+                    raise forms.ValidationError(error)
 
         return self.cleaned_data
 

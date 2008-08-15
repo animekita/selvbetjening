@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-15 20:51+0000\n"
-"PO-Revision-Date: 2008-08-15 22:53+0200\n"
+"POT-Creation-Date: 2008-08-15 21:05+0000\n"
+"PO-Revision-Date: 2008-08-15 23:06+0200\n"
 "Last-Translator: Casper S. Jensen <the@sema.dk>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,13 +21,11 @@ msgstr ""
 msgid "Full subscription"
 msgstr "Fuldt kontingent"
 
-#: accounting/forms.py:15
-#: core/templatetags/core_tags.py:92
+#: accounting/forms.py:15 core/templatetags/core_tags.py:92
 msgid "First rate"
 msgstr "Første rate"
 
-#: accounting/forms.py:16
-#: core/templatetags/core_tags.py:94
+#: accounting/forms.py:16 core/templatetags/core_tags.py:94
 msgid "Second rate"
 msgstr "Anden rate"
 
@@ -39,11 +37,8 @@ msgstr "Betalingstype"
 msgid "Payment type not valid"
 msgstr "Betalingstype ikke mulig"
 
-#: accounting/models.py:94
-#: members/models.py:22
-#: members/models.py:123
-#: registration/forms.py:38
-#: registration/models.py:155
+#: accounting/models.py:94 members/models.py:22 members/models.py:123
+#: registration/forms.py:38 registration/models.py:155
 msgid "user"
 msgstr "Bruger"
 
@@ -56,41 +51,35 @@ msgstr "Årlig rate for %s"
 msgid "Payment noted"
 msgstr "Betaling noteret"
 
-#: booking/forms.py:11
-#: booking/models.py:40
+#: booking/forms.py:11 booking/models.py:40
 msgid "movie title"
 msgstr "Film titel"
 
-#: booking/forms.py:12
-#: booking/models.py:41
-#: events/models.py:18
+#: booking/forms.py:12 booking/models.py:41 events/models.py:18
 msgid "description"
 msgstr "Beskrivelse"
 
-#: booking/forms.py:13
-#: events/models.py:19
+#: booking/forms.py:13 events/models.py:19
 msgid "start date"
 msgstr "Start dato"
 
-#: booking/forms.py:14
-#: booking/models.py:7
-#: booking/models.py:38
+#: booking/forms.py:14 booking/models.py:7 booking/models.py:38
 msgid "start time"
 msgstr "Start tidspunkt"
 
-#: booking/forms.py:15
-#: booking/forms.py:18
-msgid "provide the time in the format HH:MM, minutes must be given in whole quarters."
-msgstr "Angiv tidspunkt som TT:MM, minutter skal angives i hele kvater. F.eks. 14:30 eller 12:15."
+#: booking/forms.py:15 booking/forms.py:18
+msgid ""
+"provide the time in the format HH:MM, minutes must be given in whole "
+"quarters."
+msgstr ""
+"Angiv tidspunkt som TT:MM, minutter skal angives i hele kvater. F.eks. 14:30 "
+"eller 12:15."
 
-#: booking/forms.py:16
-#: events/models.py:20
+#: booking/forms.py:16 events/models.py:20
 msgid "end date"
 msgstr "Slut dato"
 
-#: booking/forms.py:17
-#: booking/models.py:8
-#: booking/models.py:39
+#: booking/forms.py:17 booking/models.py:8 booking/models.py:39
 msgid "end time"
 msgstr "Slut tidspunkt"
 
@@ -102,13 +91,11 @@ msgstr "Reservation"
 msgid "time"
 msgstr "Tidspunkt"
 
-#: booking/forms.py:46
-#: booking/forms.py:52
+#: booking/forms.py:46 booking/forms.py:52
 msgid "Enter a valid date."
 msgstr "Indtast en gyldig dato."
 
-#: booking/forms.py:58
-#: booking/forms.py:64
+#: booking/forms.py:58 booking/forms.py:64
 msgid "Minutes must be dividable by 15"
 msgstr "Minutterne skal være dividerbare med 15."
 
@@ -124,13 +111,11 @@ msgstr "Biografnavn"
 msgid "open for reservations"
 msgstr "Åben for reservationer"
 
-#: core/forms.py:13
-#: events/forms.py:12
+#: core/forms.py:13 events/forms.py:12
 msgid "I have read and accept the above described terms"
 msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
 
-#: core/forms.py:16
-#: events/forms.py:15
+#: core/forms.py:16 events/forms.py:15
 msgid "You must accept to participate in the event"
 msgstr "Du skal acceptere for at deltage i arrangementet."
 
@@ -194,10 +179,15 @@ msgstr "Ja, afmeld mig fra dette arrangement"
 msgid "You must accept to remove your participation in the event"
 msgstr "Du skal acceptere for at blive afmeldt arrangementet"
 
-#: events/forms.py:68
+#: events/forms.py:74
 #, python-format
 msgid "You need to select one option from the group %(group)s"
 msgstr "Du skal vælge mindst et tilvag fra gruppen %(group)s"
+
+#: events/forms.py:76
+#, python-format
+msgid "You need to select %(count)d options from the group %(group)s"
+msgstr "Du skal vælge mindst %(count)d tilvag fra gruppen %(group)s"
 
 #: events/models.py:17
 msgid "title"
@@ -220,13 +210,11 @@ msgstr "Events"
 msgid "Event %s"
 msgstr "Event %s"
 
-#: events/models.py:67
-#: events/models.py:77
+#: events/models.py:67 events/models.py:77
 msgid "Name"
 msgstr "Navn"
 
-#: events/models.py:68
-#: events/models.py:78
+#: events/models.py:68 events/models.py:78
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -293,9 +281,7 @@ msgstr "En test email er blevet sendt til %s"
 msgid "new email"
 msgstr "Ny email"
 
-#: members/forms.py:20
-#: members/forms.py:124
-#: migration/forms.py:23
+#: members/forms.py:20 members/forms.py:124 migration/forms.py:23
 #: registration/forms.py:26
 msgid "password"
 msgstr "Kodeord"
@@ -312,8 +298,7 @@ msgstr "Fornavn"
 msgid "last name"
 msgstr "Efternavn"
 
-#: members/forms.py:56
-#: members/models.py:23
+#: members/forms.py:56 members/models.py:23
 msgid "date of birth"
 msgstr "Fødselsdag"
 
@@ -322,23 +307,19 @@ msgstr "Fødselsdag"
 msgid "State your date of birth using the format %(format)s."
 msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
 
-#: members/forms.py:62
-#: members/models.py:24
+#: members/forms.py:62 members/models.py:24
 msgid "street"
 msgstr "Vej"
 
-#: members/forms.py:64
-#: members/models.py:25
+#: members/forms.py:64 members/models.py:25
 msgid "postal code"
 msgstr "Postnummer"
 
-#: members/forms.py:68
-#: members/models.py:26
+#: members/forms.py:68 members/models.py:26
 msgid "city"
 msgstr "By"
 
-#: members/forms.py:70
-#: members/models.py:27
+#: members/forms.py:70 members/models.py:27
 msgid "phonenumber"
 msgstr "Telefonnummer"
 
@@ -346,13 +327,11 @@ msgstr "Telefonnummer"
 msgid "Inform me about events and other important changes in Anime Kita."
 msgstr "Informer mig omkring arrangementer og andre tiltag i Anime Kita."
 
-#: members/forms.py:78
-#: registration/forms.py:36
+#: members/forms.py:78 registration/forms.py:36
 msgid "personal information"
 msgstr "Personoplysninger"
 
-#: members/forms.py:79
-#: registration/forms.py:37
+#: members/forms.py:79 registration/forms.py:37
 msgid "address"
 msgstr "Adresse"
 
@@ -368,8 +347,7 @@ msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 msgid "new password"
 msgstr "Nyt kodeord"
 
-#: members/forms.py:126
-#: registration/forms.py:28
+#: members/forms.py:126 registration/forms.py:28
 msgid "verify password"
 msgstr "Gentag kodeord"
 
@@ -377,8 +355,7 @@ msgstr "Gentag kodeord"
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "Dit gamle kodeord var ikke korrekt. Indtast det venligst igen."
 
-#: members/forms.py:147
-#: registration/forms.py:78
+#: members/forms.py:147 registration/forms.py:78
 msgid "You must type the same password each time"
 msgstr "De to indtastede kodeord stemmer ikke overens."
 
@@ -403,8 +380,7 @@ msgstr "Adresse"
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
 
-#: members/models.py:124
-#: registration/forms.py:30
+#: members/models.py:124 registration/forms.py:30
 msgid "email"
 msgstr "Email"
 
@@ -435,14 +411,15 @@ msgstr "Dine personoplysninger er blevet opdateret"
 
 #: members/views.py:79
 msgid "An email has been sent to your old email to verify your email change."
-msgstr "En email er blevet sendt til din gamle email for at godkende dit skift af email adresse."
+msgstr ""
+"En email er blevet sendt til din gamle email for at godkende dit skift af "
+"email adresse."
 
 #: members/views.py:101
 msgid "Your password have been changed"
 msgstr "Dit kodeord er blevet ændret."
 
-#: migration/forms.py:20
-#: registration/forms.py:23
+#: migration/forms.py:20 registration/forms.py:23
 msgid "username"
 msgstr "Brugernavn"
 
@@ -455,12 +432,14 @@ msgid "Please enter a correct username and password."
 msgstr "Indtast venligst et korrekt brugernavn og kodeord."
 
 #: registration/forms.py:24
-msgid "Your username can only contain the characters a-z, underscore and numbers."
+msgid ""
+"Your username can only contain the characters a-z, underscore and numbers."
 msgstr "Dit brugernavn må kun indeholde tegnene a-z 0-9 og _"
 
 #: registration/forms.py:33
 msgid "I allow Anime Kita to store my personal information."
-msgstr "Jeg accepterer at Anime Kita gemmer de personoplysninger jeg vidergiver."
+msgstr ""
+"Jeg accepterer at Anime Kita gemmer de personoplysninger jeg vidergiver."
 
 #: registration/forms.py:39
 msgid "data management terms"
@@ -474,8 +453,7 @@ msgstr "Uden din accept kan vi desværre ikke oprette en bruger til dig."
 msgid "Usernames can only contain letters, numbers and underscores"
 msgstr "Brugernavne kan kun indeholde tegnene a-z 0-9 og _."
 
-#: registration/forms.py:57
-#: registration/forms.py:64
+#: registration/forms.py:57 registration/forms.py:64
 msgid "This username is already taken. Please choose another."
 msgstr "Dette brugernavn er allerede i brug. Vælg venligst et andet."
 
@@ -510,6 +488,7 @@ msgstr "Din konto er blevet oprettet."
 #, fuzzy
 #~ msgid "descriptionbb"
 #~ msgstr "Beskrivelse"
+
 #~ msgid ""
 #~ "I allow Anime Kita to store my personal information. Read more about our "
 #~ "datastorage policy <a href=\"%s\">here</a>"
@@ -517,11 +496,13 @@ msgstr "Din konto er blevet oprettet."
 #~ "Jeg accepterer at Anime Kita gemmer de personoplysninger jeg vidergiver. "
 #~ "Du kan læse mere om hvordan vi behandler vores brugeres oplysninger <a "
 #~ "href=\"%s\">her</a>."
+
 #~ msgid "I accept the given terms"
 #~ msgstr "Jeg acceptere de givne betingelser."
 
 #, fuzzy
 #~ msgid "I agree to the given terms."
 #~ msgstr "Jeg acceptere de givne betingelser."
+
 #~ msgid "Personal information"
 #~ msgstr "Dine personlige oplysninger"
