@@ -4,6 +4,8 @@
 Views which allow users to create and activate accounts.
 
 """
+import datetime
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -30,17 +32,17 @@ def profile(request, template_name='members/profile.html'):
     for attend in attends:
         visited_keys.append(attend.event.id)
 
-    return render_to_response(template_name, 
+    return render_to_response(template_name,
                               {'membership_status' : Payment.objects.get_membership_state(request.user),
                                'membership_date' : Payment.objects.member_since(request.user),
                                'membership_to' : Payment.objects.member_to(request.user),
                                'membership_passive_to' : Payment.objects.passive_to(request.user),
                                'attends' : attends,
-                               'events_new' : Event.objects.exclude(id__in=visited_keys).filter(registration_open__exact=1) },
+                               'events_new' : Event.objects.exclude(id__in=visited_keys).filter(enddate__gte=datetime.date.today()).filter(registration_open__exact=1) },
                               context_instance=RequestContext(request))
 
 @login_required
-def profile_edit(request, 
+def profile_edit(request,
                  template_name='members/profile_edit.html',
                  success_page='members_profile',
                  form_class=ProfileForm):
@@ -53,15 +55,15 @@ def profile_edit(request,
     else:
         user = request.user
         profile = user.get_profile()
-        form = form_class(initial={'first_name':user.first_name, 
-                                   'last_name':user.last_name, 
+        form = form_class(initial={'first_name':user.first_name,
+                                   'last_name':user.last_name,
                                    'dateofbirth':profile.dateofbirth.strftime('%d-%m-%Y'),
                                    'street':profile.street,
                                    'city':profile.city,
                                    'postalcode':profile.postalcode,
                                    'phonenumber':profile.phonenumber,
                                   })
-    
+
     return render_to_response(template_name, {'form' : form}, context_instance=RequestContext(request))
 
 @login_required
@@ -78,20 +80,20 @@ def profile_change_email(request,
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = form_class()
-    
+
     return render_to_response(template_name, {'form' : form }, context_instance=RequestContext(request))
 
-def profile_change_email_confirm(request, 
+def profile_change_email_confirm(request,
                                  key,
                                  template_name='members/profile_change_email_done.html'):
-    
+
     result = EmailChangeRequest.objects.confirm(key)
-    
+
     return render_to_response(template_name, { 'success' : result }, context_instance=RequestContext(request))
 
 @login_required
 def password_change(request, template_name='members/password_change_form.html', success_page='members_profile'):
-    
+
     if request.method == "POST":
         form = PasswordChangeForm(request.POST, user=request.user)
         if form.is_valid():
@@ -100,6 +102,6 @@ def password_change(request, template_name='members/password_change_form.html', 
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = PasswordChangeForm(user=request.user)
-        
+
     return render_to_response(template_name, {'form' : form},
         context_instance=RequestContext(request))

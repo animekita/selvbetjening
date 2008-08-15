@@ -10,21 +10,17 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth import login, authenticate
 
-from django import oldforms
-
 from eventmode.decorators import eventmode_required
-from registration.models import RegistrationProfile
-from registration.forms import RegistrationForm, CreateForm
 from core import messaging
 
+from models import RegistrationProfile
+from forms import CreateForm
+
 def activate(request, activation_key, template_name='registration/activate.html'):
-    """
-    Activates a ``User``'s account, if their key is valid and hasn't expired.
-    
-    """
+    """ Activates a ``User``'s account, if their key is valid and hasn't expired. """
+
     activation_key = activation_key.lower() # Normalize before trying anything with it.
     account = RegistrationProfile.objects.activate_user(activation_key)
     return render_to_response(template_name,
@@ -35,20 +31,18 @@ def activate(request, activation_key, template_name='registration/activate.html'
 
 
 def register(request, success_page='registration_complete',
-             form_class=RegistrationForm,
+             form_class=CreateForm,
              template_name='registration/registration_form.html'):
-    """
-    Allows a new user to register an account.
-    
-    """
+    """ Allows a new user to register an account. """
+
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            new_user = form.save()
+            form.save()
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = form_class()
-        
+
     return render_to_response(template_name,
                               { 'form': form },
                               context_instance=RequestContext(request))
@@ -61,15 +55,15 @@ def create_and_signup(request,
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            new_user = form.save()
-            login(request, authenticate(username=form.cleaned_data['username'], 
+            form.save()
+            login(request, authenticate(username=form.cleaned_data['username'],
                                         password=form.cleaned_data['password1']))
             messaging.write(request, _('Your user account has been created.'))
-            return HttpResponseRedirect(reverse('events_signup', 
+            return HttpResponseRedirect(reverse('events_signup',
                                                 kwargs={'event_id' : request.eventmode.get_model().event.id}))
     else:
         form = form_class()
-        
+
     return render_to_response(template_name,
                               { 'form': form },
                               context_instance=RequestContext(request))

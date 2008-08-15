@@ -1,22 +1,26 @@
 # Django settings for membersite project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+import os
+
+DIRNAME = os.path.abspath(os.path.dirname(__file__))
+
 ADMINS = (
-    ('admin', 'admin@example.org'),
+    #('admin', 'admin@example.org'),
 )
 
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_NAME = 'kita_selv'             # Or path to database file if ing sqlite3.
+DATABASE_USER = 'root'             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-FORUM_DATABASE_NAME = ''
+FORUM_DATABASE_NAME = 'kita_forum'
 FORUM_DATABASE_USER = DATABASE_USER
 FORUM_DATABASE_PASSWORD = DATABASE_PASSWORD
 FORUM_DATABASE_HOST = DATABASE_HOST
@@ -28,7 +32,7 @@ AUTH_PROFILE_MODULE = 'members.UserProfile'
 LOGIN_REDIRECT_URL = "/profil/"
 LOGIN_URL = "/login/"
 
-LOG_FILE = '/path/to/log.log'
+LOG_FILE = 'log.log'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -49,16 +53,16 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-SITE_URL = 'http://siteurl'
+SITE_URL = 'http://127.0.0.1:8000'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/path/to/static/'
+MEDIA_ROOT = os.path.join(DIRNAME, 'static/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'https://path/to/static/'
+MEDIA_URL = 'https://selvbetjening.anime-kita.dk/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -84,7 +88,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'kitasite.context_processors.site_urls', 
+    'kitasite.context_processors.site_urls',
     'django.core.context_processors.i18n',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
@@ -96,14 +100,13 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/path/to/templates'
+    os.path.join(DIRNAME, 'templates')
 )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.markup',
     'kitasite.registration',
@@ -125,8 +128,7 @@ logging.basicConfig(
     level=logging.NOTSET,
     format='%(asctime)s %(clientip)s %(user)s %(levelname)-8s %(message)s',
     datefmt='%m-%d %H:%M',
-    #change as needed
-    filename=LOG_FILE, 
+    filename=LOG_FILE,
     filemode='a'
 )
 logging.getLogger('').setLevel(logging.NOTSET)

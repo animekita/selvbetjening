@@ -38,7 +38,12 @@
 <p>Bemærk at du skal betale anden del af dit kontingent til dette arrangement. Der er muliged for at betale dette ved arrangementet.</p>
 {% endifequal %}
 
+{{form|uniform_start}}
+{{form|uniform_add}}
 
-{{form|uniform:"tilmeld"}}
+<h2>Tilvalg</h2>
+
+{{optionsform|uniform_add:"tilmeld"}}
+{{form|uniform_end}}
 
 {% endblock %}
