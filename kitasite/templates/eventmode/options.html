@@ -13,26 +13,33 @@
 
 {% block content %}
 
-{% if options %}
+{% if optiongroups %}
 
     <table class="horizontal">
     <tr>
-        <th>Beskrivelse</th>
+        <th>Navn</th>
         <th>Valgte</th>
         <th style="width:30%">&nbsp;</th>
     </tr>
-    
-    {% for option in options %}
-        <tr>
-            <td>{{option.description}}</td>
-            <td>{{option.count}}</td>
-            <td>
-                {% icon_link "detaljer" page_white_text eventmode_options_detail event.id option.id %}
-            </td>
-        </tr>
+    {% for optiongroup in optiongroups %}
+
+    <tr>
+        <td colspan="3"><b>{{optiongroup.name}}</b></td>
+    </tr>
+
+        {% for option in optiongroup.option_set.all %}
+            <tr>
+                <td>{{option.name}}</td>
+                <td>{{option.count}}</td>
+                <td>
+                    {% icon_link "detaljer" page_white_text eventmode_options_detail event.id option.id %}
+                </td>
+            </tr>
+        {% endfor %}
+
     {% endfor %}
     </table>
-    
+
 {% else %}
 
     <p>Ingen tilføjede tilvalg.</p>
