@@ -18,7 +18,6 @@
 
 <table>
 <tr>
-    <th>&nbsp;</th>
     <th>Subject</th>
     <th>Date</th>
     <th>Status</th>
@@ -26,14 +25,14 @@
 </tr>
 {% for mail in mails %}
 <tr>
-    <td>{% icon "email" email_open email %}</td>
-    <td>{{mail.subject}}</td>
+    <td><a href="{% url mailcenter_view mail.id %}" title="{{mail.subject}}">{{mail.subject|truncatewords:4}}</a></td>
     <td>{{mail.date_created}}</td>
     <td>{% if mail.is_draft %}draft{% else %}sendt{% endif %}</td>
     <td>
-        {% icon_link "vis" email mailcenter_view mail.id %}
         {% if mail.is_draft %}
         {% icon_link "rediger" email_edit mailcenter_edit mail.id %}
+        {% else %}
+        {% icon_link "se kode" email mailcenter_source mail.id %}
         {% endif %}
         {% icon_link "send" email_go mailcenter_send mail.id %}
         {% icon_link "send draft" email_error mailcenter_send_test mail.id %}

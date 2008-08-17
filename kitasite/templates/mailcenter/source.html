@@ -2,10 +2,6 @@
 
 {% load core_tags uniform markup %}
 
-{% block extraheader %}
-    {% uniform_header %}
-{% endblock %}
-
 {% block breadcrumbs %}
 <li><a href="{% url mailcenter_list %}">e-mails</a>&nbsp;&gt;&nbsp;</li>
 <li><a href="{% url mailcenter_view mail.id %}">{{mail.subject|truncatewords:4}}</a></li>
@@ -17,8 +13,8 @@
 
 {% block content %}
 
-<i>
-{{mail.body|restructuredtext}}
-</i>
+<p>
+{{mail.body|linebreaksbr}}
+</p>
 
 {% endblock %}
