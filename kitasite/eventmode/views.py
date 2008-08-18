@@ -100,16 +100,24 @@ def event_list(request, template_name='eventmode/list.html'):
 def event_statistics(request, event_id, template_name='eventmode/statistics.html'):
     event = get_object_or_404(Event, id=event_id)
 
+    checkedin_precentage = 0
+    if event.attendees_count > 0:
+        checkedin_precentage = 100 * float(event.checkedin_count) / float(event.attendees_count)
+
     new = 0
     for attendee in event.attendees:
         if attendee.is_first_attended:
             new += 1
 
+    attendees_precentage = 0
+    if event.checkedin_count > 0:
+        attendees_precentage = 100 * float(new) / float(event.checkedin_count)
+
     return render_to_response(template_name,
                               {'event' : event,
-                               'checkin_precentage' : 100 * float(event.checkedin_count) / float(event.attendees_count),
+                               'checkin_precentage' : checkedin_precentage,
                                'new_attendees' : new,
-                               'new_attendees_precentage' :  100 * float(new) / float(event.checkedin_count)} ,
+                               'new_attendees_precentage' : attendees_precentage} ,
                               context_instance=RequestContext(request))
 
 def activate_mode(request, template_name='eventmode/activate_mode.html',
