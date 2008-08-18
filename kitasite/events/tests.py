@@ -98,17 +98,12 @@ class AttendModelTestCase(TestCase):
     def setUp(self):
         DatabaseSetup.setup(self)
 
-    def test_is_first(self):
-        attend = self.user2.attend_set.get(event=self.event2)
-
-        self.assertTrue(attend.is_first)
-
-    def test_is_first_attended(self):
+    def test_is_new(self):
         attend1 = self.user1.attend_set.get(event=self.event2)
         attend2 = self.user2.attend_set.get(event=self.event2)
 
-        self.assertFalse(attend1.is_first_attended)
-        self.assertTrue(attend2.is_first_attended)
+        self.assertTrue(attend1.is_new)
+        self.assertTrue(attend2.is_new)
 
 class EventModelTestCase(TestCase):
 

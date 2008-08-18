@@ -76,13 +76,9 @@ class Attend(models.Model):
     user = models.ForeignKey(User)
     has_attended = models.BooleanField()
 
-    def _is_first(self):
-        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).count() == 0
-    is_first = property(_is_first)
-
-    def _is_first_attended(self):
-        return self.has_attended and self.is_first
-    is_first_attended = property(_is_first_attended)
+    def _is_new(self):
+        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
+    is_new = property(_is_new)
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)
