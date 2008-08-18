@@ -38,6 +38,20 @@ class Event(models.Model):
 
     def get_attendees(self):
         return self.attend_set.all().order_by('id')
+    attendees = property(get_attendees)
+
+    def _attendees_count(self):
+        return self.get_attendees().count()
+    attendees_count = property(_attendees_count)
+
+    def _checkedin(self):
+        return self.get_attendees().filter(has_attended=True)
+    checkedin = property(_checkedin)
+
+    def _checkedin_count(self):
+        return self.checkedin.count()
+    checkedin_count = property(_checkedin_count)
+
 
     def add_attendee(self, user, has_attended=False):
         Attend.objects.create(user=user, has_attended=has_attended, event=self)
@@ -51,7 +65,7 @@ class Event(models.Model):
         if isinstance(user, AnonymousUser):
             return False
         else:
-            return (len(self.attend_set.filter(user=user)) == 1)
+            return self.attend_set.filter(user=user).count() == 1
 
     def __unicode__(self):
         return _(u"Event %s") % self.title
@@ -61,6 +75,14 @@ class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
     has_attended = models.BooleanField()
+
+    def _is_first(self):
+        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).count() == 0
+    is_first = property(_is_first)
+
+    def _is_first_attended(self):
+        return self.has_attended and self.is_first
+    is_first_attended = property(_is_first_attended)
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)

@@ -95,6 +95,23 @@ def event_list(request, template_name='eventmode/list.html'):
     return render_to_response(template_name, {'events' : Event.objects.all()},
                               context_instance=RequestContext(request))
 
+@permission_required('events.change_attend')
+@log_access
+def event_statistics(request, event_id, template_name='eventmode/statistics.html'):
+    event = get_object_or_404(Event, id=event_id)
+
+    new = 0
+    for attendee in event.attendees:
+        if attendee.is_first_attended:
+            new += 1
+
+    return render_to_response(template_name,
+                              {'event' : event,
+                               'checkin_precentage' : 100 * float(event.checkedin_count) / float(event.attendees_count),
+                               'new_attendees' : new,
+                               'new_attendees_precentage' :  100 * float(new) / float(event.checkedin_count)} ,
+                              context_instance=RequestContext(request))
+
 def activate_mode(request, template_name='eventmode/activate_mode.html',
                   form_class=EventmodeAccessForm, success_page='home'):
 

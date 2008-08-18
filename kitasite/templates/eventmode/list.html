@@ -21,7 +21,7 @@
         <th>År</th>
         <th style="width:30%">&nbsp;</th>
     </tr>
-    
+
     {% for event in events %}
         <tr>
             <td>{{event.title}}</td>
@@ -30,11 +30,12 @@
             <td>
             {% icon_link "checkin" user_go eventmode_checkin event.id %}
             {% icon_link "tilvalg" book_open eventmode_options event.id %}
+            {% icon_link "statistik" chart_pie eventmode_statistics event.id %}
             </td>
         </tr>
     {% endfor %}
     </table>
-    
+
 {% else %}
 
     <p>Ingen registrerede arrangementer.</p>
