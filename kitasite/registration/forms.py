@@ -100,7 +100,7 @@ class CreateForm(RegistrationForm):
     """ Create user, skipping email validation. """
 
     def save(self):
-        return RegistrationProfile.objects.create_user(
+        user = RegistrationProfile.objects.create_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
@@ -112,4 +112,8 @@ class CreateForm(RegistrationForm):
             city=self.cleaned_data['city'],
             phonenumber=self.cleaned_data['phonenumber'],
             send_me_email=self.cleaned_data['send_me_email'])
+        
+        RegistrationProfile.objects.create_forum_user(user, RegistrationProfile.objects.prepare_password_for_forum(self.cleaned_data['password1']))
+        
+        return user
 

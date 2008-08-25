@@ -45,19 +45,22 @@ class RegistrationManager(models.Manager):
             user.is_active = True
             user.save()
             
-            # Check if the forum-user already exists. (user migration)
-            vf = coremodels.VanillaForum()
-            if not vf.userExists(user.username):
-                vf.createUser(Name = user.username, 
-                              Password=profile.forumPass, 
-                              Email=user.email, 
-                              FirstName=user.first_name, 
-                              LastName=user.last_name)
+            self.create_forum_user(user, profile.forumPass)
             
             profile.delete()
             return user
             
         return False  
+    
+    def create_forum_user(self, user, password):
+        # Check if the forum-user already exists. (user migration)
+        vf = coremodels.VanillaForum()
+        if not vf.userExists(user.username):
+            vf.createUser(Name = user.username, 
+                          Password=password, 
+                          Email=user.email, 
+                          FirstName=user.first_name, 
+                          LastName=user.last_name)
 
     def create_user(self, username, password, email, dateofbirth, 
                     last_name, first_name, city, street, postalcode, 
@@ -116,6 +119,9 @@ class RegistrationManager(models.Manager):
         connection = SMTPConnection()
         connection.send_messages([msg])
     
+    def prepare_password_for_forum(self, password):
+        return md5.new(password.encode('utf-8')).hexdigest()
+        
     def create_registration_profile(self, user, forumPassword):
         """
         Returns the ``RegistrationProfile``.
@@ -124,7 +130,7 @@ class RegistrationManager(models.Manager):
         salt = sha.new(str(random.random())).hexdigest()[:5]
         return self.create(user=user,
                            activation_key = sha.new(salt+user.username).hexdigest(),
-                           forumPass = md5.new(forumPassword.encode('utf-8')).hexdigest())
+                           forumPass = self.prepare_password_for_forum(forumPassword))
         
     def delete_expired_users(self):
         """
