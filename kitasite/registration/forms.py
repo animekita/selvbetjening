@@ -5,7 +5,6 @@ Forms and validation code for user registration.
 
 """
 from django import forms
-from django.core.validators import alnum_re
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
@@ -112,8 +111,8 @@ class CreateForm(RegistrationForm):
             city=self.cleaned_data['city'],
             phonenumber=self.cleaned_data['phonenumber'],
             send_me_email=self.cleaned_data['send_me_email'])
-        
+
         RegistrationProfile.objects.create_forum_user(user, RegistrationProfile.objects.prepare_password_for_forum(self.cleaned_data['password1']))
-        
+
         return user
 

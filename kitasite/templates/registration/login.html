@@ -16,7 +16,7 @@
 
 {% block content %}
 
-<p>Hvis du ikke har oprettet en bruger på vores hjemmeside, kan du gøre det <a href="{% url registration_register %}">her</a>. Har du en bruger på vores forum, kan du migrere denne bruger til selve hjemmsiden ved hjælp af vore <a href="{% url migrate_vanillaforum %}">migreringsværktøj</a>.</p>
+<p>Hvis du ikke har oprettet en bruger på vores hjemmeside, skal du først <a href="{% url registration_register %}">oprette en bruger</a>.</p>
 
 <form method="post" action="" class="uniForm">
 
@@ -46,6 +46,7 @@
 </form>
 <ul class="table-options">
     <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>
+    <li>&#187; <a href="{% url registration_register %}">Opret bruger</a></li>
 </ul>
 
 {% endblock %}

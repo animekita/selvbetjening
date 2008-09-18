@@ -14,8 +14,6 @@ from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext as _
 
-from django import oldforms
-
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
 

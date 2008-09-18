@@ -114,7 +114,6 @@ INSTALLED_APPS = (
     'kitasite.events',
     'kitasite.forms',
     'kitasite.core',
-    'kitasite.migration',
     'kitasite.accounting',
     'kitasite.eventmode',
     'kitasite.booking',
