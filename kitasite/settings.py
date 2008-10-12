@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'kitasite.eventmode',
     'kitasite.booking',
     'kitasite.mailcenter',
+    'kitasite.medals',
 )
 
 # Initialize Logging

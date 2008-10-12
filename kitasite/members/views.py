@@ -21,10 +21,13 @@ from members.forms import ProfileForm, ProfileChangeEmailForm, PasswordChangeFor
 from registration.models import RegistrationProfile
 from accounting.models import Payment
 from events.models import Event
+from medals.models import Medal
+
+def profile_public(request, username, template_name='members/profile_public.html'):
+
 
 @login_required
 def profile(request, template_name='members/profile.html'):
-
     attends = request.user.attend_set.all().order_by('-event__id')
     visited_keys = []
     for attend in attends:
@@ -36,6 +39,7 @@ def profile(request, template_name='members/profile.html'):
                                'membership_to' : Payment.objects.member_to(request.user),
                                'membership_passive_to' : Payment.objects.passive_to(request.user),
                                'attends' : attends,
+                               'medals' : request.user.medal_set.all(),
                                'events_new' : Event.objects.exclude(id__in=visited_keys).filter(enddate__gte=datetime.date.today()).filter(registration_open__exact=1) },
                               context_instance=RequestContext(request))
 

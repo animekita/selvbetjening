@@ -93,7 +93,7 @@
         <th>År</th>
         <th>&nbsp;
     </tr>
-    
+
     {% for event in events_new %}
         <tr>
             <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
@@ -102,7 +102,7 @@
             <td>{% if event.registration_open %}Åben for tilmelding{% endif %}</td>
         </tr>
     {% endfor %}
-    
+
     {% for attend in attends %}
         <tr>
             <td><a href="{% url events_view attend.event.id %}">{{attend.event.title}}</a></td>
@@ -111,12 +111,22 @@
             <td>Tilmeldt{% if attend.event.has_been_held %} / Afholdt{% endif %}</td>
         </tr>
     {% endfor %}
-    
+
     {% if not attends and not events_new %}
         <tr>
             <td colspan="4">Ingen nævnværdige arrangementer.</td>
         </tr>
     {% endif %}
     </table>
-    
+
+<h3>Medaljer</h3>
+    <table class="horizontal">
+
+    {% for medal in medals %}
+    <tr>
+        <td><img src="{{medal.icon.filename}}" />{{medal.title}}</td>
+    </tr>
+    {% endfor %}
+
+    </table>
 {% endblock %}
