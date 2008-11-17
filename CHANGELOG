@@ -1,3 +1,6 @@
 1.0.0dev
 
+* Renamed registration to quickregistration
+* Removed RegistrationProfile model from quickregistration
+
 0.0.0 Chi (SLOC 2.945)

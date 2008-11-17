@@ -17,7 +17,6 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
 
-from selvbetjening.registration.models import RegistrationProfile
 from selvbetjening.accounting.models import Payment
 from selvbetjening.events.models import Event
 from selvbetjening.medals.models import Medal

@@ -4,7 +4,6 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from selvbetjening.registration.models import RegistrationProfile
 #- from selvbetjening.core import models as coremodel
 
 from models import UserProfile, EmailChangeRequest
