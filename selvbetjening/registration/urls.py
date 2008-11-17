@@ -6,9 +6,6 @@ from views import activate, register, create_and_signup
 urlpatterns = patterns('',
     url(r'^$', register, name='registration_register'),
     url(r'^direct/$', create_and_signup, name='registration_create_and_signup'),
-    url(r'^email-sendt/$', direct_to_template,
-        {'template': 'registration/registration_complete.html'}, name='registration_email_sendt'),
     url(r'^velkommen/$', direct_to_template,
-        {'template': 'registration/welcome.html'}, name='registration_complete'),
-    url(r'^aktiver/(?P<activation_key>\w+)/$', activate, name='registration_activate'),
+        {'template': 'registration/welcome.html'}, name='registration_complete')
 )

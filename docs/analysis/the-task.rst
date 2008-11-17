@@ -22,7 +22,7 @@ Kontekst
 Problem Området
 ^^^^^^^^^^^^^^^
 
-Det helt centrale i foreningen er nuværende, kommende og tidligere medlemmer. Disse kan være associeret med forskellige elementer såsom arrangementer de vil deltage eller har deltaget i, betalinger de har udført til foreningen og nyhedsbreve de har modtaget.
+Det helt centrale i foreningen er nuværende, kommende og tidligere medlemmer. Disse kan være associeret med forskellige elementer såsom arrangementer de vil, eller har, deltaget i, betalinger de har udført til foreningen og nyhedsbreve de har modtaget.
 
 Anvendelses Området
 ^^^^^^^^^^^^^^^^^^^

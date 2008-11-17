@@ -18,18 +18,6 @@ from selvbetjening.core import messaging
 from models import RegistrationProfile
 from forms import CreateForm
 
-def activate(request, activation_key, template_name='registration/activate.html'):
-    """ Activates a ``User``'s account, if their key is valid and hasn't expired. """
-
-    activation_key = activation_key.lower() # Normalize before trying anything with it.
-    account = RegistrationProfile.objects.activate_user(activation_key)
-    return render_to_response(template_name,
-                              { 'account': account,
-                                'success': not account == False,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
-                              context_instance=RequestContext(request))
-
-
 def register(request, success_page='registration_complete',
              form_class=CreateForm,
              template_name='registration/registration_form.html'):

@@ -27,6 +27,15 @@ Design
 
    design/*
 
+Moduler
+=======
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   modules/*.rst
+
 Appendix
 ========
 
