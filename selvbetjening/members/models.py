@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User                                     # for the  userprofile's foreignkey field
 from django.template.loader import render_to_string
 
-from selvbetjening.core import models as coremodels
+#- from selvbetjening.core import models as coremodels
 from selvbetjening.accounting.models import Payment
 
 class UserProfile(models.Model):
@@ -103,8 +103,9 @@ class EmailChangeRequestManager(models.Manager):
         ecr.user.save()
 
         # set the new email for the forum system
-        vf = coremodels.VanillaForum()
-        vf.changeUserEmail(ecr.user.username, ecr.new_email)
+        #- TODO UserEmailChangeHook
+        #- vf = coremodels.VanillaForum()
+        #- vf.changeUserEmail(ecr.user.username, ecr.new_email)
 
         # delete the ecr request
         ecr.delete()
@@ -126,9 +127,6 @@ class EmailChangeRequest(models.Model):
     class Meta:
         verbose_name = _(u'email change request')
         verbose_name_plural = _(u'email change requests')
-
-    class Admin:
-        pass
 
     def __unicode__(self):
         return _(u"Email change request or %s") % self.user

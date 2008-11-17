@@ -4,9 +4,10 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from members.models import UserProfile, EmailChangeRequest
-from registration.models import RegistrationProfile
-from core import models as coremodel
+from selvbetjening.registration.models import RegistrationProfile
+#- from selvbetjening.core import models as coremodel
+
+from models import UserProfile, EmailChangeRequest
 
 class ProfileChangeEmailForm(forms.Form):
     """
@@ -156,5 +157,6 @@ class PasswordChangeForm(forms.Form):
         self.user.save()
 
         # set the new password for the forum
-        vf = coremodel.VanillaForum()
-        vf.changeUserPassword(self.user.username, self.cleaned_data["new_password1"])
+        #- TODO NewPasswordHook
+        #- vf = coremodel.VanillaForum()
+        #- vf.changeUserPassword(self.user.username, self.cleaned_data["new_password1"])

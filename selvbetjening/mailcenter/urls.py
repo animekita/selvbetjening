@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from mailcenter import views
+import views
 
 urlpatterns = patterns('',
     url(r'^show/(?P<mail_id>[0-9]+)/send/', views.send_mails, name='mailcenter_send'),

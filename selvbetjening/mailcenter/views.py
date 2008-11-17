@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required, permission_required
 
-from mailcenter.models import Mail
-from mailcenter.forms import CreateMailForm, EditMailForm, SendPreviewEmailForm, SelectGroupForm, ConfirmGroupForm
+from models import Mail
+from forms import CreateMailForm, EditMailForm, SendPreviewEmailForm, SelectGroupForm, ConfirmGroupForm
 
 @permission_required('mailcenter.add_mail')
 def list_mails(request,

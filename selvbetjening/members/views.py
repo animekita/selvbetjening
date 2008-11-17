@@ -17,14 +17,12 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
 
-from members.forms import ProfileForm, ProfileChangeEmailForm, PasswordChangeForm, EmailChangeRequest
-from registration.models import RegistrationProfile
-from accounting.models import Payment
-from events.models import Event
-from medals.models import Medal
+from selvbetjening.registration.models import RegistrationProfile
+from selvbetjening.accounting.models import Payment
+from selvbetjening.events.models import Event
+from selvbetjening.medals.models import Medal
 
-def profile_public(request, username, template_name='members/profile_public.html'):
-
+from forms import ProfileForm, ProfileChangeEmailForm, PasswordChangeForm, EmailChangeRequest
 
 @login_required
 def profile(request, template_name='members/profile.html'):

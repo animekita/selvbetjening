@@ -12,8 +12,8 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth import login, authenticate
 
-from eventmode.decorators import eventmode_required
-from core import messaging
+from selvbetjening.eventmode.decorators import eventmode_required
+from selvbetjening.core import messaging
 
 from models import RegistrationProfile
 from forms import CreateForm

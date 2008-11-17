@@ -12,13 +12,14 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 
-from events.models import Event, Attend, Option
-from eventmode.forms import CheckinForm, EventmodeAccessForm
-from eventmode.decorators import eventmode_required
-from accounting.forms import PaymentForm
-from accounting.models import MembershipState
-from core import logger
-from core.decorators import log_access
+from selvbetjening.events.models import Event, Attend, Option
+from selvbetjening.accounting.forms import PaymentForm
+from selvbetjening.accounting.models import MembershipState
+from selvbetjening.core import logger
+from selvbetjening.core.decorators import log_access
+
+from forms import CheckinForm, EventmodeAccessForm
+from decorators import eventmode_required
 
 @permission_required('events.change_attend')
 @log_access

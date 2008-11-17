@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
-from registration.views import activate, register, create_and_signup
+from views import activate, register, create_and_signup
 
 urlpatterns = patterns('',
     url(r'^$', register, name='registration_register'),

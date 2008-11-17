@@ -1,22 +1,18 @@
 # coding=UTF-8
-from datetime import date
 
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
-from django.forms import BooleanField
 
-from events.models import Event
-from events.forms import SignupForm, SignoffForm, OptionsForm
-from events.decorators import event_registration_open_required, event_attendance_required
-from accounting import models as accounting_models
-from core import logger
+from selvbetjening.accounting import models as accounting_models
+from selvbetjening.core import logger
+
+from models import Event
+from forms import SignupForm, SignoffForm, OptionsForm
+from decorators import event_registration_open_required, event_attendance_required
 
 @login_required
 def visited(request, template_name='events/visited.html'):

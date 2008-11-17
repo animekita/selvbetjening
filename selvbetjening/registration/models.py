@@ -7,7 +7,7 @@ from http://django-registration.googlecode.com.
 
 """
 
-import datetime, random, re, sha, md5
+import datetime, random, sha, md5
 
 from django.conf import settings
 from django.db import models
@@ -15,11 +15,10 @@ from django.core.mail import EmailMultiAlternatives, SMTPConnection
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 
 from selvbetjening.members.models import UserProfile
 
-from core import models as coremodels
+#- from core import models as coremodels
 
 class RegistrationManager(models.Manager):
 
@@ -54,13 +53,15 @@ class RegistrationManager(models.Manager):
 
     def create_forum_user(self, user, password):
         # Check if the forum-user already exists. (user migration)
-        vf = coremodels.VanillaForum()
-        if not vf.userExists(user.username):
-            vf.createUser(Name = user.username,
-                          Password=password,
-                          Email=user.email,
-                          FirstName=user.first_name,
-                          LastName=user.last_name)
+        # TODO CreateUserHook
+        #- vf = coremodels.VanillaForum()
+        #- if not vf.userExists(user.username):
+        #-    vf.createUser(Name = user.username,
+        #-                  Password=password,
+        #-                  Email=user.email,
+        #-                  FirstName=user.first_name,
+        #-                  LastName=user.last_name)
+        pass
 
     def create_user(self, username, password, email, dateofbirth,
                     last_name, first_name, city, street, postalcode,

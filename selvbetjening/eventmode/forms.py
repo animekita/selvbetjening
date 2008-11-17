@@ -1,8 +1,9 @@
 from django.utils.translation import ugettext as _
 from django import forms
 
-from core.forms import AcceptForm
-from eventmode.models import Eventmode
+from selvbetjening.core.forms import AcceptForm
+
+from models import Eventmode
 
 class CheckinForm(AcceptForm):
     def label(self):

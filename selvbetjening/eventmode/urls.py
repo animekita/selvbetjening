@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from eventmode import views
+import views
 
 urlpatterns = patterns('',
     url(r'^events/(?P<event_id>.+)/checkin/(?P<user_id>.+)/', views.event_usercheckin,

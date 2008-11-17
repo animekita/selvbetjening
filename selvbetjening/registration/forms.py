@@ -8,11 +8,12 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from members.forms import ProfileForm
-from members.models import UserProfile, EmailChangeRequest
-from registration.models import RegistrationProfile
-from core import models as coremodel
-from events.forms import SignupForm
+from selvbetjening.members.forms import ProfileForm
+from selvbetjening.members.models import UserProfile, EmailChangeRequest
+#- from selvbetjening.core import models as coremodel
+from selvbetjening.events.forms import SignupForm
+
+from models import RegistrationProfile
 
 class RegistrationForm(ProfileForm):
     """ Form for registering a new user account. """
@@ -63,8 +64,10 @@ class RegistrationForm(ProfileForm):
         raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
 
     def hook_valid_forum_username(self, checkUsername):
-        vf = coremodel.VanillaForum()
-        return not vf.userExists(checkUsername)
+        #- TODO HookForumUsername
+        #- vf = coremodel.VanillaForum()
+        #- return not vf.userExists(checkUsername)
+        return True
 
     def clean_password2(self):
         """

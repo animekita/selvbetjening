@@ -9,10 +9,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
+from selvbetjening.core.decorators import log_access
+from selvbetjening.core import logger
+
 from forms import PaymentForm, PaymentsIntervalForm
 from models import Payment
-from core.decorators import log_access
-from core import logger
 
 @permission_required('accounting.add_payment')
 @log_access
@@ -55,7 +56,7 @@ def list(request, template_name='accounting/list.html'):
 
 @permission_required('accounting.add_payment')
 @log_access
-def payments(request, template_name='accounting/payments.html', 
+def payments(request, template_name='accounting/payments.html',
              form_class=PaymentsIntervalForm):
 
     if request.method == 'POST':
@@ -64,22 +65,22 @@ def payments(request, template_name='accounting/payments.html',
             return HttpResponseRedirect(reverse('accounting_payments_detail', kwargs={'startdate' : form.cleaned_data['startdate'], 'enddate' : form.cleaned_data['enddate']}))
     else:
         form = form_class()
-        
+
     return render_to_response(template_name,
                               {'form' : form},
                               context_instance=RequestContext(request))
 
 @permission_required('accounting.add_payment')
 @log_access
-def payments_detail(request, startdate, enddate, 
+def payments_detail(request, startdate, enddate,
                     template_name='accounting/payments_detail.html'):
 
     payments = Payment.objects.filter(timestamp__gte=startdate).filter(timestamp__lte=enddate)
-    
+
     total = 0
     for payment in payments:
         total += payment.get_ammount()
-    
+
     return render_to_response(template_name,
                               {'payments' : payments, 'total' : total, 'startdate' : startdate, 'enddate' : enddate},
                               context_instance=RequestContext(request))

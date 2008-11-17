@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _, ungettext
 from django import forms
 from django.contrib.auth.models import User
 
-from core.forms import AcceptForm
+from selvbetjening.core.forms import AcceptForm
 
 class SignupForm(AcceptForm):
 

@@ -5,8 +5,9 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from mailcenter.models import Mail
-from events.models import Event, Attend
+from selvbetjening.events.models import Event, Attend
+
+from models import Mail
 
 class CreateMailForm(forms.Form):
     def is_valid(self):
