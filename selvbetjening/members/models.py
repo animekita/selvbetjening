@@ -11,8 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User                                     # for the  userprofile's foreignkey field
 from django.template.loader import render_to_string
 
-from core import models as coremodels
-from accounting.models import Payment
+from selvbetjening.core import models as coremodels
+from selvbetjening.accounting.models import Payment
 
 class UserProfile(models.Model):
     """
