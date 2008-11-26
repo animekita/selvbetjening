@@ -1,0 +1,32 @@
+====
+TODO
+====
+
+Core Moduler
+------------
+
+Modul                    Oprydning           Kobling            Doku            Admin
+
+Accounting                  OK                 OK
+Core                        OK                 OK                                OK
+Eventmode
+Events                      OK                 OK                OK
+Forms
+Mailcenter
+Members                     OK                 OK
+Quickregistration           OK                 OK                                OK
+
+
+Addon Moduler
+-------------
+
+Modul                    Oprydning           Kobling            Doku            Admin
+
+Booking
+Medals
+
+Andet
+-----
+
+* SQL
+* Locals

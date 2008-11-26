@@ -2,26 +2,22 @@ from datetime import datetime
 
 from django import shortcuts
 from django.shortcuts import render_to_response
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 
-from selvbetjening.events.models import Event, Attend, Option
 from selvbetjening.accounting.forms import PaymentForm
 from selvbetjening.accounting.models import MembershipState
 from selvbetjening.core import logger
 from selvbetjening.core.decorators import log_access
+from selvbetjening.events.models import Event, Attend, Option
 
 from forms import CheckinForm, EventmodeAccessForm
 from decorators import eventmode_required
 
-@permission_required('events.change_attend')
+@eventmode_required
 @log_access
 def event_checkin(request, event_id, template_name='eventmode/checkin.html'):
 
@@ -31,7 +27,7 @@ def event_checkin(request, event_id, template_name='eventmode/checkin.html'):
                               {'attendees' : event.get_attendees(), 'event' : event},
                               context_instance=RequestContext(request))
 
-@permission_required('events.change_attend')
+@eventmode_required
 @log_access
 def event_usercheckin(request, event_id, user_id, template_name='eventmode/usercheckin.html'):
 
@@ -68,7 +64,7 @@ def event_usercheckin(request, event_id, user_id, template_name='eventmode/userc
                                'form' : form, 'needs_to_pay' : needsToPay},
                               context_instance=RequestContext(request))
 
-@permission_required('events.change_attend')
+@eventmode_required
 @log_access
 def event_options(request, event_id, template_name='eventmode/options.html'):
 
@@ -78,7 +74,7 @@ def event_options(request, event_id, template_name='eventmode/options.html'):
                               {'event' : event, 'optiongroups' : event.optiongroup_set.all()},
                               context_instance=RequestContext(request))
 
-@permission_required('events.change_attend')
+@eventmode_required
 @log_access
 def event_options_detail(request, event_id, option_id,
                              template_name='eventmode/options_detail.html'):
@@ -90,13 +86,7 @@ def event_options_detail(request, event_id, option_id,
                                'users' : option.users.all()},
                               context_instance=RequestContext(request))
 
-@permission_required('events.change_attend')
-@log_access
-def event_list(request, template_name='eventmode/list.html'):
-    return render_to_response(template_name, {'events' : Event.objects.all()},
-                              context_instance=RequestContext(request))
-
-@permission_required('events.change_attend')
+@eventmode_required
 @log_access
 def event_statistics(request, event_id, template_name='eventmode/statistics.html'):
     event = get_object_or_404(Event, id=event_id)
@@ -131,7 +121,7 @@ def event_statistics(request, event_id, template_name='eventmode/statistics.html
                                'new_checkedin_precentage' : new_checkedin_precentage},
                               context_instance=RequestContext(request))
 
-def activate_mode(request, template_name='eventmode/activate_mode.html',
+def login(request, template_name='eventmode/activate_mode.html',
                   form_class=EventmodeAccessForm, success_page='home'):
 
     if request.method == 'POST':
@@ -148,11 +138,7 @@ def activate_mode(request, template_name='eventmode/activate_mode.html',
                               {'form' : form},
                               context_instance=RequestContext(request))
 
-def deactivate_mode(request):
+def logout(request):
     request.eventmode.deactivate()
 
     return HttpResponseRedirect(reverse('home'))
-
-def info(request, template_name='eventmode/info.html'):
-    return render_to_response(template_name, {},
-                              context_instance=RequestContext(request))

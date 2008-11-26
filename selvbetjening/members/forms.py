@@ -2,43 +2,10 @@
 
 from django import forms
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
-
-#- from selvbetjening.core import models as coremodel
+from django.contrib.auth.forms import PasswordChangeForm as AuthPasswordChangeForm
 
 from models import UserProfile, EmailChangeRequest
-
-class ProfileChangeEmailForm(forms.Form):
-    """
-    Change email form
-    """
-    new_email = forms.EmailField(max_length=75,
-                                widget=forms.TextInput(),
-                                label=_(u'new email'))
-    password = forms.CharField(max_length=255,
-                               widget=forms.PasswordInput(),
-                               label=_(u'password'))
-
-    def __init__(self, data=None, auto_id='id_%s', prefix=None, initial=None, user=None):
-        super(ProfileChangeEmailForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
-
-        self.userModel = user
-
-    def clean_password(self):
-        if self.userModel.check_password(self.cleaned_data['password']):
-            return self.cleaned_data['password']
-        else:
-            raise forms.ValidationError(_(u'Wrong password'))
-
-    class Admin:
-        pass
-
-
-    def save(self):
-        """
-        Save and return the newly generated key
-        """
-        return EmailChangeRequest.objects.create_request(self.userModel, self.cleaned_data['new_email'])
+import signals
 
 class ProfileForm(forms.Form):
     """
@@ -73,7 +40,6 @@ class ProfileForm(forms.Form):
                              label=_(u"Inform me about events and other important changes in Anime Kita."),
                              initial=True, required=False)
 
-
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
                   (_(u"address"), ('street', 'postalcode', 'city')),
@@ -81,10 +47,7 @@ class ProfileForm(forms.Form):
                        )
 
     def clean_dateofbirth(self):
-        """
-        The strftime function is used on the datetime object, so it is not allowed to be dated before 1900.
-
-        """
+        # The birth year must be above 1900 to be compatible with strftime
         if self.cleaned_data['dateofbirth'].year < 1900:
             raise forms.ValidationError(_(u'Your birthday is not allowed to be dated before 1900'))
 
@@ -109,53 +72,47 @@ class ProfileForm(forms.Form):
             profile.save()
         else:
             UserProfile.objects.create(user=user,
-                                       dateofbirth=dateofbirth,
-                                       city=city, street=street,
-                                       postalcode=postalcode,
-                                       phonenumber=phonenumber,
-                                   send_me_email=send_me_email)
+                                       dateofbirth=self.cleaned_data['dateofbirth'],
+                                       city=self.cleaned_data['city'],
+                                       street=self.cleaned_data['street'],
+                                       postalcode=self.cleaned_data['postalcode'],
+                                       phonenumber=self.cleaned_data['phonenumber'],
+                                       send_me_email=self.cleaned_data['send_me_email'])
 
-class PasswordChangeForm(forms.Form):
+class ProfileChangeEmailForm(forms.Form):
     """
-    A form that lets a user change his password.
-    Stolen from the django.contrib.auth package and rewritten to use newforms.
+    Change email form
     """
+    new_email = forms.EmailField(max_length=75,
+                                widget=forms.TextInput(),
+                                label=_(u'new email'))
+    password = forms.CharField(max_length=255,
+                               widget=forms.PasswordInput(),
+                               label=_(u'password'))
 
-    old_password = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"password"))
-    new_password1 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"new password"))
-    new_password2 = forms.CharField(max_length=30, widget=forms.PasswordInput(), label=_(u"verify password"))
+    def __init__(self, data=None, auto_id='id_%s', prefix=None, initial=None, user=None):
+        super(ProfileChangeEmailForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
 
-    def __init__(self, *args, **kwargs):
-        self.user= kwargs["user"]
-        del kwargs["user"]
+        self.userModel = user
 
-        super(forms.Form, self).__init__(*args, **kwargs)
+    def clean_password(self):
+        if self.userModel.check_password(self.cleaned_data['password']):
+            return self.cleaned_data['password']
+        else:
+            raise forms.ValidationError(_(u'Wrong password'))
 
-    def clean_old_password(self):
-        """
-        Validates that the old_password field is correct.
-        """
-        if not self.user.check_password(self.cleaned_data["old_password"]):
-            raise forms.ValidationError(_("Your old password was entered incorrectly. Please enter it again."))
+    class Admin:
+        pass
 
-    def clean(self):
-        """
-        Validates that new_password1 and new_password2 are identical.
-        """
-        if "new_password1" in self.cleaned_data and  "new_password2" in self.cleaned_data:
-            if self.cleaned_data["new_password1"] != self.cleaned_data["new_password2"]:
-                raise forms.ValidationError(_(u"You must type the same password each time"))
-
-        return self.cleaned_data
 
     def save(self):
         """
-        Saves the new password.
+        Save and return the newly generated key
         """
-        self.user.set_password(self.cleaned_data["new_password1"])
-        self.user.save()
+        return EmailChangeRequest.objects.create_request(self.userModel, self.cleaned_data['new_email'])
 
-        # set the new password for the forum
-        #- TODO NewPasswordHook
-        #- vf = coremodel.VanillaForum()
-        #- vf.changeUserPassword(self.user.username, self.cleaned_data["new_password1"])
+class PasswordChangeForm(AuthPasswordChangeForm):
+
+    def save(self, commit=True):
+        super(PasswordChangeForm, self).save(commit)
+        signals.user_changed_password.send(user=self.user, password=self.cleaned_data['new_password1'])

@@ -1,11 +1,8 @@
-from datetime import date
-
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
@@ -49,7 +46,7 @@ def pay(request, user, template_name='accounting/pay.html', success_page='accoun
 
 @permission_required('accounting.add_payment')
 @log_access
-def list(request, template_name='accounting/list.html'):
+def list_users(request, template_name='accounting/list.html'):
     return render_to_response(template_name,
                               {'users' : User.objects.all()},
                               context_instance=RequestContext(request))

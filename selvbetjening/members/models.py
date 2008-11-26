@@ -4,21 +4,17 @@ import datetime, sha
 
 from django.db import models
 from django.db.models import permalink
-
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User                                     # for the  userprofile's foreignkey field
+from django.contrib.auth.models import User # for the  userprofile's foreignkey field
 from django.template.loader import render_to_string
 
-#- from selvbetjening.core import models as coremodels
-from selvbetjening.accounting.models import Payment
+import signals
 
 class UserProfile(models.Model):
-    """
-    Model containing user data
+    """ Model containing user data. """
 
-    """
     user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'))
     dateofbirth = models.DateField(_(u'date of birth'))
     street = models.CharField(_(u'street'), max_length=255, blank=True)
@@ -31,21 +27,16 @@ class UserProfile(models.Model):
         verbose_name = _(u'user profile')
         verbose_name_plural = _(u'user profiles')
 
-    def __unicode__(self):
-        return _(u"Registration profile for %s") % self.user
+    def get_age (self, at_date=None):
+        if at_date is None:
+            at_date = datetime.date.today()
 
-    def age (self, d=datetime.date.today()):
         bday = self.dateofbirth
+        d = at_date
         return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
 
-    def isUnderaged(self, date = datetime.date.today()):
-        return (self.age(date) < 15)
-
-    def get_membership_state(self):
-        return Payment.objects.get_membership_state(self.user)
-
-    def member_since(self):
-        return Payment.objects.member_since(self.user)
+    def __unicode__(self):
+        return _(u'Registration profile for %s') % self.user
 
 class EmailChangeRequestManager(models.Manager):
 
@@ -70,18 +61,18 @@ class EmailChangeRequestManager(models.Manager):
                                      'ecr':ecr,
                                      'new_email':new_email,
                                      'site': current_site,
-                                 "site_url":settings.SITE_URL})
+                                     'site_url':settings.SITE_URL})
         message_html = render_to_string('members/change_email.html.txt',
                                    { 'key': key,
                                      'user':user,
                                      'ecr':ecr,
                                      'new_email':new_email,
                                      'site': current_site,
-                                     "site_url":settings.SITE_URL,
+                                     'site_url':settings.SITE_URL,
                                  })
 
         msg = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-        msg.attach_alternative(message_html, "text/html")
+        msg.attach_alternative(message_html, 'text/html')
 
         connection = SMTPConnection()
         connection.send_messages([msg])
@@ -98,17 +89,12 @@ class EmailChangeRequestManager(models.Manager):
         except AssertionError:
             return False
 
-        # set the new user email and save the user object
         ecr.user.email = ecr.new_email
         ecr.user.save()
 
-        # set the new email for the forum system
-        #- TODO UserEmailChangeHook
-        #- vf = coremodels.VanillaForum()
-        #- vf.changeUserEmail(ecr.user.username, ecr.new_email)
-
-        # delete the ecr request
         ecr.delete()
+
+        signals.user_changed_email.send(user=ecr.user, email=ecr.new_email)
 
         return True
 
@@ -121,7 +107,7 @@ class EmailChangeRequest(models.Model):
     objects = EmailChangeRequestManager()
 
     def get_absolute_url(self):
-        return ("members_change_email_confirm", (), { "key" : self.key })
+        return ('members_change_email_confirm', (), { 'key' : self.key })
     get_absolute_url = permalink(get_absolute_url)
 
     class Meta:
@@ -129,4 +115,4 @@ class EmailChangeRequest(models.Model):
         verbose_name_plural = _(u'email change requests')
 
     def __unicode__(self):
-        return _(u"Email change request or %s") % self.user
+        return _(u'Email change request or %s') % self.user

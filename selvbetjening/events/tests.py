@@ -4,8 +4,8 @@ from django.test import TestCase
 from django.contrib.auth import models as auth_models
 from django.core.urlresolvers import reverse
 
-from events.forms import OptionsForm
-from events import models
+from forms import OptionsForm
+import models
 
 class DatabaseSetup(object):
     @staticmethod
@@ -115,10 +115,10 @@ class EventModelTestCase(TestCase):
         self.assertFalse(self.event2.is_registration_open())
 
     def test_no_guests(self):
-        self.assertTrue(len(self.event1.get_attendees()) == 0)
+        self.assertTrue(len(self.event1.attendees) == 0)
 
     def test_guests(self):
-        self.assertEqual(len(self.event2.get_attendees()), 2)
+        self.assertEqual(len(self.event2.attendees), 2)
 
     def test_is_signedup(self):
         self.assertTrue(self.event2.is_attendee(self.user1))
@@ -128,10 +128,10 @@ class EventModelTestCase(TestCase):
 
     def test_delete_guest(self):
         self.event3.add_attendee(self.user1, has_attended=False)
-        self.assertEqual(len(self.event3.get_attendees()), 1)
+        self.assertEqual(len(self.event3.attendees), 1)
 
         self.event3.remove_attendee(self.user1)
-        self.assertEqual(len(self.event3.get_attendees()), 0)
+        self.assertEqual(len(self.event3.attendees), 0)
 
     def test_attendee_order(self):
         self.userarray = []
@@ -141,7 +141,7 @@ class EventModelTestCase(TestCase):
 
         self.event3.add_attendee(self.user1, has_attended=False)
 
-        attendees = self.event3.get_attendees()
+        attendees = self.event3.attendees
 
         for i in range(30):
             self.assertEqual(attendees[i].user, self.userarray[i])
@@ -156,7 +156,6 @@ class EventOptionsFormTestCase(TestCase):
         self.assertEqual(len(self.form[1].fields), 3)
 
     def test_order(self):
-
         int = 1
         for field in self.form[1].Meta.layout[0][1]:
             field_id = field[0]
@@ -260,6 +259,19 @@ class EventOptionsFormTestCase(TestCase):
 
         self.assertFalse(form.is_valid())
 
+    def test_max_attendees_reached(self):
+        self.option31 = models.Option.objects.create(group=self.optiongroup3,
+                                                    name='hello31',
+                                                    order=2,
+                                                    maximum_attendees=2)
+
+        self.option31.users.add(self.user1)
+        self.option31.users.add(self.user2)
+
+        form = OptionsForm(self.user4, self.event5, {OptionsForm._get_id(self.option31) : True,})
+
+        self.assertFalse(form.is_valid())
+
     def _save_forms(self):
         for form_id in self.form:
             self.form[form_id].is_valid()
@@ -285,11 +297,3 @@ class EventViewTestCase(TestCase):
         self.client.login(username='user2', password='user2')
         self.client.post(reverse('events_signoff', kwargs={'event_id':self.event2.id}),
                          {'confirm' : True})
-
-    #def test_signup(self):
-        #pass
-
-    #def _signup(self):
-        #self.client.login(username='user2', password='user2')
-        #self.client.post(reverse('events_signup', kwargs={'event_id':self.event2.id}),
-                         #{'confirm' : True})

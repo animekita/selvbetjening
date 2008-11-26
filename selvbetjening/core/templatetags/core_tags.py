@@ -1,11 +1,6 @@
 import datetime
 
 from django import template
-from django.core.urlresolvers import reverse
-from django.conf import settings
-from django.utils.translation import ugettext as _
-
-from selvbetjening.accounting.models import MembershipState
 
 register = template.Library()
 
@@ -30,65 +25,3 @@ class CopyrightTimeNode(template.Node):
         else:
             return str(self.time) + " - " + str(datetime.date.today().year)
 
-@register.tag
-def icon_link(parser, token):
-    content = token.split_contents()
-
-    return IconLinkNode(*content[1:])
-
-class IconLinkNode(template.Node):
-    def __init__(self, help_text, icon_name, page_name, *page_attrs):
-        self.page_name = page_name
-        self.icon_name = icon_name
-        self.help_text = help_text
-        self.page_attrs = [template.Variable(val) for val in page_attrs]
-
-    def render(self, context):
-        attrs = [x.resolve(context) for x in self.page_attrs]
-        return '<a class="icon" href="' + reverse(self.page_name, args=attrs) + '" title="' + self.help_text.replace('"', '') + '"><img src="' + settings.MEDIA_URL + 'images/icons/' + self.icon_name + '.png" /></a>'
-
-@register.tag
-def icon(parser, token):
-    content = token.split_contents()
-
-    return IconNode(*content[1:])
-
-class IconNode(template.Node):
-    def __init__(self, alt_text, icon_name, title):
-        self.alt_text = alt_text
-        self.icon_name = icon_name
-        self.title = title
-
-    def render(self, context):
-        return '<img class="icon" src="' + settings.MEDIA_URL + 'images/icons/' + self.icon_name + '.png" title="' + self.title + '" alt="' + self.alt_text.replace('"', '') + '"/>'
-
-
-@register.filter(name='translate')
-def translate(text, category):
-    if category == "membership_state":
-        if text == MembershipState.ACTIVE:
-            return _('Active member')
-        elif text == MembershipState.CONDITIONAL_ACTIVE:
-            return _('Conditional active member')
-        elif text == MembershipState.PASSIVE:
-            return _('Passive member')
-        elif text == MembershipState.INACTIVE:
-            return _('Inactive member')
-
-    if category == "membership_state_short":
-        if text == MembershipState.ACTIVE:
-            return _('Active')
-        elif text == MembershipState.CONDITIONAL_ACTIVE:
-            return _('Conditional active')
-        elif text == MembershipState.PASSIVE:
-            return _('Passive')
-        elif text == MembershipState.INACTIVE:
-            return _('Inactive')
-
-    elif category == "payment_type":
-        if text == "FULL":
-            return _('Full payment')
-        elif text == "FRATE":
-            return _('First rate')
-        elif text == "SRATE":
-            return _('Second rate')

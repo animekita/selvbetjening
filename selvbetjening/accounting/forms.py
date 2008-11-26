@@ -2,8 +2,6 @@ from datetime import datetime
 
 from django import forms
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 
 from models import MembershipState, Payment
 

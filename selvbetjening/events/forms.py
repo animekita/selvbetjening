@@ -1,8 +1,7 @@
 # coding=UTF-8
 
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import ugettext as _
 from django import forms
-from django.contrib.auth.models import User
 
 from selvbetjening.core.forms import AcceptForm
 
@@ -22,6 +21,9 @@ class SignoffForm(AcceptForm):
         return _(u"You must accept to remove your participation in the event")
 
 class OptionsForm(forms.Form):
+
+    class Meta:
+        layout = [] # populated by the constructor
 
     def __init__(self, user, event, *args, **kwargs):
         self.user = user
@@ -48,12 +50,14 @@ class OptionsForm(forms.Form):
                                                                        help_text=option.description)
             self.Meta.layout.append((optiongroup.name, groupoptions, optiongroup.description))
 
-    class Meta:
-        pass
-
-
     def clean(self):
         for optiongroup in self.optiongroups:
+            # check for the maximum number of attendees requirement
+            for option in optiongroup.option_set.all():
+                if self.cleaned_data.get(self._get_id(option), False):
+                    if option.maximum_attendees >= option.attendees_count():
+                        raise forms.ValidationError('The maximum number of attendees have been reached')
+
             if optiongroup.minimum_selected > 0:
                 selected = 0
                 for option in optiongroup.option_set.all():

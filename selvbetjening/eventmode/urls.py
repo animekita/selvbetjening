@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 
 import views
 
@@ -13,12 +13,8 @@ urlpatterns = patterns('',
         name='eventmode_statistics'),
     url(r'^events/(?P<event_id>.+)/tilvalg/(?P<option_id>.+)', views.event_options_detail,
         name='eventmode_options_detail'),
-    url(r'^events/$', views.event_list,
-        name='eventmode_list'),
-    url(r'^aktiver/$', views.activate_mode,
-        name='eventmode_activate'),
-    url(r'^deaktiver/$', views.deactivate_mode,
-        name='eventmode_deactivate'),
-    url(r'^info/$', views.info,
-        name='eventmode_info'),
+    url(r'^login/$', views.login,
+        name='eventmode_login'),
+    url(r'^logud/$', views.logout,
+        name='eventmode_logout'),
 )

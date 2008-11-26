@@ -14,9 +14,9 @@ Analyse
 
 .. toctree::
    :maxdepth: 1
-   :glob:
    
-   analysis/*
+   analysis/the-task.rst
+   analysis/modules.rst
 
 Design
 ======
@@ -34,7 +34,7 @@ Moduler
    :maxdepth: 1
    :glob:
 
-   modules/*.rst
+   modules/*
 
 Appendix
 ========

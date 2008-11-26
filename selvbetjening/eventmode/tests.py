@@ -1,15 +1,14 @@
 from datetime import date, timedelta
 
 from django.test import TestCase
-from django.test.client import Client
-from django.core.urlresolvers import reverse
 
-from eventmode.models import Eventmode as EventmodeModel
-from eventmode.middleware import Eventmode
+from selvbetjening.events.models import Event
 
-from events.models import Event
+from models import EventmodeMachine
+from middleware import Eventmode
 
 class DatabaseSetup(object):
+    @staticmethod
     def setUp(target):
         day = timedelta(days=1)
         today = date.today()
@@ -20,14 +19,15 @@ class DatabaseSetup(object):
         target.event2 = Event.objects.create(title='event1', registration_open=True,
                                         enddate=today-day, startdate=today-day*2)
 
-        target.eventmode1 = EventmodeModel.objects.create(passphrase='ww',
-                                                        event=target.event)
+        target.eventmode1 = EventmodeMachine.objects.create(passphrase='ww',
+                                                            event=target.event,
+                                                            name='m1')
 
-        target.eventmode2 = EventmodeModel.objects.create(passphrase='www',
-                                                        event=target.event2)
-    setUp = staticmethod(setUp)
+        target.eventmode2 = EventmodeMachine.objects.create(passphrase='www',
+                                                            event=target.event2,
+                                                            name='m2')
 
-class EventmodeModelTestCase(TestCase):
+class EventmodeMachineTestCase(TestCase):
     def setUp(self):
         DatabaseSetup.setUp(self)
 
@@ -36,48 +36,51 @@ class EventmodeModelTestCase(TestCase):
         self.assertFalse(self.eventmode2.is_valid())
 
     def test_check_passphrase(self):
-        self.assertTrue(EventmodeModel.objects.check_passphrase('ww'))
+        self.assertTrue(EventmodeMachine.objects.authenticate(self.event, 'ww') is not None)
 
     def test_check_passphrase_wrong(self):
-        self.assertFalse(EventmodeModel.objects.check_passphrase('ww_random_part'))
+        self.assertTrue(EventmodeMachine.objects.authenticate(self.event, 'wrong_pp') is None)
+
+    def test_check_passphrase_wrong_event(self):
+        self.assertTrue(EventmodeMachine.objects.authenticate(self.event2, 'ww') is None)
 
 class EventmodeTestCase(TestCase):
     def setUp(self):
         DatabaseSetup.setUp(self)
 
-        class dummyRequest():
+        class DummyRequest():
             session = {}
 
-        self.dummyRequest = dummyRequest()
-        self.eventmode = Eventmode(self.dummyRequest)
+        self.dummy_request = DummyRequest()
+        self.eventmode = Eventmode(self.dummy_request)
 
-    def test_activate(self):
-        self.assertTrue(self.eventmode.activate('ww'))
+    def test_login(self):
+        self.assertTrue(self.eventmode.login(self.event, 'ww'))
 
-    def test_activate_old(self):
-        self.assertFalse(self.eventmode.activate('www'))
+    def test_login_expired_machine(self):
+        self.assertFalse(self.eventmode.login(self.event2, 'www'))
 
-    def test_activate_nonexisting(self):
-        self.assertFalse(self.eventmode.activate('ww_random_part'))
+    def test_login_incorrect(self):
+        self.assertFalse(self.eventmode.login(self.event, 'ww_random_part'))
 
-    def test_is_not_active(self):
-        self.assertFalse(self.eventmode.is_active())
+    def test_is_not_authenticated(self):
+        self.assertFalse(self.eventmode.is_authenticated())
 
-    def test_is_active(self):
-        self.eventmode.activate('ww')
-        self.assertTrue(self.eventmode.is_active())
+    def test_is_authenticated(self):
+        self.eventmode.login(self.event, 'ww')
+        self.assertTrue(self.eventmode.is_authenticated())
 
-    def test_is_active_old(self):
-        self.eventmode.activate('www')
-        self.assertFalse(self.eventmode.is_active())
+    def test_is_authenticated_expired(self):
+        self.eventmode.login(self.event2, 'www')
+        self.assertFalse(self.eventmode.is_authenticated())
 
-    def test_deactivate(self):
-        self.test_is_active()
-        self.assertTrue(self.eventmode.is_active())
+    def test_logout(self):
+        self.test_login()
+        self.assertTrue(self.eventmode.is_authenticated())
 
-        self.eventmode.deactivate()
-        self.assertFalse(self.eventmode.is_active())
+        self.eventmode.logout()
+        self.assertFalse(self.eventmode.is_authenticated())
 
-    def test_get_model(self):
-        self.test_is_active()
-        self.assertEqual(self.eventmode.get_model(), self.eventmode1)
+    def test_model(self):
+        self.test_login()
+        self.assertEqual(self.eventmode.model, self.eventmode1)

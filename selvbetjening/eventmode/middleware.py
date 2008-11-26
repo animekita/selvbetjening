@@ -1,8 +1,6 @@
-from datetime import date
+import hashlib
 
-from django.db import models
-
-from selvbetjening.eventmode.models import Eventmode as EventmodeModel
+from models import EventmodeMachine
 
 class EventmodeMiddleware():
     def process_request(self, request):
@@ -13,34 +11,32 @@ class Eventmode():
     def __init__(self, request):
         self.request = request
 
-    def activate(self, passphrase):
-        if EventmodeModel.objects.check_passphrase(passphrase):
-            self.request.session['eventmode_passphrase'] = passphrase
+    def login(self, event, passphrase):
+        eventmode = EventmodeMachine.objects.authenticate(event, passphrase)
+        if eventmode is not None:
+            self.request.session['eventmode_id'] = eventmode.id
             return True
         else:
             return False
 
-    def deactivate(self):
-        if self.request.session.get('eventmode_passphrase', False):
-            del(self.request.session['eventmode_passphrase'])
+    def logout(self):
+        if self.request.session.get('eventmode_id', False):
+            del(self.request.session['eventmode_id'])
 
-    def is_active(self):
-        eventmode = self.get_model()
-
+    def is_authenticated(self):
+        eventmode = self.model
         if eventmode is not None and eventmode.is_valid():
             return True
         else:
-            self.deactivate()
             return False
 
-    def get_model(self):
-        if self._get_passphrase():
+    @property
+    def model(self):
+        eventmode_id = self.request.session.get('eventmode_id', False)
+        if eventmode_id:
             try:
-                return EventmodeModel.objects.get(passphrase=self._get_passphrase())
-            except EventmodeModel.DoesNotExist:
+                return EventmodeMachine.objects.get(id=eventmode_id)
+            except EventmodeMachine.DoesNotExist:
                 pass
 
         return None
-
-    def _get_passphrase(self, default=False):
-        return self.request.session.get('eventmode_passphrase', default)
