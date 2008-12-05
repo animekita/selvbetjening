@@ -19,7 +19,7 @@ class OptionGroupAdmin(admin.ModelAdmin):
 admin.site.register(OptionGroup, OptionGroupAdmin)
 
 class OptionAdmin(admin.ModelAdmin):
-    list_display = ('group', 'name', 'count', 'freeze_time')
+    list_display = ('group', 'name', 'attendees_count', 'freeze_time')
     list_filter = ('group',)
 
 admin.site.register(Option, OptionAdmin)

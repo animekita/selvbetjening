@@ -1,0 +1,52 @@
+{% extends "site.html" %}
+
+{% load uniform %}
+
+{% block extraheader %}
+{% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url members_login %}">log ind</a></li>
+{% endblock %}
+
+{% block contenthead %}
+<h2>Log ind</h2>
+{% endblock %}
+
+{% block content %}
+
+<p>Hvis du ikke har oprettet en bruger på vores hjemmeside, skal du først <a href="{% url quickregistration_register %}">oprette en bruger</a>.</p>
+
+<form method="post" action="" class="uniForm">
+
+{% if form.has_errors %}
+<div id="errorMsg">
+  <ul class="errorlist">
+    <li>Det indtastede brugernavn eller kodeord var ikke korrekt, prøv venligst igen.</li>
+  </ul>
+</div>
+{% endif %}
+
+<fieldset class="inlineLabels">
+<legend>Log på</legend>
+
+<div class="ctrlHolder">
+  <label for="id_username">Brugernavn</label>
+  <input name="username" maxlength="50" type="text" class="textInput text" id="id_username" />
+</div>
+
+<div class="ctrlHolder">
+<label for="id_password">Kodeord</label>
+<input id="id_password" type="password" class="textInput text" name="password" />
+</div>
+</fieldset>
+
+<fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">Log ind</button></div></fieldset>
+</form>
+<ul class="table-options">
+    <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>
+    <li>&#187; <a href="{% url quickregistration_register %}">Opret bruger</a></li>
+</ul>
+
+{% endblock %}

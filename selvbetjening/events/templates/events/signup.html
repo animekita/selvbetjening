@@ -1,0 +1,30 @@
+{% extends "site.html" %}
+
+{% load uniform %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><span>tilmeld dig {{event.title}}</span></li>
+{% endblock %}
+
+{% block contenthead %}
+Tilmeld arrangement
+{% endblock %}
+
+{% block content %}
+
+<p>Når du tilmelder dig dette arrangement vil dit navn og brugernavn blive vist <b>offentligt</b> i en liste over deltagere.</p>
+
+{{form|uniform_start}}
+{{form|uniform_add}}
+
+<h2>Tilvalg</h2>
+
+{{optionsform|uniform_add:"tilmeld"}}
+{{form|uniform_end}}
+
+{% endblock %}

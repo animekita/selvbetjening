@@ -22,7 +22,7 @@ class UniformInputBase(object):
 
     def label(self):
         if self.input.field.required:
-            return self.input.label_tag('<em>*</em> ' + self.input.label) + '\n'
+            return self.input.label_tag('<em>*</em> ' + str(self.input.label)) + '\n'
         else:
             return self.input.label_tag() + '\n'
 

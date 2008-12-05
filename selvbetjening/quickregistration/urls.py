@@ -6,5 +6,5 @@ from views import register
 urlpatterns = patterns('',
     url(r'^$', register, name='quickregistration_register'),
     url(r'^velkommen/$', direct_to_template,
-        {'template': 'registration/welcome.html'}, name='quickregistration_complete')
+        {'template': 'quickregistration/welcome.html'}, name='quickregistration_complete')
 )

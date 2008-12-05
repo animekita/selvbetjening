@@ -17,7 +17,7 @@ def register(request,
              success_page='quickregistration_complete',
              form_class=RegistrationForm,
              login_on_success=False,
-             template_name='registration/registration_form.html'):
+             template_name='quickregistration/registration_form.html'):
     """ Allows a new user to register an account.
 
     success_page -- a reversable view name or a function returning

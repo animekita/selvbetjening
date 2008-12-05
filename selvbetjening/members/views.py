@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 
-from forms import ProfileForm, ProfileChangeEmailForm, EmailChangeRequest
+from forms import ProfileForm, EmailChangeForm, EmailChangeRequest, PasswordChangeForm
 
 @login_required
 def profile_edit(request,
@@ -35,10 +35,30 @@ def profile_edit(request,
     return render_to_response(template_name, {'form' : form}, context_instance=RequestContext(request))
 
 @login_required
+def password_change(request,
+                    template_name='members/password_change.html',
+                    post_change_redirect=None):
+
+    if post_change_redirect is None:
+        post_change_redirect = 'auth_password_change_done'
+
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse(post_change_redirect))
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render_to_response(template_name,
+                              {'form': form,},
+                              context_instance=RequestContext(request))
+
+@login_required
 def profile_change_email(request,
-                         template_name='members/profile_change_email.html',
+                         template_name='members/email_change.html',
                          success_page='members_profile',
-                         form_class=ProfileChangeEmailForm):
+                         form_class=EmailChangeForm):
 
     if request.method == 'POST':
         form = form_class(request.POST, user=request.user)
@@ -53,7 +73,7 @@ def profile_change_email(request,
 
 def profile_change_email_confirm(request,
                                  key,
-                                 template_name='members/profile_change_email_done.html'):
+                                 template_name='members/email_change_done.html'):
 
     result = EmailChangeRequest.objects.confirm(key)
 

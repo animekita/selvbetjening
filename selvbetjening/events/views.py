@@ -13,16 +13,6 @@ from models import Event
 from forms import SignupForm, SignoffForm, OptionsForm
 from decorators import event_registration_open_required, event_attendance_required
 
-@login_required
-def visited(request, template_name='events/visited.html'):
-    '''
-    View all the events the currently logged-in user has participated in
-
-    '''
-    return render_to_response(template_name,
-                              {'events' : request.user.event_set.all() },
-                              context_instance=RequestContext(request))
-
 def list_events(request, template_name='events/list.html'):
     ''' Show list of events. '''
     return render_to_response(template_name,
@@ -30,14 +20,13 @@ def list_events(request, template_name='events/list.html'):
                               context_instance=RequestContext(request))
 
 def view(request, event_id, template_name='events/view.html'):
-
     event = get_object_or_404(Event, id=event_id)
 
     return render_to_response(template_name,
                               {'event' : event,
                                'has_options' : (event.optiongroup_set.count() > 0),
                                'userIsSignedup' : event.is_attendee(request.user),
-                               'attendees' : event.get_attendees()},
+                               'attendees' : event.attendees},
                                context_instance=RequestContext(request))
 
 @login_required

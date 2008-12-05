@@ -22,28 +22,28 @@ class ProfileForm(forms.Form):
     dateofbirth = forms.DateField(widget=forms.TextInput(),
                                   label=_(u'date of birth'),
                                   input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
-                                  help_text=_(u"State your date of birth using the format %(format)s.") % {"format" : "dd-mm-yyyy"})
+                                  help_text=_(u'State your date of birth using the format %(format)s.') % {'format' : 'dd-mm-yyyy'})
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
-                             label=_(u"street"),
+                             label=_(u'street'),
                              required=False)
-    postalcode = forms.IntegerField(label=_(u"postal code"), required=False)
+    postalcode = forms.IntegerField(label=_(u'postal code'), required=False)
 
     city = forms.CharField(max_length=255,
                            widget=forms.TextInput(),
-                           label=_(u"city"),
+                           label=_(u'city'),
                            required=False)
-    phonenumber = forms.IntegerField(label=_(u"phonenumber"), required=False)
+    phonenumber = forms.IntegerField(label=_(u'phonenumber'), required=False)
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
-                             label=_(u"Inform me about events and other important changes in Anime Kita."),
+                             label=_(u'Inform me about events and other important changes in Anime Kita.'),
                              initial=True, required=False)
 
     class Meta:
-        layout = ((_(u"personal information"), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (_(u"address"), ('street', 'postalcode', 'city')),
-                  (_(u"other"), ('send_me_email', ))
+        layout = ((_(u'personal information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
+                  (_(u'address'), ('street', 'postalcode', 'city')),
+                  (_(u'other'), ('send_me_email', ))
                        )
 
     def clean_dateofbirth(self):
@@ -79,7 +79,7 @@ class ProfileForm(forms.Form):
                                        phonenumber=self.cleaned_data['phonenumber'],
                                        send_me_email=self.cleaned_data['send_me_email'])
 
-class ProfileChangeEmailForm(forms.Form):
+class EmailChangeForm(forms.Form):
     """
     Change email form
     """
@@ -91,7 +91,7 @@ class ProfileChangeEmailForm(forms.Form):
                                label=_(u'password'))
 
     def __init__(self, data=None, auto_id='id_%s', prefix=None, initial=None, user=None):
-        super(ProfileChangeEmailForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
+        super(EmailChangeForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
 
         self.userModel = user
 
@@ -100,10 +100,6 @@ class ProfileChangeEmailForm(forms.Form):
             return self.cleaned_data['password']
         else:
             raise forms.ValidationError(_(u'Wrong password'))
-
-    class Admin:
-        pass
-
 
     def save(self):
         """
@@ -115,4 +111,4 @@ class PasswordChangeForm(AuthPasswordChangeForm):
 
     def save(self, commit=True):
         super(PasswordChangeForm, self).save(commit)
-        signals.user_changed_password.send(user=self.user, password=self.cleaned_data['new_password1'])
+        signals.user_changed_password.send(self, user=self.user, password=self.cleaned_data['new_password1'])

@@ -5,16 +5,16 @@ TODO
 Core Moduler
 ------------
 
-Modul                    Oprydning           Kobling            Doku            Admin
+Modul                    Oprydning           Kobling            Doku            Admin        Templates
 
-Accounting                  OK                 OK
+Accounting (Admin)          OK                 OK
 Core                        OK                 OK                                OK
-Eventmode
-Events                      OK                 OK                OK
+Eventmode (Admin)
+Events                      OK                 OK                OK                              OK
 Forms
-Mailcenter
-Members                     OK                 OK
-Quickregistration           OK                 OK                                OK
+Mailcenter (Admin)
+Members                     OK                 OK                                                OK
+Quickregistration           OK                 OK                                OK              OK
 
 
 Addon Moduler
@@ -30,3 +30,8 @@ Andet
 
 * SQL
 * Locals
+
+TODO
+----
+
+* Remove dependency on google analytics

@@ -5,5 +5,5 @@ def site_urls(request):
     return {'MEDIA_URL': settings.MEDIA_URL,
             'SITE_URL' : settings.SITE_URL,
             'GOOGLE_ANALYTICS_ACCOUNT' : settings.GOOGLE_ANALYTICS_ACCOUNT,
-            'DEBUG' : settings.DEBUG, 'EVENTMODE' : request.eventmode.is_authenticated(),
+            'DEBUG' : settings.DEBUG,
             'session_message' : messaging.read(request)}

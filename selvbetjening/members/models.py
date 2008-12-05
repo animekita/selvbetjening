@@ -51,18 +51,18 @@ class EmailChangeRequestManager(models.Manager):
         from django.core.mail import EmailMultiAlternatives, SMTPConnection
         current_site = Site.objects.get_current()
 
-        subject = render_to_string('members/change_email_subject.txt',
+        subject = render_to_string('members/email/email_change_subject.txt',
                                    { 'site': current_site })
         subject = ''.join(subject.splitlines()) # remove newlines from subject
 
-        message = render_to_string('members/change_email.txt',
+        message = render_to_string('members/email/email_change.txt',
                                    { 'key': key,
                                      'user':user,
                                      'ecr':ecr,
                                      'new_email':new_email,
                                      'site': current_site,
                                      'site_url':settings.SITE_URL})
-        message_html = render_to_string('members/change_email.html.txt',
+        message_html = render_to_string('members/email/email_change.html.txt',
                                    { 'key': key,
                                      'user':user,
                                      'ecr':ecr,

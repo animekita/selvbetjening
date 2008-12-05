@@ -24,7 +24,4 @@ urlpatterns = patterns(
         views.change_options,
         name='events_change_options'),
 
-    url(r'^se/visited/$',
-        views.visited,
-        name='events_view_visited'),
 )
