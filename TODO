@@ -13,7 +13,7 @@ Eventmode (Admin)
 Events                      OK                 OK                OK                              OK
 Forms
 Mailcenter (Admin)
-Members                     OK                 OK                                                OK
+Members                     OK                 OK                                OK              OK
 Quickregistration           OK                 OK                                OK              OK
 
 
@@ -33,5 +33,3 @@ Andet
 
 TODO
 ----
-
-* Remove dependency on google analytics

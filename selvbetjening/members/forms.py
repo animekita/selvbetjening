@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.forms import PasswordChangeForm as AuthPasswordChangeForm
 
-from models import UserProfile, EmailChangeRequest
+from models import UserProfile
 import signals
 
 class ProfileForm(forms.Form):
@@ -19,6 +19,9 @@ class ProfileForm(forms.Form):
                           widget=forms.TextInput(),
                           label=_(u'last name'),
                           required=True)
+
+    email = forms.EmailField(max_length=75, label=_(u'email'))
+
     dateofbirth = forms.DateField(widget=forms.TextInput(),
                                   label=_(u'date of birth'),
                                   input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
@@ -43,7 +46,7 @@ class ProfileForm(forms.Form):
     class Meta:
         layout = ((_(u'personal information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
                   (_(u'address'), ('street', 'postalcode', 'city')),
-                  (_(u'other'), ('send_me_email', ))
+                  (_(u'other'), ('email', 'send_me_email', ))
                        )
 
     def clean_dateofbirth(self):
@@ -78,34 +81,6 @@ class ProfileForm(forms.Form):
                                        postalcode=self.cleaned_data['postalcode'],
                                        phonenumber=self.cleaned_data['phonenumber'],
                                        send_me_email=self.cleaned_data['send_me_email'])
-
-class EmailChangeForm(forms.Form):
-    """
-    Change email form
-    """
-    new_email = forms.EmailField(max_length=75,
-                                widget=forms.TextInput(),
-                                label=_(u'new email'))
-    password = forms.CharField(max_length=255,
-                               widget=forms.PasswordInput(),
-                               label=_(u'password'))
-
-    def __init__(self, data=None, auto_id='id_%s', prefix=None, initial=None, user=None):
-        super(EmailChangeForm, self).__init__(data=data, auto_id=auto_id, prefix=prefix, initial=initial)
-
-        self.userModel = user
-
-    def clean_password(self):
-        if self.userModel.check_password(self.cleaned_data['password']):
-            return self.cleaned_data['password']
-        else:
-            raise forms.ValidationError(_(u'Wrong password'))
-
-    def save(self):
-        """
-        Save and return the newly generated key
-        """
-        return EmailChangeRequest.objects.create_request(self.userModel, self.cleaned_data['new_email'])
 
 class PasswordChangeForm(AuthPasswordChangeForm):
 

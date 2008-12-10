@@ -1,8 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth import views as auth_views
 
-from views import profile_edit, profile_change_email, \
-     profile_change_email_confirm, password_change
+from views import profile_edit, password_change
 
 urlpatterns = patterns('',
     url(r'^rediger/$', profile_edit,
@@ -29,9 +28,4 @@ urlpatterns = patterns('',
         name='members_password_change'),
     url(r'^skift-kodeord/done/$', auth_views.password_change_done,
         {'template_name':'members/password_change_done.html'}, name='auth_password_change_done'),
-
-    url(r'^skift-email/$', profile_change_email,
-        name='members_change_email'),
-    url(r'^skift-email/confirm/(?P<key>\w+)/$', profile_change_email_confirm,
-        name='members_change_email_confirm'),
 )

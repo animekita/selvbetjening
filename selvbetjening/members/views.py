@@ -7,7 +7,8 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 
-from forms import ProfileForm, EmailChangeForm, EmailChangeRequest, PasswordChangeForm
+from forms import ProfileForm, PasswordChangeForm
+from models import UserProfile
 
 @login_required
 def profile_edit(request,
@@ -22,14 +23,23 @@ def profile_edit(request,
             return HttpResponseRedirect(reverse(success_page))
     else:
         user = request.user
-        user_profile = user.get_profile()
+        try:
+            user_profile = user.get_profile()
+        except UserProfile.DoesNotExist:
+            user_profile = UserProfile.objects.create(user=user)
+
+        dateofbirth = None
+        if user_profile.dateofbirth:
+            dateofbirth = user_profile.dateofbirth.strftime('%d-%m-%Y')
+
         form = form_class(initial={'first_name':user.first_name,
                                    'last_name':user.last_name,
-                                   'dateofbirth':user_profile.dateofbirth.strftime('%d-%m-%Y'),
+                                   'dateofbirth': dateofbirth ,
                                    'street':user_profile.street,
                                    'city':user_profile.city,
                                    'postalcode':user_profile.postalcode,
                                    'phonenumber':user_profile.phonenumber,
+                                   'email':user.email
                                   })
 
     return render_to_response(template_name, {'form' : form}, context_instance=RequestContext(request))
@@ -53,28 +63,3 @@ def password_change(request,
     return render_to_response(template_name,
                               {'form': form,},
                               context_instance=RequestContext(request))
-
-@login_required
-def profile_change_email(request,
-                         template_name='members/email_change.html',
-                         success_page='members_profile',
-                         form_class=EmailChangeForm):
-
-    if request.method == 'POST':
-        form = form_class(request.POST, user=request.user)
-        if form.is_valid():
-            form.save()
-            request.user.message_set.create(message=_(u'An email has been sent to your old email to verify your email change.'))
-            return HttpResponseRedirect(reverse(success_page))
-    else:
-        form = form_class()
-
-    return render_to_response(template_name, {'form' : form}, context_instance=RequestContext(request))
-
-def profile_change_email_confirm(request,
-                                 key,
-                                 template_name='members/email_change_done.html'):
-
-    result = EmailChangeRequest.objects.confirm(key)
-
-    return render_to_response(template_name, {'success' : result}, context_instance=RequestContext(request))

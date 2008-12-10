@@ -28,8 +28,6 @@ class RegistrationForm(ProfileForm):
                                 label=_(u"password"))
     password2 = forms.CharField(widget=forms.PasswordInput(),
                                 label=_(u"verify password"))
-    email = forms.EmailField(widget=forms.TextInput(attrs=dict(maxlength=75)),
-                             label=_(u"email"))
 
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow Anime Kita to store my personal information."))
