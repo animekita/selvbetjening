@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+
+{% load accounting_translate %}
+{% load uniform %}
+
+{% block extraheader %}
+    {% uniform_header %}
+{% endblock %}
+
+{% block contenthead %}
+<h2>Betalinger i perioden {{startdate}} - {{enddate}}</h2>
+{% endblock %}
+
+{% block content %}
+
+{{form|uniform:"vis"}}
+
+<table>
+<tr>
+    <td>Brugernavn</td>
+    <td>Tidspunkt</td>
+    <td>Betaling</td>
+    <td>DKK</td>
+</tr>
+{% for payment in payments %}
+<tr>
+    <td>{{payment.user.username}}</td>
+    <td>{{payment.timestamp|date:"d/m - Y H:i:s"}}</td>
+    <td>{{payment.type|translate:"payment_type"}}</td>
+    <td>{{payment.get_ammount}},-</td>
+</tr>
+{% endfor %}
+<tr>
+    <td colspan="3"><b>Total</b></td>
+    <td><b>{{total}},-</b></td>
+</tr>
+</table>
+
+{% endblock %}
