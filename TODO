@@ -8,13 +8,13 @@ Core Moduler
 Modul                    Oprydning           Kobling            Doku            Admin        Templates
 
 Accounting (Admin)          OK                 OK
-Core                        OK                 OK                                OK
+Core                        OK                 OK                OK              OK              NA
 Eventmode (Admin)
-Events                      OK                 OK                OK                              OK
-Forms
+Events                      OK                 OK                OK              OK              OK
+Forms                                                                            NA              NA
 Mailcenter (Admin)
-Members                     OK                 OK                                OK              OK
-Quickregistration           OK                 OK                                OK              OK
+Members                     OK                 OK                OK              OK              OK
+Quickregistration           OK                 OK                OK              OK              OK
 
 
 Addon Moduler
@@ -33,3 +33,8 @@ Andet
 
 TODO
 ----
+
+Changes to db
+-------------
+
+Date of birth on user now NULL

@@ -34,11 +34,11 @@ class Event(models.Model):
 
     @property
     def attendees_count(self):
-        return self.get_attendees().count()
+        return self.attendees.count()
 
     @property
     def checkedin(self):
-        return self.get_attendees().filter(has_attended=True)
+        return self.attendees.filter(has_attended=True)
 
     @property
     def checkedin_count(self):
@@ -59,16 +59,22 @@ class Event(models.Model):
             return self.attend_set.filter(user=user).count() == 1
 
     def __unicode__(self):
-        return _(u'Event %s') % self.title
+        return _(u'%s') % self.title
 
 class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
     has_attended = models.BooleanField()
 
+    class Meta:
+        unique_together = ('event', 'user')
+
     @property
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
+
+    def __unicode__(self):
+        return '%s attending %s' % (self.user, self.event)
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)

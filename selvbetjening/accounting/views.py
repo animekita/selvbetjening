@@ -50,34 +50,3 @@ def list_users(request, template_name='accounting/list.html'):
     return render_to_response(template_name,
                               {'users' : User.objects.all()},
                               context_instance=RequestContext(request))
-
-@permission_required('accounting.add_payment')
-@log_access
-def payments(request, template_name='accounting/payments.html',
-             form_class=PaymentsIntervalForm):
-
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect(reverse('accounting_payments_detail', kwargs={'startdate' : form.cleaned_data['startdate'], 'enddate' : form.cleaned_data['enddate']}))
-    else:
-        form = form_class()
-
-    return render_to_response(template_name,
-                              {'form' : form},
-                              context_instance=RequestContext(request))
-
-@permission_required('accounting.add_payment')
-@log_access
-def payments_detail(request, startdate, enddate,
-                    template_name='accounting/payments_detail.html'):
-
-    payments = Payment.objects.filter(timestamp__gte=startdate).filter(timestamp__lte=enddate)
-
-    total = 0
-    for payment in payments:
-        total += payment.get_ammount()
-
-    return render_to_response(template_name,
-                              {'payments' : payments, 'total' : total, 'startdate' : startdate, 'enddate' : enddate},
-                              context_instance=RequestContext(request))

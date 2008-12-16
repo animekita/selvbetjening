@@ -18,12 +18,6 @@ Der er to vigtige elementer, en bruger og hendes profil, som ønskes oprettet fo
 Anvendelses Området
 -------------------
 
-Nye brugere skal kunne oprettes igennem selvbetjening af udefra kommende personer. Der kan også opstå tilfælde hvor oprettelsen af brugeren indgår i en process hvor andre elementer, såsom tilmelding til et arrangement, indgår.
-
-Design
-======
-
-Arkitektur
-----------
+Nye brugere skal kunne oprettes igennem selvbetjening. Der kan også opstå tilfælde hvor oprettelsen af brugeren indgår i en process hvor andre elementer, såsom tilmelding til et arrangement, indgår.
 
 

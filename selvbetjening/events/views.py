@@ -111,3 +111,5 @@ def change_options(request, event_id, form=OptionsForm,
     return render_to_response(template_name,
                               {'form' : form, 'event' : event },
                               context_instance=RequestContext(request))
+
+

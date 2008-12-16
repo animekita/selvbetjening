@@ -1,25 +1,35 @@
-from django.contrib import admin
+from django.contrib.admin import ModelAdmin, TabularInline
+from django.contrib.auth.models import User
 
-from models import Event, Attend, Option, OptionGroup
+from models import Attend, Option, OptionGroup
 
-class EventAdmin(admin.ModelAdmin):
+class AttendInline(TabularInline):
+    model = Attend
+    raw_id_fields = ('user',)
+    verbose_name = 'Deltager'
+    verbose_name_plural = 'Deltagere'
+
+class EventAdmin(ModelAdmin):
     list_display = ('title', 'startdate', 'enddate', 'registration_open')
+    inlines = [AttendInline, ]
 
-admin.site.register(Event, EventAdmin)
+class OptionInline(TabularInline):
+    model = Option
+    exclude = ('users', )
 
-class AttendAdmin(admin.ModelAdmin):
-    list_display = ('event', 'user', 'has_attended')
-
-admin.site.register(Attend, AttendAdmin)
-
-class OptionGroupAdmin(admin.ModelAdmin):
+class OptionGroupAdmin(ModelAdmin):
     list_display = ('event', 'name',)
     list_filter = ('event',)
 
-admin.site.register(OptionGroup, OptionGroupAdmin)
+    inlines = [OptionInline, ]
 
-class OptionAdmin(admin.ModelAdmin):
+class OptionAdmin(ModelAdmin):
     list_display = ('group', 'name', 'attendees_count', 'freeze_time')
     list_filter = ('group',)
+    raw_id_fields = ('users',)
+    fieldsets = (
+        (None, {'fields': ('group', 'name', 'description')}),
+        ('Conditions', {'fields': ('freeze_time', 'maximum_attendees', 'order'), 'classes' : ('collapse',)}),
+        ('Users', {'fields': ('users',), 'classes': ('collapse',)}),
+        )
 
-admin.site.register(Option, OptionAdmin)

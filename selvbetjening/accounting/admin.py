@@ -1,13 +1,14 @@
 from django.contrib import admin
 
-from models import Payment, YearlyRate
+from models import Payment
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('user', 'timestamp', 'type')
 
-admin.site.register(Payment, PaymentAdmin)
-
 class YearlyRateAdmin(admin.ModelAdmin):
     list_display = ('year', 'rate')
 
-admin.site.register(YearlyRate, YearlyRateAdmin)
+class PaymentInline(admin.TabularInline):
+    model = Payment
+    extra = 1
+    template = 'admin/accounting/payment/edit_inline.html'

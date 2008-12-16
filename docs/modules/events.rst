@@ -22,5 +22,5 @@ Følgende figur viser de klasser der bliver behandlet i events modulet.
 Anvendelses Området
 -------------------
 
-Der er to aktører i dette modul. En administrator skal være i stand til at oprette og administrere arrangementer, mens brugere skal være i stand til at tilmelde sig arrangementer og vælge tilvalg.
+Der er to aktører i dette modul. En administrator skal være i stand til at oprette og administrere arrangementer, mens brugere skal være i stand til at tilmelde sig arrangementer og vælge tilvalg. Administratoren bruger admin interfacet mens den almene bruger benytter sig af af den offentlgie side.
 

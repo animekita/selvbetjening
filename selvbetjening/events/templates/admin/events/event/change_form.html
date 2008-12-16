@@ -1,0 +1,43 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  <li><a href="statistics/" class="historylink">{% trans "Statistics" %}</a></li>
+  <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
+  {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block after_field_sets %}
+
+<div class="inline-group">
+  <div class="tabular inline-related">
+    <fieldset class="module">
+    <h2>Tilvalg</h2>
+
+   <table>
+     <thead><tr>
+     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte</th>
+     </tr></thead>
+
+     {% for optiongroup in original.optiongroup_set.all %}
+     {% for option in optiongroup.option_set.all %}
+     <tr class="{% cycle "row1" "row2" %}">
+       <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
+         {% if forloop.first %}{{ optiongroup.name }}{% endif %}
+       </a></td>
+       <td><a href="/admin/events/option/{{ option.id }}/">
+         {{ option.name }}
+       </a></td>
+       <td>{{option.attendees_count}}</td>
+     </tr>
+     {% endfor %}
+     {% endfor %}
+   </table>
+
+
+
+{% endblock %}

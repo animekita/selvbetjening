@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">Events</a> &rsaquo;
+     <a href="../../">Events</a> &rsaquo;
+     <a href="../">{{event}}</a> &rsaquo;
+     Statistik
+</div>
+{% endif %}{% endblock %}
+
+{% block content_title %}<h1>Statistik</h1>{% endblock %}
+
+{% block content %}
+
+<h3>Tilmeldinger</h3>
+
+<table class="horizontal">
+    <tr>
+        <th>Tilmeldte</th>
+        <td>{{event.attendees_count}}</td>
+    </tr>
+    <tr>
+        <th>Nye</th>
+        <td>{{new_attendees}} ({{new_attendees_precentage|stringformat:".1f"}}%)</td>
+    </tr>
+</table>
+
+<h3>Deltagere</h3>
+
+<table class="horizontal">
+    <tr>
+        <th>Deltagere</th>
+        <td>{{event.checkedin_count}} ({{checkin_precentage|stringformat:".1f"}}%)</td>
+    </tr>
+    <tr>
+        <th>Nye</th>
+        <td>{{new_checkedin}} ({{new_checkedin_precentage|stringformat:".1f"}}%)</td>
+    </tr>
+</table>
+
+{% endblock %}
