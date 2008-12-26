@@ -5,6 +5,8 @@ from django.utils.translation import ugettext as _
 
 from models import MembershipState, Payment
 
+from django.contrib.admin import widgets
+
 class PaymentForm(forms.Form):
 
     TYPE_CHOICES = (
@@ -13,7 +15,7 @@ class PaymentForm(forms.Form):
         ('SRATE',_('Second rate')),
         )
 
-    type = forms.CharField(max_length=5, label=_('Payment type'))
+    type = forms.ChoiceField(label=_('Payment type'))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs['user']
@@ -44,7 +46,9 @@ class PaymentForm(forms.Form):
 class PaymentsIntervalForm(forms.Form):
 
     startdate = forms.DateField(
-        input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'))
+        #input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
+        widget=widgets.AdminDateWidget())
     enddate = forms.DateField(
-        input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'))
+        #input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
+        widget=widgets.AdminDateWidget())
 

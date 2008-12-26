@@ -69,12 +69,25 @@ class Attend(models.Model):
     class Meta:
         unique_together = ('event', 'user')
 
-    @property
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
+    is_new.boolean = True
+
+    def user_first_name(self):
+        # Stupid function, but needed by the django admin interface
+        # to show sortable user information from the attend administration.
+        return self.user.first_name
+    user_first_name.admin_order_field = 'user__first_name'
+    user_first_name.short_description = _('First name')
+
+    def user_last_name(self):
+        # See description for user_first_name
+        return self.user.last_name
+    user_last_name.admin_order_field = 'user__last_name'
+    user_last_name.short_description = _('Last name')
 
     def __unicode__(self):
-        return '%s attending %s' % (self.user, self.event)
+        return u'%s attending %s' % (self.user, self.event)
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)

@@ -7,11 +7,11 @@ Core Moduler
 
 Modul                    Oprydning           Kobling            Doku            Admin        Templates
 
-Accounting (Admin)          OK                 OK
+Accounting (Admin)          OK                 OK                OK              OK              OK
 Core                        OK                 OK                OK              OK              NA
-Eventmode (Admin)
+Eventmode (Admin)           OK                 OK                                OK
 Events                      OK                 OK                OK              OK              OK
-Forms                                                                            NA              NA
+Forms                       NA                 NA                OK              NA              NA
 Mailcenter (Admin)
 Members                     OK                 OK                OK              OK              OK
 Quickregistration           OK                 OK                OK              OK              OK

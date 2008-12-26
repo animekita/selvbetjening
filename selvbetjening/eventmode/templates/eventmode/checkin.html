@@ -1,0 +1,44 @@
+{% extends "eventmode/base.html" %}
+
+{% load markup i18n %}
+{% load adminmedia admin_list i18n %}
+
+{% block stylesheet %}{% admin_media_prefix %}css/changelists.css{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url eventmode_index %}">{% trans 'Home' %}</a>
+    &rsaquo; {{event.title}} Checkin
+</div>
+{% endblock %}
+
+{% block content_title %}
+<h1>{{event.title}}</h1>
+{% endblock %}
+
+{% block content %}
+
+<div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
+{% block search %}{% search_form cl %}{% endblock %}
+{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}
+
+{% block filters %}
+{% if cl.has_filters %}
+<div id="changelist-filter">
+<h2>{% trans 'Filter' %}</h2>
+{% for spec in cl.filter_specs %}
+   {% admin_list_filter cl spec %}
+{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block result_list %}{% result_list cl %}{% endblock %}
+{% block pagination %}{% pagination cl %}{% endblock %}
+</div>
+
+{% endblock %}

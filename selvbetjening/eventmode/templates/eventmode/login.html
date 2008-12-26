@@ -1,5 +1,13 @@
-{% extends "admin/login.html" %}
+{% extends "eventmode/base.html" %}
 {% load i18n %}
+
+{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/login.css{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
 {% if error_message %}
@@ -8,7 +16,7 @@
 <div id="content-main">
 <form action="{{ app_path }}" method="post" id="login-form">
   <div class="form-row">
-    <label for="id_username">{% trans 'Event:' %}</label>
+    <label for="id_event">{% trans 'Event:' %}</label>
     <select name="event" id="id_event">
     {% for event in events %}
       <option value="{{event.id}}">{{event.title}}</option>
@@ -16,7 +24,7 @@
     </select>
   </div>
   <div class="form-row">
-    <label for="id_password">{% trans 'Passphrase:' %}</label> <input type="password" name="password" id="id_password" />
+    <label for="id_passphrase">{% trans 'Passphrase:' %}</label> <input type="password" name="passphrase" id="id_passphrase" />
     <input type="hidden" name="this_is_the_login_form" value="1" />
   </div>
   <div class="submit-row">
@@ -25,7 +33,7 @@
 </form>
 
 <script type="text/javascript">
-document.getElementById('id_username').focus()
+document.getElementById('id_event').focus()
 </script>
 </div>
 {% endblock %}

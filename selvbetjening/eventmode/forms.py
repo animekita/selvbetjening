@@ -5,13 +5,6 @@ from selvbetjening.core.forms import AcceptForm
 
 from models import EventmodeMachine
 
-class CheckinForm(AcceptForm):
-    def label(self):
-        return _(u'This user has participated in the event')
-
-    def error(self):
-        return _(u'You must confirm his participation.')
-
 class EventmodeAccessForm(forms.Form):
     passphrase = forms.CharField(_('Passphrase'))
 

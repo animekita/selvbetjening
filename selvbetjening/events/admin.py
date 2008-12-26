@@ -15,7 +15,7 @@ class EventAdmin(ModelAdmin):
 
 class OptionInline(TabularInline):
     model = Option
-    exclude = ('users', )
+    exclude = ['users', ]
 
 class OptionGroupAdmin(ModelAdmin):
     list_display = ('event', 'name',)
