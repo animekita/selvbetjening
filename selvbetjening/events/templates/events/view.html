@@ -9,7 +9,10 @@
 
 {% block contenthead %}
 {{event.title|escape}}
-<p>Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>
+{% endblock %}
+
+{% block sub_content_head %}
+Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}
 {% endblock %}
 
 {% block content %}

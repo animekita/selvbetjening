@@ -1,5 +1,3 @@
-import hashlib
-
 from models import EventmodeMachine
 
 class EventmodeMiddleware():
@@ -37,6 +35,4 @@ class Eventmode():
             try:
                 return EventmodeMachine.objects.get(id=eventmode_id)
             except EventmodeMachine.DoesNotExist:
-                pass
-
-        return None
+                return None

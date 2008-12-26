@@ -71,7 +71,7 @@ class ViewTestCase(TestCase):
         self.user_data = get_user_data()
 
     def test_create_user(self):
-        response = self.client.post(reverse('quickrregistration_register'), self.user_data)
+        response = self.client.post(reverse('quickregistration_register'), self.user_data)
 
         self.assertEqual(response.status_code, 302) # redirect
 

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django import shortcuts
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
@@ -8,10 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django.contrib.admin.views.main import ChangeList
-from django.contrib.auth.models import User
 
-from selvbetjening.accounting.forms import PaymentForm
-from selvbetjening.accounting.models import MembershipState, Payment
 from selvbetjening.core import logger
 from selvbetjening.core.decorators import log_access
 from selvbetjening.events.models import Event, Attend, Option
@@ -36,7 +31,7 @@ def login(request, template_name='eventmode/login.html',
                 # Authenticate
                 if request.eventmode.login(event, passphrase):
                     logger.info(request, 'client activated eventmode for event %s',
-                                request.eventmode.model.event.id)
+                                request.eventmode.model.event.pk)
 
                     return HttpResponseRedirect(reverse(success_page))
 

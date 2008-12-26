@@ -1,8 +1,4 @@
-from django.contrib.admin import AdminSite, ModelAdmin
-
-from selvbetjening.events.models import Event
-
-from models import EventmodeMachine
+from django.contrib.admin import ModelAdmin
 
 class EventmodeMachineAdmin(ModelAdmin):
     list_display = ('event', 'name')

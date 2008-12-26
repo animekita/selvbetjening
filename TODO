@@ -34,6 +34,15 @@ Andet
 TODO
 ----
 
+* Refactor tilvalg beregning
+* Fix mailcenter
+* Gør lettere og tilføje brugere, ændre deres tilvalg og tilmelde folk i eventmode
+* Oversættelse
+* Fix forum integration
+* Bestem SQL migrering
+* Bestem metode til deploy
+* Bestem Licens
+
 Changes to db
 -------------
 
