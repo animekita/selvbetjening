@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-29 22:56+0100\n"
-"PO-Revision-Date: 2008-12-29 23:00+0100\n"
+"POT-Creation-Date: 2008-12-29 23:41+0100\n"
+"PO-Revision-Date: 2008-12-29 23:42+0100\n"
 "Last-Translator: Casper S. Jensen <the@sema.dk>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -168,7 +168,9 @@ msgstr "Du skal acceptere for at deltage i arrangementet."
 msgid ""
 "Looks like your browser isn't configured to accept cookies. Please enable "
 "cookies, reload this page, and try again."
-msgstr "Din browser understøtter ikke cookies. Slå cookies til og besøg denne side igen."
+msgstr ""
+"Din browser understøtter ikke cookies. Slå cookies til og besøg denne side "
+"igen."
 
 #: eventmode/views.py:85
 msgid "Actions"
@@ -210,6 +212,10 @@ msgstr "Ja, afmeld mig fra dette arrangement"
 #: events/forms.py:21
 msgid "You must accept to remove your participation in the event"
 msgstr "Du skal acceptere for at blive afmeldt arrangementet"
+
+#: events/forms.py:59
+msgid "The maximum number of attendees have been reached"
+msgstr "Det maksimale antal deltagere er opnået"
 
 #: events/forms.py:78
 #, python-format

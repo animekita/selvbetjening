@@ -55,8 +55,9 @@ class OptionsForm(forms.Form):
             # check for the maximum number of attendees requirement
             for option in optiongroup.option_set.all():
                 if self.cleaned_data.get(self._get_id(option), False):
-                    if option.maximum_attendees >= option.attendees_count():
-                        raise forms.ValidationError('The maximum number of attendees have been reached')
+                    if option.maximum_attendees is not None and \
+                       option.attendees_count() >= option.maximum_attendees:
+                        raise forms.ValidationError(_('The maximum number of attendees have been reached'))
 
             if optiongroup.minimum_selected > 0:
                 selected = 0
