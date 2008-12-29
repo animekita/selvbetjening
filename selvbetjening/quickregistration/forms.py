@@ -30,7 +30,7 @@ class RegistrationForm(ProfileForm):
                                 label=_(u"verify password"))
 
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
-                             label=_(u"I allow Anime Kita to store my personal information."))
+                             label=_(u"I allow the storage of my personal information on this site."))
 
     class Meta:
         layout = ((_(u"personal information"), ('first_name', 'last_name',

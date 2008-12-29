@@ -40,7 +40,7 @@ class ProfileForm(forms.Form):
     phonenumber = forms.IntegerField(label=_(u'phonenumber'), required=False)
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
-                             label=_(u'Inform me about events and other important changes in Anime Kita.'),
+                             label=_(u'Inform me about events and other important changes.'),
                              initial=True, required=False)
 
     class Meta:

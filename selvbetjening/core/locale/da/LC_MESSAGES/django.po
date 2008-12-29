@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-29 23:41+0100\n"
-"PO-Revision-Date: 2008-12-29 23:42+0100\n"
+"POT-Creation-Date: 2008-12-30 00:26+0100\n"
+"PO-Revision-Date: 2008-12-30 00:27+0100\n"
 "Last-Translator: Casper S. Jensen <the@sema.dk>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -213,16 +213,16 @@ msgstr "Ja, afmeld mig fra dette arrangement"
 msgid "You must accept to remove your participation in the event"
 msgstr "Du skal acceptere for at blive afmeldt arrangementet"
 
-#: events/forms.py:59
+#: events/forms.py:60
 msgid "The maximum number of attendees have been reached"
 msgstr "Det maksimale antal deltagere er opnået"
 
-#: events/forms.py:78
+#: events/forms.py:79
 #, python-format
 msgid "You need to select one option from the group %(group)s"
 msgstr "Du skal vælge mindst et tilvag fra gruppen %(group)s"
 
-#: events/forms.py:80
+#: events/forms.py:81
 #, python-format
 msgid "You need to select %(count)d options from the group %(group)s"
 msgstr "Du skal vælge mindst %(count)d tilvag fra gruppen %(group)s"
@@ -282,7 +282,7 @@ msgstr "Maksimal antal deltagere"
 msgid "Order"
 msgstr "Rækkefølge"
 
-#: events/models.py:118
+#: events/models.py:125
 msgid "Atendees"
 msgstr "Deltagerer"
 
@@ -375,8 +375,8 @@ msgid "phonenumber"
 msgstr "Telefonnummer"
 
 #: members/forms.py:43
-msgid "Inform me about events and other important changes in Anime Kita."
-msgstr "Informer mig omkring arrangementer og andre tiltag i Anime Kita."
+msgid "Inform me about events and other important changes."
+msgstr "Informer mig omkring arrangementer og andre tiltag."
 
 #: members/forms.py:47 quickregistration/forms.py:36
 msgid "personal information"
@@ -433,9 +433,9 @@ msgid "verify password"
 msgstr "Gentag kodeord"
 
 #: quickregistration/forms.py:33
-msgid "I allow Anime Kita to store my personal information."
+msgid "I allow the storage of my personal information on this site."
 msgstr ""
-"Jeg accepterer at Anime Kita gemmer de personoplysninger jeg vidergiver."
+"Jeg accepterer at denne side gemmer de personoplysninger jeg vidergiver."
 
 #: quickregistration/forms.py:41
 msgid "data management terms"
