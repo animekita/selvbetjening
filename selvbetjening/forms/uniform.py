@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.encoding import force_unicode
 
 class UniformInputBase(object):
 
@@ -22,7 +23,7 @@ class UniformInputBase(object):
 
     def label(self):
         if self.input.field.required:
-            return self.input.label_tag('<em>*</em> ' + str(self.input.label)) + '\n'
+            return self.input.label_tag('<em>*</em> ' + force_unicode(self.input.label)) + '\n'
         else:
             return self.input.label_tag() + '\n'
 
