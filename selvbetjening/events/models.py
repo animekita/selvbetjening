@@ -113,6 +113,13 @@ class Option(models.Model):
         else:
             return datetime.now() > self.freeze_time
 
+    def max_attendees_reached(self):
+        if self.maximum_attendees is not None and \
+           self.attendees_count() >= self.maximum_attendees:
+            return True
+        else:
+            return False
+
     def attendees_count(self):
         return self.users.count()
     attendees_count.short_description = _('Atendees')
