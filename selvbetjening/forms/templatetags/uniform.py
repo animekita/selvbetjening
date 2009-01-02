@@ -72,15 +72,9 @@ def uniform_formrendering(form, submitText=None):
 
     return safestring.mark_safe(render)
 
-@register.tag
-def uniform_header(parser, token):
-        return UniformHeaderNode()
-
-class UniformHeaderNode(template.Node):
-
-        def render(self, context):
-                return safestring.mark_safe('<link rel="stylesheet" type="text/css" href="%scss/compressed/uni-form.css" media="screen, projection" />\n<script type="text/javascript" src="%sjs/datepicker.js"></script>\n<link href="%scss/compressed/datepicker.css" rel="stylesheet" type="text/css" />' %
-                                            (settings.MEDIA_URL, settings.MEDIA_URL, settings.MEDIA_URL))
+@register.inclusion_tag('forms/headers.html')
+def uniform_header():
+        return {'MEDIA_URL' : settings.MEDIA_URL}
 
 def render_input(item, args={ }):
     if isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
