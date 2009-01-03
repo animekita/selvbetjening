@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from selvbetjening.events.models import Event
 
@@ -84,3 +85,11 @@ class EventmodeTestCase(TestCase):
     def test_model(self):
         self.test_login()
         self.assertEqual(self.eventmode.model, self.eventmode1)
+
+class MiddlewareTestCase(TestCase):
+
+    def test_is_loaded(self):
+        # fails authentication check if eventmode middleware is missing
+        response = self.client.get(reverse('eventmode_index'))
+
+        self.assertEqual(response.status_code, 302)
