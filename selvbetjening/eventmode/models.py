@@ -23,14 +23,15 @@ class EventmodeMachine(models.Model):
     Model representing a physical machine used at a event.
 
     event -- associated event
-    name -- name identifying
-    passphrase - sha1 hashed passphrase
+    name -- name identifying the machine
+    passphrase -- sha1 hashed passphrase
+    active -- boolean declaring if the machine is active (can login)
     """
 
     event = models.ForeignKey(Event)
     name = models.CharField(max_length=255)
     passphrase = models.CharField(max_length=255)
-
+    active = models.BooleanField(default=False)
 
     objects = EventmodeMachineManager()
 
@@ -38,4 +39,4 @@ class EventmodeMachine(models.Model):
         unique_together = ('event', 'passphrase')
 
     def is_valid(self):
-        return (self.event.enddate >= date.today() and self.event.startdate <= date.today())
+        return self.active
