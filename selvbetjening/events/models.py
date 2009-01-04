@@ -94,6 +94,15 @@ class OptionGroup(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
     minimum_selected = models.IntegerField(_('Minimum selected'))
+    maximum_attendees = models.IntegerField(_('Maximum attendees'))
+
+    @property
+    def attendees(self):
+        return User.objects.filter(option__group=self.pk).distinct()
+
+    def attendees_count(self):
+        return self.attendees.count()
+    attendees_count.short_description = _('Atendees')
 
     def __unicode__(self):
         return u'%s: %s' % (self.event.title, self.name)

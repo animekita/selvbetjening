@@ -42,10 +42,19 @@ class OptionsForm(forms.Form):
 
         for optiongroup in self.optiongroups:
             groupoptions = []
+
+            disable_all = False
+            if optiongroup.maximum_attendees > 0 and \
+               optiongroup.attendees_count() >= optiongroup.maximum_attendees and \
+               self.user not in optiongroup.attendees:
+                disable_all = True
+
             for option in optiongroup.option_set.all().order_by('order'):
                 self.options.append(option)
+
                 groupoptions.append((self._get_id(option),
-                                     {'disabled' : option.is_frozen() or option.max_attendees_reached()}))
+                                     {'disabled' : disable_all or option.is_frozen() or option.max_attendees_reached()}))
+
                 self.fields[self._get_id(option)] = forms.BooleanField(label=option.name,
                                                                        required=False,
                                                                        help_text=option.description)
@@ -58,6 +67,14 @@ class OptionsForm(forms.Form):
                 if self.cleaned_data.get(self._get_id(option), False):
                     if option.max_attendees_reached():
                         raise forms.ValidationError(_('The maximum number of attendees have been reached'))
+
+            # enforce maximum attendee count for option groups
+            if optiongroup.maximum_attendees > 0 and \
+               optiongroup.attendees_count() >= optiongroup.maximum_attendees and \
+               self.user not in optiongroup.attendees:
+                    for option in optiongroup.option_set.all():
+                        if self.cleaned_data.get(self._get_id(option), False):
+                            raise forms.ValidationError('The maximum number of attendees have been reached')
 
             if optiongroup.minimum_selected > 0:
                 selected = 0
