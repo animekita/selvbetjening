@@ -15,13 +15,13 @@ class RecipientGroupFormTest(TestCase):
     def _init_users(self):
         self.users = []
         for i in range(10):
-            user = auth_models.User.objects.create_user('user' + str(i), '', 'user' + str(i) + '@ex.ex')
+            user = auth_models.User.objects.create_user('user' + str(i), 'user' + str(i) + '@ex.ex', '')
             self.users.append(user)
             UserProfile.objects.create(user=user, dateofbirth=date.today(), send_me_email=True)
 
     def _init_users_advanced(self):
         for i in range(10, 20):
-            user = auth_models.User.objects.create_user('user' + str(i), '', 'user' + str(i) + '@ex.ex')
+            user = auth_models.User.objects.create_user('user' + str(i), 'user' + str(i) + '@ex.ex', '')
             self.users.append(user)
             UserProfile.objects.create(user=user, dateofbirth=date.today(), send_me_email=False)
 
@@ -41,7 +41,7 @@ class RecipientGroupFormTest(TestCase):
         form = SelectGroupForm()
 
         # should only contain the "all" option
-        self.assertEqual(len(form.fields['group'].choices), 1)
+        self.assertEqual(len(form.fields['group'].widget.choices), 1)
 
     def test_get_recipients_empty(self):
         form = SelectGroupForm({'group' : 'all'})
@@ -77,7 +77,7 @@ class RecipientGroupFormTest(TestCase):
         self._init_events()
         form = SelectGroupForm()
 
-        self.assertEqual(len(form.fields['group'].choices), 11)
+        self.assertEqual(len(form.fields['group'].widget.choices), 11)
 
     def test_get_recipients_empty_event(self):
         self._init_events()
@@ -91,7 +91,7 @@ class RecipientGroupFormTest(TestCase):
         self._init_events()
         self._init_events_attendees()
         preform = SelectGroupForm()
-        form = SelectGroupForm({'group' : preform.fields['group'].choices[1][0]})
+        form = SelectGroupForm({'group' : preform.fields['group'].widget.choices[1][0]})
 
         self.assertTrue(form.is_valid())
         self.assertEqual(len(form.get_selected_recipients()), 5)
@@ -107,23 +107,23 @@ class MailModelTest(TestCase):
             UserProfile.objects.create(user=user, dateofbirth=date.today(), send_me_email=True)
 
     def test_send_mail_single(self):
-        self.mailobj.send_mail(['example@example.org',])
+        self.mailobj.send_preview(['example@example.org',])
 
         self.assertEqual(len(mail.outbox), 1)
 
     def test_send_mail_multiple(self):
-        self.mailobj.send_mail(['example@example.org', 'example2@example.org'])
+        self.mailobj.send_preview(['example@example.org', 'example2@example.org'])
 
         self.assertEqual(len(mail.outbox), 2)
 
     def test_send_mail_to_users(self):
-        self.mailobj.send_mail_to_users(self.users)
+        self.mailobj.send(self.users)
 
         self.assertEqual(len(mail.outbox), 10)
         self.assertEqual(len(self.mailobj.recipients.all()), 10)
 
     def test_filter(self):
-        self.mailobj.send_mail_to_users(self.users[:5])
+        self.mailobj.send(self.users[:5])
 
         accept, deny = self.mailobj.recipient_filter(self.users)
         self.assertEqual(len(accept), 5)

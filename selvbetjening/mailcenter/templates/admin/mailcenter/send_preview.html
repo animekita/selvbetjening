@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+
+{% load adminmedia %}
+
+{% block stylesheet %}{% admin_media_prefix %}css/forms.css{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="../../../../">Hjem</a> &rsaquo;
+     <a href="../../../">Mailcenter</a> &rsaquo;
+     <a href="../../">Mails</a> &rsaquo;
+     <a href="../">{{ mail }}</a> &rsaquo;
+     Send Preview
+</div>
+{% endblock %}
+
+{% block content_title %}
+<h2>Send Preview of {{ mail }}</h2>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="">
+
+    {% for fieldset in adminform %}
+      {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
+
+    <div class="submit-row" >
+    <input type="submit" value="Send Preview E-mail" name="show_report" />
+    </div>
+
+</form>
+
+{% endblock %}
