@@ -24,7 +24,7 @@ class SelvHashFunctionNotImplementedException extends Exception { }
  * @throws SelvConnectionFailedException
  */
 function _open_db_connection() {
-	$db_con = mysqli(SELV_DB_HOST, SELV_DB_USERNAME, SELV_DB_PASSWORD, SELV_DB_NAME);
+	$db_con = new mysqli(SELV_DB_HOST, SELV_DB_USERNAME, SELV_DB_PASSWORD, SELV_DB_NAME);
 
 	if ($db_con->connection_error) {
 		throw new SelvConnectionFailedException();
@@ -53,6 +53,11 @@ function authenticate($username, $password) {
 	$db_con = _open_db_connection();
 
 	$stmt = $db_con->prepare("SELECT username, password, email, is_active FROM auth_user WHERE username=?");
+
+	if ($db_con->error) {
+		throw new SelvDatabaseErrorException();
+	}
+
 	$stmt->bind_param("s", $username);
 	$stmt->execute();
 
@@ -86,7 +91,7 @@ function authenticate($username, $password) {
 		throw new SelvHashFunctionNotImplementedException();
 	}
 
-	if ($hash != sha1($salt + $password) {
+	if ($hash != sha1($salt . $password)) {
 		throw new SelvWrongPasswordException();
 	}
 
