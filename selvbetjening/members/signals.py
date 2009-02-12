@@ -12,7 +12,7 @@ def set_password(self, raw_password):
     if self.id == None:
         self.save()
 
-    real_set_password(user, raw_password)
+    real_set_password(self, raw_password)
 
     # signal changed password
     user_changed_password.send(self, instance=self, clear_text_password=raw_password)
