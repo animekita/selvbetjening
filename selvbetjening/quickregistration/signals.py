@@ -1,3 +1,3 @@
 from django.dispatch import Signal
 
-user_created = Signal(providing_args=["user", "password"])
+user_created = Signal(providing_args=['instance', 'clear_text_password'])

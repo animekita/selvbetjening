@@ -7,7 +7,7 @@ from django.db.models import permalink
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User # for the  userprofile's foreignkey field
+from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
 import signals
