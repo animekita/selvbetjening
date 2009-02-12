@@ -69,6 +69,9 @@ class AccountingModelTestCase(TestCase):
         self.user10.payment_set.create(type='FRATE', timestamp=self.date_active)
         self.user10.payment_set.create(type='SRATE', timestamp=self.date_active + timedelta(minutes=1))
 
+        self.user11 = auth_models.User.objects.create_user('user11', 'user11', 'user@example.org')
+        self.user11.payment_set.create(type='FULL', timestamp=datetime(2008, 1, 12, 18, 19, 45))
+
     def test_no_payments(self):
         self.assertEqual(models.MembershipState.INACTIVE,
                          models.Payment.objects.get_membership_state(self.user1))
@@ -84,6 +87,8 @@ class AccountingModelTestCase(TestCase):
     def test_full_payment_active(self):
         self.assertEqual(models.MembershipState.ACTIVE,
                          models.Payment.objects.get_membership_state(self.user4))
+
+        self.assertNotEqual(models.Payment.objects.member_since(self.user4), None)
 
     def test_frate_payment_inactive(self):
         self.assertEqual(models.MembershipState.INACTIVE,
@@ -108,3 +113,9 @@ class AccountingModelTestCase(TestCase):
     def test_srate_payment_active(self):
         self.assertEqual(models.MembershipState.ACTIVE,
                          models.Payment.objects.get_membership_state(self.user10))
+
+    def test_full_payment_passive_no_date(self):
+        self.assertEqual(models.MembershipState.PASSIVE,
+                         models.Payment.objects.get_membership_state(self.user11))
+
+        self.assertNotEqual(models.Payment.objects.passive_to(self.user11), None)
