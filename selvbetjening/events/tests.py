@@ -48,15 +48,18 @@ class DatabaseSetup(object):
 
         target.optiongroup1 = models.OptionGroup.objects.create(event=target.event1,
                                                                 name='option group 1',
-                                                                minimum_selected=0)
+                                                                minimum_selected=0,
+                                                                maximum_attendees=0)
 
         target.optiongroup2 = models.OptionGroup.objects.create(event=target.event2,
                                                                 name='option group 2',
-                                                                minimum_selected=1)
+                                                                minimum_selected=1,
+                                                                maximum_attendees=0)
 
         target.optiongroup3 = models.OptionGroup.objects.create(event=target.event5,
                                                                 name='option group 3',
-                                                                minimum_selected=0)
+                                                                minimum_selected=0,
+                                                                maximum_attendees=0)
 
         target.option1 = models.Option.objects.create(group=target.optiongroup1,
                                                     name='hello3',

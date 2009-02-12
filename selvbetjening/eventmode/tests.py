@@ -22,11 +22,13 @@ class DatabaseSetup(object):
 
         target.eventmode1 = EventmodeMachine.objects.create(passphrase='ww',
                                                             event=target.event,
-                                                            name='m1')
+                                                            name='m1',
+                                                            active=True)
 
         target.eventmode2 = EventmodeMachine.objects.create(passphrase='www',
                                                             event=target.event2,
-                                                            name='m2')
+                                                            name='m2',
+                                                            active=False)
 
 class EventmodeMachineTestCase(TestCase):
     def setUp(self):
@@ -58,7 +60,7 @@ class EventmodeTestCase(TestCase):
     def test_login(self):
         self.assertTrue(self.eventmode.login(self.event, 'ww'))
 
-    def test_login_expired_machine(self):
+    def test_login_inactive_machine(self):
         self.assertFalse(self.eventmode.login(self.event2, 'www'))
 
     def test_login_incorrect(self):
