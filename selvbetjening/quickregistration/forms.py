@@ -89,7 +89,7 @@ class RegistrationForm(ProfileForm):
                                    phonenumber=self.cleaned_data['phonenumber'],
                                    send_me_email=self.cleaned_data['send_me_email'])
 
-        signals.user_created.send(self,
+        signals.user_created.send(sender=self,
                                   instance=user,
                                   clear_text_password=self.cleaned_data["password1"])
 

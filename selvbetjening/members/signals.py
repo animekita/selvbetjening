@@ -15,7 +15,7 @@ def set_password(self, raw_password):
     real_set_password(self, raw_password)
 
     # signal changed password
-    user_changed_password.send(self, instance=self, clear_text_password=raw_password)
+    user_changed_password.send(sender=self, instance=self, clear_text_password=raw_password)
 
 # replace the method
 User.set_password = set_password
