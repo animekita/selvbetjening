@@ -2,7 +2,6 @@
 
 from django import forms
 from django.utils.translation import ugettext as _
-from django.contrib.auth.forms import PasswordChangeForm as AuthPasswordChangeForm
 
 from models import UserProfile
 import signals
@@ -81,9 +80,3 @@ class ProfileForm(forms.Form):
                                        postalcode=self.cleaned_data['postalcode'],
                                        phonenumber=self.cleaned_data['phonenumber'],
                                        send_me_email=self.cleaned_data['send_me_email'])
-
-class PasswordChangeForm(AuthPasswordChangeForm):
-
-    def save(self, commit=True):
-        super(PasswordChangeForm, self).save(commit)
-        signals.user_changed_password.send(self, user=self.user, password=self.cleaned_data['new_password1'])

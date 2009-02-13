@@ -6,8 +6,9 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 
-from forms import ProfileForm, PasswordChangeForm
+from forms import ProfileForm
 from models import UserProfile
 
 @login_required
