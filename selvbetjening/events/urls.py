@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls.defaults import *
 
 import views
 import admin_views
