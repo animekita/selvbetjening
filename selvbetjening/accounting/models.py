@@ -48,6 +48,9 @@ class PaymentManager(models.Manager):
     def member_since(self, user):
         last_payment_timestamp = self.last_member_period(user)
 
+        if last_payment_timestamp is None:
+            return None
+
         payment_quater = self.total_quaters(last_payment_timestamp)
 
         if payment_quater + 4 <= self.total_quaters(datetime.now()):
