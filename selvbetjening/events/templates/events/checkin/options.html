@@ -1,0 +1,12 @@
+<fieldset class="module aligned ">
+<div class="form-row type  ">
+<div>
+      <strong>Tilvalg</strong>
+      <ul>
+      {% for option in options %}
+            <li>{{option.group}}: {{option}}</li>
+      {% endfor %}
+      </ul>
+</div>
+</div>
+</fieldset>
