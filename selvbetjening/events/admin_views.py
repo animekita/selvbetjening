@@ -15,7 +15,7 @@ def event_statistics(request, event_id, template_name='admin/events/event/statis
     new = 0
     new_checkedin = 0
     for attendee in event.attendees:
-        if attendee.is_new:
+        if attendee.is_new():
             new += 1
 
             if attendee.has_attended:
