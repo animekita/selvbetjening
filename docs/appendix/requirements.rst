@@ -1,4 +1,9 @@
 Requirements
 ============
 
+* Python >= 2.5
+* Django >= 1.0
+
+* python-textile
+* python-mysqldb
 * South - Django Database Migration (valgfrit, men anbefalet)

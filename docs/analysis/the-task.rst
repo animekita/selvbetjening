@@ -6,7 +6,7 @@ System Definition
 
 Selvbetjening er den elektroniske grænseflade mellem en foreningen og dens medlemmer. Det skal være muligt for mere end en forening at bruge selvbetjening, dog med hver deres installation af systemet. Derfor skal der visse steder tages højde for at forskellige foreninger har forskellige behov og måder at løse opgaver på.
 
-Generelt er det de følgende områder fokus ligger på for Selvbetjening:
+Følgende områder er i fokus for Selvbetjening:
 
 1. Et samlet system hvor medlemmer opretter *en* bruger som sammenknytter alle foreningens elektroniske systemer. F.eks. en forenings forum og selvbetjening selv.
 2. Administration og tilmelding til arrangement.

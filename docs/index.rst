@@ -7,8 +7,6 @@ Dette dokument beskriver Selvbetjening-systemet for Anime Kita. Selvbetjening er
 
 Denne dokumentation er målrettet software udviklere der skal arbejde på selvbetjening. Der antages derfor at personer der læser dette har en vis teoretisk og praktisk forståelse for datalogi.
 
-Strukturen for dette dokument bygger på "Objektorienteret Analyse & Design" 3 ed. (ISBN: 87-7751-153-0).
-
 Analyse
 =======
 
