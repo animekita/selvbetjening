@@ -12,6 +12,9 @@ class MembershipState(object):
 
 class PaymentManager(models.Manager):
     def get_membership_state(self, user):
+        if not hasattr(user, 'payment_set'):
+            return MembershipState.INACTIVE
+
         payments = user.payment_set.order_by('-timestamp')
         if len(payments) == 0:
             return MembershipState.INACTIVE
@@ -100,7 +103,7 @@ class Payment(models.Model):
 
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     timestamp = models.DateTimeField()
-    type = 	models.CharField(max_length=5)
+    type = 	models.CharField(max_length=5, choices=TYPE_CHOICES)
 
     objects = PaymentManager()
 
