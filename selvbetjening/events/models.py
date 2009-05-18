@@ -16,6 +16,7 @@ class Event(models.Model):
     description = models.TextField(_(u'description'), blank=True)
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
+    maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
     class Meta:
@@ -24,6 +25,11 @@ class Event(models.Model):
 
     def is_registration_open(self):
         return (self.registration_open and not self.has_been_held())
+
+    def is_registration_allowed(self):
+        return self.is_registration_open() and \
+               self.maximum_attendees != 0 and \
+               self.maximum_attendees > self.attendees_count
 
     def has_been_held(self):
         return self.enddate < date.today()
