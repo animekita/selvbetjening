@@ -189,6 +189,10 @@ class EventOptionsFormTestCase(TestCase):
                                  {OptionsForm._get_id(self.option1) : True,
                                   OptionsForm._get_id(self.option3) : True})
 
+
+        self.assertTrue(self.form[3].is_valid())
+        self.assertTrue(self.form[4].is_valid())
+
         self._save_forms()
 
         self.assertEqual(len(self.user1.option_set.all()), 2)

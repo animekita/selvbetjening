@@ -1,9 +1,11 @@
-dev
+1.1.0 dev
+
+ * Improved user administration
 
 1.0.0 (SLOC 2.389)
 
-* Renamed registration to quickregistration
-* Removed RegistrationProfile model from quickregistration
-* A lot of refactoring!
+ * Renamed registration to quickregistration
+ * Removed RegistrationProfile model from quickregistration
+ * A lot of refactoring!
 
 0.0.0 Chi (SLOC 2.945)

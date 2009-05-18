@@ -23,11 +23,15 @@ def uniform_form_rendering(form, submitText=None):
         for section in form.Meta.layout:
             render += '<fieldset class="inlineLabels"><legend>' + section[0] + '</legend>\n'
 
-            if len(section) == 3 and len(section[2]) > 0:
+            if len(section) >= 3 and len(section[2]) > 0:
                 render += '<div class="ctrlHolder blockLabels">'
                 render += '<p>%s</p>' % section[2]
                 render += '</div>'
 
+            if len(section) >= 4 and section[3] in form:
+                render += '<div class="ctrlHolder blockLabels">'
+                render += '<p class="errorField"><strong>' + form[section[3]].errors.as_text() + '</strong></p>\n'
+                render += '</div>'
 
             for item_name in section[1]:
                 if isinstance(item_name, tuple):

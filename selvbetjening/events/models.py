@@ -93,8 +93,14 @@ class OptionGroup(models.Model):
     event = models.ForeignKey(Event)
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
-    minimum_selected = models.IntegerField(_('Minimum selected'))
-    maximum_attendees = models.IntegerField(_('Maximum attendees'))
+
+    minimum_selected = models.IntegerField(_('Minimum selected'), default=0)
+    maximum_selected = models.IntegerField(_('Maximum selected'), default=0)
+
+    maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
+
+    freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
+    order = models.IntegerField(_('Order'), default=0)
 
     @property
     def attendees(self):
@@ -103,6 +109,15 @@ class OptionGroup(models.Model):
     def attendees_count(self):
         return self.attendees.count()
     attendees_count.short_description = _('Atendees')
+
+    def is_frozen(self):
+        if self.freeze_time is None:
+            return False
+        else:
+            return datetime.now() > self.freeze_time
+
+    def max_attendees_reached(self):
+        return self.maximum_attendees > 0 and self.attendees_count() >= self.maximum_attendees
 
     def __unicode__(self):
         return u'%s: %s' % (self.event.title, self.name)
@@ -114,7 +129,9 @@ class Option(models.Model):
     description = models.TextField(_('Description'), blank=True)
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)
-    order = models.IntegerField(_('Order'))
+
+    freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
+    order = models.IntegerField(_('Order'), default=0)
 
     def is_frozen(self):
         if self.freeze_time is None:
@@ -124,6 +141,7 @@ class Option(models.Model):
 
     def max_attendees_reached(self):
         if self.maximum_attendees is not None and \
+           self.maximum_attendees > 0 and \
            self.attendees_count() >= self.maximum_attendees:
             return True
         else:
