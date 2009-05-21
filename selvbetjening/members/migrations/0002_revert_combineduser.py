@@ -1,0 +1,14 @@
+# coding=UTF-8
+
+from south.db import db
+from django.db import models
+from selvbetjening.members.models import *
+
+class Migration:
+
+    def forwards(self):
+        # rename user_ptr_id to user_id
+        db.rename_column('members_userprofile', 'user_ptr_id', 'user_id')
+
+    def backwards(self):
+        "Write your backwards migration here"

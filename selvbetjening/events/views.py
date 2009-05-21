@@ -11,7 +11,8 @@ from selvbetjening.core import logger
 
 from models import Event
 from forms import SignupForm, SignoffForm, OptionsForm
-from decorators import event_registration_open_required, event_attendance_required
+from decorators import event_registration_open_required, event_registration_allowed_required, \
+     event_attendance_required
 
 def list_events(request, template_name='events/list.html'):
     ''' Show list of events. '''
@@ -31,6 +32,7 @@ def view(request, event_id, template_name='events/view.html'):
 
 @login_required
 @event_registration_open_required
+@event_registration_allowed_required
 def signup(request, event_id,
            template_name='events/signup.html',
            template_cant_signup='events/cantsignup.html',

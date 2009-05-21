@@ -1,6 +1,11 @@
-1.1.0 dev
+1.2.0 dev
 
- * Improved user administration
+ * Added sorting users by age
+
+1.1.0
+
+ * Improved options
+ * Added max attendees to events
 
 1.0.0 (SLOC 2.389)
 
