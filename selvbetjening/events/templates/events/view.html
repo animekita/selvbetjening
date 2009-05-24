@@ -22,9 +22,13 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
 
     {% if user.is_authenticated %}
         {% if not userIsSignedup %}
-        <ul class="table-options">
-            <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig dette arrangement</a></li>
-        </ul>
+            {% if event.is_registration_allowed %}
+            <ul class="table-options">
+                <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig dette arrangement</a></li>
+            </ul>
+            {% else %}
+            <p>Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
+            {% endif %}
         {% else %}
         <ul class="table-options">
             <li>&#187; <a href="{% url events_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
@@ -44,7 +48,7 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
 
 {% else %}
 
-    <p>Der er ikke mulighed for at tilmelde sig dette arrangement på nuværende tidspunkt.</p>
+    <p>Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
 
 {% endif %}
 

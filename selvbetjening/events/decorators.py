@@ -23,7 +23,7 @@ def event_registration_allowed_required(view_func):
         if event.is_registration_allowed():
             return view_func(request, event_id, *args, **kwargs)
         else:
-            return render_to_response('events/signup_closed.html',
+            return render_to_response('events/signup_disallowed.html',
                                       {'event' : event},
                                       context_instance=RequestContext(request))
 

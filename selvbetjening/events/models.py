@@ -23,13 +23,15 @@ class Event(models.Model):
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')
 
+    def max_attendees_reached(self):
+        return self.maximum_attendees != 0 and \
+               self.maximum_attendees <= self.attendees_count
+
     def is_registration_open(self):
         return (self.registration_open and not self.has_been_held())
 
     def is_registration_allowed(self):
-        return self.is_registration_open() and \
-               self.maximum_attendees != 0 and \
-               self.maximum_attendees > self.attendees_count
+        return self.is_registration_open() and not self.max_attendees_reached()
 
     def has_been_held(self):
         return self.enddate < date.today()

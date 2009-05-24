@@ -1,0 +1,16 @@
+{% extends "site.html" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url events_signoff event.id %}">tilmelding stoppet</a></li>
+{% endblock %}
+
+{% block contenthead %}
+Tilmelding stoppet
+{% endblock %}
+
+{% block content %}
+
+    <p>Det er på nuværende tidspunkt ikke muligt at tilmelde sig <i>{{event}}</i> på grund af deltager begrænsninger.</p>
+
+{% endblock %}
