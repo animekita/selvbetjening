@@ -1,0 +1,5 @@
+{% if form and form.is_multipart %}
+    <form enctype="multipart/form-data" method="post" action="" class="uniForm">
+{% else %}
+    <form method="post" action="" class="uniForm">
+{% endif %}

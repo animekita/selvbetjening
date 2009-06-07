@@ -56,6 +56,7 @@ def uniform_form_rendering(form, submitText=None):
 
 @register.filter(name='uniform_start')
 def uniform_startrendering(form):
+    """ DEPRECATED, use uniform_begin """
     if form.is_multipart:
         return safestring.mark_safe('<form enctype="multipart/form-data" method="post" action="" class="uniForm">\n\n')
     else:
@@ -63,6 +64,7 @@ def uniform_startrendering(form):
 
 @register.filter(name='uniform_end')
 def uniform_endrendering(form):
+    """ DEPRECATED, use uniform_end """
     return safestring.mark_safe('</form>')
 
 @register.filter(name='uniform')
@@ -75,6 +77,18 @@ def uniform_formrendering(form, submitText=None):
     render += uniform_endrendering(form)
 
     return safestring.mark_safe(render)
+
+@register.inclusion_tag('forms/begin.html')
+def uniform_begin(form=None):
+    return {'form': form}
+
+@register.inclusion_tag('forms/end.html')
+def uniform_end():
+    return {}
+
+@register.inclusion_tag('forms/submit.html')
+def uniform_submit(label):
+    return {'label' : label}
 
 @register.inclusion_tag('forms/headers.html')
 def uniform_header():
