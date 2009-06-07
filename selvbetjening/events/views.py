@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 from selvbetjening.core import logger
 
 from models import Event
-from forms import SignupForm, SignoffForm, OptionsForm
+from forms import SignupForm, SignoffForm, OptionForms
 from decorators import event_registration_open_required, event_registration_allowed_required, \
      event_attendance_required
 
@@ -37,7 +37,7 @@ def signup(request, event_id,
            template_name='events/signup.html',
            template_cant_signup='events/cantsignup.html',
            form_class=SignupForm,
-           form_options_class=OptionsForm,
+           form_options_class=OptionForms,
            success_page='events_view'):
     ''' Let a user sign up to the event. '''
 
@@ -50,22 +50,21 @@ def signup(request, event_id,
 
     if request.method == 'POST':
         form = form_class(request.POST)
-        optionsform = form_options_class(request.user, event, request.POST)
-
-        if form.is_valid() and optionsform.is_valid():
-            optionsform.save()
+        optionforms = form_options_class(request.user, event, request.POST)
+        if form.is_valid() and optionforms.is_valid():
+            optionforms.save()
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
             event.add_attendee(request.user)
             request.user.message_set.create(message=_(u'You are now signed up to the event.'))
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
         form = form_class()
-        optionsform = form_options_class(request.user, event)
+        optionforms = form_options_class(request.user, event)
 
     return render_to_response(template_name,
                               {'event' : event,
                                'form' : form,
-                               'optionsform' : optionsform,},
+                               'optionforms' : optionforms,},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -97,21 +96,21 @@ def signoff(request, event_id,
 @login_required
 @event_registration_open_required
 @event_attendance_required
-def change_options(request, event_id, form=OptionsForm,
+def change_options(request, event_id, form=OptionForms,
                    success_page='events_view',
                    template_name='events/change_options.html'):
     event = get_object_or_404(Event, id=event_id)
 
     if request.method == 'POST':
-        form = OptionsForm(request.user, event, request.POST)
+        form = OptionForms(request.user, event, request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
-        form = OptionsForm(request.user, event)
+        form = OptionForms(request.user, event)
 
     return render_to_response(template_name,
-                              {'form' : form, 'event' : event },
+                              {'optionforms' : form, 'event' : event },
                               context_instance=RequestContext(request))
 
 

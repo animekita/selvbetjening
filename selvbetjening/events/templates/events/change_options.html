@@ -1,5 +1,4 @@
 {% extends "site.html" %}
-
 {% load uniform %}
 
 {% block extraheader %}
@@ -17,6 +16,11 @@
 
 {% block content %}
 
-{{form|uniform:"ændre"}}
+{% uniform_begin %}
+
+{% include "events/options.html" %}
+
+{% uniform_submit "ændre" %}
+{% uniform_end %}
 
 {% endblock %}

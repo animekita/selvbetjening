@@ -135,19 +135,25 @@ class Option(models.Model):
     users = models.ManyToManyField(User, blank=True)
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
+
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)
 
-    freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     order = models.IntegerField(_('Order'), default=0)
 
     def is_frozen(self):
+        if self.group.is_frozen():
+            return True
+
         if self.freeze_time is None:
             return False
         else:
             return datetime.now() > self.freeze_time
 
     def max_attendees_reached(self):
+        if self.group.max_attendees_reached():
+            return True
+
         if self.maximum_attendees is not None and \
            self.maximum_attendees > 0 and \
            self.attendees_count() >= self.maximum_attendees:

@@ -1,306 +1,269 @@
 from datetime import date, timedelta, datetime
 
 from django.test import TestCase
-from django.contrib.auth import models as auth_models
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from forms import OptionsForm
+from forms import OptionGroupForm
 import models
 
-class DatabaseSetup(object):
-    @staticmethod
-    def setup(target):
-        target.user1 = auth_models.User.objects.create_user('user1', 'user@example.org', 'user1')
-        target.user2 = auth_models.User.objects.create_user('user2', 'user@example.org', 'user2')
-        target.user3 = auth_models.User.objects.create_user('user3', 'user@example.org', 'user3')
-        target.user4 = auth_models.User.objects.create_user('user4', 'user@example.org', 'user4')
+class Database(object):
+    _id = 0
+    @classmethod
+    def new_id(cls):
+        cls._id += 1
+        return str(cls._id)
 
-        target.event1 = models.Event.objects.create(title='event',
-                                                  startdate=date.today(),
-                                                  enddate=date.today(),
-                                                  registration_open=True)
+    @classmethod
+    def new_event(cls):
+        return models.Event.objects.create(title=cls.new_id(),
+                                           startdate=date.today(),
+                                           enddate=date.today(),
+                                           registration_open=True)
 
-        target.event2 = models.Event.objects.create(title='event',
-                                                  startdate=date.today(),
-                                                  enddate=date.today() + timedelta(days=2),
-                                                  registration_open=False)
+    @classmethod
+    def new_user(cls, id=None):
+        if id is None:
+            id = cls.new_id()
+        return User.objects.create_user(id, '%s@example.org' % id, id)
 
-        target.event3 = models.Event.objects.create(title='event',
-                                                  startdate=date.today(),
-                                                  enddate=date.today() + timedelta(days=2),
-                                                  registration_open=False)
+    @classmethod
+    def new_optiongroup(cls, event, min_select=0, max_select=0, max_attend=0, freeze_time=None):
+        if freeze_time is None:
+            freeze_time = date.today() + timedelta(days=1)
+        return models.OptionGroup.objects.create(event=event,
+                                                 name=cls.new_id(),
+                                                 minimum_selected=min_select,
+                                                 maximum_selected=max_select,
+                                                 maximum_attendees=max_attend,
+                                                 freeze_time=freeze_time)
 
-        target.event4 = models.Event.objects.create(title='event',
-                                                  startdate=date(2008, 11, 12),
-                                                  enddate=date(2008, 11, 14),
-                                                  registration_open=True)
+    @classmethod
+    def new_option(cls, optiongroup, name=None, order=0):
+        if name is None:
+            name = cls.new_id()
 
-        target.event5 = models.Event.objects.create(title='event w. freeze',
-                                                  startdate=date.today(),
-                                                  enddate=date.today(),
-                                                  registration_open=True)
-
-
-        target.event5.add_attendee(target.user4)
-
-        target.event2.add_attendee(target.user1)
-        target.event2.add_attendee(user=target.user2, has_attended=True)
-
-        target.optiongroup1 = models.OptionGroup.objects.create(event=target.event1,
-                                                                name='option group 1',
-                                                                minimum_selected=0,
-                                                                maximum_attendees=0)
-
-        target.optiongroup2 = models.OptionGroup.objects.create(event=target.event2,
-                                                                name='option group 2',
-                                                                minimum_selected=1,
-                                                                maximum_attendees=0)
-
-        target.optiongroup3 = models.OptionGroup.objects.create(event=target.event5,
-                                                                name='option group 3',
-                                                                minimum_selected=0,
-                                                                maximum_attendees=0)
-
-        target.option1 = models.Option.objects.create(group=target.optiongroup1,
-                                                    name='hello3',
-                                                    order=5)
-        target.option2 = models.Option.objects.create(group=target.optiongroup1,
-                                                    name='hello1',
-                                                    order=2)
-        target.option3 = models.Option.objects.create(group=target.optiongroup1,
-                                                    name='hello2',
-                                                    order=3)
-
-        target.option11 = models.Option.objects.create(group=target.optiongroup2,
-                                                    name='hello11',
-                                                    order=5)
-        target.option12 = models.Option.objects.create(group=target.optiongroup2,
-                                                    name='hello12',
-                                                    order=2)
-
-        target.option21 = models.Option.objects.create(group=target.optiongroup3,
-                                                    name='hello21',
-                                                    order=5,
-                                                    freeze_time=datetime.now() - timedelta(days=1))
-        target.option22 = models.Option.objects.create(group=target.optiongroup3,
-                                                    name='hello22',
-                                                    order=2)
-
-        target.option1.users.add(target.user2)
-        target.option3.users.add(target.user2)
-        target.option11.users.add(target.user2)
-        target.option12.users.add(target.user2)
-        target.option21.users.add(target.user4)
-        target.option22.users.add(target.user4)
-
-        target.form = {}
-        target.form[1] = OptionsForm(target.user1, target.event1)
-        target.form[2] = OptionsForm(target.user2, target.event1)
+        return models.Option.objects.create(group=optiongroup,
+                                            name=name,
+                                            order=order)
 
 class AttendModelTestCase(TestCase):
-    def setUp(self):
-        DatabaseSetup.setup(self)
-
     def test_is_new(self):
-        attend1 = self.user1.attend_set.get(event=self.event2)
-        attend2 = self.user2.attend_set.get(event=self.event2)
+        user = Database.new_user()
+        event = Database.new_event()
 
-        self.assertTrue(attend1.is_new)
-        self.assertTrue(attend2.is_new)
+        attend = models.Attend(user=user, event=event)
+
+        self.assertTrue(attend.is_new)
 
 class EventModelTestCase(TestCase):
-
-    def setUp(self):
-        DatabaseSetup.setup(self)
-
-    def test_is_registration_open(self):
-        self.assertTrue(self.event1.is_registration_open())
-        self.assertFalse(self.event2.is_registration_open())
-
-    def test_no_guests(self):
-        self.assertTrue(len(self.event1.attendees) == 0)
-
-    def test_guests(self):
-        self.assertEqual(len(self.event2.attendees), 2)
-
-    def test_is_signedup(self):
-        self.assertTrue(self.event2.is_attendee(self.user1))
-
-    def test_is_signedup_not(self):
-        self.assertFalse(self.event2.is_attendee(self.user3))
-
-    def test_delete_guest(self):
-        self.event3.add_attendee(self.user1, has_attended=False)
-        self.assertEqual(len(self.event3.attendees), 1)
-
-        self.event3.remove_attendee(self.user1)
-        self.assertEqual(len(self.event3.attendees), 0)
-
     def test_attendee_order(self):
+        user = Database.new_user()
+        event = Database.new_event()
+
         self.userarray = []
         for i in range(30):
-            self.userarray.append(auth_models.User.objects.create_user(i, 'user1', 'user@example.org'))
-            self.event3.add_attendee(self.userarray[i], has_attended=False)
+            self.userarray.append(User.objects.create_user('user%s' % i, 'user@example.org', ''))
+            event.add_attendee(self.userarray[i], has_attended=False)
 
-        self.event3.add_attendee(self.user1, has_attended=False)
-
-        attendees = self.event3.attendees
+        event.add_attendee(user, has_attended=False)
 
         for i in range(30):
-            self.assertEqual(attendees[i].user, self.userarray[i])
+            self.assertEqual(event.attendees[i].user, self.userarray[i])
 
-        self.assertEqual(attendees[30].user, self.user1)
+        self.assertEqual(event.attendees[30].user, user)
 
 class EventOptionsFormTestCase(TestCase):
-    def setUp(self):
-        DatabaseSetup.setup(self)
+    def test_displayed_fields(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event)
 
-    def test_initialization(self):
-        self.assertEqual(len(self.form[1].fields), 3)
+        Database.new_option(optiongroup)
+        Database.new_option(optiongroup)
+        Database.new_option(optiongroup)
 
-    def test_order(self):
-        int = 1
-        for field in self.form[1].Meta.layout[0][1]:
+        form = OptionGroupForm(user, optiongroup)
+
+        self.assertEqual(len(form.fields), 3)
+
+    def test_displayed_fields_order(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event)
+
+        Database.new_option(optiongroup, order=1, name='1')
+        Database.new_option(optiongroup, order=0, name='0')
+        Database.new_option(optiongroup, order=3, name='2')
+
+        form = OptionGroupForm(user, optiongroup)
+
+        id = 0
+        for field in form.Meta.layout[0][1]:
             field_id = field[0]
-            self.assertTrue(self.form[1].fields[field_id].label.endswith(str(int)))
-            int = int + 1
+            self.assertTrue(form.fields[field_id].label.endswith(str(id)))
+            id += 1
 
-    def test_selected_initial(self):
-        self.assertEqual(self.form[1].initial, {})
+    def test_initial_values_set(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event)
 
-        self.assertTrue(OptionsForm._get_id(self.option1) in self.form[2].initial)
-        self.assertTrue(OptionsForm._get_id(self.option3) in self.form[2].initial)
-        self.assertFalse(OptionsForm._get_id(self.option2) in self.form[2].initial)
+        option1 = Database.new_option(optiongroup)
+        option2 = Database.new_option(optiongroup)
 
-    def test_no_change(self):
-        self._save_forms()
+        option1.users.add(user)
 
-        self.assertEqual(len(self.user1.option_set.all()), 0)
-        self.assertEqual(len(self.user2.option_set.all()), 4)
+        form = OptionGroupForm(user, optiongroup)
+
+        self.assertTrue(OptionGroupForm._get_id(option1) in form.initial)
+        self.assertFalse(OptionGroupForm._get_id(option2) in form.initial)
+
+class EventOptionsFormUsageTestCase(TestCase):
+    def test_deselect(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event)
+
+        option1 = Database.new_option(optiongroup)
+        option2 = Database.new_option(optiongroup)
+
+        option1.users.add(user)
+
+        form = OptionGroupForm(user, optiongroup, {})
+
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        self.assertEqual(len(user.option_set.all()), 0)
 
     def test_select(self):
-        self.assertEqual(len(self.user2.option_set.all()), 4)
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event)
 
-        self.form[3] = OptionsForm(self.user1, self.event1,
-                                 {OptionsForm._get_id(self.option1) : True,
-                                  OptionsForm._get_id(self.option2) : True})
+        option1 = Database.new_option(optiongroup)
+        option2 = Database.new_option(optiongroup)
 
-        self.form[4] = OptionsForm(self.user2, self.event1,
-                                 {OptionsForm._get_id(self.option1) : True,
-                                  OptionsForm._get_id(self.option3) : True})
+        option1.users.add(user)
 
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option1) : True,
+                                                   OptionGroupForm._get_id(option2) : True})
 
-        self.assertTrue(self.form[3].is_valid())
-        self.assertTrue(self.form[4].is_valid())
+        self.assertTrue(form.is_valid())
+        form.save()
 
-        self._save_forms()
+        self.assertEqual(len(user.option_set.all()), 2)
 
-        self.assertEqual(len(self.user1.option_set.all()), 2)
-        self.assertEqual(len(self.user2.option_set.all()), 4)
+class EventOptionsFormValidationGroupValidationTestCase(TestCase):
+    def test_minimum_selected_limit_not_satisfied(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, min_select=2)
+        option = Database.new_option(optiongroup)
 
-    def test_deselect(self):
-        self.form[3] = OptionsForm(self.user2, self.event1,
-                                 {OptionsForm._get_id(self.option1) : True})
-
-        self._save_forms()
-
-        self.assertEqual(len(self.user2.option_set.all()), 3)
-
-    def test_select_limit_not_satisfied(self):
-        form = OptionsForm(self.user1, self.event2, {})
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option) : True})
 
         self.assertFalse(form.is_valid())
 
     def test_select_limit_satisfied(self):
-        form = OptionsForm(self.user1, self.event2,
-                           {OptionsForm._get_id(self.option11) : True,
-                            OptionsForm._get_id(self.option12) : True})
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, min_select=1)
+        option = Database.new_option(optiongroup)
+
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option) : True})
 
         self.assertTrue(form.is_valid())
 
-    def test_select_reselect_freeze(self):
-        self.assertEqual(len(self.user4.option_set.all()), 2)
+    def test_maximum_selected_limit_exceeded(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, max_select=1)
+        option1 = Database.new_option(optiongroup)
+        option2 = Database.new_option(optiongroup)
 
-        self.form[3] = OptionsForm(self.user4, self.event5,
-                                 {OptionsForm._get_id(self.option21) : True,
-                                  OptionsForm._get_id(self.option22) : True})
-
-        self._save_forms()
-
-        self.assertEqual(len(self.user4.option_set.all()), 2)
-
-    def test_deselect_freeze(self):
-        self.assertEqual(len(self.user4.option_set.all()), 2)
-
-        self.form[3] = OptionsForm(self.user4, self.event5,
-                                  {OptionsForm._get_id(self.option22) : True})
-
-        self._save_forms()
-
-        self.assertEqual(len(self.user4.option_set.all()), 2)
-
-    def test_freeze_and_limit_only_freeze(self):
-        self.optiongroup3.minimum_selected = 1
-        self.optiongroup3.save()
-
-        form = OptionsForm(self.user4, self.event5,
-                           {})
-
-        self.assertTrue(form.is_valid())
-
-    def test_freeze_and_limit_mized(self):
-        self.optiongroup3.minimum_selected = 2
-        self.optiongroup3.save()
-
-        form = OptionsForm(self.user4, self.event5,
-                           {OptionsForm._get_id(self.option22) : True})
-
-        self.assertTrue(form.is_valid())
-
-    def test_freeze_and_limit_not_satisfied(self):
-        self.optiongroup3.minimum_selected = 2
-        self.optiongroup3.save()
-
-        form = OptionsForm(self.user4, self.event5,
-                           {})
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option1) : True,
+                                                   OptionGroupForm._get_id(option2) : True})
 
         self.assertFalse(form.is_valid())
 
-    def test_max_attendees_reached(self):
-        self.option31 = models.Option.objects.create(group=self.optiongroup3,
-                                                    name='hello31',
-                                                    order=2,
-                                                    maximum_attendees=2)
+    def test_maximum_limit_satisfied(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, max_select=2)
+        option1 = Database.new_option(optiongroup)
+        option2 = Database.new_option(optiongroup)
 
-        self.option31.users.add(self.user1)
-        self.option31.users.add(self.user2)
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option1) : True,
+                                                   OptionGroupForm._get_id(option2) : True})
 
-        form = OptionsForm(self.user4, self.event5, {OptionsForm._get_id(self.option31) : True,})
+        self.assertTrue(form.is_valid())
 
-        self.assertFalse(form.is_valid())
+    def test_max_attendees_exceeded(self):
+        user1 = Database.new_user()
+        user2 = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, max_attend=1)
+        option = Database.new_option(optiongroup)
+        option.users.add(user1)
 
-    def _save_forms(self):
-        for form_id in self.form:
-            self.form[form_id].is_valid()
-            self.form[form_id].save()
+        form = OptionGroupForm(user2, optiongroup, {OptionGroupForm._get_id(option) : True})
+
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertTrue(user2 not in option.users.all())
+
+    def test_max_attendees_reselect(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, max_attend=1)
+        option = Database.new_option(optiongroup)
+        option.users.add(user)
+
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option) : True})
+
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertTrue(user in option.users.all())
+
+    def test_select_frozen_option(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
+        option = Database.new_option(optiongroup)
+
+        form = OptionGroupForm(user, optiongroup, {OptionGroupForm._get_id(option) : True})
+
+        self.assertTrue(optiongroup.is_frozen())
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        self.assertEqual(len(user.option_set.all()), 0)
+
+    def test_deselect_frozen_option(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
+        option = Database.new_option(optiongroup)
+        option.users.add(user)
+
+        form = OptionGroupForm(user, optiongroup, {})
+
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        self.assertEqual(len(user.option_set.all()), 1)
 
 class EventViewTestCase(TestCase):
-    def setUp(self):
-        DatabaseSetup.setup(self)
-        self.event2.registration_open = True
-        self.event2.save()
-
     def test_signoff_remove_event(self):
-        self.assertTrue(self.event2 in [ attend.event for attend in self.user2.attend_set.all() ])
-        self._signoff()
-        self.assertTrue(self.event2 not in [ attend.event for attend in self.user2.attend_set.all() ])
+        user = Database.new_user(id='user')
+        event = Database.new_event()
 
-    def test_signoff_remove_options(self):
-        self.assertEqual(len(self.user2.option_set.all()), 4)
-        self._signoff()
-        self.assertEqual(len(self.user2.option_set.all()), 2)
+        models.Attend.objects.create(user=user, event=event)
 
-    def _signoff(self):
-        self.client.login(username='user2', password='user2')
-        self.client.post(reverse('events_signoff', kwargs={'event_id':self.event2.id}),
+        self.client.login(username='user', password='user')
+        self.client.post(reverse('events_signoff', kwargs={'event_id' : event.id}),
                          {'confirm' : True})
+
+        self.assertFalse(event in [ attend.event for attend in user.attend_set.all() ])

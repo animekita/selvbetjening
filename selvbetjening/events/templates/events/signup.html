@@ -19,12 +19,15 @@ Tilmeld arrangement
 
 <p>Når du tilmelder dig dette arrangement vil dit navn og brugernavn blive vist <b>offentligt</b> i en liste over deltagere.</p>
 
-{{form|uniform_start}}
+{% uniform_begin form %}
+
 {{form|uniform_add}}
 
 <h2>Tilvalg</h2>
 
-{{optionsform|uniform_add:"tilmeld"}}
-{{form|uniform_end}}
+{% include "events/options.html" %}
+
+{% uniform_submit "tilmeld" %}
+{% uniform_end %}
 
 {% endblock %}
