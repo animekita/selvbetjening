@@ -4,8 +4,8 @@ from django.test import TestCase
 from django.contrib.auth import models as auth_models
 from django.core import mail
 
-from selvbetjening.members.models import UserProfile
-from selvbetjening.events.models import Event, Attend
+from selvbetjening.data.members.models import UserProfile
+from selvbetjening.data.events.models import Event, Attend
 
 from forms import SelectGroupForm
 from models import Mail

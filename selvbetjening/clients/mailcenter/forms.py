@@ -2,8 +2,8 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from selvbetjening.events.models import Event
-from selvbetjening.members.shortcuts import get_or_create_profile
+from selvbetjening.data.events.models import Event
+from selvbetjening.data.members.shortcuts import get_or_create_profile
 
 class SendPreviewEmailForm(forms.Form):
     email = forms.EmailField()

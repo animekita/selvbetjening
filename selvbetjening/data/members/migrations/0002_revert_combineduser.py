@@ -2,7 +2,7 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.members.models import *
+from selvbetjening.data.members.models import *
 
 class Migration:
 

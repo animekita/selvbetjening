@@ -3,7 +3,7 @@ from django import forms
 from django.utils import safestring
 from django.conf import settings
 
-from selvbetjening.forms.uniform import *
+from selvbetjening.viewhelpers.forms.uniform import *
 
 register = template.Library()
 

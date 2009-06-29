@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from selvbetjening.events.models import Event
+from selvbetjening.data.events.models import Event
 
 from models import EventmodeMachine
 from middleware import Eventmode

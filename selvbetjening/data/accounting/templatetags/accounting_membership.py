@@ -1,7 +1,7 @@
 from django import template
 from django.utils.translation import ugettext as _
 
-from selvbetjening.accounting.models import Payment
+from selvbetjening.data.accounting.models import Payment
 
 import accounting_translate
 

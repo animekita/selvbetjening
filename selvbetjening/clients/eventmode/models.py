@@ -3,7 +3,7 @@ from datetime import date
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
-from selvbetjening.events.models import Event
+from selvbetjening.data.events.models import Event
 
 class EventmodeMachineManager(models.Manager):
     def authenticate(self, event, passphrase):

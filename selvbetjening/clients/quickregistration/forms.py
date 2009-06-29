@@ -10,8 +10,8 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from selvbetjening.members.forms import ProfileForm
-from selvbetjening.members.models import UserProfile
+from selvbetjening.data.members.forms import ProfileForm
+from selvbetjening.data.members.models import UserProfile
 
 import signals
 

@@ -41,13 +41,13 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'selvbetjening.eventmode.middleware.EventmodeMiddleware',
+    'selvbetjening.clients.eventmode.middleware.EventmodeMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
-    'selvbetjening.eventmode.context_processors.eventmode',
+    'selvbetjening.clients.eventmode.context_processors.eventmode',
     'django.core.context_processors.i18n',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
@@ -65,16 +65,20 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.markup',
-    'selvbetjening.quickregistration',
-    'selvbetjening.members',
-    'selvbetjening.events',
-    'selvbetjening.forms',
+    
+    'selvbetjening.data.accounting',
+    'selvbetjening.data.events',
+    'selvbetjening.data.members',
+    
+    'selvbetjening.viewhelpers.forms',
+    'selvbetjening.viewhelpers.googleanalytics',
+    
     'selvbetjening.core',
-    'selvbetjening.accounting',
-    'selvbetjening.eventmode',
-    'selvbetjening.booking',
-    'selvbetjening.mailcenter',
-    'selvbetjening.googleanalytics',
+    
+    'selvbetjening.clients.profile',
+    'selvbetjening.clients.eventmode',
+    'selvbetjening.clients.mailcenter',
+    'selvbetjening.clients.quickregistration',
 )
 
 # Initialize Logging
@@ -91,6 +95,6 @@ logging.getLogger('').setLevel(logging.NOTSET)
 
 # Eventmode checkin modules
 EVENTMODE_CHECKIN_PROCESSORS = (
-    'selvbetjening.accounting.checkin_processors.membership',
-    'selvbetjening.events.checkin_processors.options',
+    'selvbetjening.data.accounting.checkin_processors.membership',
+    'selvbetjening.data.events.checkin_processors.options',
 )

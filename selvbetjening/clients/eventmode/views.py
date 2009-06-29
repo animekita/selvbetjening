@@ -9,7 +9,7 @@ from django.contrib.admin.views.main import ChangeList
 
 from selvbetjening.core import logger
 from selvbetjening.core.decorators import log_access
-from selvbetjening.events.models import Event, Attend, Option
+from selvbetjening.data.events.models import Event, Attend, Option
 
 from decorators import eventmode_required
 import checkin

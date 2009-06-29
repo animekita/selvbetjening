@@ -5,7 +5,7 @@ from django.test.client import Client
 from django.contrib.auth import models as auth_models
 from django.core.urlresolvers import reverse
 
-from selvbetjening.members.models import UserProfile
+from selvbetjening.data.members.models import UserProfile
 
 import models
 import forms
