@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     
     'selvbetjening.viewhelpers.forms',
     'selvbetjening.viewhelpers.googleanalytics',
+    'selvbetjening.viewhelpers.copyright',
     
     'selvbetjening.core',
     

@@ -3,6 +3,9 @@ import datetime
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from selvbetjening.data.accounting.models import Payment
 from selvbetjening.data.events.models import Event
@@ -22,3 +25,9 @@ def profile(request, template_name='members/profile.html'):
                                'attends' : attends,
                                'events_new' : Event.objects.exclude(id__in=visited_keys).filter(enddate__gte=datetime.date.today()).filter(registration_open__exact=1) },
                               context_instance=RequestContext(request))
+
+def profile_redirect(request):
+    if isinstance(request.user, AnonymousUser):
+        return HttpResponseRedirect(reverse('members_login'))
+    else:
+        return HttpResponseRedirect(reverse('members_profile'))

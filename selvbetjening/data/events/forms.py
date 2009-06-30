@@ -4,12 +4,26 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext_lazy
 from django import forms
 
-from selvbetjening.core.forms import AcceptForm
-
 class DummyWidget(forms.Widget):
     def render(self):
         return forms.mark_safe(u'')
 
+class AcceptForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(AcceptForm, self).__init__(*args, **kwargs)
+
+        self.fields['confirm'] = forms.BooleanField(widget=forms.CheckboxInput(),
+                             label=self.label())
+
+    def clean_confirm(self):
+        if self.cleaned_data.get('confirm', False):
+            return self.cleaned_data['confirm']
+        raise forms.ValidationError(self.error())
+
+    def save(self):
+        pass
+    
 class SignupForm(AcceptForm):
 
     def label(self):
