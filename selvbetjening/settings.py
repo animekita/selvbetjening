@@ -74,8 +74,6 @@ INSTALLED_APPS = (
     'selvbetjening.viewhelpers.googleanalytics',
     'selvbetjening.viewhelpers.copyright',
     
-    'selvbetjening.core',
-    
     'selvbetjening.clients.profile',
     'selvbetjening.clients.eventmode',
     'selvbetjening.clients.mailcenter',

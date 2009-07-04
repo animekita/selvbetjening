@@ -1,0 +1,57 @@
+# translation of Anime Kita Selvbetjening.
+# Copyright (C) 2007 THE Anime Kita Selvbetjening'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Anime Kita Selvbetjening package.
+# Casper Jensen <sema@semaprojects.net>, 2007.
+# , fuzzy
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-06-30 19:51+0200\n"
+"PO-Revision-Date: 2008-12-30 00:27+0100\n"
+"Last-Translator: Casper S. Jensen <the@sema.dk>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: admin_views.py:29
+#, python-format
+msgid "E-mails have been sent to %s persons"
+msgstr "E-mails er blevet sendt til %s personer."
+
+#: admin_views.py:57
+#, fuzzy, python-format
+msgid "A preview e-mail has been sent to %s"
+msgstr "En test email er blevet sendt til %s"
+
+#: forms.py:12
+msgid "Recipient group"
+msgstr "Modtager gruppe"
+
+#: forms.py:17
+msgid "All users"
+msgstr "Alle brugere"
+
+#: forms.py:20
+#, python-format
+msgid "Event: %s"
+msgstr "Arrangement: %s"
+
+#: forms.py:49
+msgid "Send emails to the selected individuals"
+msgstr "Send e-mails til de valgte personer"
+
+#: forms.py:63
+msgid "You must confirm the list of recipients before sending to them."
+msgstr "Du skal bekræfte at du vil sende emails til de valgte personer."
+
+#: templates/admin/mailcenter/mail/change_form.html:7
+msgid "History"
+msgstr "Historie"
+
+#: templates/admin/mailcenter/mail/change_form.html:13
+msgid "View on site"
+msgstr "Se på siden"

@@ -1,0 +1,183 @@
+# translation of Anime Kita Selvbetjening.
+# Copyright (C) 2007 THE Anime Kita Selvbetjening'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Anime Kita Selvbetjening package.
+# Casper Jensen <sema@semaprojects.net>, 2007.
+# , fuzzy
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-06-30 19:53+0200\n"
+"PO-Revision-Date: 2009-06-30 19:59+0100\n"
+"Last-Translator: Casper Svenning Jensen <the@sema.dk>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:30
+msgid "I have read and accept the above described terms"
+msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
+
+#: forms.py:33
+msgid "You must accept to participate in the event"
+msgstr "Du skal acceptere for at deltage i arrangementet."
+
+#: forms.py:37
+msgid "Yes, remove me from the event"
+msgstr "Ja, afmeld mig fra dette arrangement"
+
+#: forms.py:40
+msgid "You must accept to remove your participation in the event"
+msgstr "Du skal acceptere for at blive afmeldt arrangementet"
+
+#: forms.py:125
+msgid "The maximum number of attendees have been reached"
+msgstr "Det maksimale antal deltagere er opnået"
+
+#: forms.py:135
+#, python-format
+msgid "You need to select one option from the group %(group)s"
+msgid_plural "You need to select %(count)d options from the group %(group)s"
+msgstr[0] "Du skal vælge mindst et tilvag fra gruppen %(group)s"
+msgstr[1] "Du skal vælge mindst %(count)d tilvag fra gruppen %(group)s"
+
+#: forms.py:147
+#, python-format
+msgid "You can not select more than one option from the group %(group)s"
+msgid_plural "You can not select more than %(count)d options from the group %(group)s"
+msgstr[0] "Du kan ikke vælge mere end et tilvalg fra gruppen %(group)s"
+msgstr[1] "Du kan ikke vælge mere end %(count)d tilvalg fra gruppen %(group)s"
+
+#: models.py:15
+#: migrations/0001_initial.py:28
+msgid "title"
+msgstr "Titel"
+
+#: models.py:16
+#: migrations/0001_initial.py:27
+msgid "description"
+msgstr "Beskrivelse"
+
+#: models.py:17
+#: migrations/0001_initial.py:25
+msgid "start date"
+msgstr "Start dato"
+
+#: models.py:18
+#: migrations/0001_initial.py:26
+msgid "end date"
+msgstr "Slut dato"
+
+#: models.py:19
+#: models.py:108
+#: models.py:140
+#: migrations/0001_initial.py:16
+#: migrations/0001_initial.py:48
+#: migrations/0002_new_options.py:23
+#: migrations/0002_new_options.py:40
+#: migrations/0003_event_max.py:13
+msgid "Maximum attendees"
+msgstr "Maksimal antal deltagere"
+
+#: models.py:20
+#: migrations/0001_initial.py:29
+msgid "registration open"
+msgstr "Tilmelding åben"
+
+#: models.py:23
+msgid "event"
+msgstr "Event"
+
+#: models.py:24
+msgid "events"
+msgstr "Events"
+
+#: models.py:70
+#, python-format
+msgid "%s"
+msgstr "%s"
+
+#: models.py:89
+#, fuzzy
+msgid "First name"
+msgstr "Fornavn"
+
+#: models.py:95
+#, fuzzy
+msgid "Last name"
+msgstr "Efternavn"
+
+#: models.py:102
+#: models.py:136
+#: migrations/0001_initial.py:19
+#: migrations/0001_initial.py:50
+msgid "Name"
+msgstr "Navn"
+
+#: models.py:103
+#: models.py:137
+#: migrations/0001_initial.py:14
+#: migrations/0001_initial.py:45
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: models.py:105
+#: migrations/0001_initial.py:46
+#: migrations/0002_new_options.py:21
+#: migrations/0002_new_options.py:38
+msgid "Minimum selected"
+msgstr "Minimum antal valgt"
+
+#: models.py:106
+#: migrations/0002_new_options.py:16
+msgid "Maximum selected"
+msgstr "Maksimum antal valgt"
+
+#: models.py:110
+#: models.py:139
+#: migrations/0001_initial.py:13
+#: migrations/0002_new_options.py:13
+msgid "Freeze time"
+msgstr "Stop tidspunkt"
+
+#: models.py:111
+#: models.py:142
+#: migrations/0001_initial.py:15
+#: migrations/0002_new_options.py:19
+#: migrations/0002_new_options.py:25
+#: migrations/0002_new_options.py:42
+msgid "Order"
+msgstr "Rækkefølge"
+
+#: models.py:119
+#: models.py:166
+msgid "Atendees"
+msgstr "Deltagerer"
+
+#: views.py:58
+msgid "You are now signed up to the event."
+msgstr "Du er nu tilmeldt arrangementet."
+
+#: views.py:89
+msgid "You are now removed from the event."
+msgstr "Du er nu afmeldt dette arrangementet."
+
+#: templates/admin/events/event/change_form.html:7
+msgid "Statistics"
+msgstr "Statistik"
+
+#: templates/admin/events/event/change_form.html:8
+msgid "History"
+msgstr "Historie"
+
+#: templates/admin/events/event/change_form.html:9
+msgid "View on site"
+msgstr "Se på siden"
+
+#: templates/admin/events/event/statistics.html:6
+msgid "Home"
+msgstr "Hjem"
+

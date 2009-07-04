@@ -1,11 +1,10 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import redirect_to, direct_to_template
 
-from selvbetjening.core.views import frontpage
-from selvbetjening.clients.profile.views import profile
+from selvbetjening.clients.profile.views import profile, profile_redirect
 
 urlpatterns = patterns('',
-    url(r'^$', frontpage, name='home'),
+    url(r'^$', profile_redirect, name='home'),
 
     (r'^profil/', 
      include('selvbetjening.data.members.urls')),

@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core import logger
+from selvbetjening.data.logging import logger
 
 from models import Event
 from forms import SignupForm, SignoffForm, OptionForms

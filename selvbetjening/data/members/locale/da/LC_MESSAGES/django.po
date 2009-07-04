@@ -1,0 +1,96 @@
+# translation of Anime Kita Selvbetjening.
+# Copyright (C) 2007 THE Anime Kita Selvbetjening'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Anime Kita Selvbetjening package.
+# Casper Jensen <sema@semaprojects.net>, 2007.
+# , fuzzy
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-06-07 21:11+0000\n"
+"PO-Revision-Date: 2008-12-30 00:27+0100\n"
+"Last-Translator: Casper S. Jensen <the@sema.dk>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: members/forms.py:15
+msgid "first name"
+msgstr "Fornavn"
+
+#: members/forms.py:19
+msgid "last name"
+msgstr "Efternavn"
+
+#: members/forms.py:22
+msgid "email"
+msgstr "Email"
+
+#: members/forms.py:25 members/models.py:14
+msgid "date of birth"
+msgstr "Fødselsdag"
+
+#: members/forms.py:27
+#, python-format
+msgid "State your date of birth using the format %(format)s."
+msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
+
+#: members/forms.py:31 members/models.py:15
+msgid "street"
+msgstr "Vej"
+
+#: members/forms.py:33 members/models.py:16
+msgid "postal code"
+msgstr "Postnummer"
+
+#: members/forms.py:37 members/models.py:17
+msgid "city"
+msgstr "By"
+
+#: members/forms.py:39 members/models.py:18
+msgid "phonenumber"
+msgstr "Telefonnummer"
+
+#: members/forms.py:42
+msgid "Inform me about events and other important changes."
+msgstr "Informer mig omkring arrangementer og andre tiltag."
+
+#: members/forms.py:46 quickregistration/forms.py:36
+msgid "personal information"
+msgstr "Personoplysninger"
+
+#: members/forms.py:47 quickregistration/forms.py:39
+msgid "address"
+msgstr "Adresse"
+
+#: members/forms.py:48
+msgid "other"
+msgstr "Andet"
+
+#: members/forms.py:54
+msgid "Your birthday is not allowed to be dated before 1900"
+msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
+
+#: members/models.py:19
+msgid "Send me emails"
+msgstr "Send mig emails"
+
+#: members/models.py:22
+msgid "user profile"
+msgstr "Bruger profil"
+
+#: members/models.py:23
+msgid "user profiles"
+msgstr "Bruger profiler"
+
+#: members/models.py:35
+#, python-format
+msgid "Registration profile for %s"
+msgstr "Registreringsprofil for %s"
+
+#: members/views.py:23
+msgid "Personal information updated"
+msgstr "Dine personoplysninger er blevet opdateret"

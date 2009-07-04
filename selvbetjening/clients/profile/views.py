@@ -11,7 +11,7 @@ from selvbetjening.data.accounting.models import Payment
 from selvbetjening.data.events.models import Event
 
 @login_required
-def profile(request, template_name='members/profile.html'):
+def profile(request, template_name='profile/profile.html'):
     attends = request.user.attend_set.all().order_by('-event__id')
     visited_keys = []
     for attend in attends:

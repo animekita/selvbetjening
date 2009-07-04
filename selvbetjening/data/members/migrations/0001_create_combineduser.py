@@ -9,9 +9,9 @@ class Migration:
     def forwards(self):
         # remove id
         db.delete_column('members_userprofile', 'id')
-
+        
         # rename user_id to user_ptr_id
         db.rename_column('members_userprofile', 'user_id', 'user_ptr_id')
-
+        
     def backwards(self):
         "Write your backwards migration here"

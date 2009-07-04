@@ -7,8 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django.contrib.admin.views.main import ChangeList
 
-from selvbetjening.core import logger
-from selvbetjening.core.decorators import log_access
+from selvbetjening.data.logging import logger
+from selvbetjening.data.logging.decorators import log_access
 from selvbetjening.data.events.models import Event, Attend, Option
 
 from decorators import eventmode_required

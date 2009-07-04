@@ -1,4 +1,4 @@
-from core import messaging
+from selvbetjening.data.members import messaging
 
 def site_urls(request):
     from django.conf import settings
