@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'selvbetjening.clients.eventmode',
     'selvbetjening.clients.mailcenter',
     'selvbetjening.clients.quickregistration',
+    'selvbetjening.clients.eventregistration',
 )
 
 # Initialize Logging

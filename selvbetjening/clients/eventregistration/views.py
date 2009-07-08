@@ -8,11 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from selvbetjening.data.logging import logger
-
-from models import Event
-from forms import SignupForm, SignoffForm, OptionForms
-from decorators import event_registration_open_required, event_registration_allowed_required, \
+from selvbetjening.data.events.models import Event
+from selvbetjening.data.events.decorators import \
+     event_registration_open_required, \
+     event_registration_allowed_required, \
      event_attendance_required
+
+from forms import SignupForm, SignoffForm, OptionForms
 
 def list_events(request, template_name='events/list.html'):
     ''' Show list of events. '''
