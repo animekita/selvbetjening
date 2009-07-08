@@ -6,6 +6,8 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
+from selvbetjening.data.invoice.models import InvoiceRevision
+
 class Event(models.Model):
     """ Model representing an event.
 
@@ -72,6 +74,7 @@ class Event(models.Model):
 class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
+    invoices = models.ManyToManyField(InvoiceRevision)
     has_attended = models.BooleanField()
 
     class Meta:
