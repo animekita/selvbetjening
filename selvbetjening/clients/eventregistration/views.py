@@ -16,13 +16,13 @@ from selvbetjening.data.events.decorators import \
 
 from forms import SignupForm, SignoffForm, OptionForms
 
-def list_events(request, template_name='events/list.html'):
+def list_events(request, template_name='eventregistration/list.html'):
     ''' Show list of events. '''
     return render_to_response(template_name,
                               { 'events' : Event.objects.order_by('-startdate') },
                               context_instance=RequestContext(request))
 
-def view(request, event_id, template_name='events/view.html'):
+def view(request, event_id, template_name='eventregistration/view.html'):
     event = get_object_or_404(Event, id=event_id)
 
     return render_to_response(template_name,
@@ -36,11 +36,11 @@ def view(request, event_id, template_name='events/view.html'):
 @event_registration_open_required
 @event_registration_allowed_required
 def signup(request, event_id,
-           template_name='events/signup.html',
-           template_cant_signup='events/cantsignup.html',
+           template_name='eventregistration/signup.html',
+           template_cant_signup='eventregistration/cantsignup.html',
            form_class=SignupForm,
            form_options_class=OptionForms,
-           success_page='events_view'):
+           success_page='eventregistration_view'):
     ''' Let a user sign up to the event. '''
 
     event = get_object_or_404(Event, id=event_id)
@@ -73,8 +73,8 @@ def signup(request, event_id,
 @event_registration_open_required
 @event_attendance_required
 def signoff(request, event_id,
-           template_name='events/signoff.html',
-           success_page='events_view',
+           template_name='eventregistration/signoff.html',
+           success_page='eventregistration_view',
            form_class=SignoffForm):
     '''
     Let a user remove herself from an event.
@@ -99,8 +99,8 @@ def signoff(request, event_id,
 @event_registration_open_required
 @event_attendance_required
 def change_options(request, event_id, form=OptionForms,
-                   success_page='events_view',
-                   template_name='events/change_options.html'):
+                   success_page='eventregistration_view',
+                   template_name='eventregistration/change_options.html'):
     event = get_object_or_404(Event, id=event_id)
 
     if request.method == 'POST':

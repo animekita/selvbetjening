@@ -6,22 +6,22 @@ urlpatterns = patterns(
     '',
     url(r'^se/alle/$',
         views.list_events,
-        name='events_view_all'),
+        name='eventregistration_view_all'),
 
     url(r'^se/(?P<event_id>[0-9]+)/$',
         views.view,
-        name='events_view'),
+        name='eventregistration_view'),
 
     url(r'^se/(?P<event_id>[0-9]+)/tilmeld/$',
         views.signup,
-        name='events_signup'),
+        name='eventregistration_signup'),
 
     url(r'^se/(?P<event_id>[0-9]+)/afmeld/$',
         views.signoff,
-        name='events_signoff'),
+        name='eventregistration_signoff'),
 
     url(r'^se/(?P<event_id>[0-9]+)/tilvalg/$',
         views.change_options,
-        name='events_change_options'),
+        name='eventregistration_change_options'),
 
 )
