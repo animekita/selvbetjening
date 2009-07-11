@@ -3,8 +3,8 @@
 {% load markup %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_view event.id %}">{{event.title}}</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -24,16 +24,16 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
         {% if not userIsSignedup %}
             {% if event.is_registration_allowed %}
             <ul class="table-options">
-                <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig dette arrangement</a></li>
+                <li>&#187; <a href="{% url eventregistration_signup event.id %}">Tilmeld dig dette arrangement</a></li>
             </ul>
             {% else %}
             <p>Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
             {% endif %}
         {% else %}
         <ul class="table-options">
-            <li>&#187; <a href="{% url events_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
+            <li>&#187; <a href="{% url eventregistration_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
             {% if has_options %}
-            <li>&#187; <a href="{% url events_change_options event.id %}">Ændre tilvalg</a></li>
+            <li>&#187; <a href="{% url eventregistration_change_options event.id %}">Ændre tilvalg</a></li>
             {% endif %}
         </ul>
         {% endif %}
@@ -42,7 +42,7 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
     {% if not user.is_authenticated %}
         <ul class="table-options">
             <li>&#187; <a href="{% url quickregistration_register %}">Bliv medlem</a></li>
-            <li>&#187; <a href="{% url events_signup event.id %}">Tilmeld dig nu. (kræver medlemsskab)</a></li>
+            <li>&#187; <a href="{% url eventregistration_signup event.id %}">Tilmeld dig nu. (kræver medlemsskab)</a></li>
         </ul>
     {% endif %}
 

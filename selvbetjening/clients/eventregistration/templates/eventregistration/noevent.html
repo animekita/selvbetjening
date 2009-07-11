@@ -1,8 +1,8 @@
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_signup event.id %}">ukendt arrangement</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_signup event.id %}">ukendt arrangement</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -11,6 +11,6 @@ Ukendt arrangement
 
 {% block content %}
 
-<p>Det arrangement du forsøger at se kunne ikke findes, vi beklager ulejligheden. Du kan eventuelt prøve at finde det arrangemenet du leder efter i vores <a href="{%url events_view_all %}">liste over arrangementer</a>.</p>
+<p>Det arrangement du forsøger at se kunne ikke findes, vi beklager ulejligheden. Du kan eventuelt prøve at finde det arrangemenet du leder efter i vores <a href="{%url eventregistration_view_all %}">liste over arrangementer</a>.</p>
 
 {% endblock %}

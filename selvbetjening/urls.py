@@ -13,7 +13,7 @@ urlpatterns = patterns('',
      include('selvbetjening.clients.quickregistration.urls')),
     
     (r'^events/', 
-     include('selvbetjening.data.events.urls')),
+     include('selvbetjening.clients.eventregistration.urls')),
     
     (r'^accounting/', 
      include('selvbetjening.data.accounting.urls')),

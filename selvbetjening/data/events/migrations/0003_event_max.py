@@ -17,8 +17,3 @@ class Migration:
         # Deleting field 'OptionGroup.freeze_time'
         db.delete_column('events_event', 'maximum_attendees')
 
-    models = {
-
-    }
-
-

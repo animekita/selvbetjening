@@ -95,7 +95,7 @@
 
     {% for event in events_new %}
         <tr>
-            <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
+            <td><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></td>
             <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
             <td>{{event.startdate.year}}</td>
             <td>{% if event.registration_open %}Åben for tilmelding{% endif %}</td>
@@ -104,7 +104,7 @@
 
     {% for attend in attends %}
         <tr>
-            <td><a href="{% url events_view attend.event.id %}">{{attend.event.title}}</a></td>
+            <td><a href="{% url eventregistration_view attend.event.id %}">{{attend.event.title}}</a></td>
             <td>{{attend.event.startdate.day}}/{{attend.event.startdate.month}} - {{attend.event.enddate.day}}/{{attend.event.enddate.month}}</td>
             <td>{{attend.event.startdate.year}}</td>
             <td>Tilmeldt{% if attend.event.has_been_held %} / Afholdt{% endif %}</td>

@@ -1,17 +1,20 @@
 2.0.0 dev
 
- * Added sorting users by age
- * Removed booking module
+ * Added sorting users by age.
+ * Removed booking module.
+ * Restructured modules into clients, data and viewhelpers.
+ * Added option to display change and registration confirmations for events.
+ * Added support for invoices.
 
 1.1.0
 
- * Improved options
- * Added max attendees to events
+ * Improved options.
+ * Added max attendees to events.
 
 1.0.0 (SLOC 2.389)
 
- * Renamed registration to quickregistration
- * Removed RegistrationProfile model from quickregistration
+ * Renamed registration to quickregistration.
+ * Removed RegistrationProfile model from quickregistration.
  * A lot of refactoring!
 
 0.0.0 Chi (SLOC 2.945)

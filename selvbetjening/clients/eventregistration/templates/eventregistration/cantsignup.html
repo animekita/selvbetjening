@@ -1,8 +1,8 @@
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_signup event.id %}">tilmeld</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_signup event.id %}">tilmeld</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -11,6 +11,6 @@ Du er allerede tilmeldt dette arrangement
 
 {% block content %}
 
-<p>Du er allerede tilmeldt dette arrangement, følg <a href="{% url events_view event.id %}">dette link</a> for at se en liste over deltagere til arrangementet.</p>
+<p>Du er allerede tilmeldt dette arrangement, følg <a href="{% url eventregistration_view event.id %}">dette link</a> for at se en liste over deltagere til arrangementet.</p>
 
 {% endblock %}

@@ -40,14 +40,18 @@ class SignoffForm(AcceptForm):
         return _(u'You must accept to remove your participation in the event')
 
 class OptionForms(object):
-    def __init__(self, user, event, post=None):
+    def __init__(self, event, post=None, selected_options=None):
         self.forms = []
+        
+        if selected_options is None:
+            selected_options = []
 
         for optiongroup in event.optiongroup_set.all():
             if post is None:
-                self.forms.append(OptionGroupForm(user, optiongroup))
+                self.forms.append(OptionGroupForm(optiongroup, 
+                                                  selected_options=selected_options))
             else:
-                self.forms.append(OptionGroupForm(user, optiongroup, post))
+                self.forms.append(OptionGroupForm(optiongroup, post, selected_options=selected_options))
 
     def is_valid(self):
         is_valid = True
@@ -56,9 +60,9 @@ class OptionForms(object):
 
         return is_valid
 
-    def save(self):
+    def save_selection(self, attendee):
         for form in self.forms:
-            form.save()
+            form.save_selection(attendee)
 
     def __iter__(self):
         for form in self.forms:
@@ -66,12 +70,17 @@ class OptionForms(object):
 
 class OptionGroupForm(forms.Form):
 
-    def __init__(self, user, optiongroup, *args, **kwargs):
-        self.user = user
+    def __init__(self, optiongroup, *args,  **kwargs):
         self.optiongroup = optiongroup
         self.selected_total = 0
         self.selected_initally = False
         self.enabled_options = []
+        
+        if kwargs.has_key('selected_options'):
+            
+            selected_options = [option for option in kwargs.pop('selected_options') if option.group == optiongroup]
+        else:
+            selected_options = []
 
         class Meta:
             layout = [[optiongroup.name,
@@ -81,7 +90,6 @@ class OptionGroupForm(forms.Form):
 
         self.Meta = Meta
 
-        selected_options = user.option_set.filter(group=optiongroup)
         kwargs['initial'] = {}
         for option in selected_options:
             kwargs['initial'][self._get_id(option)] = True
@@ -96,10 +104,10 @@ class OptionGroupForm(forms.Form):
 
             self._display_option(option, disabled)
 
-            if disabled:
-                self._register_disabled_option(option, selected)
-            else:
-                self._register_enabled_option(option, selected)
+            if not disabled:
+                self.enabled_options.append(option)
+                
+            self._register_clean_function(option, selected, disabled)
 
     def _display_option(self, option, disabled):
         self.Meta.layout[0][1].append((self._get_id(option), {'disabled' : disabled}))
@@ -107,25 +115,35 @@ class OptionGroupForm(forms.Form):
                                                                required=False,
                                                                help_text=option.description)
 
-    def _register_disabled_option(self, option, selected_initially):
-        if selected_initially:
-            self.selected_total += 1
-
-    def _register_enabled_option(self, option, selected_initially):
-        self.enabled_options.append(option)
-
-        def clean_option():
+    def _register_clean_function(self, option, selected_initially, disabled):
+        def clean_disabled_option():
             selected = self.cleaned_data.get(self._get_id(option), False)
-            if selected:
+            
+            if selected_initially:
                 self.selected_total += 1
-
+                
             if selected and \
                option.max_attendees_reached() and \
                not selected_initially:
                 raise forms.ValidationError(_('The maximum number of attendees have been reached'))
 
+            if selected and \
+               option.is_frozen():
+                raise forms.ValidationError(_('This option can not be selected anymore'))
+            
+        def clean_enabled_option():
+            selected = self.cleaned_data.get(self._get_id(option), False)
+            
+            if selected:
+                self.selected_total += 1
+                
             return selected
 
+        if disabled:
+            clean_option = clean_disabled_option
+        else:
+            clean_option = clean_enabled_option
+            
         setattr(self, 'clean_%s' % self._get_id(option), clean_option)
 
     def clean(self):
@@ -155,12 +173,12 @@ class OptionGroupForm(forms.Form):
 
         return self.cleaned_data
 
-    def save(self):
+    def save_selection(self, attendee):
         for option in self.enabled_options:
             if self.cleaned_data.get(self._get_id(option), False):
-                option.users.add(self.user)
+                attendee.select_option(option)
             else:
-                option.users.remove(self.user)
+                attendee.deselect_option(option)
 
     @staticmethod
     def _get_id(option):

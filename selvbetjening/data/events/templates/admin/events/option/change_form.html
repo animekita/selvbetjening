@@ -14,13 +14,11 @@
 
      {% for user in original.users.all %}
      <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/auth/user/{{ user.id }}/">
-          {{ user.username }}
-       </a></td>
+       <td><a href="/admin/auth/user/{{ user.id }}/">{{ user.username }}</a></td>
      </tr>
      {% endfor %}
      </table>
-
+</div>
 
 
 {% endblock %}

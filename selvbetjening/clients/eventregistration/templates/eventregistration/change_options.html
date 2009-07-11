@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_change_options event.id %}">tilvalg for {{event.title}}</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_change_options event.id %}">tilvalg for {{event.title}}</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -18,7 +18,7 @@
 
 {% uniform_begin %}
 
-{% include "events/options.html" %}
+{% include "eventregistration/options.html" %}
 
 {% uniform_submit "ændre" %}
 {% uniform_end %}

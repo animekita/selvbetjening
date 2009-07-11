@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from selvbetjening.data.invoice.models import InvoiceRevision
+from selvbetjening.data.invoice.models import Invoice
 
 class Event(models.Model):
     """ Model representing an event.
@@ -21,6 +21,12 @@ class Event(models.Model):
     maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
+    show_registration_confirmation = models.BooleanField(default=False)
+    registration_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    
+    show_change_confirmation = models.BooleanField(default=False)
+    change_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    
     class Meta:
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')
@@ -55,12 +61,10 @@ class Event(models.Model):
         return self.checkedin.count()
 
     def add_attendee(self, user, has_attended=False):
-        Attend.objects.create(user=user, has_attended=has_attended, event=self)
+        return Attend.objects.create(user=user, has_attended=has_attended, event=self)
 
     def remove_attendee(self, user):
         self.attend_set.filter(user=user).delete()
-        for option in Option.objects.filter(group__event=self):
-            option.users.remove(user)
 
     def is_attendee(self, user):
         if isinstance(user, AnonymousUser):
@@ -71,15 +75,48 @@ class Event(models.Model):
     def __unicode__(self):
         return _(u'%s') % self.title
 
+class AttendManager(models.Manager):
+    def create(self, *args, **kwargs):
+        if not kwargs.has_key('invoice'):
+            event = kwargs['event']
+            user= kwargs['user']
+            
+            invoice = Invoice.objects.create(name=unicode(event),
+                                             user=user,
+                                             managed=True)
+            
+            kwargs['invoice'] = invoice
+            
+        return super(AttendManager, self).create(*args, **kwargs)
+    
 class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
-    invoices = models.ManyToManyField(InvoiceRevision)
+    invoice = models.ForeignKey(Invoice, blank=True)
     has_attended = models.BooleanField()
 
+    objects = AttendManager()
+    
     class Meta:
         unique_together = ('event', 'user')
 
+    @property
+    def selected_options(self):
+        return self.user.option_set.filter(group__event=self.event)
+        
+    def select_option(self, option):
+        option.users.add(self.user)
+        
+    def deselect_option(self, option):
+        option.users.remove(self.user)
+        
+    def update_invoice(self):
+        revision = self.invoice.create_new_revision()
+        for option in self.selected_options:
+            revision.add_line(unicode(option), option.price)
+            
+        return revision
+        
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
     is_new.boolean = True
@@ -96,7 +133,15 @@ class Attend(models.Model):
         return self.user.last_name
     user_last_name.admin_order_field = 'user__last_name'
     user_last_name.short_description = _('Last name')
-
+    
+    def delete(self):
+        for option in Option.objects.filter(group__event=self.event):
+            self.deselect_option(option)
+            
+        self.invoice.managed = False
+        self.invoice.dropped = True
+        self.invoice.save()
+    
     def __unicode__(self):
         return u'%s attending %s' % (self.user, self.event)
 
@@ -142,6 +187,8 @@ class Option(models.Model):
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)
 
+    price = models.IntegerField(default=0)
+    
     order = models.IntegerField(_('Order'), default=0)
 
     def is_frozen(self):
@@ -164,6 +211,10 @@ class Option(models.Model):
         else:
             return False
 
+    @property
+    def attendees(self):
+        return self.users.all()
+        
     def attendees_count(self):
         return self.users.count()
     attendees_count.short_description = _('Atendees')

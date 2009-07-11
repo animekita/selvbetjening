@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
 <li><span>tilmeld dig {{event.title}}</span></li>
 {% endblock %}
 
@@ -25,7 +25,7 @@ Tilmeld arrangement
 
 <h2>Tilvalg</h2>
 
-{% include "events/options.html" %}
+{% include "eventregistration/options.html" %}
 
 {% uniform_submit "tilmeld" %}
 {% uniform_end %}

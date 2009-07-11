@@ -1,7 +1,7 @@
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a></li>
 {% endblock %}
 
 {% block contenthead %}
@@ -27,7 +27,7 @@ Arrangementer
 
     {% for event in events %}
         <tr>
-            <td><a href="{% url events_view event.id %}">{{event.title}}</a></td>
+            <td><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></td>
             <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
             <td>{{event.startdate.year}}</td>
             <td>{% if event.is_registration_open %}Åben for tilmelding{% endif %}</td>

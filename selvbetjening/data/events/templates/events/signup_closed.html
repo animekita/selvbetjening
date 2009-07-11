@@ -1,8 +1,8 @@
 {% extends "site.html" %}
 
 {% block breadcrumbs %}
-<li><a href="{% url events_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url events_signoff event.id %}">tilmelding lukket</a></li>
+<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
+<li><a href="{% url eventregistration_signoff event.id %}">tilmelding lukket</a></li>
 {% endblock %}
 
 {% block contenthead %}
