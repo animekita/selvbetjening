@@ -1,5 +1,6 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
+{% load adminmedia %}
 
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
@@ -20,7 +21,7 @@
 
    <table>
      <thead><tr>
-     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte</th>
+     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte (heraf betalt)</th>
      </tr></thead>
 
      {% for optiongroup in original.optiongroup_set.all %}
@@ -32,10 +33,48 @@
        <td><a href="/admin/events/option/{{ option.id }}/">
          {{ option.name }}
        </a></td>
-       <td>{{option.attendees_count}}</td>
+       <td>{{option.attendees_count}} ({{option.paying_attendees_count}})</td>
      </tr>
      {% endfor %}
      {% endfor %}
    </table>
+   
+</div>
+
+<div class="tabular inline-related">
+    <fieldset class="module">
+    <h2>Deltagere</h2>
+
+   <table>
+     <thead><tr>
+     <th>#</th>
+     <th>Deltager</th>
+     <th>Har deltaget</th>
+     <th>Har betalt</th>
+     </tr></thead>
+
+     {% for attendee in original.attendees %}
+     <tr class="{% cycle "row1" "row2" %}">
+       <td><a href="/admin/events/attend/{{ attendee.id }}/">{{ forloop.counter }}</a></td>
+       <td><a href="/admin/auth/user/{{ attendee.user.id }}/">{{ attendee.user.username }}</a></td><td>
+        {% if attendee.has_attended %}
+          <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
+        {% else %}
+          <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
+        {% endif %}
+       </td>
+       <td>
+        {% if attendee.invoice.is_paid %}
+          <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
+        {% else %}
+          <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
+        {% endif %}
+        </td>
+     </tr>
+     {% endfor %}
+   </table>
+   
+</div>
+</div>
    
 {% endblock %}

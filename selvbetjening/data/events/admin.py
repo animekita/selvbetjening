@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 
 from models import Attend, Option, OptionGroup
 
-class AttendInline(TabularInline):
-    model = Attend
-    raw_id_fields = ('user',)
-    verbose_name = 'Deltager'
-    verbose_name_plural = 'Deltagere'
+class AttendAdmin(ModelAdmin):
+    list_display = ('user', 'event', 'has_attended', 'dispaly_has_paid')
+    list_filter = ('event',)
+    
+    def dispaly_has_paid(self, attend):
+        return attend.invoice.is_paid()
+    dispaly_has_paid.boolean = True
 
 class EventAdmin(ModelAdmin):
     list_display = ('title', 'startdate', 'enddate', 'registration_open')
@@ -29,7 +31,6 @@ class EventAdmin(ModelAdmin):
             'classes' : ('collapse', ),
         }),
     )
-    inlines = [AttendInline, ]
 
 class OptionInline(TabularInline):
     model = Option

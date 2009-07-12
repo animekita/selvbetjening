@@ -120,7 +120,7 @@ class Attend(models.Model):
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
     is_new.boolean = True
-
+    
     def user_first_name(self):
         # Stupid function, but needed by the django admin interface
         # to show sortable user information from the attend administration.
@@ -213,11 +213,28 @@ class Option(models.Model):
 
     @property
     def attendees(self):
-        return self.users.all()
+        attendees = []
+        for user in self.users.all():
+            attendee = Attend.objects.get(event=self.group.event, user=user)
+            attendees.append(attendee)
+                
+        return attendees
         
+    @property
+    def paying_attendees(self):
+        paying_attendees = []
+        for attendee in self.attendees:
+            if attendee.invoice.is_paid():
+                paying_attendees.append(attendee)
+                
+        return paying_attendees
+    
     def attendees_count(self):
-        return self.users.count()
+        return len(self.attendees)
     attendees_count.short_description = _('Atendees')
+    
+    def paying_attendees_count(self):
+        return len(self.paying_attendees)
 
     def __unicode__(self):
         return u'%s option for %s' % (self.name, self.group)

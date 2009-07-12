@@ -1,4 +1,5 @@
 {% extends "admin/change_form.html" %}
+{% load adminmedia %}
 
 {% block after_field_sets %}
 
@@ -10,11 +11,17 @@
    <table>
      <thead><tr>
      <th>Tilmeldte</th>
+     <th>Betalt</th>
      </tr></thead>
 
-     {% for user in original.users.all %}
+     {% for attendee in original.attendees %}
      <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/auth/user/{{ user.id }}/">{{ user.username }}</a></td>
+       <td><a href="/admin/auth/user/{{ attendee.user.id }}/">{{ attendee.user.username }}</a></td>
+       <td>{% if attendee.invoice.is_paid %}
+          <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
+        {% else %}
+          <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
+        {% endif %}</td>
      </tr>
      {% endfor %}
      </table>
