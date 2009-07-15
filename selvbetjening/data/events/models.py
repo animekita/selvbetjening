@@ -64,7 +64,8 @@ class Event(models.Model):
         return Attend.objects.create(user=user, has_attended=has_attended, event=self)
 
     def remove_attendee(self, user):
-        self.attend_set.filter(user=user).delete()
+        attendee = self.attend_set.get(user=user)
+        attendee.delete()
 
     def is_attendee(self, user):
         if isinstance(user, AnonymousUser):
@@ -141,6 +142,8 @@ class Attend(models.Model):
         self.invoice.managed = False
         self.invoice.dropped = True
         self.invoice.save()
+        
+        super(Attend, self).delete()
     
     def __unicode__(self):
         return u'%s attending %s' % (self.user, self.event)

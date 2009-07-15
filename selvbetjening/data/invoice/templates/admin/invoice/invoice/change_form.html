@@ -1,5 +1,9 @@
 {% extends "admin/change_form.html" %}
 
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
+{% endblock %}
+
 {% block after_field_sets %}
 
 <div class="inline-group">
@@ -23,6 +27,46 @@
     </table>
 </div>
 
+  <div class="tabular inline-related">
+    <fieldset class="module">
+    <h2>Betalinger</h2>
+
+   <table>
+     <thead><tr>
+     <th>Note</th>
+     <th>Dato</th>
+     <th>Revision</th>
+     <th>Signee</th>
+     <th>Betalt</th>
+     </tr></thead>
+
+     {% for payment in original.payment_set %}
+     <tr class="{% cycle "row1" "row2" %}">
+       <td>{{ payment.note }}</td>
+       <td>{{ payment.created_date }}</td>
+       <td>{{ payment.revision }}</td>
+       <td>{{ payment.signee }}</td>
+       <td>{{ payment.amount }}</td>
+     </tr>
+     {% endfor %}
+     
+    </table>
+</div>
+
+<ul class="tools">
+  <li><a class="add" href="/admin/invoice/payment/add/?revision={{original.latest_revision.id}}&signee={{user.id}}">Tilføj betaling</a></li>
+</ul>
+
+<script>
+  $(document).ready(function(){
+    
+    $(".revision_line").click(function () {    
+      $(this).next().find("table").toggle("normal");
+    });    
+
+  });
+</script>
+
 <div class="inline-group">
   <div class="tabular inline-related">
     <fieldset class="module">
@@ -34,13 +78,33 @@
      <th>Dato</th>
      </tr></thead>
 
-     {% for revision in original.revision_set.all reversed %}
-     <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/invoice/invoicerevision/{{ revision.id }}/">{{ revision.id }}</a></td>
-       <td><a href="/admin/invoice/invoicerevision/{{ revision.id }}/">{{ revision.created_date }}</a></td>
+     {% for revision in original.revision_set.all %}
+     <tr class="{% cycle "row1" "row2" %} revision_line">
+       <td><a href="#">{{ revision.id }}</a></td>
+       <td>{{ revision.created_date }}</td>
      </tr>
+     
+     <tr><td colspan="2">
+      
+      <table style="display:none;">
+        <thead><tr>
+        <th>Beskrivelse</th>
+        <th>Pris</th>
+        </tr></thead>
+   
+        {% for line in revision.line_set.all %}
+        <tr class="{% cycle "row1" "row2" %}">
+          <td>{{ line.description }}</td>
+          <td>{{ line.price }}</td>
+        </tr>
+        {% endfor %}
+        
+       </table>      
+     </td></tr>
      {% endfor %}
      </table>
 </div>
-
+<ul class="tools">
+  <li><a class="add" href="/admin/invoice/invoicerevision/add/?invoice={{original.id}}">Ændre invoice</a></li>
+</ul>
 {% endblock %}

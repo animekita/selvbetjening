@@ -25,12 +25,16 @@ class Invoice(models.Model):
     def paid(self):
         paid = 0
         for payment in Payment.objects.filter(revision__invoice=self):
-            paid += payment.price
+            paid += payment.amount
             
         return paid
+
+    @property
+    def payment_set(self):
+        return Payment.objects.filter(revision__invoice=self)
     
     def is_paid(self):
-        return self.paid == self.total_price
+        return self.paid > self.total_price
     is_paid.boolean = True
         
     def create_new_revision(self):
