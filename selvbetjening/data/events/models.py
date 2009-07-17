@@ -6,6 +6,8 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
+from tinymce.models import HTMLField
+
 from selvbetjening.data.invoice.models import Invoice
 
 def _update_invoice(invoice_revision):
@@ -21,7 +23,7 @@ Invoice.objects.register_invoice_updater(_update_invoice)
 
 class Event(models.Model):
     title = models.CharField(_(u'title'), max_length=255)
-    description = models.TextField(_(u'description'), blank=True)
+    description = HTMLField(_(u'description'), blank=True)
     
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
