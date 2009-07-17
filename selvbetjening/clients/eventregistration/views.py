@@ -15,6 +15,8 @@ from selvbetjening.data.events.decorators import \
      event_registration_open_required, \
      event_registration_allowed_required, \
      event_attendance_required
+from selvbetjening.data.membership.forms import MembershipForm
+from selvbetjening.data.membership.membership_controller import MembershipController
 
 from forms import SignupForm, SignoffForm, OptionForms
 
@@ -56,12 +58,15 @@ def signup(request, event_id,
     if request.method == 'POST':
         form = form_class(request.POST)
         optionforms = form_options_class(event, request.POST)
-        if form.is_valid() and optionforms.is_valid():
+        membershipform = MembershipForm(request.POST, user=request.user, event=event)
+        
+        if form.is_valid() and optionforms.is_valid() and membershipform.is_valid():
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
             
             attendee = event.add_attendee(request.user)
-            optionforms.save_selection(attendee)
-            invoice_revision = attendee.update_invoice()
+            attendee.change_selections(*optionforms.get_changes())
+            
+            membershipform.save(invoice=attendee.invoice)
             
             if event.show_registration_confirmation:
                 template = Template(event.registration_confirmation)
@@ -81,11 +86,13 @@ def signup(request, event_id,
     else:
         form = form_class()
         optionforms = form_options_class(event)
+        membershipform = MembershipForm(user=request.user, event=event)
 
     return render_to_response(template_name,
                               {'event' : event,
                                'form' : form,
-                               'optionforms' : optionforms,},
+                               'optionforms' : optionforms,
+                               'membershipform' : membershipform},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -101,13 +108,15 @@ def signoff(request, event_id,
     '''
 
     event = get_object_or_404(Event, id=event_id)
+    attendee = Attend.objects.get(user=request.user, event=event)
 
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
             logger.info(request, 'client signed user_id %s off event_id %s' % (request.user.id, event.id))
             
-            event.remove_attendee(request.user)
+            event.remove_attendee(attendee.user)
+            MembershipController.cancel_membership(attendee.user, attendee.invoice)
             
             request.user.message_set.create(message=_(u'You are now removed from the event.'))
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))

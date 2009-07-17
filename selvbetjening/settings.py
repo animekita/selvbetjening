@@ -66,7 +66,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.markup',
     
-    'selvbetjening.data.accounting',
+    'selvbetjening.data.membership',
     'selvbetjening.data.events',
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',
@@ -96,6 +96,6 @@ logging.getLogger('').setLevel(logging.NOTSET)
 
 # Eventmode checkin modules
 EVENTMODE_CHECKIN_PROCESSORS = (
-    'selvbetjening.data.accounting.checkin_processors.membership',
+    'selvbetjening.data.membership.checkin_processors.membership',
     'selvbetjening.data.events.checkin_processors.options',
 )

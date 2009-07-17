@@ -8,16 +8,24 @@ from django.db import models
 
 from selvbetjening.data.invoice.models import Invoice
 
+def _update_invoice(invoice_revision):
+    invoice = invoice_revision.invoice
+    
+    for attendee in Attend.objects.filter(invoice=invoice):
+        for option in attendee.selected_options:
+            invoice_revision.add_line(description=unicode(option),
+                                      price=option.price,
+                                      managed=True)
+        
+Invoice.objects.register_invoice_updater(_update_invoice)
+
 class Event(models.Model):
-    """ Model representing an event.
-
-    description -- html formatted description of event
-    """
-
     title = models.CharField(_(u'title'), max_length=255)
     description = models.TextField(_(u'description'), blank=True)
+    
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
+    
     maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
@@ -30,19 +38,6 @@ class Event(models.Model):
     class Meta:
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')
-
-    def max_attendees_reached(self):
-        return self.maximum_attendees != 0 and \
-               self.maximum_attendees <= self.attendees_count
-
-    def is_registration_open(self):
-        return (self.registration_open and not self.has_been_held())
-
-    def is_registration_allowed(self):
-        return self.is_registration_open() and not self.max_attendees_reached()
-
-    def has_been_held(self):
-        return self.enddate < date.today()
 
     @property
     def attendees(self):
@@ -58,14 +53,28 @@ class Event(models.Model):
 
     @property
     def checkedin_count(self):
-        return self.checkedin.count()
+        return self.checkedin.count()      
+        
+    def max_attendees_reached(self):
+        return self.maximum_attendees != 0 and \
+               self.maximum_attendees <= self.attendees_count
+
+    def is_registration_open(self):
+        return (self.registration_open and not self.has_been_held())
+
+    def is_registration_allowed(self):
+        return self.is_registration_open() and not self.max_attendees_reached()
+
+    def has_been_held(self):
+        return self.enddate < date.today()
 
     def add_attendee(self, user, has_attended=False):
-        return Attend.objects.create(user=user, has_attended=has_attended, event=self)
+        return Attend.objects.create(user=user, 
+                                     has_attended=has_attended, 
+                                     event=self)
 
     def remove_attendee(self, user):
-        attendee = self.attend_set.get(user=user)
-        attendee.delete()
+        self.attend_set.get(user=user).delete()
 
     def is_attendee(self, user):
         if isinstance(user, AnonymousUser):
@@ -78,13 +87,11 @@ class Event(models.Model):
 
 class AttendManager(models.Manager):
     def create(self, *args, **kwargs):
-        if not kwargs.has_key('invoice'):
-            event = kwargs['event']
-            user= kwargs['user']
-            
-            invoice = Invoice.objects.create(name=unicode(event),
-                                             user=user,
-                                             managed=True)
+        if kwargs.has_key('invoice'):
+            invoice = kwargs['invoice']
+        else:
+            invoice = Invoice.objects.create(name=unicode(kwargs['event']),
+                                             user=kwargs['user'])
             
             kwargs['invoice'] = invoice
             
@@ -111,12 +118,11 @@ class Attend(models.Model):
     def deselect_option(self, option):
         option.users.remove(self.user)
         
-    def update_invoice(self):
-        revision = self.invoice.create_new_revision()
-        for option in self.selected_options:
-            revision.add_line(unicode(option), option.price)
-            
-        return revision
+    def change_selections(self, selections, deselections):
+        for option in selections:
+            self.select_option(option)
+        for option in deselections:
+            self.deselect_option(option)
         
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
@@ -138,12 +144,12 @@ class Attend(models.Model):
     def delete(self):
         for option in Option.objects.filter(group__event=self.event):
             self.deselect_option(option)
-            
-        self.invoice.managed = False
-        self.invoice.dropped = True
-        self.invoice.save()
+
+        invoice = self.invoice
         
         super(Attend, self).delete()
+        
+        invoice.update()
     
     def __unicode__(self):
         return u'%s attending %s' % (self.user, self.event)

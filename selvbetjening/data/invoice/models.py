@@ -1,18 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+_invoice_updaters = []
+
+class InvoiceManager(models.Manager):   
+    def register_invoice_updater(self, updater):
+        _invoice_updaters.append(updater)
+
 class Invoice(models.Model):
     name = models.CharField(max_length=256)
-    dropped = models.BooleanField(default=False)
-    managed = models.BooleanField(default=False)
     user = models.ForeignKey(User)
 
+    objects = InvoiceManager()
+    
     @property
     def latest_revision(self):
         if self.revision_set.count() == 0:
             return InvoiceRevision.objects.create(invoice=self)
         else:
-            return self.revision_set.latest('created_date')
+            return self.revision_set.latest('id')
 
     @property
     def total_price(self):
@@ -33,8 +39,14 @@ class Invoice(models.Model):
     def payment_set(self):
         return Payment.objects.filter(revision__invoice=self)
     
+    def update(self):
+        revision = self.create_new_revision()
+        
+        for updater in _invoice_updaters:
+            updater(revision)
+    
     def is_paid(self):
-        return self.paid > self.total_price
+        return self.paid >= self.total_price
     is_paid.boolean = True
         
     def create_new_revision(self):
@@ -47,10 +59,11 @@ class InvoiceRevision(models.Model):
     invoice = models.ForeignKey(Invoice, related_name='revision_set')
     created_date = models.DateTimeField(auto_now_add=True)
     
-    def add_line(self, description, price):
+    def add_line(self, description, price, managed=False):
         return Line.objects.create(revision=self,
                                    description=description,
-                                   price=price)
+                                   price=price,
+                                   managed=managed)
     
     def __unicode__(self):
         return u'Invoice as of %s' % self.created_date
@@ -58,6 +71,7 @@ class InvoiceRevision(models.Model):
 class Line(models.Model):
     revision = models.ForeignKey(InvoiceRevision)
     description = models.CharField(max_length=255)
+    managed = models.BooleanField(default=False)
     price = models.IntegerField(default=0)
     
     def __unicode__(self):

@@ -15,8 +15,8 @@ urlpatterns = patterns('',
     (r'^events/', 
      include('selvbetjening.clients.eventregistration.urls')),
     
-    (r'^accounting/', 
-     include('selvbetjening.data.accounting.urls')),
+    (r'^membership/', 
+     include('selvbetjening.data.membership.urls')),
     
     (r'^mailcenter/', 
      include('selvbetjening.clients.mailcenter.urls')),
@@ -26,7 +26,6 @@ urlpatterns = patterns('',
     # Admin urls
     (r'^admin/', include('selvbetjening.clients.mailcenter.admin_urls')),
     (r'^admin/', include('selvbetjening.data.events.admin_urls')),
-    (r'^admin/', include('selvbetjening.data.accounting.admin_urls')),
 
     (r'^eventadmin/', include('selvbetjening.clients.eventmode.urls')),
 )

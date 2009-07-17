@@ -27,6 +27,11 @@ Tilmeld arrangement
 
 {% include "eventregistration/options.html" %}
 
+{% if membershipform.has_options %}
+<h2>Medlemskab</h2>
+{{ membershipform|uniform_add }}
+{% endif %}
+
 {% uniform_submit "tilmeld" %}
 {% uniform_end %}
 

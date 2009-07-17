@@ -1,7 +1,7 @@
 from django import template
 from django.utils.translation import ugettext as _
 
-from selvbetjening.data.accounting.models import MembershipState
+from selvbetjening.data.membership.models import MembershipState
 
 register = template.Library()
 

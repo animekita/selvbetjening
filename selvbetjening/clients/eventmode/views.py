@@ -84,12 +84,18 @@ def event_checkin(request, template_name='eventmode/checkin.html'):
     checkin_link.allow_tags = True
     checkin_link.short_description = _('Actions')
 
-    cl = ChangeList(request, Attend,
+    cl = ChangeList(request, 
+                    Attend,
                     ('user', 'user_first_name', 'user_last_name', 'has_attended', 'is_new', checkin_link),
                     ('username',),
-                    ('has_attended',), (),
+                    ('has_attended',), 
+                    (),
                     ('user__username', 'user__first_name', 'user__last_name'),
-                    (), 50, DummyModelAdmin())
+                    (), 
+                    50,
+                    (),
+                    DummyModelAdmin())
+    cl.formset = None
 
     return render_to_response(template_name,
                               {'attendees' : event.attendees,

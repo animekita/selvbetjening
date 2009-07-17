@@ -6,12 +6,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from models import Invoice, InvoiceRevision, Line
 
 class InvoiceAdmin(ModelAdmin):
-    list_display = ('name', 'user', 'total_price', 'paid', 'is_paid', 'dropped', 'managed')
-    list_filter = ('dropped', 'managed')
+    list_display = ('name', 'user', 'total_price', 'paid', 'is_paid')
     
     fieldsets = (
         (None, {
-            'fields' : ('name', 'user', ('dropped', 'managed')),
+            'fields' : ('name', 'user'),
         }),)
     
     raw_id_fields = ('user', )

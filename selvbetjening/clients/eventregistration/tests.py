@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 from selvbetjening.data.events.tests import Database
 from selvbetjening.data.events import models
+from selvbetjening.data.membership.membership_controller import MembershipController
 
 from forms import OptionGroupForm
 
@@ -12,13 +13,21 @@ class EventViewTestCase(TestCase):
     def test_signoff_remove_event(self):
         user = Database.new_user(id='user')
         event = Database.new_event()
-
-        models.Attend.objects.create(user=user, event=event)
-
+        attendee = Database.attend(user, event)
+        
+        if not MembershipController.is_member(user, event=event):
+            choices = MembershipController.get_membership_choices(user, event=event)
+            MembershipController.select_membership(user, choices[0], event=event, invoice=attendee.invoice)
+            
+            self.assertNotEqual(MembershipController.get_membership(user, attendee.invoice), None)                  
+        
         self.client.login(username='user', password='user')
+        
         self.client.post(reverse('eventregistration_signoff', kwargs={'event_id' : event.id}),
                          {'confirm' : True})
 
+        self.assertEqual(MembershipController.get_membership(user, attendee.invoice), None)
+        
         self.assertFalse(event in [ attend.event for attend in user.attend_set.all() ])
         
     def test_sigup_event(self):
@@ -26,6 +35,7 @@ class EventViewTestCase(TestCase):
         event = Database.new_event()
         
         self.client.login(username='user', password='user')
+        
         resp = self.client.get(reverse('eventregistration_signup', 
                                        kwargs={'event_id' : event.id}))
         
@@ -35,10 +45,18 @@ class EventViewTestCase(TestCase):
         user = Database.new_user(id='user')
         event = Database.new_event()
         
+        data = {'confirm' : True}
+        
+        if not MembershipController.is_member(user, event=event) and \
+           len(MembershipController.get_membership_choices(user, event=event)) > 0:
+            
+            choices = MembershipController.get_membership_choices(user, event=event)
+            data['type'] = choices[0]['id']
+            
         self.client.login(username='user', password='user')
         resp = self.client.post(reverse('eventregistration_signup', 
                                        kwargs={'event_id' : event.id}),
-                                {'confirm' : True})
+                                data)
         
         self.assertRedirects(resp, reverse('eventregistration_view', kwargs={'event_id':event.id}))
         
@@ -106,7 +124,7 @@ class EventOptionsFormUsageTestCase(TestCase):
                                selected_options=attendee.selected_options)
 
         self.assertTrue(form.is_valid())
-        form.save_selection(attendee)
+        attendee.change_selections(*form.get_changes())
 
         self.assertEqual(len(user.option_set.all()), 0)
 
@@ -128,7 +146,7 @@ class EventOptionsFormUsageTestCase(TestCase):
 
         self.assertTrue(form.is_valid())
         
-        form.save_selection(attendee)
+        attendee.change_selections(*form.get_changes())
         
         self.assertEqual(len(attendee.selected_options), 2)
 
@@ -202,7 +220,7 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
                                selected_options=attendee.selected_options)
 
         self.assertTrue(form.is_valid())
-        form.save_selection(attendee)
+        attendee.change_selections(*form.get_changes())
         self.assertEqual(len(attendee.selected_options), 1)
 
     def test_select_frozen_option(self):
@@ -227,5 +245,5 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         form = OptionGroupForm(optiongroup, {})
 
         self.assertTrue(form.is_valid())
-        form.save_selection(attendee)
+        attendee.change_selections(*form.get_changes())
         self.assertEqual(len(attendee.selected_options), 1)

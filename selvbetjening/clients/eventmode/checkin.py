@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
+from selvbetjening import utility
+
 _checkin_processors = None
 
 def get_checkin_processors():
@@ -19,16 +21,7 @@ def get_checkin_processors():
     if _checkin_processors is None:
         processors = []
         for path in settings.EVENTMODE_CHECKIN_PROCESSORS:
-            i = path.rfind('.')
-            module, attr = path[:i], path[i+1:]
-            try:
-                mod = __import__(module, {}, {}, [attr])
-            except ImportError, e:
-                raise ImproperlyConfigured('Error importing eventmode checkin processor module %s: "%s"' % (module, e))
-            try:
-                func = getattr(mod, attr)
-            except AttributeError:
-                raise ImproperlyConfigured('Module "%s" does not define a "%s" callable checkin processor' % (module, attr))
+            func = utility.import_function(path)
             processors.append(func)
 
         _checkin_processors = tuple(processors)

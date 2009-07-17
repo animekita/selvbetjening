@@ -60,9 +60,16 @@ class OptionForms(object):
 
         return is_valid
 
-    def save_selection(self, attendee):
+    def get_changes(self):
+        selected = []
+        deselected = []
+        
         for form in self.forms:
-            form.save_selection(attendee)
+            select, deselect = form.get_changes()
+            selected.extend(select)
+            deselected.extend(deselect)
+            
+        return (selected, deselected)
 
     def __iter__(self):
         for form in self.forms:
@@ -173,12 +180,17 @@ class OptionGroupForm(forms.Form):
 
         return self.cleaned_data
 
-    def save_selection(self, attendee):
+    def get_changes(self):
+        select = []
+        deselect = []
+        
         for option in self.enabled_options:
             if self.cleaned_data.get(self._get_id(option), False):
-                attendee.select_option(option)
+                select.append(option)
             else:
-                attendee.deselect_option(option)
+                deselect.append(option)
+                
+        return (select, deselect)
 
     @staticmethod
     def _get_id(option):

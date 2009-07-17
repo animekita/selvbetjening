@@ -97,6 +97,8 @@ def uniform_header():
 def render_input(item, args={ }):
     if isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
         return UniformInputSelectbox(item, args=args).render()
+    elif isinstance(item.field.widget, (forms.Select,)):
+        return UniformInputSelectbox(item, args=args).render()
     elif isinstance(item.field.widget, (forms.TextInput, forms.PasswordInput)):
         return UniformInputText(item, args=args).render()
     elif isinstance(item.field.widget, (forms.CheckboxInput)):
