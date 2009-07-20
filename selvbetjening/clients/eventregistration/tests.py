@@ -103,7 +103,7 @@ class EventOptionsFormTestCase(TestCase):
         attendee.select_option(option1)
 
         form = OptionGroupForm(optiongroup,
-                               selected_options=attendee.selected_options)
+                               attendee=attendee)
 
         self.assertTrue(OptionGroupForm._get_id(option1) in form.initial)
         self.assertFalse(OptionGroupForm._get_id(option2) in form.initial)
@@ -121,10 +121,10 @@ class EventOptionsFormUsageTestCase(TestCase):
         attendee.select_option(option1)
 
         form = OptionGroupForm(optiongroup, {},
-                               selected_options=attendee.selected_options)
+                               attendee=attendee)
 
         self.assertTrue(form.is_valid())
-        attendee.change_selections(*form.get_changes())
+        form.save()
 
         self.assertEqual(len(user.option_set.all()), 0)
 
@@ -142,13 +142,13 @@ class EventOptionsFormUsageTestCase(TestCase):
         form = OptionGroupForm(optiongroup, 
                                {OptionGroupForm._get_id(option1) : True,
                                 OptionGroupForm._get_id(option2) : True},
-                               selected_options=attendee.selected_options)
+                                attendee=attendee)
 
         self.assertTrue(form.is_valid())
         
-        attendee.change_selections(*form.get_changes())
+        form.save()
         
-        self.assertEqual(len(attendee.selected_options), 2)
+        self.assertEqual(len(attendee.selections), 2)
 
 class EventOptionsFormValidationGroupValidationTestCase(TestCase):
     def test_minimum_selected_limit_not_satisfied(self):
@@ -217,18 +217,19 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
 
         form = OptionGroupForm(optiongroup, 
                                {OptionGroupForm._get_id(option) : True},
-                               selected_options=attendee.selected_options)
+                               attendee=attendee)
 
         self.assertTrue(form.is_valid())
-        attendee.change_selections(*form.get_changes())
-        self.assertEqual(len(attendee.selected_options), 1)
+        form.save()
+        self.assertEqual(len(attendee.selections), 1)
 
     def test_select_frozen_option(self):
         event = Database.new_event()
         optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
         option = Database.new_option(optiongroup)
 
-        form = OptionGroupForm(optiongroup, {OptionGroupForm._get_id(option) : True})
+        form = OptionGroupForm(optiongroup, 
+                               {OptionGroupForm._get_id(option) : True})
 
         self.assertTrue(optiongroup.is_frozen())
         self.assertFalse(form.is_valid())
@@ -245,5 +246,5 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         form = OptionGroupForm(optiongroup, {})
 
         self.assertTrue(form.is_valid())
-        attendee.change_selections(*form.get_changes())
-        self.assertEqual(len(attendee.selected_options), 1)
+        form.save()
+        self.assertEqual(len(attendee.selections), 1)

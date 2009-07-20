@@ -12,16 +12,18 @@
      <thead><tr>
      <th>Tilmeldte</th>
      <th>Betalt</th>
+     <th>Valg</th>
      </tr></thead>
 
-     {% for attendee in original.attendees %}
+     {% for selection in original.selections %}
      <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/auth/user/{{ attendee.user.id }}/">{{ attendee.user.username }}</a></td>
-       <td>{% if attendee.invoice.is_paid %}
+       <td><a href="/admin/auth/user/{{ selection.attendee.user.id }}/">{{ selection.attendee.user.username }}</a></td>
+       <td>{% if selection.attendee.invoice.is_paid %}
           <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
         {% else %}
           <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
         {% endif %}</td>
+        <td>{{ selection.suboption }}</td>
      </tr>
      {% endfor %}
      </table>

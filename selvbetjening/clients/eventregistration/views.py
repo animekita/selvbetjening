@@ -30,8 +30,7 @@ def view(request, event_id, template_name='eventregistration/view.html'):
     event = get_object_or_404(Event, id=event_id)
 
     return render_to_response(template_name,
-                              {'event' : event,
-                               'has_options' : (event.optiongroup_set.count() > 0),
+                              {'event' : event,   
                                'userIsSignedup' : event.is_attendee(request.user),
                                'attendees' : event.attendees},
                                context_instance=RequestContext(request))
@@ -64,7 +63,7 @@ def signup(request, event_id,
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
             
             attendee = event.add_attendee(request.user)
-            attendee.change_selections(*optionforms.get_changes())
+            optionforms.save(attendee=attendee)
             
             membershipform.save(invoice=attendee.invoice)
             
@@ -136,14 +135,13 @@ def change_options(request, event_id, form=OptionForms,
     attendee = Attend.objects.get(user=request.user, event=event)
     
     if request.method == 'POST':
-        form = OptionForms(event, request.POST)
+        form = OptionForms(event, request.POST, attendee=attendee)
         if form.is_valid():
-            form.save_selection(attendee)
-            invoice_revision = attendee.update_invoice()
+            form.save()
             
             if event.show_change_confirmation:
                 template = Template(event.change_confirmation)
-                context = Context({'invoice_rev' : invoice_revision,
+                context = Context({'invoice_rev' :  attendee.invoice.latest_revision,
                                    'event' : event,
                                    'user' : attendee.user,})
                 change_confirmation = template.render(context)
@@ -155,7 +153,7 @@ def change_options(request, event_id, form=OptionForms,
             else:
                 return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
-        form = OptionForms(event, selected_options=attendee.selected_options)
+        form = OptionForms(event, attendee=attendee)
 
     return render_to_response(template_name,
                               {'optionforms' : form, 'event' : event },

@@ -23,9 +23,11 @@ Tilmeld arrangement
 
 {{form|uniform_add}}
 
+{% if event.has_options %}
 <h2>Tilvalg</h2>
 
 {% include "eventregistration/options.html" %}
+{% endif %}
 
 {% if membershipform.has_options %}
 <h2>Medlemskab</h2>

@@ -3,9 +3,13 @@ from django.utils.encoding import force_unicode
 
 class UniformInputBase(object):
 
-    def __init__(self, input, args=None):
+    def __init__(self, input, args=None, is_child=False):
         self.attrs = {}
         self.input = input
+        self.is_child = is_child
+        
+        if is_child:
+            self.attrs['class'] = 'child_input'
 
         if args is None:
             self.args = {}
@@ -32,6 +36,9 @@ class UniformInputBase(object):
             return '<p class="formHint">' + self.input.help_text + '</p>\n'
 
     def render_container(self, content):
+        if self.is_child:
+            return content
+        
         cls = ''
         if self.input.errors:
             cls = ' error'
@@ -46,11 +53,21 @@ class UniformInputBase(object):
     def render_input(self):
         return self.input.as_widget(attrs=self.attrs)
 
-    def render(self):
+    def render_children(self, children=None):
+        if children is None:
+            children = []
+            
+        rendered_children = ''
+        for child in children:
+            rendered_children += child.render()
+            
+        return rendered_children
+    
+    def render(self, children=None):
         if self.args.get('display', '') == 'hidden':
             return self.render_input_hidden()
         else:
-            return self.render_container(self.error_list() + self.label() + self.render_input() + self.help_text())
+            return self.render_container(self.error_list() + self.label() + self.render_input() + self.help_text() + self.render_children(children))
 
 class UniformInputText(UniformInputBase):
 
@@ -72,13 +89,13 @@ class UniformInputText(UniformInputBase):
 
 class UniformInputTextarea(UniformInputBase):
 
-    def render(self):
+    def render(self, *args, **kwargs):
         self.attrs = {'class' : 'text'}
 
         if self.args.get('display', '') == 'block':
             self.attrs['class'] += ' textInputWide'
 
-        return UniformInputBase.render(self)
+        return super(UniformInputTextarea, self).render(*args, **kwargs)
 
 class UniformInputCheckbox(UniformInputBase):
 
@@ -89,17 +106,38 @@ class UniformInputCheckbox(UniformInputBase):
 
         help = ''
         if self.input.help_text is not None and len(self.input.help_text) > 0:
-            help = ': <i>' + self.input.help_text + '</i>'
+            help = self.input.help_text
 
-        return self.input.label_tag(self.input.as_widget(attrs=self.attrs) + required + self.input.label + help) + '\n'
+        if not self.is_child:
+            parent_input = '$("#id_%s")' % self.input.name
+            
+            js  = '<script type="text/javascript">'
+            
+            js += '$(document).ready(function(){'
+            js += ' update_child_inputs(%s);' % parent_input
+            js += '});'
+            
+            js += '%s.change(function() {' % parent_input
+            js += ' update_child_inputs(%s);' % parent_input
+            js += '});'
+            
+            js += '</script>'
+        else:
+            js = ''
+    
+        #$(".revision_line").click(function () {    
+        #$(this).next().find("table").toggle("normal");
+        #});    
 
-    def render(self):
-        return self.render_container(self.error_list() + '<div>' + self.render_input() + '</div>')
+        return self.input.label_tag(self.input.as_widget(attrs=self.attrs) + required + self.input.label) + help + js + '\n'
+
+    def render(self, children=None):
+        return self.render_container(self.error_list() + '<div>' + self.render_input() + '</div>' + self.render_children(children))
 
 class UniformInputSelectbox(UniformInputBase):
 
     def render_input(self):
-        self.attrs = {'class' : 'selectInput'}
+        self.attrs['class'] = self.attrs.get('class', '') + ' selectInput'
 
         return self.input.as_widget(widget=forms.widgets.Select(choices=self.input.field.choices), attrs=self.attrs)
 

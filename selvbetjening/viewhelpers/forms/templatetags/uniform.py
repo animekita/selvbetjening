@@ -35,16 +35,22 @@ def uniform_form_rendering(form, submitText=None):
 
             for item_name in section[1]:
                 if isinstance(item_name, tuple):
-                    render += render_input(form[item_name[0]], args=item_name[1])
+                    child_inputs = []
+                    
+                    for child in item_name[1].pop('children', []):
+                        child_inputs.append(get_input(form[child], args=item_name[1], is_child=True))
+                    
+                    render += get_input(form[item_name[0]], args=item_name[1]).render(children=child_inputs)
+                    
                 else:
-                    render += render_input(form[item_name])
+                    render += get_input(form[item_name]).render()
             render += '</fieldset>\n'
 
     else:
         items = ''
 
         for item in form:
-            items += render_input(item)
+            items += get_input(item).render()
 
         if items != '':
             render += '<fieldset class="inlineLabels">' + items + '</fieldset>\n'
@@ -94,19 +100,19 @@ def uniform_submit(label):
 def uniform_header():
         return {'MEDIA_URL' : settings.MEDIA_URL}
 
-def render_input(item, args={ }):
+def get_input(item, args={ }, is_child=False):
     if isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
-        return UniformInputSelectbox(item, args=args).render()
+        return UniformInputSelectbox(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.Select,)):
-        return UniformInputSelectbox(item, args=args).render()
+        return UniformInputSelectbox(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.TextInput, forms.PasswordInput)):
-        return UniformInputText(item, args=args).render()
+        return UniformInputText(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.CheckboxInput)):
-        return UniformInputCheckbox(item, args=args).render()
+        return UniformInputCheckbox(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.Textarea)):
-        return UniformInputTextarea(item, args=args).render()
+        return UniformInputTextarea(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.FileInput)):
-        return UniformInputFile(item, args=args).render()
+        return UniformInputFile(item, args=args, is_child=is_child)
     else:
         return '<div style="color: red">ERROR: UNKNOWN INPUT TYPE %s</div>\n' % item.name
 

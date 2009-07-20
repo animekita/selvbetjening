@@ -40,36 +40,28 @@ class SignoffForm(AcceptForm):
         return _(u'You must accept to remove your participation in the event')
 
 class OptionForms(object):
-    def __init__(self, event, post=None, selected_options=None):
+    def __init__(self, event, post=None, attendee=None):
         self.forms = []
-        
-        if selected_options is None:
-            selected_options = []
 
         for optiongroup in event.optiongroup_set.all():
             if post is None:
                 self.forms.append(OptionGroupForm(optiongroup, 
-                                                  selected_options=selected_options))
+                                                  attendee=attendee))
             else:
-                self.forms.append(OptionGroupForm(optiongroup, post, selected_options=selected_options))
-
+                self.forms.append(OptionGroupForm(optiongroup, 
+                                                  post, 
+                                                  attendee=attendee))
+                
     def is_valid(self):
         is_valid = True
         for form in self.forms:
             is_valid = is_valid and form.is_valid()
 
         return is_valid
-
-    def get_changes(self):
-        selected = []
-        deselected = []
-        
+    
+    def save(self, attendee=None):
         for form in self.forms:
-            select, deselect = form.get_changes()
-            selected.extend(select)
-            deselected.extend(deselect)
-            
-        return (selected, deselected)
+            form.save(attendee=attendee)
 
     def __iter__(self):
         for form in self.forms:
@@ -82,12 +74,12 @@ class OptionGroupForm(forms.Form):
         self.selected_total = 0
         self.selected_initally = False
         self.enabled_options = []
-        
-        if kwargs.has_key('selected_options'):
+        self.attendee = kwargs.pop('attendee', None)
             
-            selected_options = [option for option in kwargs.pop('selected_options') if option.group == optiongroup]
+        if self.attendee is not None:
+            selections = [selection for selection in self.attendee.selections if selection.option.group == optiongroup]
         else:
-            selected_options = []
+            selections = []
 
         class Meta:
             layout = [[optiongroup.name,
@@ -98,30 +90,48 @@ class OptionGroupForm(forms.Form):
         self.Meta = Meta
 
         kwargs['initial'] = {}
-        for option in selected_options:
-            kwargs['initial'][self._get_id(option)] = True
-
+        for selection in selections:
+            kwargs['initial'][self._get_id(selection.option)] = True
+            if selection.suboption:
+                kwargs['initial'][self._get_sub_id(selection.option)] = selection.suboption.id
+            
         super(OptionGroupForm, self).__init__(*args, **kwargs)
 
+        selected_options = [selection.option for selection in selections]
+        
         for option in optiongroup.option_set.all().order_by('order'):
             selected = option in selected_options
 
             disabled = option.max_attendees_reached() and not selected
             disabled = disabled or option.is_frozen()
 
-            self._display_option(option, disabled)
+            suboptions = option.suboption_set.all()
+            
+            self._display_option(option, disabled, suboptions)
 
             if not disabled:
-                self.enabled_options.append(option)
+                self.enabled_options.append((option, suboptions))
                 
             self._register_clean_function(option, selected, disabled)
 
-    def _display_option(self, option, disabled):
-        self.Meta.layout[0][1].append((self._get_id(option), {'disabled' : disabled}))
+    def _display_option(self, option, disabled, suboptions):
+        display_params = {'disabled' : disabled}
+        
+        if len(suboptions) > 0:
+            choices = [(suboption.id, suboption.name) for suboption in suboptions]
+            self.fields[self._get_sub_id(option)] = forms.ChoiceField(label=_('Choices'),
+                                                                      choices=choices,
+                                                                      required=False)
+            
+            display_params['children'] = (self._get_sub_id(option),)
+       
         self.fields[self._get_id(option)] = forms.BooleanField(label=option.name,
                                                                required=False,
-                                                               help_text=option.description)
-
+                                                               help_text=option.description) 
+            
+        self.Meta.layout[0][1].append((self._get_id(option), display_params))
+        
+    
     def _register_clean_function(self, option, selected_initially, disabled):
         def clean_disabled_option():
             selected = self.cleaned_data.get(self._get_id(option), False)
@@ -180,18 +190,27 @@ class OptionGroupForm(forms.Form):
 
         return self.cleaned_data
 
-    def get_changes(self):
-        select = []
-        deselect = []
+    def save(self, attendee=None):
+        if self.attendee is None:
+            self.attendee = attendee
         
-        for option in self.enabled_options:
+        for option, suboptions in self.enabled_options:
             if self.cleaned_data.get(self._get_id(option), False):
-                select.append(option)
-            else:
-                deselect.append(option)
+                suboption_id = self.cleaned_data.get(self._get_sub_id(option), None)
                 
-        return (select, deselect)
+                if suboption_id:
+                    suboption = suboptions.get(pk=suboption_id)
+                else:
+                    suboption = None
+                    
+                self.attendee.select_option(option, suboption)
+            else:
+                self.attendee.deselect_option(option)
 
     @staticmethod
     def _get_id(option):
         return 'option_' + str(option.pk)
+    
+    @staticmethod
+    def _get_sub_id(option):
+        return 'suboptions_' + str(option.pk)

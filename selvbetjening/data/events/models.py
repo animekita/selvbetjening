@@ -14,9 +14,9 @@ def _update_invoice(invoice_revision):
     invoice = invoice_revision.invoice
     
     for attendee in Attend.objects.filter(invoice=invoice):
-        for option in attendee.selected_options:
-            invoice_revision.add_line(description=unicode(option),
-                                      price=option.price,
+        for selection in attendee.selections:
+            invoice_revision.add_line(description=unicode(selection),
+                                      price=selection.option.price,
                                       managed=True)
         
 Invoice.objects.register_invoice_updater(_update_invoice)
@@ -32,10 +32,10 @@ class Event(models.Model):
     registration_open = models.BooleanField(_(u'registration open'))
 
     show_registration_confirmation = models.BooleanField(default=False)
-    registration_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    registration_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
     
     show_change_confirmation = models.BooleanField(default=False)
-    change_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    change_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
     
     class Meta:
         verbose_name = _(u'event')
@@ -67,6 +67,9 @@ class Event(models.Model):
     def is_registration_allowed(self):
         return self.is_registration_open() and not self.max_attendees_reached()
 
+    def has_options(self):
+        return self.optiongroup_set.count() > 0
+    
     def has_been_held(self):
         return self.enddate < date.today()
 
@@ -111,18 +114,23 @@ class Attend(models.Model):
         unique_together = ('event', 'user')
 
     @property
-    def selected_options(self):
-        return self.user.option_set.filter(group__event=self.event)
+    def selections(self):
+        return self.selection_set.all()
         
-    def select_option(self, option):
-        option.users.add(self.user)
+    def select_option(self, option, suboption=None):
+        try:
+            selection = self.selection_set.get(option=option)
+            selection.suboption = suboption
+            selection.save()
+        except Selection.DoesNotExist:
+            self.selection_set.create(option=option, suboption=suboption)
         
     def deselect_option(self, option):
-        option.users.remove(self.user)
+        self.selection_set.filter(option=option).delete()
         
     def change_selections(self, selections, deselections):
-        for option in selections:
-            self.select_option(option)
+        for option, suboption in selections:
+            self.select_option(option, suboption)
         for option in deselections:
             self.deselect_option(option)
         
@@ -159,7 +167,7 @@ class Attend(models.Model):
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)
     name = models.CharField(_('Name'), max_length=255)
-    description = models.TextField(_('Description'), blank=True)
+    description = HTMLField(_('Description'), blank=True)
 
     minimum_selected = models.IntegerField(_('Minimum selected'), default=0)
     maximum_selected = models.IntegerField(_('Maximum selected'), default=0)
@@ -171,7 +179,7 @@ class OptionGroup(models.Model):
 
     @property
     def attendees(self):
-        return User.objects.filter(option__group=self.pk).distinct()
+        return Attend.objects.filter(selection__option__group=self.pk).distinct()
 
     def attendees_count(self):
         return self.attendees.count()
@@ -191,9 +199,8 @@ class OptionGroup(models.Model):
 
 class Option(models.Model):
     group = models.ForeignKey(OptionGroup)
-    users = models.ManyToManyField(User, blank=True)
     name = models.CharField(_('Name'), max_length=255)
-    description = models.TextField(_('Description'), blank=True)
+    description = HTMLField(_('Description'), blank=True)
 
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)
@@ -223,30 +230,39 @@ class Option(models.Model):
             return False
 
     @property
-    def attendees(self):
-        attendees = []
-        for user in self.users.all():
-            attendee = Attend.objects.get(event=self.group.event, user=user)
-            attendees.append(attendee)
-                
-        return attendees
+    def selections(self):
+        return self.selection_set.all()
         
     @property
-    def paying_attendees(self):
-        paying_attendees = []
-        for attendee in self.attendees:
-            if attendee.invoice.is_paid():
-                paying_attendees.append(attendee)
+    def paid_selections(self):
+        paid_selections = []
+        for selection in self.selections:
+            if selection.attendee.invoice.is_paid():
+                paid_selections.append(selection)
                 
-        return paying_attendees
+        return paid_selections
     
-    def attendees_count(self):
-        return len(self.attendees)
-    attendees_count.short_description = _('Atendees')
+    def attendee_count(self):
+        return self.selections.count()
+    attendee_count.short_description = _('Attendees')
     
-    def paying_attendees_count(self):
-        return len(self.paying_attendees)
+    def paid_selections_count(self):
+        return len(self.paid_selections)
 
     def __unicode__(self):
         return u'%s option for %s' % (self.name, self.group)
+    
+class SubOption(models.Model):
+    option = models.ForeignKey(Option)
+    name = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return u'%s' % self.name
 
+class Selection(models.Model):
+    attendee = models.ForeignKey(Attend)
+    option = models.ForeignKey(Option)
+    suboption = models.ForeignKey(SubOption, blank=True, null=True)
+    
+    class Meta:
+        unique_together = (('attendee', 'option'))

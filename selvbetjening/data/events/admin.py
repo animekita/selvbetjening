@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.admin import ModelAdmin, TabularInline
 from django.contrib.auth.models import User
 
-from models import Attend, Option, OptionGroup
+from models import Attend, Option, OptionGroup, SubOption, Selection
 
 class AttendAdmin(ModelAdmin):
     list_display = ('user', 'event', 'has_attended', 'dispaly_has_paid')
@@ -40,15 +40,33 @@ class OptionGroupAdmin(ModelAdmin):
     list_display = ('event', 'name',)
     list_filter = ('event',)
 
+    fieldsets = (
+        (None, {
+            'fields' : ('event', 'name', 'description'),
+        }),
+        (_('Conditions'), {
+            'fields' : ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
+            'classes' : ('collapse', ),
+        }),
+        (_('Other'), {
+            'fields' : ('order',),
+        }),)
+    
     inlines = [OptionInline, ]
 
+class SubOptionInline(TabularInline):
+    model = SubOption
+    
+class SelectionInline(TabularInline):
+    model = Selection
+    
 class OptionAdmin(ModelAdmin):
-    list_display = ('group', 'name', 'attendees_count', 'freeze_time')
+    list_display = ('group', 'name', 'attendee_count', 'freeze_time')
     list_filter = ('group',)
-    raw_id_fields = ('users',)
     fieldsets = (
         (None, {'fields': ('group', 'name', 'description', 'price')}),
         ('Conditions', {'fields': ('freeze_time', 'maximum_attendees', 'order'), 'classes' : ('collapse',)}),
-        ('Users', {'fields': ('users',), 'classes': ('collapse',)}),
         )
+    
+    inlines = [SubOptionInline, SelectionInline]
 

@@ -32,7 +32,7 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
         {% else %}
         <ul class="table-options">
             <li>&#187; <a href="{% url eventregistration_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
-            {% if has_options %}
+            {% if event.has_options %}
             <li>&#187; <a href="{% url eventregistration_change_options event.id %}">Ændre tilvalg</a></li>
             {% endif %}
         </ul>
