@@ -1,7 +1,5 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin import helpers
@@ -17,7 +15,7 @@ def send(request, mail_id, select_group='admin/mailcenter/send.html',
     mail = get_object_or_404(Mail, pk=mail_id)
 
     if request.method == 'POST':
-        form = SelectGroupForm(request.POST)
+        form = select_form_class(request.POST)
 
         if form.is_valid():
             confirm_form = confirm_form_class(request.POST)
@@ -35,7 +33,7 @@ def send(request, mail_id, select_group='admin/mailcenter/send.html',
                                                                {})},
                               context_instance=RequestContext(request))
     else:
-        form = SelectGroupForm()
+        form = select_form_class()
 
     return render_to_response(select_group,
                               {'adminform' : helpers.AdminForm(form,
