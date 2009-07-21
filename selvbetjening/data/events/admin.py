@@ -7,10 +7,12 @@ from models import Attend, Option, OptionGroup, SubOption, Selection
 class AttendAdmin(ModelAdmin):
     list_display = ('user', 'event', 'has_attended', 'dispaly_has_paid')
     list_filter = ('event',)
-    
+
     def dispaly_has_paid(self, attend):
         return attend.invoice.is_paid()
     dispaly_has_paid.boolean = True
+
+    raw_id_fields = ('user', 'event', 'invoice')
 
 class EventAdmin(ModelAdmin):
     list_display = ('title', 'startdate', 'enddate', 'registration_open')
@@ -51,15 +53,15 @@ class OptionGroupAdmin(ModelAdmin):
         (_('Other'), {
             'fields' : ('order',),
         }),)
-    
+
     inlines = [OptionInline, ]
 
 class SubOptionInline(TabularInline):
     model = SubOption
-    
+
 class SelectionInline(TabularInline):
     model = Selection
-    
+
 class OptionAdmin(ModelAdmin):
     list_display = ('group', 'name', 'attendee_count', 'freeze_time')
     list_filter = ('group',)
@@ -67,6 +69,6 @@ class OptionAdmin(ModelAdmin):
         (None, {'fields': ('group', 'name', 'description', 'price')}),
         ('Conditions', {'fields': ('freeze_time', 'maximum_attendees', 'order'), 'classes' : ('collapse',)}),
         )
-    
+
     inlines = [SubOptionInline, SelectionInline]
 

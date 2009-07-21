@@ -101,7 +101,9 @@ def uniform_header():
         return {'MEDIA_URL' : settings.MEDIA_URL}
 
 def get_input(item, args={ }, is_child=False):
-    if isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
+    if isinstance(item.field.widget, (forms.RadioSelect,)):
+        return UniformInputRadio(item, args=args, is_child=is_child)
+    elif isinstance(item.field.widget, (forms.TextInput,)) and hasattr(item.field, 'choices'):
         return UniformInputSelectbox(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.Select,)):
         return UniformInputSelectbox(item, args=args, is_child=is_child)

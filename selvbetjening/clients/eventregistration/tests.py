@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 
 from selvbetjening.data.events.tests import Database
 from selvbetjening.data.events import models
-from selvbetjening.data.membership.membership_controller import MembershipController
 
 from forms import OptionGroupForm
 
@@ -14,52 +13,38 @@ class EventViewTestCase(TestCase):
         user = Database.new_user(id='user')
         event = Database.new_event()
         attendee = Database.attend(user, event)
-        
-        if not MembershipController.is_member(user, event=event):
-            choices = MembershipController.get_membership_choices(user, event=event)
-            MembershipController.select_membership(user, choices[0], event=event, invoice=attendee.invoice)
-            
-            self.assertNotEqual(MembershipController.get_membership(user, attendee.invoice), None)                  
-        
+
         self.client.login(username='user', password='user')
-        
+
         self.client.post(reverse('eventregistration_signoff', kwargs={'event_id' : event.id}),
                          {'confirm' : True})
 
-        self.assertEqual(MembershipController.get_membership(user, attendee.invoice), None)
-        
         self.assertFalse(event in [ attend.event for attend in user.attend_set.all() ])
-        
+
     def test_sigup_event(self):
         user = Database.new_user(id='user')
         event = Database.new_event()
-        
+
         self.client.login(username='user', password='user')
-        
-        resp = self.client.get(reverse('eventregistration_signup', 
+
+        resp = self.client.get(reverse('eventregistration_signup',
                                        kwargs={'event_id' : event.id}))
-        
+
         self.assertTemplateUsed(resp, 'eventregistration/signup.html')
-        
+
     def test_sigup_event_submit_form(self):
         user = Database.new_user(id='user')
         event = Database.new_event()
-        
+
         data = {'confirm' : True}
-        
-        if not MembershipController.is_member(user, event=event) and \
-           len(MembershipController.get_membership_choices(user, event=event)) > 0:
-            
-            choices = MembershipController.get_membership_choices(user, event=event)
-            data['type'] = choices[0]['id']
-            
+
         self.client.login(username='user', password='user')
-        resp = self.client.post(reverse('eventregistration_signup', 
+        resp = self.client.post(reverse('eventregistration_signup',
                                        kwargs={'event_id' : event.id}),
                                 data)
-        
+
         self.assertRedirects(resp, reverse('eventregistration_view', kwargs={'event_id':event.id}))
-        
+
 class EventOptionsFormTestCase(TestCase):
     def test_displayed_fields(self):
         user = Database.new_user()
@@ -139,15 +124,15 @@ class EventOptionsFormUsageTestCase(TestCase):
         attendee = Database.attend(user, event)
         attendee.select_option(option1)
 
-        form = OptionGroupForm(optiongroup, 
+        form = OptionGroupForm(optiongroup,
                                {OptionGroupForm._get_id(option1) : True,
                                 OptionGroupForm._get_id(option2) : True},
                                 attendee=attendee)
 
         self.assertTrue(form.is_valid())
-        
+
         form.save()
-        
+
         self.assertEqual(len(attendee.selections), 2)
 
 class EventOptionsFormValidationGroupValidationTestCase(TestCase):
@@ -197,11 +182,11 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         event = Database.new_event()
         optiongroup = Database.new_optiongroup(event, max_attend=1)
         option = Database.new_option(optiongroup)
-        
+
         attend1 = Database.attend(user1, event)
         attend1.select_option(option)
 
-        form = OptionGroupForm(optiongroup, 
+        form = OptionGroupForm(optiongroup,
                                {OptionGroupForm._get_id(option) : True})
 
         self.assertFalse(form.is_valid())
@@ -211,11 +196,11 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         event = Database.new_event()
         optiongroup = Database.new_optiongroup(event, max_attend=1)
         option = Database.new_option(optiongroup)
-        
+
         attendee = Database.attend(user, event)
         attendee.select_option(option)
 
-        form = OptionGroupForm(optiongroup, 
+        form = OptionGroupForm(optiongroup,
                                {OptionGroupForm._get_id(option) : True},
                                attendee=attendee)
 
@@ -228,7 +213,7 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
         option = Database.new_option(optiongroup)
 
-        form = OptionGroupForm(optiongroup, 
+        form = OptionGroupForm(optiongroup,
                                {OptionGroupForm._get_id(option) : True})
 
         self.assertTrue(optiongroup.is_frozen())
@@ -239,7 +224,7 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         event = Database.new_event()
         optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
         option = Database.new_option(optiongroup)
-        
+
         attendee = Database.attend(user, event)
         attendee.select_option(option)
 

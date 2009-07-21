@@ -66,7 +66,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.markup',
     
-    'selvbetjening.data.membership',
     'selvbetjening.data.events',
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',

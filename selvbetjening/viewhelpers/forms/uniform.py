@@ -147,3 +147,6 @@ class UniformInputFile(UniformInputText):
         super(UniformInputFile, self).__init__(*args, **kwargs)
 
         self.attrs = {'class' : 'fileUpload text'}
+        
+class UniformInputRadio(UniformInputBase):
+    pass

@@ -5,7 +5,6 @@
  * Restructured modules into clients, data and viewhelpers.
  * Added option to display change and registration confirmations for events.
  * Added support for invoices.
- * New membership system.
  * Added suboptions.
 
 1.1.0 (SLOC 2.674)

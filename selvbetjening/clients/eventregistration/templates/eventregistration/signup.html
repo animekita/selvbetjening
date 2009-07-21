@@ -29,10 +29,7 @@ Tilmeld arrangement
 {% include "eventregistration/options.html" %}
 {% endif %}
 
-{% if membershipform.has_options %}
-<h2>Medlemskab</h2>
-{{ membershipform|uniform_add }}
-{% endif %}
+{{ signup_parts|safe }}
 
 {% uniform_submit "tilmeld" %}
 {% uniform_end %}

@@ -15,10 +15,9 @@ from selvbetjening.data.events.decorators import \
      event_registration_open_required, \
      event_registration_allowed_required, \
      event_attendance_required
-from selvbetjening.data.membership.forms import MembershipForm
-from selvbetjening.data.membership.membership_controller import MembershipController
 
 from forms import SignupForm, SignoffForm, OptionForms
+import processor_handlers as handlers
 
 def list_events(request, template_name='eventregistration/list.html'):
     ''' Show list of events. '''
@@ -30,7 +29,7 @@ def view(request, event_id, template_name='eventregistration/view.html'):
     event = get_object_or_404(Event, id=event_id)
 
     return render_to_response(template_name,
-                              {'event' : event,   
+                              {'event' : event,
                                'userIsSignedup' : event.is_attendee(request.user),
                                'attendees' : event.attendees},
                                context_instance=RequestContext(request))
@@ -54,44 +53,51 @@ def signup(request, event_id,
                                   {'event' : event},
                                   context_instance=RequestContext(request))
 
+    signup_allowed, render_functions, save_functions = \
+                  handlers.signup.run_processors(request, request.user, event)
+
     if request.method == 'POST':
         form = form_class(request.POST)
         optionforms = form_options_class(event, request.POST)
-        membershipform = MembershipForm(request.POST, user=request.user, event=event)
-        
-        if form.is_valid() and optionforms.is_valid() and membershipform.is_valid():
+
+        if form.is_valid() and optionforms.is_valid() and signup_allowed:
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
-            
+
             attendee = event.add_attendee(request.user)
             optionforms.save(attendee=attendee)
-            
-            membershipform.save(invoice=attendee.invoice)
-            
+
+            for save_func in save_functions:
+                save_func(attendee)
+
             if event.show_registration_confirmation:
                 template = Template(event.registration_confirmation)
                 context = Context({'invoice_rev' : invoice_revision,
                                    'event' : event,
                                    'user' : attendee.user,})
                 registration_confirmation = template.render(context)
-                
+
                 return render_to_response(template_registration_confirmation,
                                           {'registration_confirmation' : registration_confirmation,
                                            'event' : event},
                                           context_instance=RequestContext(request))
-            
+
             else:
                 request.user.message_set.create(message=_(u'You are now signed up to the event.'))
                 return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
         form = form_class()
         optionforms = form_options_class(event)
-        membershipform = MembershipForm(user=request.user, event=event)
+
+    # Render the signup parts
+    signup_parts = ''
+    for render_func in render_functions:
+        signup_parts += render_func()
 
     return render_to_response(template_name,
                               {'event' : event,
                                'form' : form,
                                'optionforms' : optionforms,
-                               'membershipform' : membershipform},
+                               'signup_parts' : signup_parts},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -113,10 +119,9 @@ def signoff(request, event_id,
         form = form_class(request.POST)
         if form.is_valid():
             logger.info(request, 'client signed user_id %s off event_id %s' % (request.user.id, event.id))
-            
+
             event.remove_attendee(attendee.user)
-            MembershipController.cancel_membership(attendee.user, attendee.invoice)
-            
+
             request.user.message_set.create(message=_(u'You are now removed from the event.'))
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
@@ -133,19 +138,25 @@ def change_options(request, event_id, form=OptionForms,
                    template_change_confirmation='eventregistration/change_confirmation.html'):
     event = get_object_or_404(Event, id=event_id)
     attendee = Attend.objects.get(user=request.user, event=event)
-    
+
+    signup_allowed, render_functions, save_functions = \
+                  handlers.change.run_processors(request, attendee)
+
     if request.method == 'POST':
         form = OptionForms(event, request.POST, attendee=attendee)
-        if form.is_valid():
+        if form.is_valid() and signup_allowed:
             form.save()
-            
+
+            for save_func in save_functions:
+                save_func()
+
             if event.show_change_confirmation:
                 template = Template(event.change_confirmation)
                 context = Context({'invoice_rev' :  attendee.invoice.latest_revision,
                                    'event' : event,
                                    'user' : attendee.user,})
                 change_confirmation = template.render(context)
-                
+
                 return render_to_response(template_change_confirmation,
                                           {'change_confirmation' : change_confirmation,
                                            'event' : event},
@@ -155,8 +166,14 @@ def change_options(request, event_id, form=OptionForms,
     else:
         form = OptionForms(event, attendee=attendee)
 
+    signup_render = ''
+    for render_func in render_functions:
+        signup_render += render_func()
+
     return render_to_response(template_name,
-                              {'optionforms' : form, 'event' : event },
+                              {'optionforms' : form,
+                               'event' : event,
+                               'signup_render' : signup_render},
                               context_instance=RequestContext(request))
 
 

@@ -38,7 +38,7 @@
      {% endfor %}
      {% endfor %}
    </table>
-   
+
 </div>
 
 <div class="tabular inline-related">
@@ -69,12 +69,13 @@
         {% else %}
           <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
         {% endif %}
+        &nbsp;<a href="/admin/invoice/invoice/{{attendee.invoice.id}}">(invoice)</a>
         </td>
      </tr>
      {% endfor %}
    </table>
-   
+
 </div>
 </div>
-   
+
 {% endblock %}
