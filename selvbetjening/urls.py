@@ -6,23 +6,20 @@ from selvbetjening.clients.profile.views import profile, profile_redirect
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
 
-    (r'^profil/', 
+    (r'^profil/',
      include('selvbetjening.data.members.urls')),
-    
-    (r'^bliv-medlem/', 
+
+    (r'^bliv-medlem/',
      include('selvbetjening.clients.quickregistration.urls')),
-    
-    (r'^events/', 
+
+    (r'^events/',
      include('selvbetjening.clients.eventregistration.urls')),
-    
-    (r'^membership/', 
-     include('selvbetjening.data.membership.urls')),
-    
-    (r'^mailcenter/', 
+
+    (r'^mailcenter/',
      include('selvbetjening.clients.mailcenter.urls')),
-    
+
     url(r'^profil/$', profile, name='members_profile'),
-    
+
     # Admin urls
     (r'^admin/', include('selvbetjening.clients.mailcenter.admin_urls')),
     (r'^admin/', include('selvbetjening.data.events.admin_urls')),

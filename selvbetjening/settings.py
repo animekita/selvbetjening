@@ -60,20 +60,21 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.markup',
-    
+
     'selvbetjening.data.events',
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',
-    
+
     'selvbetjening.viewhelpers.forms',
     'selvbetjening.viewhelpers.googleanalytics',
     'selvbetjening.viewhelpers.copyright',
-    
+
     'selvbetjening.clients.profile',
     'selvbetjening.clients.eventmode',
     'selvbetjening.clients.mailcenter',

@@ -1,6 +1,4 @@
-from django.utils.translation import ugettext, ugettext_lazy as _
-from django.contrib.admin import ModelAdmin, StackedInline
-from django.contrib.auth.models import User
+from django.contrib.admin import StackedInline
 from django.contrib.auth.admin import UserAdmin
 
 from shortcuts import get_or_create_profile

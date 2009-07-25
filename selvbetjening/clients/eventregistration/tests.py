@@ -111,7 +111,7 @@ class EventOptionsFormUsageTestCase(TestCase):
         self.assertTrue(form.is_valid())
         form.save()
 
-        self.assertEqual(len(user.option_set.all()), 0)
+        self.assertEqual(len(attendee.selections), 0)
 
     def test_select(self):
         user = Database.new_user()

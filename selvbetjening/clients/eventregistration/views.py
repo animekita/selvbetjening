@@ -10,6 +10,7 @@ from django.template import Context, Template
 
 from selvbetjening.data.logging import logger
 from selvbetjening.data.invoice.models import Invoice
+from selvbetjening.data.invoice.decorators import disable_invoice_updates
 from selvbetjening.data.events.models import Event, Attend
 from selvbetjening.data.events.decorators import \
      event_registration_open_required, \
@@ -17,6 +18,7 @@ from selvbetjening.data.events.decorators import \
      event_attendance_required
 
 from forms import SignupForm, SignoffForm, OptionForms
+
 import processor_handlers as handlers
 
 def list_events(request, template_name='eventregistration/list.html'):
@@ -37,6 +39,7 @@ def view(request, event_id, template_name='eventregistration/view.html'):
 @login_required
 @event_registration_open_required
 @event_registration_allowed_required
+@disable_invoice_updates
 def signup(request, event_id,
            template_name='eventregistration/signup.html',
            template_cant_signup='eventregistration/cantsignup.html',
@@ -68,6 +71,8 @@ def signup(request, event_id,
 
             for save_func in save_functions:
                 save_func(attendee)
+
+            attendee.invoice.update(force=True)
 
             if event.show_registration_confirmation:
                 template = Template(event.registration_confirmation)
@@ -103,6 +108,7 @@ def signup(request, event_id,
 @login_required
 @event_registration_open_required
 @event_attendance_required
+@disable_invoice_updates
 def signoff(request, event_id,
            template_name='eventregistration/signoff.html',
            success_page='eventregistration_view',
@@ -122,6 +128,8 @@ def signoff(request, event_id,
 
             event.remove_attendee(attendee.user)
 
+            attendee.invoice.update(force=True)
+
             request.user.message_set.create(message=_(u'You are now removed from the event.'))
             return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
@@ -132,6 +140,7 @@ def signoff(request, event_id,
 @login_required
 @event_registration_open_required
 @event_attendance_required
+@disable_invoice_updates
 def change_options(request, event_id, form=OptionForms,
                    success_page='eventregistration_view',
                    template_name='eventregistration/change_options.html',
@@ -149,6 +158,8 @@ def change_options(request, event_id, form=OptionForms,
 
             for save_func in save_functions:
                 save_func()
+
+            attendee.invoice.update(force=True)
 
             if event.show_change_confirmation:
                 template = Template(event.change_confirmation)

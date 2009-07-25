@@ -15,9 +15,9 @@ def import_function(path):
     return func
 
 class ProcessorHandler(object):
-    def __init__(self, processor_list):
+    def __init__(self, settings, processor_list):
         self._processors = None
-        self._processor_list = processor_list
+        self._processor_list = getattr(settings, processor_list, [])
 
     def get_processors(self):
         if self._processors is None:

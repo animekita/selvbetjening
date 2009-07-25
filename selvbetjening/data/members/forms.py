@@ -4,7 +4,6 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from models import UserProfile
-import signals
 
 class ProfileForm(forms.Form):
     """

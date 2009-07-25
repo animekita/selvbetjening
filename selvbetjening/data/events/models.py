@@ -5,21 +5,12 @@ from datetime import date, datetime
 from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.db.models.signals import post_delete, post_save
 
 from tinymce.models import HTMLField
 
 from selvbetjening.data.invoice.models import Invoice
-
-def _update_invoice(invoice_revision):
-    invoice = invoice_revision.invoice
-
-    for attendee in Attend.objects.filter(invoice=invoice):
-        for selection in attendee.selections:
-            invoice_revision.add_line(description=unicode(selection),
-                                      price=selection.option.price,
-                                      managed=True)
-
-Invoice.objects.register_invoice_updater(_update_invoice)
+from selvbetjening.data.invoice.signals import populate_invoice
 
 class Event(models.Model):
     title = models.CharField(_(u'title'), max_length=255)
@@ -128,41 +119,41 @@ class Attend(models.Model):
     def deselect_option(self, option):
         self.selection_set.filter(option=option).delete()
 
-    def change_selections(self, selections, deselections):
-        for option, suboption in selections:
-            self.select_option(option, suboption)
-        for option in deselections:
-            self.deselect_option(option)
-
     def is_new(self):
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
     is_new.boolean = True
 
     def user_first_name(self):
-        # Stupid function, but needed by the django admin interface
-        # to show sortable user information from the attend administration.
         return self.user.first_name
     user_first_name.admin_order_field = 'user__first_name'
     user_first_name.short_description = _('First name')
 
     def user_last_name(self):
-        # See description for user_first_name
         return self.user.last_name
     user_last_name.admin_order_field = 'user__last_name'
     user_last_name.short_description = _('Last name')
 
     def delete(self):
-        for option in Option.objects.filter(group__event=self.event):
-            self.deselect_option(option)
-
         invoice = self.invoice
+        invoice.name = _('%(event_name)s (signed off)') % {'event_name' : unicode(self.event)}
+        invoice.save()
 
         super(Attend, self).delete()
 
-        invoice.update()
-
     def __unicode__(self):
         return u'%s attending %s' % (self.user, self.event)
+
+def update_invoice_with_attend_handler(sender, **kwargs):
+    invoice_revision = kwargs['invoice_revision']
+    invoice = invoice_revision.invoice
+
+    for attendee in Attend.objects.filter(invoice=invoice):
+        for selection in attendee.selections:
+            invoice_revision.add_line(description=unicode(selection),
+                                      price=selection.option.price,
+                                      managed=True)
+
+populate_invoice.connect(update_invoice_with_attend_handler)
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)
@@ -209,6 +200,19 @@ class Option(models.Model):
 
     order = models.IntegerField(_('Order'), default=0)
 
+    @property
+    def selections(self):
+        return self.selection_set.all()
+
+    @property
+    def paid_selections(self):
+        paid_selections = []
+        for selection in self.selections:
+            if selection.attendee.invoice.is_paid():
+                paid_selections.append(selection)
+
+        return paid_selections
+
     def is_frozen(self):
         if self.group.is_frozen():
             return True
@@ -229,19 +233,6 @@ class Option(models.Model):
         else:
             return False
 
-    @property
-    def selections(self):
-        return self.selection_set.all()
-
-    @property
-    def paid_selections(self):
-        paid_selections = []
-        for selection in self.selections:
-            if selection.attendee.invoice.is_paid():
-                paid_selections.append(selection)
-
-        return paid_selections
-
     def attendee_count(self):
         return self.selections.count()
     attendee_count.short_description = _('Attendees')
@@ -250,11 +241,15 @@ class Option(models.Model):
         return len(self.paid_selections)
 
     def __unicode__(self):
-        return u'%s option for %s' % (self.name, self.group)
+        return u'%s' % self.name
 
 class SubOption(models.Model):
     option = models.ForeignKey(Option)
     name = models.CharField(max_length=255)
+
+    @property
+    def selections(self):
+        return self.selection_set.all()
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -269,3 +264,10 @@ class Selection(models.Model):
 
     def __unicode__(self):
         return unicode(self.option)
+
+def update_invoice_handler(sender, **kwargs):
+    instance = kwargs['instance']
+    instance.attendee.invoice.update()
+
+post_delete.connect(update_invoice_handler, sender=Selection)
+post_save.connect(update_invoice_handler, sender=Selection)

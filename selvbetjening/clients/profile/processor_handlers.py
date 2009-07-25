@@ -7,4 +7,4 @@ processor(user)
 view_func()
 save_func()
 """
-viewprofile = ProcessorHandler(settings.PROFILE_VIEW_PROCESSORS)
+viewprofile = ProcessorHandler(settings, 'PROFILE_VIEW_PROCESSORS')

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 from django import shortcuts
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
@@ -6,13 +8,16 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django.contrib.admin.views.main import ChangeList
+from django.contrib.admin.helpers import AdminForm
 
 from selvbetjening.data.logging import logger
 from selvbetjening.data.logging.decorators import log_access
 from selvbetjening.data.events.models import Event, Attend, Option
+from selvbetjening.data.invoice.models import Payment
 
 from decorators import eventmode_required
-import checkin
+import processor_handlers
+from forms import PaymentForm
 
 def login(request, template_name='eventmode/login.html',
           success_page='eventmode_index'):
@@ -59,13 +64,9 @@ def logout(request):
     return HttpResponseRedirect(reverse('home'))
 
 @eventmode_required
-def index(request, template='eventmode/index.html'):
-    return render_to_response(template,
-                              context_instance=RequestContext(request))
-
-@eventmode_required
 @log_access
-def event_checkin(request, template_name='eventmode/checkin.html'):
+def list_attendees(request,
+                   template_name='eventmode/list_attendees.html'):
 
     event = request.eventmode.model.event
 
@@ -75,23 +76,43 @@ def event_checkin(request, template_name='eventmode/checkin.html'):
         def queryset(self, request):
             return Attend.objects.filter(event=event)
 
-    def checkin_link(attend):
-        if not attend.has_attended:
-            return '<a href="%s">checkin</a>' % reverse('eventmode_usercheckin',
-                                                        kwargs={'user_id': attend.user.pk})
-        else:
-            return ''
-    checkin_link.allow_tags = True
-    checkin_link.short_description = _('Actions')
+    def actions(attend):
+        actions = ''
 
-    cl = ChangeList(request, 
+        actions += u"""
+        <a href="%s"><input type="button" value="Ændre tilvalg"/></a>
+        """ % reverse('eventmode_change_selections', kwargs={'user_id': attend.user.pk})
+
+        actions += u"""
+        <a href="%s"><input type="button" value="Billing"/></a>
+        """ % reverse('eventmode_billing', kwargs={'user_id': attend.user.pk})
+
+        if not attend.has_attended:
+            actions += u"""
+            <a href="%s"><input style="font-weight: bold;" type="button" value="Checkin"/></a>
+            """ % reverse('eventmode_checkin', kwargs={'user_id': attend.user.pk})
+        else:
+            actions += u"""
+            <a href="%s"><input type="button" value="Checkout"/></a>
+            """ % reverse('eventmode_checkout', kwargs={'user_id': attend.user.pk})
+
+
+        return actions
+    actions.allow_tags = True
+    actions.short_description = _('Actions')
+
+    def has_paid(attend):
+        return attend.invoice.is_paid()
+    has_paid.boolean = True
+
+    cl = ChangeList(request,
                     Attend,
-                    ('user', 'user_first_name', 'user_last_name', 'has_attended', 'is_new', checkin_link),
+                    ('user', 'user_first_name', 'user_last_name', 'has_attended', 'is_new', has_paid, actions),
                     ('username',),
-                    ('has_attended',), 
+                    ('has_attended',),
                     (),
                     ('user__username', 'user__first_name', 'user__last_name'),
-                    (), 
+                    (),
                     50,
                     (),
                     DummyModelAdmin())
@@ -106,66 +127,120 @@ def event_checkin(request, template_name='eventmode/checkin.html'):
 
 @eventmode_required
 @log_access
-def event_usercheckin(request, user_id,
-                      template_name='eventmode/usercheckin.html'):
+def billing(request,
+            user_id,
+            template_name='eventmode/billing.html'):
 
     event = request.eventmode.model.event
-    attend = shortcuts.get_object_or_404(Attend, event=event, user=user_id)
-    user = attend.user
+    attendee = shortcuts.get_object_or_404(Attend, event=event, user=user_id)
 
-    if attend.has_attended:
-        return HttpResponseRedirect(reverse('eventmode_checkin'))
+    payment = Payment(revision=attendee.invoice.latest_revision,
+                      amount=attendee.invoice.unpaid,
+                      note=_('Paid at %(event)s') % {'event' : event.title})
 
-    # Run all checkin processors
-    checkin_allowed_by_all = True
-    render_functions = []
-    for checkin_func in checkin.get_checkin_processors():
-        checkin_allowed, render_func = checkin_func(request, user, event)
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, instance=payment)
 
-        if not checkin_allowed:
-            checkin_allowed_by_all = False
+        if form.is_valid():
+            form.save()
 
-        render_functions.append(render_func)
+        return HttpResponseRedirect(reverse('eventmode_billing', kwargs={'user_id' : user_id}))
 
-    # Check for checkin
-    if request.method == 'POST' and request.POST.has_key('do_checkin'):
-        if checkin_allowed_by_all:
-            attend.has_attended = True
-            attend.save()
-            return HttpResponseRedirect(reverse('eventmode_checkin'))
+    else:
+        form = PaymentForm(instance=payment)
 
-    # Render the checkin parts
-    checkin_parts = ''
+    adminform = AdminForm(form,
+                          [(None, {'fields': form.base_fields.keys()})],
+                          {}
+                          )
+
+    return render_to_response(template_name,
+                          {'event' : event,
+                           'attendee' : attendee,
+                           'adminform' : adminform,
+                          },
+                          context_instance=RequestContext(request))
+
+
+@eventmode_required
+@log_access
+def checkout(request,
+            user_id,
+            template_name='eventmode/checkout.html'):
+
+    event = request.eventmode.model.event
+    attendee = shortcuts.get_object_or_404(Attend, event=event, user=user_id)
+
+    if not attendee.has_attended:
+        return HttpResponseRedirect(reverse('eventmode_list_attendees'))
+
+    if request.method == 'POST':
+        attendee.has_attended = False
+        attendee.save()
+
+        return HttpResponseRedirect(reverse('eventmode_list_attendees'))
+
+    return render_to_response(template_name,
+                              {'event' : event,
+                               'attendee' : attendee},
+                              context_instance=RequestContext(request))
+
+@eventmode_required
+@log_access
+def checkin(request,
+            user_id,
+            template_name='eventmode/checkin.html'):
+
+    event = request.eventmode.model.event
+    attendee = shortcuts.get_object_or_404(Attend, event=event, user=user_id)
+
+    if attendee.has_attended:
+        return HttpResponseRedirect(reverse('eventmode_list_attendees'))
+
+    if request.method == 'POST':
+        if request.POST.has_key('do_checkin_and_pay') and not attendee.invoice.in_balance():
+            Payment.objects.create(revision=attendee.invoice.latest_revision,
+                                   amount=attendee.invoice.unpaid,
+                                   note=_('Payment at %(event)s checkin') % {'event' : attendee.event})
+
+        attendee.has_attended = True
+        attendee.save()
+
+        return HttpResponseRedirect(reverse('eventmode_list_attendees'))
+
+    return render_to_response(template_name,
+                              {'event' : event,
+                               'attendee' : attendee},
+                              context_instance=RequestContext(request))
+
+@eventmode_required
+@log_access
+def change_selections(request, user_id,
+                      template_name='eventmode/change_selections.html'):
+
+    event = request.eventmode.model.event
+    attendee = shortcuts.get_object_or_404(Attend, event=event, user=user_id)
+
+    checkin_allowed, render_functions, save_functions = \
+                   processor_handlers.change_selections.run_processors(request, attendee)
+
+    if request.method == 'POST':
+        if checkin_allowed:
+            for save_func in save_functions:
+                save_func()
+
+            if request.POST.has_key('do_save_and_list'):
+                return HttpResponseRedirect(reverse('eventmode_list_attendees'))
+            elif request.POST.has_key('do_save_and_checkin'):
+                return HttpResponseRedirect(reverse('eventmode_checkin', kwargs={'user_id' : attendee.user.id}))
+
+    checkin_parts = u''
     for render_func in render_functions:
         checkin_parts += render_func()
 
     return render_to_response(template_name,
-                              {'user' : user,
-                               'event' : event,
-                               'attend' : attend,
-                               'checkin_parts' : checkin_parts},
-                              context_instance=RequestContext(request))
-
-@eventmode_required
-@log_access
-def event_options(request, template_name='eventmode/options.html'):
-
-    event = request.eventmode.model.event
-
-    return render_to_response(template_name,
                               {'event' : event,
-                               'optiongroups' : event.optiongroup_set.all()},
-                              context_instance=RequestContext(request))
-
-@eventmode_required
-@log_access
-def event_options_detail(request, option_id,
-                             template_name='eventmode/options_detail.html'):
-
-    option = get_object_or_404(Option, pk=option_id)
-
-    return render_to_response(template_name,
-                              {'event' : option.group.event, 'option' : option,
-                               'users' : option.users.all()},
+                               'attendee' : attendee,
+                               'checkin_parts' : checkin_parts},
                               context_instance=RequestContext(request))
 

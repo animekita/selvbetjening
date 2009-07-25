@@ -92,6 +92,6 @@ class MiddlewareTestCase(TestCase):
 
     def test_is_loaded(self):
         # fails authentication check if eventmode middleware is missing
-        response = self.client.get(reverse('eventmode_index'))
+        response = self.client.get(reverse('eventmode_checkin'))
 
         self.assertEqual(response.status_code, 302)

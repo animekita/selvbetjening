@@ -3,7 +3,9 @@
 {% load markup i18n %}
 {% load adminmedia admin_list i18n %}
 
-{% block stylesheet %}{% admin_media_prefix %}css/changelists.css{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+{% endblock %}
 
 {% block bodyclass %}change-list{% endblock %}
 
@@ -11,8 +13,7 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    <a href="{% url eventmode_index %}">{% trans 'Home' %}</a>
-    &rsaquo; {{event.title}} Checkin
+    {% trans 'Checkin' %}
 </div>
 {% endblock %}
 
@@ -41,7 +42,7 @@
 {% if cl.formset %}
   {{ cl.formset.management_form }}
 {% endif %}
-	
+
 {% block result_list %}
   {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
   {% result_list cl %}
