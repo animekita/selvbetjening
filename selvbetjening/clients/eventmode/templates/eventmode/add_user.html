@@ -13,18 +13,19 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    {% trans 'Checkin' %}
+    <a href="{% url eventmode_list_attendees %}">{% trans 'Checkin' %}</a>
+    &rsaquo; Tilføj bruger
 </div>
 {% endblock %}
 
 {% block content_title %}
-<h1>{{event.title}}</h1>
+<h1>Tilføj bruger</h1>
 {% endblock %}
 
 {% block content %}
 
 <ul class="object-tools">
-  <li><a href="{% url eventmode_add_user %}" class="addlink">Tilføj eksisterende bruger</a></li>
+  <li><a href="{% url eventmode_list_attendees %}" class="addlink">Tilbage til listen over deltagere</a></li>
   <li><a href="{% url eventmode_create_user %}" class="addlink">Opret ny bruger</a></li>
 </ul>
 

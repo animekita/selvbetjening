@@ -1,6 +1,7 @@
-from django.core import signals
+from django.dispatch import Signal
 
-user_changed_password = signals.Signal(providing_args=['instance', 'clear_text_password'])
+user_changed_password = Signal(providing_args=['instance', 'clear_text_password'])
+user_created = Signal(providing_args=['instance', 'clear_text_password'])
 
 # hijack the django set_password function for users
 # origin: http://www.djangosnippets.org/snippets/397/

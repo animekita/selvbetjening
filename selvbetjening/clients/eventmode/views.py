@@ -9,11 +9,14 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.helpers import AdminForm
+from django.contrib.auth.models import User
 
 from selvbetjening.data.logging import logger
 from selvbetjening.data.logging.decorators import log_access
 from selvbetjening.data.events.models import Event, Attend, Option
 from selvbetjening.data.invoice.models import Payment
+
+from selvbetjening.data.members.forms import RegistrationForm
 
 from decorators import eventmode_required
 import processor_handlers
@@ -242,5 +245,91 @@ def change_selections(request, user_id,
                               {'event' : event,
                                'attendee' : attendee,
                                'checkin_parts' : checkin_parts},
+                              context_instance=RequestContext(request))
+
+
+
+@eventmode_required
+@log_access
+def add_user(request,
+             template_name='eventmode/add_user.html'):
+
+    event = request.eventmode.model.event
+
+    if request.method == 'POST':
+        user_id = request.POST.get('add_user', None)
+
+        if user_id is not None:
+            user = get_object_or_404(User, pk=user_id)
+            event.add_attendee(user)
+
+            return HttpResponseRedirect(reverse('eventmode_change_selections',
+                                                kwargs={'user_id' : user.id}))
+
+    class DummyModelAdmin:
+        ordering = None
+
+        def queryset(self, request):
+            return User.objects.all().exclude(attend__event=event)
+
+    def actions(user):
+        actions = ''
+
+        actions += u"""
+        <form method="POST" action="">
+        <input type="hidden" name="add_user" value="%s" />
+        <input type="submit" name="do_add_user" value="Tilføj til event"/>
+        </form>
+        """ % user.pk
+
+        return actions
+    actions.allow_tags = True
+    actions.short_description = _('Actions')
+
+    cl = ChangeList(request,
+                    User,
+                    ('username', 'first_name', 'last_name', actions),
+                    ('username',),
+                    (),
+                    (),
+                    ('username', 'first_name', 'last_name'),
+                    (),
+                    50,
+                    (),
+                    DummyModelAdmin())
+    cl.formset = None
+
+    return render_to_response(template_name,
+                              {'event' : event,
+                               'cl' : cl},
+                              context_instance=RequestContext(request))
+
+@eventmode_required
+@log_access
+def create_user(request,
+                template_name='eventmode/create_user.html'):
+
+    event = request.eventmode.model.event
+
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            event.add_attendee(user)
+
+            return HttpResponseRedirect(reverse('eventmode_change_selections',
+                                                kwargs={'user_id' : user.id}))
+
+    else:
+        form = RegistrationForm()
+
+    adminform = AdminForm(form,
+                          [(None, {'fields': form.base_fields.keys()})],
+                          {}
+                          )
+
+    return render_to_response(template_name,
+                              {'adminform': adminform},
                               context_instance=RequestContext(request))
 

@@ -123,7 +123,7 @@ class Line(models.Model):
     revision = models.ForeignKey(InvoiceRevision)
     description = models.CharField(max_length=255)
     managed = models.BooleanField(default=False)
-    price = models.IntegerField(default=0)
+    price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
     def __unicode__(self):
         return self.description
@@ -131,7 +131,7 @@ class Line(models.Model):
 class Payment(models.Model):
     revision = models.ForeignKey(InvoiceRevision)
     created_date = models.DateTimeField(auto_now_add=True)
-    amount = models.IntegerField()
+    amount = models.DecimalField(max_digits=6, decimal_places=2)
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')
     note = models.CharField(max_length=256, blank=True)
 

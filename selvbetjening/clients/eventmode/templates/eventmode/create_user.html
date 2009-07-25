@@ -1,0 +1,32 @@
+{% extends "eventmode/base.html" %}
+{% load i18n admin_modify adminmedia %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url eventmode_list_attendees %}">{% trans 'Checkin' %}</a>
+    &rsaquo; Opret ny bruger
+</div>
+{% endblock %}
+
+{% block content_title %}
+<h1>Opret ny bruger</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="">
+
+{% for fieldset in adminform %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+
+    <div class="submit-row" >
+    <input style="float: left; font-size: 200%;" type="submit" value="Opret bruger og tilmeld event" class="default" name="do_create_and_signup" >
+    </div>
+
+</form>
+{% endblock %}

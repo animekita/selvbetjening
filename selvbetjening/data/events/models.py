@@ -196,7 +196,7 @@ class Option(models.Model):
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)
 
-    price = models.IntegerField(default=0)
+    price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
     order = models.IntegerField(_('Order'), default=0)
 

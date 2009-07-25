@@ -54,16 +54,17 @@ class OptionGroupForm(forms.Form):
             display_params = {}
 
         if len(suboptions) > 0:
-            choices = [(suboption.id, suboption.name) for suboption in suboptions]
-            self.fields[self._get_sub_id(option)] = forms.ChoiceField(label=_('Choices'),
-                                                                      choices=choices,
-                                                                      required=False)
-
             display_params['children'] = (self._get_sub_id(option),)
 
         self.fields[self._get_id(option)] = forms.BooleanField(label=option.name,
                                                                required=False,
                                                                help_text=option.description)
+
+        if len(suboptions) > 0:
+            choices = [(suboption.id, suboption.name) for suboption in suboptions]
+            self.fields[self._get_sub_id(option)] = forms.ChoiceField(label=_('Choices'),
+                                                                      choices=choices,
+                                                                      required=False)
 
         self.Meta.layout[0][1].append((self._get_id(option), display_params))
 

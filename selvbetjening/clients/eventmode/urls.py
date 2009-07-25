@@ -10,6 +10,12 @@ urlpatterns = patterns('',
         name='eventmode_checkout'),
     url(r'^checkin/(?P<user_id>.+)/billing/', views.billing,
         name='eventmode_billing'),
+
+    url(r'^user/create/', views.create_user,
+        name='eventmode_create_user'),
+    url(r'^user/add/', views.add_user,
+        name='eventmode_add_user'),
+
     url(r'^login/$', views.login,
         name='eventmode_login'),
     url(r'^logud/$', views.logout,
