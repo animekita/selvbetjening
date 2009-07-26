@@ -211,9 +211,17 @@ def checkin(request,
 
         return HttpResponseRedirect(reverse('eventmode_list_attendees'))
 
+    submit_allowed, view_functions, save_functions = \
+                  processor_handlers.checkin.run_processors(request, attendee)
+
+    checkin_rendered = ''
+    for view_func in view_functions:
+        checkin_rendered += view_func()
+
     return render_to_response(template_name,
                               {'event' : event,
-                               'attendee' : attendee},
+                               'attendee' : attendee,
+                               'checkin_rendered': checkin_rendered},
                               context_instance=RequestContext(request))
 
 @eventmode_required
