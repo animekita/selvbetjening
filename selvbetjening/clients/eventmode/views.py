@@ -23,7 +23,7 @@ import processor_handlers
 from forms import PaymentForm
 
 def login(request, template_name='eventmode/login.html',
-          success_page='eventmode_index'):
+          success_page='eventmode_list_attendees'):
 
     message = None
 

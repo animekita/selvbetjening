@@ -7,6 +7,7 @@
   <ul class="object-tools">
   <li><a href="statistics/" class="historylink">{% trans "Statistics" %}</a></li>
   <li><a href="options_print/" class="historylink">{% trans "Print options" %}</a></li>
+  <li><a href="{% url invoice_report %}?event={{original.id}}" class="historylink">{% trans "Invoice Report" %}</a></li>
   <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
   {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
   </ul>

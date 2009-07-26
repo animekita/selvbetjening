@@ -1,0 +1,85 @@
+{% extends "admin/base_site.html" %}
+{% load i18n adminmedia %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
+{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../">Invoice</a> &rsaquo;
+     <a href="../">Invoice</a> &rsaquo;
+     Rapport
+</div>
+{% endif %}{% endblock %}
+
+{% block content_title %}<h1>Invoice rapport</h1>{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="">
+
+{% for fieldset in adminsourceform %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+
+{% for fieldset in adminformattingform %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+
+    <div class="submit-row" >
+    <input type="submit" value="Vis invoices" class="default" name="do_show" />
+    </div>
+</form>
+
+<fieldset class="module aligned ">
+<table style="width: 100%;">
+
+<tr class="form-row type">
+    <th>Linje navn</th>
+    <th>Overbetalt</th>
+    <th>Betalt</th>
+    <th>Delvist betalt</th>
+    <th>Ikke betalt</th>
+    <th>Total</th>
+</tr>
+
+{% for line_group in line_groups %}
+
+<tr class="form-row type line_group">
+    <td><h3>{{line_group.name}}</h3></td>
+    <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total}},-)</td>
+    <td>{{line_group.paid|length}} ({{line_group.paid_total}},-)</td>
+    <td>{{line_group.partial|length}} ({{line_group.partial_total}},-)</td>
+    <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total}},-)</td>
+    <td>{{line_group.lines|length}} ({{line_group.total}},-)</td>
+</tr>
+
+{% for line in line_group.lines %}
+<tr>
+    <td><p>{{line.revision.invoice.user}}</p></td>
+
+    <td>{% if line.revision.is_overpaid %}x{% endif %}</td>
+    <td>{% if line.revision.in_balance %}x{% endif %}</td>
+    <td>{% if line.revision.is_partial %}x{% endif %}</td>
+    <td>{% if line.revision.is_unpaid %}x{% endif %}</td>
+
+    <td>{{line.price}},-</td>
+</tr>
+{% endfor %}
+
+
+{% endfor %}
+</table>
+</fieldset>
+
+
+<div class="form-row type  ">
+<div>
+</div></div>
+{% endblock %}

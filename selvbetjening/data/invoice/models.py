@@ -66,15 +66,24 @@ class Invoice(models.Model):
             signals.populate_invoice.send(self, invoice_revision=revision)
 
     def is_paid(self):
-        return self.paid >= self.total_price
+        return self.latest_revision.is_paid()
     is_paid.boolean = True
 
     def in_balance(self):
-        return self.paid == self.total_price
+        return self.latest_revision.in_balance()
     is_paid.boolean = True
 
     def is_overpaid(self):
-        return self.paid > self.total_price
+        return self.latest_revision.is_overpaid()
+    is_overpaid.boolean = True
+
+    def is_partial(self):
+        return self.latest_revision.is_partial()
+    is_partial.boolean = True
+
+    def is_unpaid(self):
+        return self.latest_revision.is_unpaid()
+    is_unpaid.boolean = True
 
     def __unicode__(self):
         return self.name
@@ -109,6 +118,26 @@ class InvoiceRevision(models.Model):
     @property
     def overpaid(self):
         return self.paid - self.total_price
+
+    def is_paid(self):
+        return self.paid >= self.total_price
+    is_paid.boolean = True
+
+    def in_balance(self):
+        return self.paid == self.total_price
+    is_paid.boolean = True
+
+    def is_overpaid(self):
+        return self.paid > self.total_price
+    is_overpaid.boolean = True
+
+    def is_partial(self):
+        return self.paid > 0 and not self.is_paid()
+    is_partial.boolean = True
+
+    def is_unpaid(self):
+        return self.paid == 0 and not self.total_price == 0
+    is_unpaid.boolean = True
 
     def add_line(self, description, price, managed=False):
         return Line.objects.create(revision=self,
