@@ -1,0 +1,50 @@
+{% extends "eventmode/base.html" %}
+{% load i18n admin_modify adminmedia %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    Noter
+</div>
+{% endblock %}
+
+{% block content_title %}
+<h1>Noter</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="">
+
+<fieldset class="module aligned ">
+{% for note in notes %}
+<div class="form-row type  ">
+<div>
+<a href="{% url eventmode_note note.pk %}">{{note.title}}</a>
+</div>
+</div>
+{% endfor %}
+<div class="form-row type  ">
+<div>
+<a href="{% url eventmode_notes %}"><input type="button" value="Ny note" /></a>
+</div>
+</div>
+</fieldset>
+
+{% for fieldset in adminform %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+
+    <div class="submit-row" >
+    {% if create %}
+    <input type="submit" value="Opret ny note" class="default" name="do_create" />
+    {% else %}
+    <input type="submit" value="Gem note" class="default" name="do_save" />
+    {% endif %}
+    </div>
+</form>
+
+{% endblock %}

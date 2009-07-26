@@ -13,16 +13,18 @@ from django.contrib.auth.models import User
 
 from selvbetjening.data.logging import logger
 from selvbetjening.data.logging.decorators import log_access
-from selvbetjening.data.events.models import Event, Attend, Option
+from selvbetjening.data.events.models import Event, Attend
 from selvbetjening.data.invoice.models import Payment
 
 from selvbetjening.data.members.forms import RegistrationForm
 
 from decorators import eventmode_required
 import processor_handlers
-from forms import PaymentForm
+from models import Note
+from forms import PaymentForm, NoteForm
 
-def login(request, template_name='eventmode/login.html',
+def login(request,
+          template_name='eventmode/login.html',
           success_page='eventmode_list_attendees'):
 
     message = None
@@ -340,4 +342,53 @@ def create_user(request,
     return render_to_response(template_name,
                               {'adminform': adminform},
                               context_instance=RequestContext(request))
+
+
+@eventmode_required
+@log_access
+def logs(request,
+         template_name=''):
+    pass
+
+
+@eventmode_required
+@log_access
+def notes(request,
+          note_id=None,
+          form=NoteForm,
+          template_name='eventmode/notes.html'):
+
+    event = request.eventmode.model.event
+
+    if note_id is None:
+        instance = Note(event=event)
+    else:
+        instance = get_object_or_404(Note, pk=note_id)
+
+    if request.method == 'POST':
+        form = NoteForm(request.POST, instance=instance)
+
+        if form.is_valid():
+            note = form.save()
+
+            if note_id is None:
+                return HttpResponseRedirect(reverse('eventmode_note',
+                                                    kwargs={'note_id' : note.pk}))
+
+    else:
+        form = NoteForm(instance=instance)
+
+    notes = Note.objects.filter(event=event)
+
+    adminform = AdminForm(form,
+                          [(None, {'fields': form.base_fields.keys()})],
+                          {}
+                          )
+
+    return render_to_response(template_name,
+                              {'adminform' : adminform,
+                               'notes' : notes,
+                               'create' : note_id is None},
+                              context_instance=RequestContext(request))
+
 

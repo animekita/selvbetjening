@@ -2,6 +2,7 @@ from datetime import date
 
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 from selvbetjening.data.events.models import Event
 
@@ -40,3 +41,9 @@ class EventmodeMachine(models.Model):
 
     def is_valid(self):
         return self.active
+
+class Note(models.Model):
+    title = models.CharField(max_length=255)
+    note = models.TextField()
+
+    event = models.ForeignKey(Event)
