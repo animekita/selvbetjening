@@ -2,9 +2,12 @@ from decimal import Decimal
 
 from django import forms
 from django.contrib.admin.widgets import AdminRadioSelect
+from django.contrib.auth.models import User
 
 from selvbetjening.data.events.models import Event
 from selvbetjening.data.invoice.models import Line
+
+from models import Invoice, InvoiceRevision
 
 class InvoiceSourceForm(forms.Form):
     EVENT_CHOICES = [('', '')] + [(event.id, event.title) for event in Event.objects.all()]
@@ -90,4 +93,54 @@ class InvoiceFormattingForm(forms.Form):
 
         return [line_groups[id] for id in line_groups]
 
+class InvoiceGlobalIdForm(forms.Form):
+    revision_id = forms.IntegerField()
+    invoice_id = forms.IntegerField()
+    user_id = forms.IntegerField()
 
+    def __init__(self, *args, **kwargs):
+        self.revision = None
+        self.invoice = None
+        self.user = None
+
+        super(InvoiceGlobalIdForm, self).__init__(*args, **kwargs)
+
+    def clean_revision_id(self):
+        revision_id = self.cleaned_data['revision_id']
+
+        try:
+            self.revision = InvoiceRevision.objects.get(pk=revision_id)
+        except InvoiceRevision.DoesNotExist:
+            raise forms.ValidationError(u'Invoice revision does not exist')
+
+        return revision_id
+
+    def clean_invoice_id(self):
+        invoice_id = self.cleaned_data['invoice_id']
+
+        try:
+            self.invoice = Invoice.objects.get(pk=invoice_id)
+        except Invoice.DoesNotExist:
+            raise forms.ValidationError(u'Invoice does not exist')
+
+        return invoice_id
+
+    def clean_user_id(self):
+        user_id = self.cleaned_data['user_id']
+
+        try:
+            self.user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise forms.ValidationError(u'User does not exist')
+
+        return user_id
+
+    def clean(self):
+
+        if self.invoice is not None and self.invoice.user != self.user:
+            raise forms.ValidationError('Invoice and user does not match')
+
+        if self.revision is not None and self.revision.invoice != self.invoice:
+            raise forms.ValidationError('Invoice and invoice revision does not match')
+
+        return self.cleaned_data

@@ -1,0 +1,28 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_modify adminmedia %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
+
+{% block object-tools %}
+{{block.super}}
+
+<form method="POST" action="{% url invoice_goto %}">
+
+<fieldset>
+<div class="form-row type  ">
+<div>
+<label>Invoice ID</label>
+<input type="text" name="revision_id" size="4"> .
+<input type="text" name="invoice_id" size="4"> .
+<input type="text" name="user_id" size="4">
+<input type="submit" value="Registrer betaling" name="do_goto_payment" />
+</div>
+</div>
+</fieldset>
+
+</form>
+
+{% endblock %}
