@@ -343,14 +343,6 @@ def create_user(request,
                               {'adminform': adminform},
                               context_instance=RequestContext(request))
 
-
-@eventmode_required
-@log_access
-def logs(request,
-         template_name=''):
-    pass
-
-
 @eventmode_required
 @log_access
 def notes(request,

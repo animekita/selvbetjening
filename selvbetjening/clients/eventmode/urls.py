@@ -20,8 +20,6 @@ urlpatterns = patterns('',
         name='eventmode_note'),
     url(r'^notes/', views.notes,
         name='eventmode_notes'),
-    url(r'^logs/', views.logs,
-        name='eventmode_logs'),
 
     url(r'^login/$', views.login,
         name='eventmode_login'),
