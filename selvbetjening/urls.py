@@ -18,6 +18,9 @@ urlpatterns = patterns('',
     (r'^mailcenter/',
      include('selvbetjening.clients.mailcenter.urls')),
 
+    (r'^api/',
+     include('selvbetjening.api.sso.urls')),
+
     url(r'^profil/$', profile, name='members_profile'),
 
     # Admin urls
