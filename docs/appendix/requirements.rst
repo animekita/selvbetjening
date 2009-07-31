@@ -6,4 +6,5 @@ Requirements
 
 * python-textile
 * python-mysqldb
+* django-tinymce
 * South - Django Database Migration (valgfrit, men anbefalet)
