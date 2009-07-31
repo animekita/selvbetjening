@@ -18,8 +18,7 @@ def info(request, service, auth_token):
     Returns xml blob on the format.
     <info>
         <user id="username">
-            <attribute id="first_name">John Doe</attribute>
-            <attribute id="...">...</attribute>
+            <first_name>John Doe</first_name>
             ...
         </user>
     </info>
@@ -33,13 +32,13 @@ def info(request, service, auth_token):
         return HttpResponse(u'rejected')
     else:
         resp = \
-        """
-        <?xml version="1.0" encoding="utf-8"?>
+        """<?xml version="1.0" encoding="utf-8"?>
         <info>
           <user id="%(username)s">
-            <attribute id="first_name">%(first_name)s</attribute>
-            <attribute id="last_name">%(last_name)s</attribute>
-            <attribute id="email">%(email)s</attribute>
+            <username>%(username)s</username>
+            <first_name>%(first_name)s</first_name>
+            <last_name>%(last_name)s</last_name>
+            <email>%(email)s</email>
           </user>
         </info>
         """ % {'username' : user.username,
