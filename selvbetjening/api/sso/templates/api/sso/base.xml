@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<result>
+  <success>{{success}}</success>
+  {% if error_code %}<error_code>{{error_code}}</error_code>{% endif %}
+
+{% if session %}
+  <session>
+    <auth_token>{{session.auth_token}}</auth_token>
+    <expire>{{session.expire}}</expire>
+    <path>{{session.path}}</path>
+    <domain>{{session.domain}}</domain>
+  </session>
+{% endif %}
+
+{% if user %}
+  <user id="{{user.username}}">
+    <username>{{user.username}}</username>
+    <first_name>{{user.first_name}}</first_name>
+    <last_name>{{user.last_name}}</last_name>
+    <email>{{user.email}}</email>
+  </user>
+{% endif %}
+
+</result>
