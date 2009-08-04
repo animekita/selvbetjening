@@ -7,7 +7,18 @@ require("sso_api.inc.php");
 
 $si_sso = new SelvbetjeningIntegrationSSO();
 
+$authenticate_result = "";
+
+if (isset($_POST["authenticate"])) {
+try {
+ $result = $si_sso->authenticate($_POST["username"], $_POST["password"]);
+ } catch (Exception $e){
+ echo "<p>Got auth exception</p>";
+ echo "<pre>" . $e . "</pre>";
+ }
+}
 ?>
+
 <h1>SSO_API Test</h1>
 
 <h2>Test #1 : is_authenticated</h2>
@@ -34,4 +45,20 @@ try {
  echo "<pre>" . $e . "</pre>";
 }
 ?>
+
+<h2>Test #3 : Authenticate</h2>
+
+<?php
+if (isset($_POST["authenticate"])) {
+ echo "<pre>";
+ print_r($result);
+ echo "</pre>";
+}
+?>
+
+<form method="POST" action="">
+<label for="username">Username:</label> <input type="input" id="username" name="username" /><br />
+<label for="password">Password:</label> <input type="password" id="password" name="password" /></br>
+<input type="submit" name="authenticate" value="Authenticate" />
+</form>
 

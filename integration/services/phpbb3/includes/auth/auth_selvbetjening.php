@@ -15,7 +15,7 @@ global $phpbb_root_path;
 require_once($phpbb_root_path . "includes/functions_user.php");
 
 #require_once("selvbetjening/integration/library/php/sso_api.php");
-require_once("/var/www/phptest/sso_api.inc.php");
+require_once("/var/www/libtest/sso_api.inc.php");
 
 function _make_user_row($user_info) {
 	global $db, $user;
@@ -51,12 +51,6 @@ function _make_user_row($user_info) {
 	return $user_row;
 }
 
-function init() {
-	global $db, $config, $user;
-
-	$user->add_lang(array('mods/selv_auth'));
-}
-
 /**
 * Autologin function
 */
@@ -69,19 +63,17 @@ function autologin_selvbetjening()
 	try {
 		$authenticated = $si_sso->is_authenticated();
 	} catch (Exception $e) {
-		return array();
-	}
-
-	if ($authenticated == false) {
 		return false;
 	}
 
-	$user_info = $si_sso->get_session_info();
+	if ($authenticated === false) {
+		return false;
+	}
 
 	# Find existing profile
 	$sql ='SELECT *
 		FROM ' . USERS_TABLE . "
-		WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($user_info["username"])) . "'";
+		WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($authenticated)) . "'";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
@@ -97,6 +89,12 @@ function autologin_selvbetjening()
 	}
 
 	# Create new profile
+	try {
+		$user_info = $si_sso->get_session_info();
+	} catch (Exception $e) {
+		return false;
+	}
+
 	$user_row = _make_user_row($user_info);
     user_add($user_row);
 
@@ -107,10 +105,6 @@ function autologin_selvbetjening()
 function validate_session_selvbetjening(&$user_row) {
 	global $db, $config, $user;
 
-	if ($user_row["session_autologin"] == 0) {
-		return false;
-	}
-
 	$si_sso = new SelvbetjeningIntegrationSSO();
 
 	try {
@@ -119,7 +113,7 @@ function validate_session_selvbetjening(&$user_row) {
 		return false;
 	}
 
-	return $authenticated;
+	return ($authenticated && $user_row['username'] == $authenticated);
 }
 
 /**
@@ -128,6 +122,89 @@ function validate_session_selvbetjening(&$user_row) {
 function login_selvbetjening(&$username, &$password)
 {
 	global $db, $config, $user;
+
+	$si_sso = new SelvbetjeningIntegrationSSO();
+
+	$user->add_lang(array('mods/selv_auth'));
+
+	if (!$password)
+	{
+		return array(
+			'status'	=> LOGIN_ERROR_PASSWORD,
+			'error_msg'	=> 'NO_PASSWORD_SUPPLIED',
+			'user_row'	=> array('user_id' => ANONYMOUS),
+		);
+	}
+
+	if (!$username)
+	{
+		return array(
+			'status'	=> LOGIN_ERROR_USERNAME,
+			'error_msg'	=> 'LOGIN_ERROR_USERNAME',
+			'user_row'	=> array('user_id' => ANONYMOUS),
+		);
+	}
+
+	try {
+		$authenticated = $si_sso->authenticate($username, $password);
+
+		$sql ='SELECT user_id, username, user_password, user_passchg, user_email, user_type
+			FROM ' . USERS_TABLE . "
+			WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'";
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		if ($row)
+		{
+			// User inactive...
+			if ($row['user_type'] == USER_INACTIVE || $row['user_type'] == USER_IGNORE)
+			{
+				return array(
+					'status'		=> LOGIN_ERROR_ACTIVE,
+					'error_msg'		=> 'ACTIVE_ERROR',
+					'user_row'		=> $row,
+				);
+			}
+
+			// Successful login... set user_login_attempts to zero...
+			return array(
+				'status'		=> LOGIN_SUCCESS,
+				'error_msg'		=> false,
+				'user_row'		=> $row,
+			);
+		}
+		else
+		{
+			// this is the user's first login so create an empty profile
+			return array(
+				'status'		=> LOGIN_SUCCESS_CREATE_PROFILE,
+				'error_msg'		=> false,
+				'user_row'		=> make_user_row($authenticated),
+			);
+		}
+	}
+	catch (AuthWrongCredentialsException $e) {
+		return array(
+			'status'		=> LOGIN_ERROR_PASSWORD,
+			'error_msg'		=> 'LOGIN_ERROR_PASSWORD',
+			'user_row'		=> array('user_id' => ANONYMOUS),
+		);
+	}
+	catch (AuthUserInactiveException $e) {
+		return array(
+			'status'		=> LOGIN_ERROR_EXTERNAL_AUTH,
+			'error_msg'		=> 'SELV_USER_INACTIVE',
+			'user_row'		=> array('user_id' => ANONYMOUS),
+		);
+	}
+	catch (Exception $e) {
+		return array(
+			'status'		=> LOGIN_ERROR_EXTERNAL_AUTH,
+			'error_msg'		=> 'SELV_UNKNOWN_ERROR',
+			'user_row'		=> array('user_id' => ANONYMOUS),
+		);
+	}
 
 }
 
