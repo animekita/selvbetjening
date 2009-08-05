@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django import forms
+from django.utils.translation import ugettext as _
 from django.contrib.admin.widgets import AdminRadioSelect
 from django.contrib.auth.models import User
 
@@ -11,15 +12,24 @@ from models import Invoice, InvoiceRevision
 
 class InvoiceSourceForm(forms.Form):
     EVENT_CHOICES = [('', '')] + [(event.id, event.title) for event in Event.objects.all()]
+    FILTER_ATTENDED_CHOICES = [('all', _('All')),
+                               ('only_attended', _('Only attended')),
+                               ('not_attended', _('Not attended'))]
 
     event = forms.ChoiceField(choices=EVENT_CHOICES, required=False)
+    filter_attended = forms.ChoiceField(label=_('Filter attended'), choices=FILTER_ATTENDED_CHOICES)
 
-    def filter(self, queryset):
+    def filter(self, invoice_queryset):
         event_id = self.cleaned_data.get('event', None)
         if event_id is not None and not event_id == '':
-            queryset = queryset.filter(attend__event__pk=event_id)
+            invoice_queryset = invoice_queryset.filter(attend__event__pk=event_id)
 
-        return queryset
+        if self.cleaned_data['filter_attended'] == 'only_attended':
+            invoice_queryset = invoice_queryset.filter(attend__has_attended=True)
+        elif self.cleaned_data['filter_attended'] == 'not_attended':
+            invoice_queryset = invoice_queryset.filter(attend__has_attended=False)
+
+        return invoice_queryset
 
 class InvoiceFormattingForm(forms.Form):
     exclude_lines = forms.MultipleChoiceField(choices=[], required=False)
