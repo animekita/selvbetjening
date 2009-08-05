@@ -1,5 +1,6 @@
 from django.contrib.admin import StackedInline
 from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import ugettext as _
 
 from shortcuts import get_or_create_profile
 
@@ -18,4 +19,4 @@ class UserAdminExt(UserAdmin):
         age = user_profile.get_age()
         return age
     display_age.admin_order_field = 'userprofile__dateofbirth'
-    display_age.short_description = 'age'
+    display_age.short_description = _('Age')
