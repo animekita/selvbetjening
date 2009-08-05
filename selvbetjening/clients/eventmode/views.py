@@ -110,9 +110,13 @@ def list_attendees(request,
         return attend.invoice.is_paid()
     has_paid.boolean = True
 
+    def in_balance(attend):
+        return attend.invoice.in_balance()
+    in_balance.boolean = True
+
     cl = ChangeList(request,
                     Attend,
-                    ('user', 'user_first_name', 'user_last_name', 'has_attended', 'is_new', has_paid, actions),
+                    ('user', 'user_first_name', 'user_last_name', 'has_attended', 'is_new', has_paid, in_balance, actions),
                     ('username',),
                     ('has_attended',),
                     (),
