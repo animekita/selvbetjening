@@ -3,7 +3,11 @@
 
 {% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/login.css{% endblock %}
 
-{% block bodyclass %}login{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="/media/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/media/css/login.css" />
+{{block.super}}
+{% endblock %}
 
 {% block content_title %}{% endblock %}
 

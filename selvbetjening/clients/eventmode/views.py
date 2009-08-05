@@ -64,7 +64,7 @@ def login(request,
                               context_instance=RequestContext(request))
 
 def logout(request):
-    request.eventmode.deactivate()
+    request.eventmode.logout()
 
     return HttpResponseRedirect(reverse('home'))
 
