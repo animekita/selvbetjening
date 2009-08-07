@@ -101,9 +101,18 @@ class User extends Object {
 		}
 		
 		if ($authenticated !== false) {
+			if (!isset($_SESSION['uName_InitialUser'])) {
+				$_SESSION['uName_InitialUser'] = $_SESSION['uName'];
+			}
 			
-			if (User::isLoggedInNative() && $authenticated == $_SESSION['uName']) {
-				return true;
+			if (User::isLoggedInNative()) {
+				if ($authenticated == $_SESSION['uName_InitialUser']) {
+					return true;
+				} else {
+					$u = new User();
+					$u->logout();
+					return false;
+				}
 			}
 				
 			$user = User::loginByUsername($authenticated);
