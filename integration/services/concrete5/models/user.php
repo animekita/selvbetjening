@@ -102,7 +102,7 @@ class User extends Object {
 		
 		if ($authenticated !== false) {
 			
-			if (User::isLoggedInNative()) {
+			if (User::isLoggedInNative() && $authenticated == $_SESSION['uName']) {
 				return true;
 			}
 				
