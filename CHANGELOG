@@ -1,4 +1,4 @@
-2.0.0 dev
+2.0.0
 
  * Added sorting users by age.
  * Removed booking module.
@@ -6,20 +6,28 @@
  * Added option to display change and registration confirmations for events.
  * Added support for invoices.
  * Added suboptions.
- * Stærkt forbedret eventadmin
-   - Se hvad folk skal betale
-   - Ændre tilvalg
-   - Udfør betalinger
+ * Improved eventadmin
+   - View pending payments
+   - Change selections
+   - Pay invoices
+   - Add notes to events
+ * Option validation more flexible by validating optiongroups separatly
+ * Added missing language file
+ * More flexible rendering of forms
+ * Added internal API structure (initially implementing functions for single sign-on systems)
+ * Added various SSO plugins for services
+   - Concrete 5
+   - phpbb3
 
-1.1.0 (SLOC 2.674)
+1.1.0
 
  * Improved options.
  * Added max attendees to events.
 
-1.0.0 (SLOC 2.389)
+1.0.0
 
  * Renamed registration to quickregistration.
  * Removed RegistrationProfile model from quickregistration.
  * A lot of refactoring!
 
-0.0.0 Chi (SLOC 2.945)
+0.0.0 Chi
