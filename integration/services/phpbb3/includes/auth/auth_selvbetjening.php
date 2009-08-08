@@ -11,9 +11,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-global $phpbb_root_path;
-require_once($phpbb_root_path . "includes/functions_user.php");
-
 #require_once("selvbetjening/integration/library/php/sso_api.php");
 require_once("/var/www/libtest/sso_api.inc.php");
 
