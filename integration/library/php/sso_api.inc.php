@@ -134,7 +134,8 @@ class SelvbetjeningIntegrationSSO {
         return array("username" => (string) $user_xml_part->username,
                      "last_name" => (string) $user_xml_part->last_name,
                      "first_name" => (string) $user_xml_part->first_name,
-                     "email" => (string) $user_xml_part->email);
+                     "email" => (string) $user_xml_part->email,
+                     "date_joined" => (string) $user_xml_part->date_joined);
     }
 
 }

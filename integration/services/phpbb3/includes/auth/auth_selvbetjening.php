@@ -42,7 +42,7 @@ function _make_user_row($user_info) {
 		'user_type'             => USER_NORMAL,
 		'user_actkey'           => "",
 		'user_ip'               => $user->ip,
-		'user_regdate'          => time(),
+		'user_regdate'          => $user_info['date_joined'],
 	);
 
 	return $user_row;
@@ -54,6 +54,9 @@ function _make_user_row($user_info) {
 function autologin_selvbetjening()
 {
 	global $db, $config, $user;
+
+	global $phpbb_root_path, $phpEx;
+	require_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 	$si_sso = new SelvbetjeningIntegrationSSO();
 
