@@ -44,6 +44,19 @@ function _make_user_row($user_info) {
 	return $user_row;
 }
 
+function _get_user_row($username) {
+	global $db;
+
+	$sql = 'SELECT *
+			FROM ' . USERS_TABLE . "
+			WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'";
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+
+	return $row;
+}
+
 /**
 * Autologin function
 */
@@ -67,12 +80,7 @@ function autologin_selvbetjening()
 	}
 
 	# Find existing profile
-	$sql ='SELECT *
-		FROM ' . USERS_TABLE . "
-		WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($authenticated)) . "'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
+	$row = _get_user_row($authenticated);
 
 	if ($row) {
 		# Handle existing profile
@@ -94,7 +102,8 @@ function autologin_selvbetjening()
 	$user_row = _make_user_row($user_info);
     user_add($user_row);
 
-	return $user_row;
+	$row = _get_user_row($authenticated);
+	return $row;
 
 }
 
