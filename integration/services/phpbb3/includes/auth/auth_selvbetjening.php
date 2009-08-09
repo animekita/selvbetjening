@@ -36,11 +36,7 @@ function _make_user_row($user_info) {
 		'user_password'         => '',
 		'user_email'            => $user_info['email'],
 		'group_id'              => (int) $row['group_id'],
-		'user_timezone'         => (float) 1,
-		'user_dst'              => 0,
-		'user_lang'             => "da",
 		'user_type'             => USER_NORMAL,
-		'user_actkey'           => "",
 		'user_ip'               => $user->ip,
 		'user_regdate'          => $user_info['date_joined'],
 	);
