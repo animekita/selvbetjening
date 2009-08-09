@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-09 21:36+0200\n"
+"PO-Revision-Date: 2009-08-09 21:35+0100\n"
+"Last-Translator: . <.>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: forms.py:33
+msgid "I have read and accept the above described terms"
+msgstr "Jeg har læst og accepteret overstående betingelser"
+
+#: forms.py:36
+msgid "You must accept to participate in the event"
+msgstr "Du skal acceptere dette for at deltage i arrangementet"
+
+#: forms.py:40
+msgid "Yes, remove me from the event"
+msgstr "Ja, fjern mig fra dette arrangement"
+
+#: forms.py:43
+msgid "You must accept to remove your participation in the event"
+msgstr "Du skal acceptere dette for at afmelde dig arrangementet"
+
+#: forms.py:68
+msgid "The maximum number of attendees have been reached"
+msgstr "Det maksimale antal deltagere er opnået"
+
+#: forms.py:72
+msgid "This option can not be selected anymore"
+msgstr "Denne valgmulighed kan ikke vælges længere"
+
+#: forms.py:93
+#, python-format
+msgid "You need to select one option from the group %(group)s"
+msgid_plural "You need to select %(count)d options from the group %(group)s"
+msgstr[0] "Du skal vælge mindst en valgmulighed fra gruppen %(group)s"
+msgstr[1] "Du skal vælge mindst %(count)d valgmuligheder fra gruppen %(group)s"
+
+#: forms.py:105
+#, python-format
+msgid "You can not select more than one option from the group %(group)s"
+msgid_plural "You can not select more than %(count)d options from the group %(group)s"
+msgstr[0] "Du kan ikke vælge mere end en valgmulighed fra gruppen %(group)s"
+msgstr[1] "Du kan ikke vælge mere end %(count)d valgmuligheder fra gruppen %(group)s"
+
+#: views.py:90
+msgid "You are now signed up to the event."
+msgstr "Du er nu blevet tilmeldt dette arrangement."
+
+#: views.py:133
+msgid "You are now removed from the event."
+msgstr "Du er nu blevet fjernet dette arrangement."
