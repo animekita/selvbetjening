@@ -1,3 +1,9 @@
+2.1.0
+
+ * Added invoice page to eventregistration.
+ * Various bugfixes and improvements to services plugins.
+ * Fixed some missing language files for eventregistration.
+
 2.0.0
 
  * Added sorting users by age.
