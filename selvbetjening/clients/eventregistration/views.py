@@ -1,6 +1,6 @@
 # coding=UTF-8
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -187,4 +187,25 @@ def change_options(request, event_id, form=OptionForms,
                                'signup_render' : signup_render},
                               context_instance=RequestContext(request))
 
+@login_required
+@event_attendance_required
+def view_invoice(request, event_id, template_name='eventregistration/viewinvoice.html'):
+    event = get_object_or_404(Event, id=event_id)
+    attendee = Attend.objects.get(user=request.user, event=event)
+
+    if not event.show_invoice_page:
+        return HttpResponseNotFound
+
+    template = Template(event.invoice_page)
+    context = Context({'invoice_rev' :  attendee.invoice.latest_revision,
+                       'event' : event,
+                       'user' : attendee.user,})
+
+    rendered_invoice = template.render(context)
+
+    return render_to_response(template_name,
+                              {'event' : event,
+                               'user' : attendee.user,
+                               'rendered_invoice' : rendered_invoice},
+                              context_instance=RequestContext(request))
 

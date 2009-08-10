@@ -28,6 +28,9 @@ class Event(models.Model):
     show_change_confirmation = models.BooleanField(default=False)
     change_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
 
+    show_invoice_page = models.BooleanField(default=False)
+    invoice_page = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+
     class Meta:
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')

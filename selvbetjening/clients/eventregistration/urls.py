@@ -24,4 +24,8 @@ urlpatterns = patterns(
         views.change_options,
         name='eventregistration_change_options'),
 
+    url(r'^se/(?P<event_id>[0-9]+)/kvittering/$',
+        views.view_invoice,
+        name='eventregistration_view_invoice'),
+
 )

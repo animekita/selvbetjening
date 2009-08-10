@@ -32,10 +32,16 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
         {% else %}
         <ul class="table-options">
             <li>&#187; <a href="{% url eventregistration_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
-            {% if event.has_options %}
-            <li>&#187; <a href="{% url eventregistration_change_options event.id %}">Ændre tilvalg</a></li>
-            {% endif %}
         </ul>
+            {% if event.has_options %}
+            <ul class="table-options">
+            <li>&#187; <a href="{% url eventregistration_change_options event.id %}">Ændre tilvalg</a></li>
+            {% if event.show_invoice_page %}
+            <li>&#187; <a href="{% url eventregistration_view_invoice event.id %}">Se kvittering</a></li>
+            {% endif %}
+            </ul>
+            {% endif %}
+
         {% endif %}
     {% endif %}
 

@@ -32,6 +32,10 @@ class EventAdmin(ModelAdmin):
             'fields' : ('show_change_confirmation', 'change_confirmation'),
             'classes' : ('collapse', ),
         }),
+        (_('Invoice page'), {
+            'fields' : ('show_invoice_page', 'invoice_page'),
+            'classes' : ('collapse', ),
+        }),
     )
 
 class OptionInline(TabularInline):
