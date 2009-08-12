@@ -58,6 +58,7 @@ class OptionGroupAdmin(ModelAdmin):
             'fields' : ('order',),
         }),)
 
+    raw_id_fields = ('event',)
     inlines = [OptionInline, ]
 
 class SubOptionInline(TabularInline):
@@ -65,6 +66,8 @@ class SubOptionInline(TabularInline):
 
 class SelectionInline(TabularInline):
     model = Selection
+
+    raw_id_fields = ('attendee',)
 
 class OptionAdmin(ModelAdmin):
     list_display = ('group', 'name', 'attendee_count', 'freeze_time')
@@ -74,5 +77,6 @@ class OptionAdmin(ModelAdmin):
         ('Conditions', {'fields': ('freeze_time', 'maximum_attendees', 'order'), 'classes' : ('collapse',)}),
         )
 
+    raw_id_fields = ('group',)
     inlines = [SubOptionInline, SelectionInline]
 
