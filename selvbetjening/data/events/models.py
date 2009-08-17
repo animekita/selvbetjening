@@ -236,9 +236,9 @@ class Option(models.Model):
         else:
             return False
 
-    def attendee_count(self):
+    def attendees_count(self):
         return self.selections.count()
-    attendee_count.short_description = _('Attendees')
+    attendees_count.short_description = _('Attendees')
 
     def paid_selections_count(self):
         return len(self.paid_selections)

@@ -1,3 +1,7 @@
+2.1.2
+
+ * Fixed error in internal naming of function for Options.
+
 2.1.1
 
  * Improved performance for the option administration page.

@@ -70,7 +70,7 @@ class SelectionInline(TabularInline):
     raw_id_fields = ('attendee',)
 
 class OptionAdmin(ModelAdmin):
-    list_display = ('group', 'name', 'attendee_count', 'freeze_time')
+    list_display = ('group', 'name', 'attendees_count', 'freeze_time')
     list_filter = ('group',)
     fieldsets = (
         (None, {'fields': ('group', 'name', 'description', 'price')}),
