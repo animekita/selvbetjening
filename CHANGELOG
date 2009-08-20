@@ -1,3 +1,7 @@
+2.1.4
+
+ * Fixed logical error in calculating invoice state.
+
 2.1.3
 
  * Fixed error when displaying statistics for attendee selections.

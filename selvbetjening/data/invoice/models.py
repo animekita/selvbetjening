@@ -42,15 +42,18 @@ class Invoice(models.Model):
 
     @property
     def paid(self):
-        return self.latest_revision.paid
+        paid = 0
+        for payment in self.payment_set.all():
+            paid += payment.amount
+        return paid
 
     @property
     def unpaid(self):
-        return self.latest_revision.unpaid
+        return self.total_price - self.paid
 
     @property
     def overpaid(self):
-        return self.latest_revision.overpaid
+        return self.paid - self.total_price
 
     @property
     def payment_set(self):
@@ -66,23 +69,23 @@ class Invoice(models.Model):
             signals.populate_invoice.send(self, invoice_revision=revision)
 
     def is_paid(self):
-        return self.latest_revision.is_paid()
+        return self.paid >= self.total_price
     is_paid.boolean = True
 
     def in_balance(self):
-        return self.latest_revision.in_balance()
+        return self.paid == self.total_price
     is_paid.boolean = True
 
     def is_overpaid(self):
-        return self.latest_revision.is_overpaid()
+        return self.paid > self.total_price
     is_overpaid.boolean = True
 
     def is_partial(self):
-        return self.latest_revision.is_partial()
+        return self.paid > 0 and not self.is_paid()
     is_partial.boolean = True
 
     def is_unpaid(self):
-        return self.latest_revision.is_unpaid()
+        return self.paid == 0 and not self.total_price == 0
     is_unpaid.boolean = True
 
     def __unicode__(self):
