@@ -266,7 +266,10 @@ class Selection(models.Model):
         unique_together = (('attendee', 'option'))
 
     def __unicode__(self):
-        return unicode(self.option)
+        if self.suboption:
+            return u'%s (%s)' % (self.option, self.suboption)
+        else:
+            return u'%s' % self.option
 
 def update_invoice_handler(sender, **kwargs):
     instance = kwargs['instance']
