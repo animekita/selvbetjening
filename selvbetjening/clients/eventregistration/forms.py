@@ -68,7 +68,8 @@ class OptionGroupForm(BaseOptionGroupForm):
                 raise forms.ValidationError(_('The maximum number of attendees have been reached'))
 
             if selected and \
-               option.is_frozen():
+               option.is_frozen() and \
+               not selected_initially:
                 raise forms.ValidationError(_('This option can not be selected anymore'))
 
         def clean_enabled_option():

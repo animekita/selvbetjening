@@ -228,7 +228,24 @@ class EventOptionsFormValidationGroupValidationTestCase(TestCase):
         attendee = Database.attend(user, event)
         attendee.select_option(option)
 
-        form = OptionGroupForm(optiongroup, {})
+        form = OptionGroupForm(optiongroup, {}, attendee=attendee)
+
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(len(attendee.selections), 1)
+
+    def test_reselect_frozen_option(self):
+        user = Database.new_user()
+        event = Database.new_event()
+        optiongroup = Database.new_optiongroup(event, freeze_time=datetime.today() - timedelta(days=1))
+        option = Database.new_option(optiongroup)
+
+        attendee = Database.attend(user, event)
+        attendee.select_option(option)
+
+        form = OptionGroupForm(optiongroup,
+                               {OptionGroupForm._get_id(option) : True},
+                               attendee=attendee)
 
         self.assertTrue(form.is_valid())
         form.save()

@@ -1,3 +1,7 @@
+2.1.5 dev
+
+ * Fixed error in validation of eventregistrations when reselecting frozen options.
+
 2.1.4
 
  * Fixed logical error in calculating invoice state.
