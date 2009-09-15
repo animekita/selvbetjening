@@ -1,6 +1,7 @@
 2.1.5 dev
 
  * Fixed error in validation of eventregistrations when reselecting frozen options.
+ * Improved payment and invoice revision admin interface.
 
 2.1.4
 

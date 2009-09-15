@@ -43,7 +43,13 @@ class LineInlines(TabularInline):
         return super(LineInlines, self).get_formset(request, obj, **kwargs)
 
 class InvoiceRevisionAdmin(ModelAdmin):
+    list_display = ('id', 'invoice', 'user', 'created_date')
     inlines = [LineInlines,]
+    date_hierarchy = 'created_date'
+
+    def user(self, revision):
+        return revision.invoice.user
+    user.admin_order_field = 'invoice__user'
 
 class PaymentAdmin(ModelAdmin):
     list_display = ('user', 'invoice', 'revision', 'amount', 'signee', 'note')
