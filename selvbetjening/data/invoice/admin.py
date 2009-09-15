@@ -46,5 +46,14 @@ class InvoiceRevisionAdmin(ModelAdmin):
     inlines = [LineInlines,]
 
 class PaymentAdmin(ModelAdmin):
-    pass
+    list_display = ('user', 'invoice', 'revision', 'amount', 'signee', 'note')
+    search_fields = ('revision__invoice__name', 'signee__username', 'note',)
+    date_hierarchy = 'created_date'
 
+    def user(self, payment):
+        return payment.revision.invoice.user
+    user.admin_order_field = 'revision__invoice__user'
+
+    def invoice(self, payment):
+        return payment.revision.invoice
+    invoice.admin_order_field = 'revision_invoice'
