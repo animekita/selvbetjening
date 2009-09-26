@@ -1,73 +1,36 @@
-import os,sys
-os.environ['DJANGO_SETTINGS_MODULE'] = 'kita_website.settings'
-sys.path.insert(0, '/home/vukitadk/src/selvbetjening.anime-kita.dk/')
-
-execfile('/home/vukitadk/.virtualenvs/selvbetjening/bin/activate_this.py', dict(__file__='/home/vukitadk/.virtualenvs/selvbetjening/bin/activate_this.py'))
-
 from roundup.cgi.actions import LoginAction
+from roundup.cgi import exceptions
 from roundup.i18n import _
 
-from django.contrib.auth.models import User
+import ssoapi
 
 class SelvbetjeningLoginAction(LoginAction):
-    def _verify_local_password(self, password):        
-        ''' Verify the password that the user has supplied '''
-        stored = self.db.user.get(self.client.userid, 'password')
-        
-        if password == stored:
-            return True
-        if not password and not stored:
-            return True
-        
-        return False
+    def verifyLogin(self, username, password):
+        sso = ssoapi.SelvbetjeningIntegrationSSO()
 
-    def _local_login (self, password):
-        ''' Local authentication '''
-        
-        # make sure the user exists
         try:
-            self.client.userid = self.db.user.lookup(self.client.user)
+            sso.authenticate(username, password)
+        except ssoapi.AuthWrongCredentialsException:
+            raise exceptions.LoginError, self._('Invalid login')
+        except ssoapi.AuthUserInactiveException:
+            raise exceptions.LoginError, self._('Inactive user')
+        except ssoapi.AuthMalformedInputException:
+            raise exceptions.LoginError, self._('Malformed credentials')
+        except ssoapi.AuthUnknownException:
+            raise exceptions.LoginError, self._('Unknown authentication error')
+        except ssoapi.AuthenticationServerException:
+            raise exceptions.LoginError, self._('Authentication server error')
+
+        try:
+            self.db.user.lookup(username)
         except KeyError:
-            self.client.error_message.append(_('Unknown user "%s"')%self.client.user)
-            return False
-        
-        # verify the password
-        if not self._verify_local_password(password):
-            self.client.error_message.append(_('Invalid password'))
-            return False
-        return True
-
-    def _selvbetjening_login(self, password):
-        user_authenticated = False
-        try:
-            selv_user = User.objects.get(username=self.client.user)
-            if selv_user.check_password(password):
-                user_authenticated = True
-        except User.DoesNotExist:
-            pass # user does not exist
-        
-        return user_authenticated
+            self._create_profile()
 
     def _create_profile(self):
         self.journaltag = 'admin'
-        
-        self.db.user.create(roles=self.db.config.NEW_WEB_USER_ROLES,)
-        self.db.commit ()
-        
-        self.client.userid = self.db.user.lookup(self.client.user)
-    
-    
-    def verifyLogin(self, username, password):
 
-        if self._local_login(password):
-            return
-            
-        if self._selvbetjening_login(password):
-            self.client.error_message = []
-            return
-
-        self.client.error_message.append(_('Invalid username or password'))        
-        self.client.make_user_anonymous()
+        self.db.user.create(roles=self.db.config.NEW_WEB_USER_ROLES)
+        self.db.commit()
 
 def init(instance):
     instance.registerAction('login', SelvbetjeningLoginAction)

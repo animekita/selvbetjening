@@ -1,5 +1,6 @@
 import re
 import urllib2
+import urllib
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 
@@ -15,10 +16,7 @@ class AuthUnknownException(Exception) : pass
 
 class InfoNoAuthenticatedUserException(Exception) : pass
 
-class SelvbetjeningAuthenticationHandler(ContentHandler):
-    pass
-
-class SelvbetjeningSessionInfoHandler(ContentHandler):
+class SelvbetjeningResponseHandler(ContentHandler):
     def __init__(self):
         self.success = False
         self.error_code = None
@@ -29,15 +27,20 @@ class SelvbetjeningSessionInfoHandler(ContentHandler):
         self.user = None
 
         self._buffer = u''
+        self._session_tags = ('auth_token', 'expire', 'path', 'domain')
         self._user_tags = ('username', 'first_name', 'last_name', 'email', 'date_joined')
 
     def startElement(self, name, attrs):
         if name == 'user':
             self.user = {}
+        elif name == 'session':
+            self.session = {}
 
     def endElement(self, name):
         if name in self._user_tags:
             self.user[name] = self._buffer
+        elif name in self._session_tags:
+            self.session[name] = self._buffer
         elif name == 'success':
             self.success = self._buffer == u'True'
         elif name == 'error_code':
@@ -53,31 +56,33 @@ class SelvbetjeningIntegrationSSO(object):
     AUTH_TOKEN_KEY = 'kita_auth_token'
     SELVBETJENING_API = 'http://test.selvbetjening.dk:8001'
 
-    def __init__(self, cookies):
-        self.cookies = cookies
-        token = cookies.get(self.AUTH_TOKEN_KEY, None)
-
-        if token is None:
+    def __init__(self, auth_token=None):
+        if auth_token is None:
             self._auth_token = None
         else:
             auth_token_regex = re.compile(r'^[a-z0-9]+$')
-            if auth_token_regex.match(token) is not None:
-                self._auth_token = token
+            if auth_token_regex.match(auth_token) is not None:
+                self._auth_token = auth_token
             else:
                 self._auth_token = None
 
     def authenticate(self, username, password):
-        # not implemented
+        url = '%s/authenticate/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID)
+        response = self._call(url, {'username' : username, 'password' : password})
 
-        #url = '%s/authenticate/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID)
-        #response = self._call(url, {'username' : username, 'password' : password})
+        authentication = self._parse(response, SelvbetjeningResponseHandler)
 
-        #authentication = self._parse(response, SelvbetjeningAuthenticationHandler)
+        if authentication.success:
+            return authentication
 
-        #if authentication.success:
-        #    self.cookies.set(self.AUTH_TOKEN_KEY, authentication.auth_token)
-
-        pass
+        if authentication.error_code == 'auth_wrong_credentials':
+            raise AuthWrongCredentialsException
+        elif authentication.error_code == 'auth_user_inactive':
+            raise AuthUserInactiveException
+        elif authentication.error_code == 'auth_malformed_input':
+            raise AuthMalformedInputException
+        else:
+            raise AuthUnknownException
 
     def is_authenticated(self):
         if self._auth_token is None:
@@ -96,7 +101,7 @@ class SelvbetjeningIntegrationSSO(object):
         url = '%s/info/%s/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID, self._auth_token)
         response = self._call(url)
 
-        session_info = self._parse(response, SelvbetjeningSessionInfoHandler)
+        session_info = self._parse(response, SelvbetjeningResponseHandler)
 
         if not session_info.success:
             raise InfoNoAuthenticatedUserException
@@ -105,17 +110,16 @@ class SelvbetjeningIntegrationSSO(object):
 
     def _call(self, url, post_data=None):
         try:
-            response = urllib2.urlopen(url, post_data)
-        except  urllib2.HTTPError as exception:
-            raise ErrorContactingAuthenticationServerException(exception)
+            if post_data:
+                post_data = urllib.urlencode(post_data)
+            response = urllib2.urlopen(url, data=post_data)
+        except:
+            raise ErrorContactingAuthenticationServerException
 
         return response.read()
 
     def _parse(self, response, response_handler):
         handler = response_handler()
-        #saxparser = make_parser()
-        #saxparser.setContentHandler(handler)
-        #saxparser.parse(response)
         parseString(response, handler)
         return handler
 
