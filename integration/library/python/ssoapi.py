@@ -1,7 +1,7 @@
 import re
 import urllib2
 from xml.sax.handler import ContentHandler
-from xml.sax import make_parser
+from xml.sax import parseString
 
 class AuthenticationServerException(Exception) : pass
 class ErrorContactingAuthenticationServerException(AuthenticationServerException) : pass
@@ -46,22 +46,25 @@ class SelvbetjeningSessionInfoHandler(ContentHandler):
         self._buffer = u''
 
     def characters(self, char):
-        self._buffer += char
+        self._buffer += char.replace('\n', '').strip()
 
 class SelvbetjeningIntegrationSSO(object):
     SERVICE_ID = 'test'
     AUTH_TOKEN_KEY = 'kita_auth_token'
-    SELVBETJENING_API = 'http:://alpha.kita.dk:8001'
+    SELVBETJENING_API = 'http://test.selvbetjening.dk:8001'
 
     def __init__(self, cookies):
         self.cookies = cookies
         token = cookies.get(self.AUTH_TOKEN_KEY, None)
 
-        auth_token_regex = re.compile(r'^[a-z0-9]+$')
-        if auth_token_regex.match(token) is not None:
-            self._auth_token = token
-        else:
+        if token is None:
             self._auth_token = None
+        else:
+            auth_token_regex = re.compile(r'^[a-z0-9]+$')
+            if auth_token_regex.match(token) is not None:
+                self._auth_token = token
+            else:
+                self._auth_token = None
 
     def authenticate(self, username, password):
         # not implemented
@@ -84,7 +87,7 @@ class SelvbetjeningIntegrationSSO(object):
         response = self._call(url)
 
         if 'accepted' in response:
-            return response[len('accepted'):]
+            return response[len('accepted/'):]
 
     def get_session_info(self):
         if self._auth_token is None:
@@ -100,7 +103,7 @@ class SelvbetjeningIntegrationSSO(object):
 
         return session_info
 
-    def _call(self, post_data=None):
+    def _call(self, url, post_data=None):
         try:
             response = urllib2.urlopen(url, post_data)
         except  urllib2.HTTPError as exception:
@@ -110,8 +113,9 @@ class SelvbetjeningIntegrationSSO(object):
 
     def _parse(self, response, response_handler):
         handler = response_handler()
-        saxparser = make_parser()
-        saxparser.setContentHandler(handler)
-        saxparser.parse(response)
-
+        #saxparser = make_parser()
+        #saxparser.setContentHandler(handler)
+        #saxparser.parse(response)
+        parseString(response, handler)
         return handler
+
