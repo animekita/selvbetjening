@@ -24,12 +24,12 @@ class SelvbetjeningLoginAction(LoginAction):
         try:
             self.db.user.lookup(username)
         except KeyError:
-            self._create_profile()
+            self._create_profile(username)
 
-    def _create_profile(self):
+    def _create_profile(self, username):
         self.journaltag = 'admin'
 
-        self.db.user.create(roles=self.db.config.NEW_WEB_USER_ROLES)
+        self.db.user.create(username=username, roles=self.db.config.NEW_WEB_USER_ROLES)
         self.db.commit()
 
 def init(instance):
