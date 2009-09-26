@@ -79,7 +79,8 @@ def authenticate(request, service,
     return render_to_response(template_name,
                               {'success' : True,
                                'user' : user,
-                               'session' : session_data})
+                               'session' : session_data,
+                               'groups' : _filter_groups(user, service)})
 
 def info(request, service, auth_token,
          template_name='api/sso/base.xml'):
@@ -106,5 +107,15 @@ def info(request, service, auth_token,
     else:
         data['success'] = True
         data['user'] = user
+        data['groups'] = _filter_groups(user, service)
 
     return render_to_response(template_name, data)
+
+def _filter_groups(user, service):
+    try:
+        service = models.Service.objects.get(pk=service)
+        groups = user.groups.filter(service=service)
+    except models.Service.DoesNotExist:
+        groups = user.groups.all()
+
+    return groups

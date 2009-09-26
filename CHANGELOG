@@ -1,3 +1,8 @@
+2.2.0
+ * Added pyton library to sso api.
+ * Added roundup sso integration.
+ * Added group information to sso api and php library.
+
 2.1.5
 
  * Fixed error in validation of eventregistrations when reselecting frozen options.

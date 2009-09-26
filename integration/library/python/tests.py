@@ -14,6 +14,4 @@ def test():
     assert info.success == True
     assert info.user['username'] == 'username'
 
-
-
 test()
