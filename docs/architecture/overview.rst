@@ -1,6 +1,6 @@
-==========
-Arkitektur
-==========
+========
+Oversigt
+========
 
 Selvbetjening er opdelt i tre forskellige typer moduler; data, clients og viewhelpers.
 
