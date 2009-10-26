@@ -82,6 +82,8 @@ INSTALLED_APPS = (
     'selvbetjening.clients.eventregistration',
 
     'selvbetjening.api.sso',
+
+    'selvbetjening.notify.concrete5',
 )
 
 # Initialize Logging
