@@ -3,53 +3,44 @@ from sqlalchemy.orm import mapper
 from datetime import datetime
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
-def get_sessionmaker():
-    url = '%(engine)s://%(username)s:%(password)s@%(host)s/%(name)s'
-    db_settings = {'engine' : settings.C5_DATABASE_ENGINE,
-                   'username' : settings.C5_DATABASE_USERNAME,
-                   'password' : settings.C5_DATABASE_PASSWORD,
-                   'host' : settings.C5_DATABASE_HOST,
-                   'name' : settings.C5_DATABASE_NAME}
+_sessionmakers = {}
+def _sessionmaker(native_db_id):
+    global _sessionmakers
 
-    engine = sqlalchemy.create_engine(url % db_settings, echo=True)
-    return sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True)
+    if not _sessionmakers.has_key(native_db_id):
+        config = settings.DATABASE_NATIVE.get(native_db_id)
 
-sessionmaker = get_sessionmaker()
+        if config is None:
+            raise ImproperlyConfigured('Native database not set correctly')
 
-_session = None
-def _get_session():
-    global _session
+        if config['engine'] == 'mysql':
+            url = '%(engine)s://%(username)s:%(password)s@%(host)s/%(name)s' % config
+        elif config['engine'] == 'sqlite':
+            url = '%(engine)s:///%(name)s' % config
+        else:
+            raise ImproperlyConfigured('Unsupported native database engine %s' % config['engine'])
 
-    if _session is None:
-        _session = sessionmaker()
+        engine = sqlalchemy.create_engine(url, echo=True)
+        _sessionmakers[native_db_id] = sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True)
 
-    return _session
+    return _sessionmakers[native_db_id]
 
-def usingNativeDatabase(func):
-    def decoractor(*args, **kwargs):
-        global _session
-
-        result = func(*args, **kwargs)
-
-        if _session is not None:
-            _session.commit()
-            _session.close()
-            _session = None
-
-        return result
-
-    return decoractor
+def get_session(native_db_id):
+    sessionmaker = _sessionmaker(native_db_id)
+    return sessionmaker()
 
 class NativeBase(object):
-    def save(self):
-        session = _get_session()
-        session.add(self)
+
+    @staticmethod
+    def save(session, object):
+        session.add(object)
         session.commit()
 
-    def delete(self):
-        session = _get_session()
-        session.delete(self)
+    @staticmethod
+    def delete(session, object):
+        session.delete(object)
         session.commit()
 
 class NativeGroups(NativeBase):
@@ -58,7 +49,7 @@ class NativeGroups(NativeBase):
         self.gDescription = description
 
     def __repr__(self):
-        return "<Group(%s, %s)" % (self.name, self.description)
+        return "<NativeGroups(%s, %s)" % (self.gName, self.gDescription)
 
     @property
     def id(self):
@@ -73,8 +64,7 @@ class NativeGroups(NativeBase):
     name = property(_getname, _setname)
 
     @classmethod
-    def get(cls, gID):
-        session = _get_session()
+    def get(cls, session, gID):
         result = session.query(cls).filter_by(gID=gID).all()
 
         object = None
@@ -101,16 +91,22 @@ class NativeUsers(NativeBase):
         self.uName = name
         self.uEmail = email
         self.uDateAdded = created_date
+        self.uLastOnline = 0
+        self.uLastLogin = 0
+        self.uPreviousLogin = 0
         self.uPassword = ''
         self.uIsActive = 1
+        self.uIsValidated = 1
+        self.uIsFullRecord = 1
+        self.uHasAvatar = 0
+        self.uNumLogins = 0
 
     @property
     def id(self):
         return self.uID
 
     @classmethod
-    def get_by_username(cls, uName):
-        session = _get_session()
+    def get_by_username(cls, session, uName):
         result = session.query(cls).filter_by(uName=uName).all()
 
         object = None
@@ -145,15 +141,15 @@ class NativeUsers(NativeBase):
 NativeUsers._initialize_sqlalchemy()
 
 class NativeUserGroups(NativeBase):
-    def __init__(self, user_id, group_id):
+    def __init__(self, session, user_id, group_id):
+        super(NativeUserGroups, self).__init__(session)
+
         self.uID = user_id
         self.gID = group_id
         self.ugEntered = datetime.today()
 
-
     @classmethod
-    def get(cls, user_id, group_id):
-        session = _get_session()
+    def get(cls, session, user_id, group_id):
         result = session.query(cls).filter_by(uID=user_id).filter_by(gID=group_id).all()
 
         object = None
@@ -163,8 +159,7 @@ class NativeUserGroups(NativeBase):
         return object
 
     @classmethod
-    def remove_user(cls, user_id):
-        session = _get_session()
+    def remove_user(cls, session, user_id):
         result = session.query(cls).filter_by(uID=user_id).all()
 
         for object in result:
