@@ -2,6 +2,7 @@
  * Added pyton library to sso api.
  * Added roundup sso integration.
  * Added group information to sso api and php library.
+ * Initial release of selvbetjening notify with support for pushing user groups to concrete5
 
 2.1.5
 
