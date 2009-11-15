@@ -8,7 +8,6 @@ class Migration:
 
     def forwards(self):
         # rename user_ptr_id to user_id
-        db.delete_primary_key('members_userprofile')
         db.rename_column('members_userprofile', 'user_ptr_id', 'user_id')
 
     def backwards(self):
