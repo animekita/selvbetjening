@@ -10,3 +10,4 @@ Requirements
 * python-mysqldb
 * django-tinymce
 * South - Django Database Migration (valgfrit, men anbefalet)
+* Sqlalchemy
