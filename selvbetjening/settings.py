@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'selvbetjening.data.events',
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',
+    'selvbetjening.data.translation',
 
     'selvbetjening.viewhelpers.forms',
     'selvbetjening.viewhelpers.googleanalytics',

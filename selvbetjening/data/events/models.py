@@ -31,6 +31,9 @@ class Event(models.Model):
     show_invoice_page = models.BooleanField(default=False)
     invoice_page = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
 
+    class Translation:
+        fields = ('title', 'description')
+
     class Meta:
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')
@@ -171,6 +174,9 @@ class OptionGroup(models.Model):
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     order = models.IntegerField(_('Order'), default=0)
 
+    class Translation:
+        fields = ('name', 'description')
+
     @property
     def attendees(self):
         return Attend.objects.filter(selection__option__group=self.pk).distinct()
@@ -202,6 +208,9 @@ class Option(models.Model):
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
     order = models.IntegerField(_('Order'), default=0)
+
+    class Translation:
+        fields = ('name', 'description')
 
     @property
     def selections(self):
@@ -249,6 +258,9 @@ class Option(models.Model):
 class SubOption(models.Model):
     option = models.ForeignKey(Option)
     name = models.CharField(max_length=255)
+
+    class Translation:
+        fields = ('name',)
 
     @property
     def selections(self):

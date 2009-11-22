@@ -36,12 +36,12 @@ def uniform_form_rendering(form, submitText=None):
             for item_name in section[1]:
                 if isinstance(item_name, tuple):
                     child_inputs = []
-                    
+
                     for child in item_name[1].pop('children', []):
                         child_inputs.append(get_input(form[child], args=item_name[1], is_child=True))
-                    
+
                     render += get_input(form[item_name[0]], args=item_name[1]).render(children=child_inputs)
-                    
+
                 else:
                     render += get_input(form[item_name]).render()
             render += '</fieldset>\n'

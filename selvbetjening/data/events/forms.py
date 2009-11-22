@@ -1,9 +1,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from selvbetjening.data.translation.utility import translate_model
+
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
-        self.optiongroup = optiongroup
+        self.optiongroup = translate_model(optiongroup)
         self.selected_total = 0
         self.selected_initally = False
         self.save_options = []
@@ -33,6 +35,8 @@ class OptionGroupForm(forms.Form):
         selected_options = [selection.option for selection in selections]
 
         for option in optiongroup.option_set.all().order_by('order'):
+            translate_model(option)
+
             selected = option in selected_options
 
             disabled = option.max_attendees_reached() and not selected
