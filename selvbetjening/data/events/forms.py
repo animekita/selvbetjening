@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):

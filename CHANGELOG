@@ -1,3 +1,6 @@
+2.3.0
+ * Forbedret understøttelse af flere sprog.
+
 2.2.0
  * Added pyton library to sso api.
  * Added roundup sso integration.
