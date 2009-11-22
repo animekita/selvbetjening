@@ -29,7 +29,7 @@ class Database(object):
     @classmethod
     def attend(cls, user, event):
         return models.Attend.objects.create(user=user, event=event)
-    
+
     @classmethod
     def new_optiongroup(cls, event, min_select=0, max_select=0, max_attend=0, freeze_time=None):
         if freeze_time is None:
@@ -42,13 +42,16 @@ class Database(object):
                                                  freeze_time=freeze_time)
 
     @classmethod
-    def new_option(cls, optiongroup, name=None, order=0):
+    def new_option(cls, optiongroup, name=None, order=0, id=None):
         if name is None:
             name = cls.new_id()
 
-        return models.Option.objects.create(group=optiongroup,
-                                            name=name,
-                                            order=order)
+        kwargs = {'group' : optiongroup, 'name' : name, 'order' : order}
+
+        if id is not None:
+            kwargs['id'] = id
+
+        return models.Option.objects.create(**kwargs)
 
 class AttendModelTestCase(TestCase):
     def test_is_new(self):
@@ -75,12 +78,12 @@ class EventModelTestCase(TestCase):
             self.assertEqual(event.attendees[i].user, self.userarray[i])
 
         self.assertEqual(event.attendees[30].user, user)
-        
+
     def test_remove_attendee(self):
         user = Database.new_user()
         event = Database.new_event()
         attend = Database.attend(user, event)
-        
+
         self.assertTrue(event.is_attendee(user))
         event.remove_attendee(user)
         self.assertFalse(event.is_attendee(user))
