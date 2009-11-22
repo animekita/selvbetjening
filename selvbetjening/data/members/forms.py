@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 from models import UserProfile
 import signals
+from shortcuts import get_or_create_profile
 
 class ProfileForm(forms.Form):
     """
@@ -48,7 +49,7 @@ class ProfileForm(forms.Form):
         layout = ((_(u'personal information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
                   (_(u'address'), ('street', 'postalcode', 'city')),
                   (_(u'other'), ('email', 'send_me_email', ))
-                       )
+                 )
 
     def clean_dateofbirth(self):
         # The birth year must be above 1900 to be compatible with strftime
@@ -65,7 +66,7 @@ class ProfileForm(forms.Form):
         user.last_name = self.cleaned_data['last_name']
         user.save()
 
-        profile = user.get_profile()
+        profile = get_or_create_profile(user)
         if profile is not None:
             profile.dateofbirth = self.cleaned_data['dateofbirth']
             profile.street = self.cleaned_data['street']
