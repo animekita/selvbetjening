@@ -1,13 +1,16 @@
 from django import forms
 from django.utils.encoding import force_unicode
 
+class UniformException(Exception):
+    pass
+
 class UniformInputBase(object):
 
     def __init__(self, input, args=None, is_child=False):
         self.attrs = {}
         self.input = input
         self.is_child = is_child
-        
+
         if is_child:
             self.attrs['class'] = 'child_input'
 
@@ -38,7 +41,7 @@ class UniformInputBase(object):
     def render_container(self, content):
         if self.is_child:
             return content
-        
+
         cls = ''
         if self.input.errors:
             cls = ' error'
@@ -56,13 +59,13 @@ class UniformInputBase(object):
     def render_children(self, children=None):
         if children is None:
             children = []
-            
+
         rendered_children = ''
         for child in children:
             rendered_children += child.render()
-            
+
         return rendered_children
-    
+
     def render(self, children=None):
         if self.args.get('display', '') == 'hidden':
             return self.render_input_hidden()
@@ -110,24 +113,24 @@ class UniformInputCheckbox(UniformInputBase):
 
         if not self.is_child:
             parent_input = '$("#id_%s")' % self.input.name
-            
+
             js  = '<script type="text/javascript">'
-            
+
             js += '$(document).ready(function(){'
             js += ' update_child_inputs(%s);' % parent_input
             js += '});'
-            
+
             js += '%s.change(function() {' % parent_input
             js += ' update_child_inputs(%s);' % parent_input
             js += '});'
-            
+
             js += '</script>'
         else:
             js = ''
-    
-        #$(".revision_line").click(function () {    
+
+        #$(".revision_line").click(function () {
         #$(this).next().find("table").toggle("normal");
-        #});    
+        #});
 
         return self.input.label_tag(self.input.as_widget(attrs=self.attrs) + required + self.input.label) + help + js + '\n'
 
@@ -147,6 +150,9 @@ class UniformInputFile(UniformInputText):
         super(UniformInputFile, self).__init__(*args, **kwargs)
 
         self.attrs = {'class' : 'fileUpload text'}
-        
+
+class UniformInputSelectDate(UniformInputBase):
+    pass
+
 class UniformInputRadio(UniformInputBase):
     pass
