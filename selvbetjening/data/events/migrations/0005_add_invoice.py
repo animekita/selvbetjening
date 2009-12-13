@@ -5,21 +5,21 @@ from django.db import models
 from selvbetjening.data.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Attend.invoice'
         db.add_column('events_attend', 'invoice', models.ForeignKey(orm['invoice.Invoice'], blank=True))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Attend.invoice'
         db.delete_column('events_attend', 'invoice_id')
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'description': ('models.TextField', ["_(u'description')"], {'blank': 'True'}),
@@ -68,5 +68,5 @@ class Migration:
             'users': ('models.ManyToManyField', ['User'], {'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events']
