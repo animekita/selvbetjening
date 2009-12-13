@@ -115,8 +115,10 @@ def get_input(item, args={ }, is_child=False):
         return UniformInputTextarea(item, args=args, is_child=is_child)
     elif isinstance(item.field.widget, (forms.FileInput)):
         return UniformInputFile(item, args=args, is_child=is_child)
+    elif isinstance(item.field.widget, (forms.extras.SelectDateWidget)):
+        return UniformInputSelectDate(item, args=args, is_child=is_child)
     else:
-        return '<div style="color: red">ERROR: UNKNOWN INPUT TYPE %s</div>\n' % item.name
+        raise UniformException('Unknown input type for the field %s' % item.name)
 
 def render_Submit(text):
     return '<fieldset class="inlineLabels"><div class="buttonHolder"><button type="submit" class="submitButton">%s</button></div></fieldset>' % text
