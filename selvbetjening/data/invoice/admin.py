@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ObjectDoesNotExist
 
-from models import Invoice, InvoiceRevision, Line
+from selvbetjening.core.selvadmin.admin import site
+
+from models import Invoice, InvoiceRevision, Line, Payment
 
 class InvoiceAdmin(ModelAdmin):
     list_display = ('name', 'user', 'total_price', 'paid', 'is_paid')
@@ -14,6 +16,8 @@ class InvoiceAdmin(ModelAdmin):
         }),)
 
     raw_id_fields = ('user', )
+
+site.register(Invoice, InvoiceAdmin)
 
 class LineInlines(TabularInline):
     model = Line
@@ -51,6 +55,8 @@ class InvoiceRevisionAdmin(ModelAdmin):
         return revision.invoice.user
     user.admin_order_field = 'invoice__user'
 
+site.register(InvoiceRevision, InvoiceRevisionAdmin)
+
 class PaymentAdmin(ModelAdmin):
     list_display = ('user', 'invoice', 'revision', 'amount', 'signee', 'note')
     search_fields = ('revision__invoice__name', 'signee__username', 'note',)
@@ -63,3 +69,5 @@ class PaymentAdmin(ModelAdmin):
     def invoice(self, payment):
         return payment.revision.invoice
     invoice.admin_order_field = 'revision_invoice'
+
+site.register(Payment, PaymentAdmin)

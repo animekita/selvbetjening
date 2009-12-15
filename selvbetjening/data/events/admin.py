@@ -2,7 +2,9 @@ from django.utils.translation import ugettext as _
 from django.contrib.admin import ModelAdmin, TabularInline
 from django.contrib.auth.models import User
 
-from models import Attend, Option, OptionGroup, SubOption, Selection
+from selvbetjening.core.selvadmin.admin import site
+
+from models import Event, Attend, Option, OptionGroup, SubOption, Selection
 
 class AttendAdmin(ModelAdmin):
     list_display = ('user', 'event', 'has_attended', 'dispaly_has_paid')
@@ -13,6 +15,8 @@ class AttendAdmin(ModelAdmin):
     dispaly_has_paid.boolean = True
 
     raw_id_fields = ('user', 'event', 'invoice')
+
+site.register(Attend, AttendAdmin)
 
 class EventAdmin(ModelAdmin):
     list_display = ('title', 'startdate', 'enddate', 'registration_open')
@@ -38,6 +42,8 @@ class EventAdmin(ModelAdmin):
         }),
     )
 
+site.register(Event, EventAdmin)
+
 class OptionInline(TabularInline):
     model = Option
     exclude = ['users', ]
@@ -61,6 +67,8 @@ class OptionGroupAdmin(ModelAdmin):
     raw_id_fields = ('event',)
     inlines = [OptionInline, ]
 
+site.register(OptionGroup, OptionGroupAdmin)
+
 class SubOptionInline(TabularInline):
     model = SubOption
 
@@ -80,3 +88,4 @@ class OptionAdmin(ModelAdmin):
     raw_id_fields = ('group',)
     inlines = [SubOptionInline, SelectionInline]
 
+site.register(Option, OptionAdmin)
