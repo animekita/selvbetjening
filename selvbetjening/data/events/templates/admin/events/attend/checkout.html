@@ -1,4 +1,4 @@
-{% extends "eventmode/base.html" %}
+{% extends "admin/base_site.html" %}
 {% load i18n admin_modify adminmedia %}
 
 {% block extrastyle %}
@@ -19,7 +19,7 @@
 
 {% block content %}
 
-{% include "eventmode/navigation_part.html" %}
+{% include "admin/events/attend/navigation_part.html" %}
 
 <h1>Du er ved at fjerne denne bruger fra eventet</h1>
 <p>Før du gør dette burde du sikre dig at der ikke er registeret fejlagtige betalinger for denne bruger.</p>

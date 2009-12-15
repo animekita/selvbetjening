@@ -1,4 +1,4 @@
-{% extends "eventmode/base.html" %}
+{% extends "admin/base_site.html" %}
 
 {% load markup i18n %}
 {% load adminmedia admin_list i18n %}
@@ -25,7 +25,6 @@
 {% block content %}
 
 <ul class="object-tools">
-  <li><a href="{% url eventmode_list_attendees %}" class="addlink">Tilbage til listen over deltagere</a></li>
   <li><a href="{% url eventmode_create_user %}" class="addlink">Opret ny bruger</a></li>
 </ul>
 

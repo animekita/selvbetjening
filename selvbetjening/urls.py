@@ -25,7 +25,6 @@ urlpatterns = patterns('',
 
     # Admin urls
     (r'^admin/', include('selvbetjening.clients.mailcenter.admin_urls')),
-    (r'^admin/', include('selvbetjening.data.events.admin_urls')),
 
     (r'^eventadmin/', include('selvbetjening.clients.eventmode.urls')),
 )

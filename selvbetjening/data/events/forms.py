@@ -1,7 +1,9 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.forms import ModelForm
 
 from selvbetjening.data.translation.utility import translate_model
+from selvbetjening.data.invoice.models import Payment
 
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
@@ -132,3 +134,8 @@ class OptionForms(object):
     def __iter__(self):
         for form in self.forms:
             yield form
+
+class PaymentForm(ModelForm):
+    class Meta:
+        model = Payment
+        fields = ('amount', 'note')

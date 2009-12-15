@@ -1,4 +1,4 @@
-{% extends "eventmode/base.html" %}
+{% extends "admin/base_site.html" %}
 {% load i18n admin_modify adminmedia %}
 
 {% block extrastyle %}
@@ -19,11 +19,11 @@
 
 {% block content %}
 
-{% include "eventmode/navigation_part.html" %}
+{% include "admin/events/attend/navigation_part.html" %}
 
 {{ checkin_rendered|safe }}
 
-{% include 'eventmode/billing_block.html' %}
+{% include 'admin/events/attend/billing_block.html' %}
 
 <div class="form-row type  ">
 <div>

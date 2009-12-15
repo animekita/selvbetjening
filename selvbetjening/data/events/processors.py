@@ -23,7 +23,7 @@ def options(request, attendee):
                                      {}))
 
     def view_form():
-        return render_to_string('eventmode/checkin/options.html',
+        return render_to_string('admin/events/attend/checkin/options.html',
                                 {'adminforms' : admin_forms,
                                  'attendee' : attendee,
                                  })
