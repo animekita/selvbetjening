@@ -59,7 +59,7 @@
         <ul class="messagelist">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
         {% endif %}
 
-
+    {% block menu %}
     <div id="menu">
 
         <a href="{% url admin:index %}"><h2>Dashboard</h2></a>
@@ -68,18 +68,19 @@
 
         <ul>
             <li><a href="{% url admin:auth_group_changelist %}">Grupper</a></li>
-            <li><a href="#">Medlems-statistik</a></li>
+            <li><a href="{% url admin:kitamembership_membership_statistics %}">Medlems-statistik</a></li>
         </ul>
 
         <a href="{% url admin:events_event_changelist %}"><h2>Arrangementer</h2></a>
 
-        <a href="#"><h2>Fakturaer</h2></a>
+        <a href="{% url admin:invoice_invoice_changelist %}"><h2>Fakturaer</h2></a>
         <ul>
-            <li><a href="#">Faktura rapport</a></li>
-            <li><a href="#">Registrer betaling</a></li>
+            <li><a href="{% url admin:invoice_invoice_report %}">Faktura rapport</a></li>
+            <li><a href="{% url admin:invoice_invoice_pay %}">Registrer betaling</a></li>
         </ul>
 
     </div>
+    {% endblock %}
 
     <div id="content-wrapper">
     <!-- Content -->

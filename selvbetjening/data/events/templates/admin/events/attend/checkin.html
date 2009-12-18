@@ -5,13 +5,15 @@
 <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
 {% endblock %}
 
-{% block breadcrumbs %}
+{% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
-    <a href="{% url eventmode_list_attendees %}">{% trans 'Checkin' %}</a>
-    &rsaquo; {{ attendee.user.username }}
-    &rsaquo; Checkin
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">Events</a> &rsaquo;
+     <a href="../../">Events</a> &rsaquo;
+     <a href="../">{{attendee}}</a> &rsaquo;
+     Checkin
 </div>
-{% endblock %}
+{% endif %}{% endblock %}
 
 {% block content_title %}
 <h1>Checkin for {{attendee.user.first_name}} {{attendee.user.last_name}} &lt;{{attendee.user.username}}&gt;</h1>

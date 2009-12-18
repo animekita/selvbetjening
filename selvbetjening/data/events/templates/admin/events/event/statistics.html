@@ -54,4 +54,34 @@
     </tr>
 </table>
 
+<h3>Tilvalg</h3>
+
+<div class="inline-group">
+  <div class="tabular inline-related">
+    <fieldset class="module">
+    <h2>Tilvalg</h2>
+
+   <table>
+     <thead><tr>
+     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte (heraf betalt)</th>
+     </tr></thead>
+
+     {% for optiongroup in event.optiongroup_set.all %}
+     {% for option in optiongroup.option_set.all %}
+     <tr class="{% cycle "row1" "row2" %}">
+       <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
+         {% if forloop.first %}{{ optiongroup.name }}{% endif %}
+       </a></td>
+       <td><a href="/admin/events/option/{{ option.id }}/">
+         {{ option.name }}
+       </a></td>
+       <td>{{option.attendees_count}} ({{option.paid_selections_count}})</td>
+     </tr>
+     {% endfor %}
+     {% endfor %}
+   </table>
+
+</div>
+</div>
+
 {% endblock %}

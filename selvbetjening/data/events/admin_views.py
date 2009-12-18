@@ -70,16 +70,6 @@ def event_statistics(request, event_id, template_name='admin/events/event/statis
                                'paid_invoices' : paid_invoices},
                               context_instance=RequestContext(request))
 
-def event_options_print(request,
-                        event_id,
-                        template_name='admin/events/event/options_print.html'):
-
-    event = get_object_or_404(Event, id=event_id)
-
-    return render_to_response(template_name,
-                              {'event' : event},
-                              context_instance=RequestContext(request))
-
 def change_selections(request, attend_id,
                       template_name='admin/events/attend/change_selections.html'):
 

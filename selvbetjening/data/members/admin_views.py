@@ -1,8 +1,8 @@
 def create_user(request,
-                template_name='eventmode/create_user.html'):
-
-    event = request.eventmode.model.event
-
+                template_name='admin/members/create_user.html'):
+    
+    
+    
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
 
@@ -10,8 +10,7 @@ def create_user(request,
             user = form.save()
             event.add_attendee(user)
 
-            return HttpResponseRedirect(reverse('eventmode_change_selections',
-                                                kwargs={'user_id' : user.id}))
+            return HttpResponseRedirect(reverse('admin:auth_user_changelist'))
 
     else:
         form = RegistrationForm()

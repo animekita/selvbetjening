@@ -18,74 +18,6 @@ from selvbetjening.core.selvadmin.admin import site
 from models import Event, Attend, Option, OptionGroup, SubOption, Selection
 import admin_views
 
-class EventAdmin(ModelAdmin):
-    def changelist_item_actions(self, event):
-
-        actions = u"""
-        <a href="%s"><input type="button" value="Statistik"/></a>
-        """ % reverse('admin:events_event_stats', args=[event.id,])
-
-        actions += u"""
-        <a href="%s?event__id__exact=%s"><input type="button" value="Tilmeldte"/></a>
-        """ % (reverse('admin:events_attend_changelist'), event.id)
-
-        actions += u"""
-        <a href="%s"><input type="button" value="Tilmeld person"/></a>
-        """ % reverse('admin:events_event_attend', args=[event.id,])
-
-        actions += u"""
-        <a href="%s"><input type="button" value="Indstillinger"/></a>
-        """ % reverse('admin:events_event_change', args=[event.id,])
-
-        return actions
-
-    changelist_item_actions.allow_tags = True
-    changelist_item_actions.short_description = _('Actions')
-
-    list_display = ('title', 'startdate', 'changelist_item_actions')
-
-    fieldsets = (
-        (None, {
-            'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
-        }),
-        (_('Conditions'), {
-            'fields' : ('maximum_attendees',),
-            'classes' : ('collapse', ),
-        }),
-        (_('Registration Confirmation'), {
-            'fields' : ('show_registration_confirmation', 'registration_confirmation'),
-            'classes' : ('collapse', ),
-        }),
-        (_('Change Confirmation'), {
-            'fields' : ('show_change_confirmation', 'change_confirmation'),
-            'classes' : ('collapse', ),
-        }),
-        (_('Invoice page'), {
-            'fields' : ('show_invoice_page', 'invoice_page'),
-            'classes' : ('collapse', ),
-        }),
-    )
-
-    def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
-
-        info = self.model._meta.app_label, self.model._meta.module_name
-
-        urlpatterns = patterns('',
-            url(r'^(.+)/stats/',
-                self.admin_site.admin_view(admin_views.event_statistics),
-                name='%s_%s_stats' % info),
-            url(r'^(.+)/attend/',
-                self.admin_site.admin_view(admin_views.add_user),
-                name='%s_%s_attend' % info),
-            )
-
-        urlpatterns += super(EventAdmin, self).get_urls()
-
-        return urlpatterns
-
-site.register(Event, EventAdmin)
-
 class AttendAdmin(ModelAdmin):
     def changelist_item_actions(attend):
         actions = ''
@@ -150,6 +82,74 @@ class AttendAdmin(ModelAdmin):
 
 
 site.register(Attend, AttendAdmin)
+
+class EventAdmin(ModelAdmin):
+    def changelist_item_actions(self, event):
+
+        actions = u"""
+        <a href="%s"><input type="button" value="Statistik"/></a>
+        """ % reverse('admin:events_event_statistics', args=[event.id,])
+
+        actions += u"""
+        <a href="%s?event__id__exact=%s"><input type="button" value="Tilmeldte"/></a>
+        """ % (reverse('admin:events_attend_changelist'), event.id)
+
+        actions += u"""
+        <a href="%s"><input type="button" value="Tilmeld person"/></a>
+        """ % reverse('admin:events_event_attendees_new', args=[event.id,])
+
+        actions += u"""
+        <a href="%s"><input type="button" value="Indstillinger"/></a>
+        """ % reverse('admin:events_event_change', args=[event.id,])
+
+        return actions
+
+    changelist_item_actions.allow_tags = True
+    changelist_item_actions.short_description = _('Actions')
+
+    list_display = ('title', 'startdate', 'changelist_item_actions')
+
+    fieldsets = (
+        (None, {
+            'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
+        }),
+        (_('Conditions'), {
+            'fields' : ('maximum_attendees',),
+            'classes' : ('collapse', ),
+        }),
+        (_('Registration Confirmation'), {
+            'fields' : ('show_registration_confirmation', 'registration_confirmation'),
+            'classes' : ('collapse', ),
+        }),
+        (_('Change Confirmation'), {
+            'fields' : ('show_change_confirmation', 'change_confirmation'),
+            'classes' : ('collapse', ),
+        }),
+        (_('Invoice page'), {
+            'fields' : ('show_invoice_page', 'invoice_page'),
+            'classes' : ('collapse', ),
+        }),
+    )
+
+    def get_urls(self):
+        from django.conf.urls.defaults import patterns, url
+
+        info = self.model._meta.app_label, self.model._meta.module_name
+
+        urlpatterns = patterns('',
+            url(r'^(.+)/statistics/',
+                self.admin_site.admin_view(admin_views.event_statistics),
+                name='%s_%s_statistics' % info),
+            url(r'^(.+)/attendees/new/',
+                self.admin_site.admin_view(admin_views.add_user),
+                name='%s_%s_attendees_new' % info),
+            )
+
+        urlpatterns += super(EventAdmin, self).get_urls()
+
+        return urlpatterns
+
+site.register(Event, EventAdmin)
 
 class OptionInline(TabularInline):
     model = Option

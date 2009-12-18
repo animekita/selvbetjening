@@ -5,79 +5,12 @@
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
   <ul class="object-tools">
-  <li><a href="statistics/" class="historylink">{% trans "Statistics" %}</a></li>
-  <li><a href="options_print/" class="historylink">{% trans "Print options" %}</a></li>
-  <li><a href="{% url invoice_report %}?event={{original.id}}" class="historylink">{% trans "Invoice Report" %}</a></li>
+  <li><a href="{% url admin:events_event_statistics original.id %}" class="historylink">{% trans "Statistics" %}</a></li>
+  <li><a href="{% url admin:events_attend_changelist %}?event__id__exact={{ original.id }}" class="historylink">{% trans "Attendees" %}</a></li>
+  <li><a href="{% url admin:events_event_attendees_new original.id %}" class="historylink">{% trans "Add attendee" %}</a></li>
+  <li><a href="{% url admin:events_event_change original.id %}" class="historylink">{% trans "Settings" %}</a></li>  
   <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
   {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
   </ul>
 {% endif %}{% endif %}
-{% endblock %}
-
-{% block after_field_sets %}
-
-<div class="inline-group">
-  <div class="tabular inline-related">
-    <fieldset class="module">
-    <h2>Tilvalg</h2>
-
-   <table>
-     <thead><tr>
-     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte (heraf betalt)</th>
-     </tr></thead>
-
-     {% for optiongroup in original.optiongroup_set.all %}
-     {% for option in optiongroup.option_set.all %}
-     <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
-         {% if forloop.first %}{{ optiongroup.name }}{% endif %}
-       </a></td>
-       <td><a href="/admin/events/option/{{ option.id }}/">
-         {{ option.name }}
-       </a></td>
-       <td>{{option.attendees_count}} ({{option.paid_selections_count}})</td>
-     </tr>
-     {% endfor %}
-     {% endfor %}
-   </table>
-
-</div>
-
-<div class="tabular inline-related">
-    <fieldset class="module">
-    <h2>Deltagere</h2>
-
-   <table>
-     <thead><tr>
-     <th>#</th>
-     <th>Deltager</th>
-     <th>Har deltaget</th>
-     <th>Har betalt</th>
-     </tr></thead>
-
-     {% for attendee in original.attendees %}
-     <tr class="{% cycle "row1" "row2" %}">
-       <td><a href="/admin/events/attend/{{ attendee.id }}/">{{ forloop.counter }}</a></td>
-       <td><a href="/admin/auth/user/{{ attendee.user.id }}/">{{ attendee.user.username }}</a></td><td>
-        {% if attendee.has_attended %}
-          <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
-        {% else %}
-          <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
-        {% endif %}
-       </td>
-       <td>
-        {% if attendee.invoice.is_paid %}
-          <img src="{% admin_media_prefix %}img/admin/icon-yes.gif" alt="yes" />
-        {% else %}
-          <img src="{% admin_media_prefix %}img/admin/icon-no.gif" alt="yes" />
-        {% endif %}
-        &nbsp;<a href="/admin/invoice/invoice/{{attendee.invoice.id}}">(invoice)</a>
-        </td>
-     </tr>
-     {% endfor %}
-   </table>
-
-</div>
-</div>
-
 {% endblock %}

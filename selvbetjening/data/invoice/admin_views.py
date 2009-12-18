@@ -9,8 +9,7 @@ from django.utils.translation import ugettext as _
 from models import Invoice
 from forms import InvoiceSourceForm, InvoiceFormattingForm, InvoiceGlobalIdForm
 
-@staff_member_required
-def invoice_goto(request,
+def invoice_pay(request,
                  template_name='admin/invoice/invoice/goto.html'):
 
     if request.method == 'POST':
@@ -31,7 +30,6 @@ def invoice_goto(request,
                                'form' : form},
                               context_instance=RequestContext(request))
 
-@staff_member_required
 def invoice_report(request,
                    template_name='admin/invoice/invoice/report.html'):
 
