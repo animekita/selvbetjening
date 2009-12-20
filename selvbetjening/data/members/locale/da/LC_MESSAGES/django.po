@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-06 00:44+0200\n"
+"POT-Creation-Date: 2009-12-20 00:39+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -17,140 +17,153 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin.py:22
+#: admin.py:30
 msgid "Age"
 msgstr "Alder"
 
-#: forms.py:17
+#: admin.py:48
+#, python-format
+msgid "The %(name)s \"%(obj)s\" was added successfully."
+msgstr ""
+
+#: admin.py:56
+msgid "You may edit it again below."
+msgstr ""
+
+#: admin.py:67
+#, fuzzy
+msgid "Add user"
+msgstr "bruger"
+
+#: forms.py:22
 msgid "first name"
 msgstr "Fornavn"
 
-#: forms.py:21
+#: forms.py:26
 msgid "last name"
 msgstr "Efternavn"
 
-#: forms.py:24
+#: forms.py:29
 msgid "email"
 msgstr "Email"
 
-#: forms.py:27
-#: models.py:14
-#: migrations/0000_initial.py:14
+#: forms.py:32 models.py:16 migrations/0000_initial.py:14
 #: migrations/0003_enforce_dob_null.py:10
 msgid "date of birth"
 msgstr "Fødselsdag"
 
-#: forms.py:29
-#, python-format
-msgid "State your date of birth using the format %(format)s."
-msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
-
-#: forms.py:33
-#: models.py:15
-#: migrations/0000_initial.py:15
+#: forms.py:36 models.py:17 migrations/0000_initial.py:15
 msgid "street"
 msgstr "Vej"
 
-#: forms.py:35
-#: models.py:16
-#: migrations/0000_initial.py:18
+#: forms.py:38 models.py:18 migrations/0000_initial.py:18
 msgid "postal code"
 msgstr "Postnummer"
 
-#: forms.py:39
-#: models.py:17
-#: migrations/0000_initial.py:13
+#: forms.py:42 models.py:19 migrations/0000_initial.py:13
 msgid "city"
 msgstr "By"
 
-#: forms.py:41
-#: models.py:18
-#: migrations/0000_initial.py:16
+#: forms.py:45
+msgid "country"
+msgstr "Land"
+
+#: forms.py:49 models.py:21 migrations/0000_initial.py:16
 msgid "phonenumber"
 msgstr "Telefonnummer"
 
-#: forms.py:44
+#: forms.py:52
 msgid "Inform me about events and other important changes."
 msgstr "Informer mig omkring arrangementer og andre tiltag."
 
-#: forms.py:48
-#: forms.py:104
-msgid "personal information"
+#: forms.py:56
+#, fuzzy
+msgid "Personal Information"
 msgstr "Personoplysninger"
 
-#: forms.py:49
-#: forms.py:107
-msgid "address"
+#: forms.py:57
+#, fuzzy
+msgid "Address"
 msgstr "Adresse"
 
-#: forms.py:50
-msgid "other"
+#: forms.py:58
+#, fuzzy
+msgid "Other"
 msgstr "Andet"
 
-#: forms.py:56
+#: forms.py:64
 msgid "Your birthday is not allowed to be dated before 1900"
 msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
-#: forms.py:93
+#: forms.py:101
 msgid "username"
 msgstr "brugernavn"
 
-#: forms.py:94
-msgid "Your username can only contain the characters a-z, underscore and numbers."
-msgstr "Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
+#: forms.py:102
+msgid ""
+"Your username can only contain the characters a-z, underscore and numbers."
+msgstr ""
+"Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
 
-#: forms.py:96
+#: forms.py:104
 msgid "password"
 msgstr "kodeord"
 
-#: forms.py:98
+#: forms.py:106
 msgid "verify password"
 msgstr "bekræft kodeord"
 
-#: forms.py:101
+#: forms.py:109
 msgid "I allow the storage of my personal information on this site."
 msgstr "Jeg tillader opbevaringen af mine personlige data på denne side."
 
-#: forms.py:108
-#: models.py:12
-#: migrations/0000_initial.py:17
+#: forms.py:112
+msgid "personal information"
+msgstr "Personoplysninger"
+
+#: forms.py:115
+msgid "address"
+msgstr "Adresse"
+
+#: forms.py:116 models.py:14 migrations/0000_initial.py:17
 msgid "user"
 msgstr "bruger"
 
-#: forms.py:109
+#: forms.py:117
 msgid "data management terms"
 msgstr ""
 
-#: forms.py:114
-msgid "You must allow us to store your information to create an account."
-msgstr "Du skal tillade os at gemme dine personlige informationer for at oprette en konto hos os."
-
 #: forms.py:122
+msgid "You must allow us to store your information to create an account."
+msgstr ""
+"Du skal tillade os at gemme dine personlige informationer for at oprette en "
+"konto hos os."
+
+#: forms.py:130
 msgid "Usernames can only contain letters, numbers and underscores"
 msgstr "Brugernavne kan kun indeholde bogstaver, tal og underscore."
 
-#: forms.py:129
+#: forms.py:137
 msgid "This username is already taken. Please choose another."
 msgstr "Dit valgte brugernavn er allerede taget, vælg venligst et andet."
 
-#: forms.py:136
+#: forms.py:144
 msgid "You must type the same password each time"
 msgstr "Du skal indtaste det samme kodeord to gange."
 
-#: models.py:19
-#: migrations/0000_initial.py:19
+#: models.py:22 migrations/0000_initial.py:19
 msgid "Send me emails"
 msgstr "Send mig emails"
 
-#: models.py:22
+#: models.py:25
 msgid "user profile"
 msgstr "Bruger profil"
 
-#: models.py:23
+#: models.py:26
 msgid "user profiles"
 msgstr "Bruger profiler"
 
-#: models.py:35
+#: models.py:38
 #, python-format
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
@@ -159,3 +172,9 @@ msgstr "Registreringsprofil for %s"
 msgid "Personal information updated"
 msgstr "Dine personoplysninger er blevet opdateret"
 
+#: templates/admin/auth/user/add_user.html:10
+msgid "Home"
+msgstr ""
+
+#~ msgid "State your date of birth using the format %(format)s."
+#~ msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."

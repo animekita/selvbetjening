@@ -6,6 +6,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from countries.models import Country
+
 import signals
 
 class UserProfile(models.Model):
@@ -15,6 +17,7 @@ class UserProfile(models.Model):
     street = models.CharField(_(u'street'), max_length=255, blank=True)
     postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
     city = models.CharField(_(u'city'), max_length=255, blank=True)
+    country = models.ForeignKey(Country, default='DK', blank=True, null=True)
     phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
     send_me_email = models.BooleanField(_(u'Send me emails'))
 

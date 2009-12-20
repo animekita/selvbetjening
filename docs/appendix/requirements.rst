@@ -8,5 +8,6 @@ Requirements
 * python-textile
 * python-mysqldb
 * django-tinymce
+* django-countries http://code.google.com/p/django-countries/
 * South - Django Database Migration (valgfrit, men anbefalet)
 * Sqlalchemy

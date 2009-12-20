@@ -30,7 +30,7 @@ class UniformInputBase(object):
 
     def label(self):
         if self.input.field.required:
-            return self.input.label_tag('<em>*</em> ' + force_unicode(self.input.label)) + '\n'
+            return self.input.label_tag('<em>*</em> ' + force_unicode(self.input.label.capitalize())) + '\n'
         else:
             return self.input.label_tag() + '\n'
 

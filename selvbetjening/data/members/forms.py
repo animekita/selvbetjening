@@ -5,6 +5,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
+from countries.models import Country
+
+from selvbetjening.viewhelpers.forms import widgets
+
 from models import UserProfile
 import signals
 from shortcuts import get_or_create_profile
@@ -24,11 +28,9 @@ class ProfileForm(forms.Form):
 
     email = forms.EmailField(max_length=75, label=_(u'email'))
 
-    dateofbirth = forms.DateField(widget=forms.TextInput(),
-                                  label=_(u'date of birth'),
-                                  input_formats=('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y'),
-                                  help_text=_(u'State your date of birth using the format %(format)s.') % {'format' : 'dd-mm-yyyy'})
-
+    dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(years=range(1910, 2010)),
+                                  label=_(u'date of birth'))
+    
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
                              label=_(u'street'),
@@ -39,6 +41,11 @@ class ProfileForm(forms.Form):
                            widget=forms.TextInput(),
                            label=_(u'city'),
                            required=False)
+
+    country = forms.ModelChoiceField(label=_(u'country'),
+                                     queryset=Country.objects.all(), 
+                                     required=False, initial='DK')
+    
     phonenumber = forms.IntegerField(label=_(u'phonenumber'), required=False)
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
@@ -46,9 +53,9 @@ class ProfileForm(forms.Form):
                              initial=True, required=False)
 
     class Meta:
-        layout = ((_(u'personal information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (_(u'address'), ('street', 'postalcode', 'city')),
-                  (_(u'other'), ('email', 'send_me_email', ))
+        layout = ((_(u'Personal Information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
+                  (_(u'Address'), ('street', 'postalcode', 'city', 'country')),
+                  (_(u'Other'), ('email', 'send_me_email', ))
                  )
 
     def clean_dateofbirth(self):

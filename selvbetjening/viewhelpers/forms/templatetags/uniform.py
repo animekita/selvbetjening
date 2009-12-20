@@ -21,7 +21,7 @@ def uniform_form_rendering(form, submitText=None):
 
     if hasattr(form, 'Meta') and hasattr(form.Meta, 'layout'):
         for section in form.Meta.layout:
-            render += '<fieldset class="inlineLabels"><legend>' + section[0] + '</legend>\n'
+            render += '<fieldset class="inlineLabels"><legend>' + unicode(section[0]) + '</legend>\n'
 
             if len(section) >= 3 and len(section[2]) > 0:
                 render += '<div class="ctrlHolder blockLabels">'

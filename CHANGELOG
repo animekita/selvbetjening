@@ -1,5 +1,6 @@
 3.0.0
- * Forbedret understøttelse af flere sprog.
+ * Improved support for additional languages.
+ * Improved selection of date of birth.
 
 2.2.0
  * Added pyton library to sso api.

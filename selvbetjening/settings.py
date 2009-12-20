@@ -59,6 +59,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'countries',
+    
     'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
