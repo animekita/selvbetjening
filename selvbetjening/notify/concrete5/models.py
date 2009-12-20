@@ -76,7 +76,7 @@ def _get_sync_group_members_listener(listener_id, config, session, sender, **kwa
                     native_user = NativeUsers(instance.username, instance.email, instance.date_joined)
                     NativeUsers.save(session, native_user)
 
-                native_map = NativeUserGroups(session, native_user.id, map.native_group_id)
+                native_map = NativeUserGroups(native_user.id, map.native_group_id)
                 NativeUserGroups.save(session, native_map)
 
             except GroupsMapper.DoesNotExist:

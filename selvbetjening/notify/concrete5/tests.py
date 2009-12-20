@@ -1,8 +1,5 @@
-import fudge
-
 from django.test import TransactionTestCase
 from django.contrib.auth.models import Group
-from django.db import connection, transaction
 from django.conf import settings
 
 from selvbetjening.data.events.tests import Database

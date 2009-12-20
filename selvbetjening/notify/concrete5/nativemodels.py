@@ -141,9 +141,7 @@ class NativeUsers(NativeBase):
 NativeUsers._initialize_sqlalchemy()
 
 class NativeUserGroups(NativeBase):
-    def __init__(self, session, user_id, group_id):
-        super(NativeUserGroups, self).__init__(session)
-
+    def __init__(self, user_id, group_id):
         self.uID = user_id
         self.gID = group_id
         self.ugEntered = datetime.today()

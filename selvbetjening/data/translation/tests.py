@@ -17,11 +17,11 @@ class TranslationUtilityTest(TestCase):
     def test_translate_model(self):
         event = EventDatabase.new_event()
 
-        Translation.objects.create(translated_object=event, field='title', locale='da-dk', translation='danish text')
+        Translation.objects.create(translated_object=event, field='title', locale='na-na', translation=u'na text')
 
         title = event.title
 
-        translate_model(event, 'da-dk')
+        translate_model(event, 'na-na')
 
         self.assertNotEqual(event.title, title)
 

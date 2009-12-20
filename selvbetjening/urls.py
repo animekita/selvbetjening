@@ -3,6 +3,8 @@ from django.views.generic.simple import redirect_to, direct_to_template
 
 from selvbetjening.clients.profile.views import profile, profile_redirect
 
+import admin
+
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
 
@@ -25,4 +27,5 @@ urlpatterns = patterns('',
 
     # Admin urls
     (r'^admin/', include('selvbetjening.clients.mailcenter.admin_urls')),
+    (r'^admin/', include(admin.site.urls)),
 )

@@ -12,7 +12,9 @@ def get_user_data():
             'first_name' : 'test',
             'last_name' : 'test',
             'email' : 'user@example.org',
-            'dateofbirth' : '14-10-1987',
+            'dateofbirth' : '1987-10-14',
+            'country' : 'DK',
+            'send_me_email' : False,
             'tos' : True}
 
 def test_user_created(testcase, username):

@@ -103,8 +103,10 @@ class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
     invoice = models.ForeignKey(Invoice, blank=True)
+    
     has_attended = models.BooleanField()
-
+    accepted = models.BooleanField()
+    
     objects = AttendManager()
 
     class Meta:

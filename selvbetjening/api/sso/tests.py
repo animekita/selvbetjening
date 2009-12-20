@@ -38,8 +38,7 @@ class InfoTestCase(TestCase):
 
         resp = self.client.get(url)
 
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.content, u'rejected')
+        self.assertContains(resp, '<success>False</success>')
 
     def test_info(self):
         user = EventDatabase.new_user(id='test')

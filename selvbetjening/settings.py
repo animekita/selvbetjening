@@ -46,7 +46,6 @@ MIDDLEWARE_CLASSES = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
-    'selvbetjening.clients.eventmode.context_processors.eventmode',
     'django.core.context_processors.i18n',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
@@ -92,7 +91,7 @@ import logging
 
 logging.basicConfig(
     level=logging.NOTSET,
-    format='%(asctime)s %(clientip)s %(user)s %(levelname)-8s %(message)s',
+    format='%(asctime)s %(levelname)-8s %(message)s',
     datefmt='%m-%d %H:%M',
     filename=LOG_FILE,
     filemode='a'
