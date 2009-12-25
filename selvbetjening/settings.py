@@ -59,7 +59,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'countries',
-    
+
     'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,7 +98,6 @@ logging.basicConfig(
 )
 logging.getLogger('').setLevel(logging.NOTSET)
 
-# Eventmode checkin modules
 EVENTMODE_CHECKIN_PROCESSORS = (
     'selvbetjening.data.membership.checkin_processors.membership',
     'selvbetjening.data.events.checkin_processors.options',

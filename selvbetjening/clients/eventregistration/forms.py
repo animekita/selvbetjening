@@ -17,7 +17,13 @@ class AcceptForm(forms.Form):
         super(AcceptForm, self).__init__(*args, **kwargs)
 
         self.fields['confirm'] = forms.BooleanField(widget=forms.CheckboxInput(),
-                             label=self.label())
+                                                    label=self.label())
+
+    def label(self):
+        return u'Accept'
+
+    def error(self):
+        return u'Error'
 
     def clean_confirm(self):
         if self.cleaned_data.get('confirm', False):
@@ -46,14 +52,14 @@ class OptionGroupForm(BaseOptionGroupForm):
     def _should_save(self, option, suboptions, disabled):
         return disabled == False
 
-    def _display_option(self, *args, **kwargs):
-        if kwargs.get('display_params', None) is None:
-            kwargs['display_params'] = {}
+    def _display_option(self, option, disabled, suboptions, display_params=None):
+        if display_params is None:
+            display_params = {}
 
-        if kwargs.get('disabled', False):
-            kwargs['display_params']['disabled'] = 'disabled'
+        if disabled:
+            display_params['disabled'] = 'disabled'
 
-        return super(OptionGroupForm, self)._display_option(*args, **kwargs)
+        return super(OptionGroupForm, self)._display_option(option, disabled, suboptions, display_params)
 
     def _register_clean_function(self, option, selected_initially, disabled):
         def clean_disabled_option():
@@ -61,15 +67,12 @@ class OptionGroupForm(BaseOptionGroupForm):
 
             if selected_initially:
                 self.selected_total += 1
+                return
 
-            if selected and \
-               option.max_attendees_reached() and \
-               not selected_initially:
+            if selected and option.max_attendees_reached():
                 raise forms.ValidationError(_('The maximum number of attendees have been reached'))
 
-            if selected and \
-               option.is_frozen() and \
-               not selected_initially:
+            if selected and option.is_frozen():
                 raise forms.ValidationError(_('This option can not be selected anymore'))
 
         def clean_enabled_option():

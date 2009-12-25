@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.admin.widgets import AdminRadioSelect
 from django.contrib.auth.models import User
 
-from selvbetjening.data.events.models import Event
+from selvbetjening.data.events.models import Event, AttendState
 from selvbetjening.data.invoice.models import Line
 
 from models import Invoice, InvoiceRevision
@@ -25,9 +25,9 @@ class InvoiceSourceForm(forms.Form):
             invoice_queryset = invoice_queryset.filter(attend__event__pk=event_id)
 
         if self.cleaned_data['filter_attended'] == 'only_attended':
-            invoice_queryset = invoice_queryset.filter(attend__has_attended=True)
+            invoice_queryset = invoice_queryset.filter(attend__state=AttendState.attended)
         elif self.cleaned_data['filter_attended'] == 'not_attended':
-            invoice_queryset = invoice_queryset.filter(attend__has_attended=False)
+            invoice_queryset = invoice_queryset.exclude(attend__state=AttendState.attended)
 
         return invoice_queryset
 

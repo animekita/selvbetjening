@@ -14,11 +14,20 @@ class Database(object):
         return str(cls._id)
 
     @classmethod
-    def new_event(cls):
+    def new_event(cls, maximum_attendees=0,
+                  move_to_accepted_policy=None):
+
+        kwargs = {}
+
+        if move_to_accepted_policy is not None:
+            kwargs['move_to_accepted_policy'] = move_to_accepted_policy
+
         return models.Event.objects.create(title=cls.new_id(),
                                            startdate=date.today(),
                                            enddate=date.today(),
-                                           registration_open=True)
+                                           registration_open=True,
+                                           maximum_attendees=maximum_attendees,
+                                           **kwargs)
 
     @classmethod
     def new_user(cls, id=None):
@@ -42,7 +51,7 @@ class Database(object):
                                                  freeze_time=freeze_time)
 
     @classmethod
-    def new_option(cls, optiongroup, name=None, order=0, id=None):
+    def new_option(cls, optiongroup, name=None, order=0, id=None, maximum_attendees=0):
         if name is None:
             name = cls.new_id()
 
@@ -51,7 +60,7 @@ class Database(object):
         if id is not None:
             kwargs['id'] = id
 
-        return models.Option.objects.create(**kwargs)
+        return models.Option.objects.create(maximum_attendees=maximum_attendees, **kwargs)
 
 class AttendModelTestCase(TestCase):
     def test_is_new(self):
@@ -64,20 +73,15 @@ class AttendModelTestCase(TestCase):
 
 class EventModelTestCase(TestCase):
     def test_attendee_order(self):
-        user = Database.new_user()
         event = Database.new_event()
 
         self.userarray = []
         for i in range(30):
             self.userarray.append(User.objects.create_user('user%s' % i, 'user@example.org', ''))
-            event.add_attendee(self.userarray[i], has_attended=False)
-
-        event.add_attendee(user, has_attended=False)
+            event.add_attendee(self.userarray[i])
 
         for i in range(30):
             self.assertEqual(event.attendees[i].user, self.userarray[i])
-
-        self.assertEqual(event.attendees[30].user, user)
 
     def test_remove_attendee(self):
         user = Database.new_user()

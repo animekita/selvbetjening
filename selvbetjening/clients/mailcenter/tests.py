@@ -5,7 +5,7 @@ from django.contrib.auth import models as auth_models
 from django.core import mail
 
 from selvbetjening.data.members.models import UserProfile
-from selvbetjening.data.events.models import Event, Attend
+from selvbetjening.data.events.models import Event, Attend, AttendState
 
 from forms import SelectGroupForm
 from models import Mail
@@ -35,7 +35,7 @@ class RecipientGroupFormTest(TestCase):
         self.attendees = []
         for i in range(5):
             for j in range(5):
-                Attend.objects.create(user=self.users[j], event=self.events[i], has_attended=False)
+                Attend.objects.create(user=self.users[j], event=self.events[i], state=AttendState.waiting)
 
     def test_select_list(self):
         form = SelectGroupForm()

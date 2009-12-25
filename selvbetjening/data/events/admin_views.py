@@ -17,15 +17,18 @@ from selvbetjening.data.invoice.models import Invoice, Payment
 from selvbetjening.data.members.forms import RegistrationForm
 
 import processor_handlers
-from models import Event, Attend
+from models import Event, Attend, AttendState
 from forms import PaymentForm
 
 def event_statistics(request, event_id, template_name='admin/events/event/statistics.html'):
     event = get_object_or_404(Event, id=event_id)
 
+    checkedin_count = event.attendees.filter(state=AttendState.attended).count()
+    attendees_count = event.attendees.count()
+
     checkedin_precentage = 0
     if event.attendees_count > 0:
-        checkedin_precentage = 100 * float(event.checkedin_count) / float(event.attendees_count)
+        checkedin_precentage = 100 * float(checkedin_count) / float(attendees_count)
 
     new = 0
     new_checkedin = 0
@@ -33,16 +36,17 @@ def event_statistics(request, event_id, template_name='admin/events/event/statis
         if attendee.is_new():
             new += 1
 
-            if attendee.has_attended:
+            if attendee.state == AttendState.attended:
                 new_checkedin += 1
 
     new_checkedin_precentage = 0
-    if event.checkedin_count > 0:
-        new_checkedin_precentage = 100 * float(new_checkedin) / float(event.checkedin_count)
+
+    if checkedin_count > 0:
+        new_checkedin_precentage = 100 * float(new_checkedin) / float(checkedin_count)
 
     new_precentage = 0
     if event.attendees_count > 0:
-        new_precentage = 100 * float(new) / float(event.attendees_count)
+        new_precentage = 100 * float(new) / float(attendees_count)
 
     total = 0
     paid = 0
@@ -59,6 +63,8 @@ def event_statistics(request, event_id, template_name='admin/events/event/statis
 
     return render_to_response(template_name,
                               {'event' : event,
+                               'checkedin_count' : checkedin_count,
+                               'attendees_count' : attendees_count,
                                'checkin_precentage' : checkedin_precentage,
                                'new_attendees' : new,
                                'new_checkedin' : new_checkedin,
@@ -140,11 +146,11 @@ def checkout(request,
     attendee = shortcuts.get_object_or_404(Attend, pk=attend_id)
     event = attendee.event
 
-    if not attendee.has_attended:
+    if not attendee.state == AttendState.attended:
         return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
 
     if request.method == 'POST':
-        attendee.has_attended = False
+        attendee.state = AttendState.accepted
         attendee.save()
 
         return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
@@ -160,7 +166,7 @@ def checkin(request, attend_id,
     attendee = shortcuts.get_object_or_404(Attend, pk=attend_id)
     event = attendee.event
 
-    if attendee.has_attended:
+    if attendee.state == AttendState.attended:
         return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
 
     if request.method == 'POST':
@@ -169,7 +175,7 @@ def checkin(request, attend_id,
                                    amount=attendee.invoice.unpaid,
                                    note=_('Payment at %(event)s checkin') % {'event' : attendee.event})
 
-        attendee.has_attended = True
+        attendee.state = AttendState.attended
         attendee.save()
 
         return HttpResponseRedirect(reverse('admin:events_attend_changelist'))

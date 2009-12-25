@@ -15,7 +15,7 @@ from django.contrib.admin.helpers import AdminForm
 
 from selvbetjening.core.selvadmin.admin import site
 
-from models import Event, Attend, Option, OptionGroup, SubOption, Selection
+from models import Event, Attend, AttendState, Option, OptionGroup, SubOption, Selection
 import admin_views
 
 class AttendAdmin(ModelAdmin):
@@ -30,15 +30,14 @@ class AttendAdmin(ModelAdmin):
         <a href="%s"><input type="button" value="Billing"/></a>
         """ % reverse('admin:events_attend_billing', args=[attend.pk])
 
-        if not attend.has_attended:
-            actions += u"""
-            <a href="%s"><input style="font-weight: bold;" type="button" value="Checkin"/></a>
-            """ % reverse('admin:events_attend_checkin', args=[attend.pk])
-        else:
+        if attend.state == AttendState.attended:
             actions += u"""
             <a href="%s"><input type="button" value="Checkout"/></a>
             """ % reverse('admin:events_attend_checkout', args=[attend.pk])
-
+        else:
+            actions += u"""
+            <a href="%s"><input style="font-weight: bold;" type="button" value="Checkin"/></a>
+            """ % reverse('admin:events_attend_checkin', args=[attend.pk])
 
         return actions
     changelist_item_actions.allow_tags = True
@@ -48,9 +47,9 @@ class AttendAdmin(ModelAdmin):
         return attend.invoice.in_balance()
     in_balance.boolean = True
 
-    list_filter = ('event', 'has_attended')
+    list_filter = ('event', 'state')
     list_per_page = 50
-    list_display = ('user', 'user_first_name', 'user_last_name', 'has_attended',
+    list_display = ('user', 'user_first_name', 'user_last_name', 'state',
                     in_balance, changelist_item_actions)
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
@@ -114,7 +113,7 @@ class EventAdmin(ModelAdmin):
             'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
         }),
         (_('Conditions'), {
-            'fields' : ('maximum_attendees',),
+            'fields' : ('maximum_attendees', 'move_to_accepted_policy', ),
             'classes' : ('collapse', ),
         }),
         (_('Registration Confirmation'), {
@@ -185,7 +184,10 @@ class SelectionInline(TabularInline):
     raw_id_fields = ('attendee',)
 
 class OptionAdmin(ModelAdmin):
-    list_display = ('group', 'name', 'attendees_count', 'freeze_time')
+    def attendees_count(option):
+        return option.selections.count()
+
+    list_display = ('group', 'name', attendees_count, 'freeze_time')
     list_filter = ('group',)
     fieldsets = (
         (None, {'fields': ('group', 'name', 'description', 'price')}),

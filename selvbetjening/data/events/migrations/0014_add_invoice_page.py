@@ -48,7 +48,7 @@ class Migration:
             'option': ('models.ForeignKey', ['Option'], {})
         },
         'events.attend': {
-            'Meta': {'unique_together': "('event','user')"},
+            'Meta': {'unique_together': "(('event','user'),)"},
             'event': ('models.ForeignKey', ['Event'], {}),
             'has_attended': ('models.BooleanField', [], {}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
@@ -64,7 +64,7 @@ class Migration:
             'id': ('models.AutoField', [], {'primary_key': 'True'})
         },
         'events.selection': {
-            'Meta': {'unique_together': "(('attendee','option'))"},
+            'Meta': {'unique_together': "(('attendee','option'),)"},
             'attendee': ('models.ForeignKey', ['Attend'], {}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'option': ('models.ForeignKey', ['Option'], {}),

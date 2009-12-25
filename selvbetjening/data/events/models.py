@@ -12,6 +12,18 @@ from tinymce.models import HTMLField
 from selvbetjening.data.invoice.models import Invoice
 from selvbetjening.data.invoice.signals import populate_invoice
 
+class AttendeeAcceptPolicy(object):
+    manual = 'manual'
+    always = 'always'
+
+    @staticmethod
+    def get_choices():
+        return (
+            ('manual', _(u'Move attendees to accepted list manually')),
+            ('on_payment', _(u'Move attendees when a payment have been made')),
+            ('always', _(u'Always move to accepted list'))
+        )
+
 class Event(models.Model):
     title = models.CharField(_(u'title'), max_length=255)
     description = HTMLField(_(u'description'), blank=True)
@@ -19,17 +31,26 @@ class Event(models.Model):
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
 
+    # conditions
+    move_to_accepted_policy = \
+        models.CharField(max_length=32,
+                         default=AttendeeAcceptPolicy.always,
+                         choices=AttendeeAcceptPolicy.get_choices())
+
     maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
     show_registration_confirmation = models.BooleanField(default=False)
     registration_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
 
+    # information
     show_change_confirmation = models.BooleanField(default=False)
     change_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
 
     show_invoice_page = models.BooleanField(default=False)
     invoice_page = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+
+    objects = models.Manager()
 
     class Translation:
         fields = ('title', 'description')
@@ -43,20 +64,12 @@ class Event(models.Model):
         return self.attend_set.all().order_by('id')
 
     @property
-    def attendees_count(self):
-        return self.attendees.count()
+    def accepted_attendees(self):
+        return self.attendees.exclude(state=AttendState.waiting)
 
-    @property
-    def checkedin(self):
-        return self.attendees.filter(has_attended=True)
-
-    @property
-    def checkedin_count(self):
-        return self.checkedin.count()
-
-    def max_attendees_reached(self):
-        return self.maximum_attendees != 0 and \
-               self.maximum_attendees <= self.attendees_count
+    # event state
+    def has_been_held(self):
+        return self.enddate < date.today()
 
     def is_registration_open(self):
         return (self.registration_open and not self.has_been_held())
@@ -65,15 +78,14 @@ class Event(models.Model):
         return self.is_registration_open() and not self.max_attendees_reached()
 
     def has_options(self):
+
         return self.optiongroup_set.count() > 0
 
-    def has_been_held(self):
-        return self.enddate < date.today()
-
-    def add_attendee(self, user, has_attended=False):
+    # attendee management
+    def add_attendee(self, user, **kwargs):
         return Attend.objects.create(user=user,
-                                     has_attended=has_attended,
-                                     event=self)
+                                     event=self,
+                                     **kwargs)
 
     def remove_attendee(self, user):
         self.attend_set.get(user=user).delete()
@@ -83,6 +95,12 @@ class Event(models.Model):
             return False
         else:
             return self.attend_set.filter(user=user).count() == 1
+
+    # business logic related to limitations
+
+    def max_attendees_reached(self):
+        return self.maximum_attendees != 0 and \
+               self.maximum_attendees <= self.accepted_attendees.count()
 
     def __unicode__(self):
         return _(u'%s') % self.title
@@ -99,14 +117,29 @@ class AttendManager(models.Manager):
 
         return super(AttendManager, self).create(*args, **kwargs)
 
+class AttendState(object):
+    waiting = 'waiting'
+    accepted = 'accepted'
+    attended = 'attended'
+
+    @staticmethod
+    def get_choices():
+        return (
+            (AttendState.waiting, _(u'Waiting')),
+            (AttendState.accepted, _(u'Accepted')),
+            (AttendState.attended, _(u'Attended')),
+            )
+
 class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
     invoice = models.ForeignKey(Invoice, blank=True)
-    
-    has_attended = models.BooleanField()
-    accepted = models.BooleanField()
-    
+
+    state = models.CharField(max_length=32,
+                             choices=AttendState.get_choices(),
+                             default=AttendState.waiting)
+
+
     objects = AttendManager()
 
     class Meta:
@@ -128,7 +161,7 @@ class Attend(models.Model):
         self.selection_set.filter(option=option).delete()
 
     def is_new(self):
-        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(has_attended=True).count() == 0
+        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(state=AttendState.attended).count() == 0
     is_new.boolean = True
 
     def user_first_name(self):
@@ -140,6 +173,16 @@ class Attend(models.Model):
         return self.user.last_name
     user_last_name.admin_order_field = 'user__last_name'
     user_last_name.short_description = _('Last name')
+
+    @property
+    def has_attended(self):
+        return self.state == AttendState.attended
+
+    def save(self, *args, **kwargs):
+        if self.event.move_to_accepted_policy == AttendeeAcceptPolicy.always:
+            self.state = AttendState.accepted
+
+        super(Attend, self).save(*args, **kwargs)
 
     def delete(self):
         invoice = self.invoice
@@ -183,9 +226,9 @@ class OptionGroup(models.Model):
     def attendees(self):
         return Attend.objects.filter(selection__option__group=self.pk).distinct()
 
-    def attendees_count(self):
-        return self.attendees.count()
-    attendees_count.short_description = _('Atendees')
+    @property
+    def accepted_attendees(self):
+        return self.attendees.exclude(state=AttendState.waiting)
 
     def is_frozen(self):
         if self.freeze_time is None:
@@ -193,8 +236,10 @@ class OptionGroup(models.Model):
         else:
             return datetime.now() > self.freeze_time
 
+    # business logic related to limitations
+
     def max_attendees_reached(self):
-        return self.maximum_attendees > 0 and self.attendees_count() >= self.maximum_attendees
+        return self.maximum_attendees > 0 and self.accepted_attendees.count() >= self.maximum_attendees
 
     def __unicode__(self):
         return u'%s: %s' % (self.event.title, self.name)
@@ -217,6 +262,10 @@ class Option(models.Model):
     @property
     def selections(self):
         return self.selection_set.all()
+
+    @property
+    def limited_selections(self):
+        return self.selections.exclude(attendee__state=AttendState.waiting)
 
     @property
     def paid_selections(self):
@@ -242,14 +291,10 @@ class Option(models.Model):
 
         if self.maximum_attendees is not None and \
            self.maximum_attendees > 0 and \
-           self.attendees_count() >= self.maximum_attendees:
+           self.limited_selections.count() >= self.maximum_attendees:
             return True
         else:
             return False
-
-    def attendees_count(self):
-        return self.selections.count()
-    attendees_count.short_description = _('Attendees')
 
     def paid_selections_count(self):
         return len(self.paid_selections)
