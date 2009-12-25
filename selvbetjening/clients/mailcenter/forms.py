@@ -1,8 +1,8 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from selvbetjening.data.events.models import Event
+from selvbetjening.data.events.models import Event, OptionGroup
 from selvbetjening.data.members.shortcuts import get_or_create_profile
 
 class SendPreviewEmailForm(forms.Form):
@@ -17,7 +17,11 @@ class SelectGroupForm(forms.Form):
         self.fields['group'].widget.choices = [('all', _('All users')),]
 
         for event in Event.objects.all():
-            self.fields['group'].widget.choices.append(('event_' + str(event.id), _('Event: %s') % event.title))
+            self.fields['group'].widget.choices.append(('event_' + str(event.id), _(u'Event: %s') % event.title))
+
+            for optiongroup in event.optiongroup_set.all():
+                og_choice = ('optiongroup_%s' % str(optiongroup.pk), _(u'Event: %s - Optiongroup: %s') % (event.title, optiongroup.name))
+                self.fields['group'].widget.choices.append(og_choice)
 
     def get_selected_recipients(self):
         recipients = []
@@ -33,6 +37,7 @@ class SelectGroupForm(forms.Form):
             for user in users:
                 if user.email != '':
                     append_user(user)
+
         elif group.startswith('event_') and len(group) > 6:
             try:
                 event = Event.objects.get(pk=group[6:])
@@ -40,6 +45,15 @@ class SelectGroupForm(forms.Form):
                     if attendee.user.email != '':
                         append_user(attendee.user)
             except Event.DoesNotExist:
+                pass
+
+        elif group.startswith('optiongroup_') and len(group) > 12:
+            try:
+                optiongroup = OptionGroup.objects.get(pk=group[12:])
+                for attendee in optiongroup.attendees:
+                    if attendee.user.email != '':
+                        append_user(attendee.user)
+            except OptionGroup.DoesNotExist:
                 pass
 
         return recipients

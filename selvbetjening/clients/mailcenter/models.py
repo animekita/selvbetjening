@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.db import models
-from django.core.mail import EmailMultiAlternatives, SMTPConnection
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
-# Create your models here.
+from tinymce.models import HTMLField
+from mailer import send_mail
 
+# Create your models here.
 class Mail(models.Model):
     subject = models.CharField(max_length=128)
-    body = models.TextField()
+    body = HTMLField()
     date_created = models.DateField(editable=False, auto_now_add=True)
     recipients = models.ManyToManyField(User, editable=False)
 
@@ -54,17 +55,11 @@ class Mail(models.Model):
         Send e-mails to a list of e-mail adresses.
 
         """
-        mails = []
+        body_html = render_to_string('mailcenter/email/newsletter_html.txt',
+                                     { 'body': self.body })
 
-        for recipient in recipients:
-            body_html = render_to_string('mailcenter/email/newsletter_html.txt',
-                                   { 'body': self.body })
-            mail = EmailMultiAlternatives(self.subject, self.body, settings.DEFAULT_FROM_EMAIL, [recipient])
-            mail.attach_alternative(body_html, "text/html")
-            mails.append(mail)
-
-        connection = SMTPConnection()
-        connection.send_messages(mails)
+        send_mail(self.subject, body_html,
+                  settings.DEFAULT_FROM_EMAIL, recipients)
 
     def __unicode__(self):
         return self.subject

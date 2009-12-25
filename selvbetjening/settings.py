@@ -65,7 +65,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
-    'django.contrib.markup',
 
     'selvbetjening.data.events',
     'selvbetjening.data.members',

@@ -26,6 +26,5 @@ urlpatterns = patterns('',
     url(r'^profil/$', profile, name='members_profile'),
 
     # Admin urls
-    (r'^admin/', include('selvbetjening.clients.mailcenter.admin_urls')),
     (r'^admin/', include(admin.site.urls)),
 )

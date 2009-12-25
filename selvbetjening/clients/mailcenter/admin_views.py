@@ -7,7 +7,6 @@ from django.contrib.admin import helpers
 from models import Mail
 from forms import SendPreviewEmailForm, SelectGroupForm, ConfirmGroupForm
 
-@staff_member_required
 def send(request, mail_id, select_group='admin/mailcenter/send.html',
                confirm_recipients='admin/mailcenter/send_confirm.html',
                select_form_class=SelectGroupForm,
@@ -42,7 +41,6 @@ def send(request, mail_id, select_group='admin/mailcenter/send.html',
                                'mail' : mail},
                               context_instance=RequestContext(request))
 
-@staff_member_required
 def send_preview(request, mail_id,
                  template_name='admin/mailcenter/send_preview.html',
                  form_class=SendPreviewEmailForm):
@@ -63,7 +61,6 @@ def send_preview(request, mail_id,
                                'mail' : mail},
                               context_instance=RequestContext(request))
 
-@staff_member_required
 def preview(request, mail_id,
             template_name='admin/mailcenter/preview.html'):
 

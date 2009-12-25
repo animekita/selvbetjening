@@ -2,7 +2,9 @@
 
 {% load adminmedia %}
 
-{% block stylesheet %}{% admin_media_prefix %}css/forms.css{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -14,11 +16,9 @@
 </div>
 {% endblock %}
 
-{% block content_title %}
-<h2>Send Preview of {{ mail }}</h2>
-{% endblock %}
-
 {% block content %}
+
+<h3>Send preview af {{ mail }}</h3>
 
 <form method="POST" action="">
 
