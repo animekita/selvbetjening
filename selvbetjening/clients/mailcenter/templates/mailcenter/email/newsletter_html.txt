@@ -1,5 +1,3 @@
-{% load markup %}
-
 <style>
 p, div, a {
   font-family: Verdana, sans-serif;
@@ -7,4 +5,4 @@ p, div, a {
 }
 </style>
 
-{{body|restructuredtext}}
+{{body|safe}}

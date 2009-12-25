@@ -1,6 +1,8 @@
 3.0.0
  * Improved support for additional languages.
  * Improved selection of date of birth.
+ * Added country field to member profiles.
+ * Removed dependency of textile markup, now using pure html.
 
 2.2.0
  * Added pyton library to sso api.

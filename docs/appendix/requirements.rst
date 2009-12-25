@@ -5,7 +5,6 @@ Requirements
 * Django >= 1.1
 * Patch from http://code.djangoproject.com/ticket/5390
 
-* python-textile
 * python-mysqldb
 * django-tinymce
 * django-countries http://code.google.com/p/django-countries/

@@ -1,7 +1,5 @@
 {% extends "site.html" %}
 
-{% load markup %}
-
 {% block breadcrumbs %}
 <li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
 <li><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></li>
@@ -16,7 +14,7 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
 {% endblock %}
 
 {% block content %}
-{{event.description|textile}}
+{{event.description|safe}}
 
 {% if event.is_registration_open %}
 
