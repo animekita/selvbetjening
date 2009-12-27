@@ -44,7 +44,7 @@ class OptionGroupForm(forms.Form):
             disabled = option.max_attendees_reached() and not selected
             disabled = disabled or option.is_frozen()
 
-            suboptions = option.suboption_set.all()
+            suboptions = option.suboptions
 
             if self._should_save(option, suboptions, disabled):
                 self.save_options.append((option, suboptions))

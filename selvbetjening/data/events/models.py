@@ -13,6 +13,18 @@ from tinymce.models import HTMLField
 from selvbetjening.data.invoice.models import Invoice
 from selvbetjening.data.invoice.signals import populate_invoice
 
+_EVENT_CACHE_IDS = []
+
+def purge_cache():
+    global _EVENT_CACHE_IDS
+    for cid in _EVENT_CACHE_IDS:
+        cache.delete(cid)
+
+    _EVENT_CACHE_IDS = []
+
+def delete_caches_on_event_change(sender, **kwargs):
+    purge_cache()
+
 class AttendeeAcceptPolicy(object):
     manual = 'manual'
     always = 'always'
@@ -95,6 +107,7 @@ class Event(models.Model):
         if optiongroups is None:
             optiongroups = self.optiongroup_set.all()
             cache.set(cid, optiongroups)
+            _EVENT_CACHE_IDS.append(cid)
 
         return optiongroups
 
@@ -136,11 +149,8 @@ class Event(models.Model):
     def __unicode__(self):
         return _(u'%s') % self.title
 
-def delete_event_caches(sender, **kwargs):
-    pass
-
-pre_delete.connect(delete_event_caches, sender=Event)
-post_save.connect(delete_event_caches, sender=Event)
+pre_delete.connect(delete_caches_on_event_change, sender=Event)
+post_save.connect(delete_caches_on_event_change, sender=Event)
 
 class AttendManager(models.Manager):
     def create(self, *args, **kwargs):
@@ -284,8 +294,9 @@ class OptionGroup(models.Model):
         options = cache.get(cid)
 
         if options is None:
-            options = self.option_set.order_by('order')
+            options = self.option_set.select_related().order_by('order')
             cache.set(cid, options)
+            _EVENT_CACHE_IDS.append(cid)
 
         return options
 
@@ -303,15 +314,12 @@ class OptionGroup(models.Model):
     def __unicode__(self):
         return u'%s: %s' % (self.event.title, self.name)
 
-def delete_optiongroup_caches(sender, **kwargs):
-    instance = kwargs['instance']
-    cache.delete(Event._CACHED_OPTIONGROUPS_ID % instance.event.pk)
-    cache.delete(OptionGroup._CACHED_OPTIONS_ID % instance.pk)
-
-pre_delete.connect(delete_optiongroup_caches, sender=OptionGroup)
-post_save.connect(delete_optiongroup_caches, sender=OptionGroup)
+pre_delete.connect(delete_caches_on_event_change, sender=OptionGroup)
+post_save.connect(delete_caches_on_event_change, sender=OptionGroup)
 
 class Option(models.Model):
+    _CACHED_OPTION_SUBOPTIONS_ID = 'option-%d-suboptions'
+
     group = models.ForeignKey(OptionGroup)
     name = models.CharField(_('Name'), max_length=255)
     description = HTMLField(_('Description'), blank=True)
@@ -333,6 +341,18 @@ class Option(models.Model):
     @property
     def limited_selections(self):
         return self.selections.exclude(attendee__state=AttendState.waiting)
+
+    @property
+    def suboptions(self):
+        cid = self._CACHED_OPTION_SUBOPTIONS_ID % self.pk
+        suboptions = cache.get(cid)
+
+        if suboptions is None:
+            suboptions = self.suboption_set.all()
+            cache.set(cid, suboptions)
+            _EVENT_CACHE_IDS.append(cid)
+
+        return suboptions
 
     @property
     def paid_selections(self):
