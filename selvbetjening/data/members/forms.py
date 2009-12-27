@@ -14,9 +14,8 @@ import signals
 from shortcuts import get_or_create_profile
 
 class ProfileForm(forms.Form):
-    """
-    Form for editing the user profile information
-    """
+    COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
+
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
                           label=_(u'first name'),
@@ -30,7 +29,7 @@ class ProfileForm(forms.Form):
 
     dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(years=range(1910, 2010)),
                                   label=_(u'date of birth'))
-    
+
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
                              label=_(u'street'),
@@ -42,10 +41,10 @@ class ProfileForm(forms.Form):
                            label=_(u'city'),
                            required=False)
 
-    country = forms.ModelChoiceField(label=_(u'country'),
-                                     queryset=Country.objects.all(), 
-                                     required=False, initial='DK')
-    
+    country = forms.ChoiceField(label=_(u'country'),
+                                choices=COUNTRY_CHOICES,
+                                required=False, initial='DK',)
+
     phonenumber = forms.IntegerField(label=_(u'phonenumber'), required=False)
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
