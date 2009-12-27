@@ -122,8 +122,7 @@ class Event(models.Model):
         return self.is_registration_open() and not self.max_attendees_reached()
 
     def has_options(self):
-
-        return self.optiongroup_set.count() > 0
+        return self.optiongroups.count() > 0
 
     # attendee management
     def add_attendee(self, user, **kwargs):
