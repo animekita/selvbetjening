@@ -36,7 +36,7 @@ class OptionGroupForm(forms.Form):
 
         selected_options = [selection.option for selection in selections]
 
-        for option in optiongroup.option_set.select_related().order_by('order'):
+        for option in optiongroup.options:
             translate_model(option)
 
             selected = option in selected_options
