@@ -111,7 +111,7 @@ class OptionForms(object):
     def __init__(self, event, post=None, attendee=None):
         self.forms = []
 
-        for optiongroup in event.optiongroup_set.all():
+        for optiongroup in event.optiongroups:
             if post is None:
                 self.forms.append(self.optiongroupform(optiongroup,
                                                        attendee=attendee))

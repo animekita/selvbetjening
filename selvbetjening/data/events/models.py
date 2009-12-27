@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models.signals import post_delete, post_save
+from django.core.cache import cache
 
 from tinymce.models import HTMLField
 
@@ -25,6 +26,10 @@ class AttendeeAcceptPolicy(object):
         )
 
 class Event(models.Model):
+    _CACHED_OPTIONGROUPS_ID = 'event-%d-optiongroups'
+    _CACHED_ATTENDEES_ID = 'event-%d-attendees'
+    _CACHED_ACCEPTED_ATTENDEES_ID = 'event-%d-accepted-attendees'
+
     title = models.CharField(_(u'title'), max_length=255)
     description = HTMLField(_(u'description'), blank=True)
 
@@ -59,13 +64,39 @@ class Event(models.Model):
         verbose_name = _(u'event')
         verbose_name_plural = _(u'events')
 
+    # cache related sets
     @property
     def attendees(self):
-        return self.attend_set.all().order_by('id')
+        cid = self._CACHED_ATTENDEES_ID % self.pk
+        attendees = cache.get(cid)
+
+        if attendees is None:
+            attendees = self.attend_set.all().order_by('id')
+            cache.set(cid, attendees)
+
+        return attendees
 
     @property
     def accepted_attendees(self):
-        return self.attendees.exclude(state=AttendState.waiting)
+        cid = self._CACHED_ATTENDEES_ID % self.pk
+        attendees = cache.get(cid)
+
+        if attendees is None:
+            attendees = self.attendees.exclude(state=AttendState.waiting)
+            cache.set(cid, attendees)
+
+        return attendees
+
+    @property
+    def optiongroups(self):
+        cid = self._CACHED_OPTIONGROUPS_ID % self.pk
+        optiongroups = cache.get(cid)
+
+        if optiongroups is None:
+            optiongroups = self.optiongroup_set.all()
+            cache.set(cid, optiongroups)
+
+        return optiongroups
 
     # event state
     def has_been_held(self):
@@ -194,6 +225,14 @@ class Attend(models.Model):
     def __unicode__(self):
         return u'%s attending %s' % (self.user, self.event)
 
+def delete_event_attendees_cache(sender, **kwargs):
+    instance = kwargs['instance']
+    cache.delete(Event._CACHED_ATTENDEES_ID % instance.pk)
+    cache.delete(Event._CACHED_ACCEPTED_ATTENDEES_ID % instance.pk)
+
+post_delete.connect(delete_event_attendees_cache)
+post_save.connect(delete_event_attendees_cache)
+
 def update_invoice_with_attend_handler(sender, **kwargs):
     invoice_revision = kwargs['invoice_revision']
     invoice = invoice_revision.invoice
@@ -243,6 +282,13 @@ class OptionGroup(models.Model):
 
     def __unicode__(self):
         return u'%s: %s' % (self.event.title, self.name)
+
+def delete_event_optiongroups_cache(sender, **kwargs):
+    instance = kwargs['instance']
+    cache.delete(Event._CACHED_OPTIONGROUPS_ID % instance.pk)
+
+post_delete.connect(delete_event_optiongroups_cache, sender=OptionGroup)
+post_save.connect(delete_event_optiongroups_cache, sender=OptionGroup)
 
 class Option(models.Model):
     group = models.ForeignKey(OptionGroup)
