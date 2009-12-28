@@ -90,7 +90,7 @@ class Event(models.Model):
 
     @property
     def accepted_attendees(self):
-        cid = self._CACHED_ATTENDEES_ID % self.pk
+        cid = self._CACHED_ACCEPTED_ATTENDEES_ID % self.pk
         attendees = cache.get(cid)
 
         if attendees is None:
