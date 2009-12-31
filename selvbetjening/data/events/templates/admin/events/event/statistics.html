@@ -19,69 +19,73 @@
 
 <table class="horizontal">
     <tr>
-        <th>Tilmeldte</th>
+        <th>Type/Status</th>
+        <th>Tilmeldt (waiting)</th>
+        <th>Godkendt (accepted)</th>
+        <th>Deltaget (attended)</th>
+        <th>Total</th>
+    </tr>
+    <tr>
+        <th>Nye</th>
+        <td>{{waiting_new}}</th>
+        <td>{{accepted_new}}</td>
+        <td>{{attended_new}}</td>
+        <td>{{new_count}}</td>
+    </tr>
+    <tr>
+        <th>Alle</th>
+        <td>{{waiting_count}}</th>
+        <td>{{accepted_count}}</td>
+        <td>{{attended_count}}</td>
         <td>{{attendees_count}}</td>
     </tr>
-    <tr>
-        <th>Nye</th>
-        <td>{{new_attendees}} ({{new_attendees_precentage|stringformat:".1f"}}%)</td>
-    </tr>
 </table>
 
-<h3>Deltagere</h3>
+<h3>Betalinger</h3>
+
+<p>Der er for {{invoice_payment_total}},- invoices hvoraf der er indbetalt {{invoice_paid}},-.</p>
 
 <table class="horizontal">
     <tr>
-        <th>Deltagere</th>
-        <td>{{checkedin_count}} ({{checkin_precentage|stringformat:".1f"}}%)</td>
+        <th>Status</th>
+        <th>Ikke betalte</th>
+        <th>Delvist betalt</th>
+        <th>Betalte</th>
+        <th>Over-betalte</th>
+        <th>Total</th>
     </tr>
     <tr>
-        <th>Nye</th>
-        <td>{{new_checkedin}} ({{new_checkedin_precentage|stringformat:".1f"}}%)</td>
-    </tr>
-</table>
-
-<h3>Invoices</h3>
-
-<table class="horizontal">
-    <tr>
-        <th>Oprettet</th>
-        <td>{{number_invoices}} ({{invoice_total}},-)</td>
-    </tr>
-    <tr>
-        <th>Betalt</th>
-        <td>{{paid_invoices}} ({{invoice_paid}},-)</td>
+        <th>Antal</th>
+        <td>{{invoices_unpaid}}</td>
+        <td>{{invoices_partial}}</td>
+        <td>{{invoices_in_balance}}</td>
+        <td>{{invoices_overpaid}}</td>
+        <td>{{invoices_count}}</td>
     </tr>
 </table>
 
 <h3>Tilvalg</h3>
 
-<div class="inline-group">
-  <div class="tabular inline-related">
-    <fieldset class="module">
-    <h2>Tilvalg</h2>
-
-   <table>
-     <thead><tr>
-     <th>Gruppe</th><th>Tilvalg</th><th>Tilmeldte (heraf betalt)</th>
-     </tr></thead>
+<table class="horizontal">
+     <tr>
+        <th>Gruppe</th>
+        <th>Tilvalg</th>
+        <th>Tilmeldte (heraf betalt)</th>
+     </tr>
 
      {% for optiongroup in event.optiongroup_set.all %}
      {% for option in optiongroup.option_set.all %}
-     <tr class="{% cycle "row1" "row2" %}">
+     <tr>
        <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
          {% if forloop.first %}{{ optiongroup.name }}{% endif %}
        </a></td>
        <td><a href="/admin/events/option/{{ option.id }}/">
          {{ option.name }}
        </a></td>
-       <td>{{option.attendees_count}} ({{option.paid_selections_count}})</td>
+       <td>{{option.attendees.count}} ({{option.paid_selections_count}})</td>
      </tr>
      {% endfor %}
      {% endfor %}
    </table>
-
-</div>
-</div>
 
 {% endblock %}

@@ -35,6 +35,9 @@ class AcceptForm(forms.Form):
 
 class SignupForm(AcceptForm):
 
+    class Meta:
+        layout = ((_(u"Accept terms"), ('confirm', )),)
+
     def label(self):
         return _(u'I have read and accept the above described terms')
 
