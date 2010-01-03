@@ -70,11 +70,14 @@
      <tr>
         <th>Gruppe</th>
         <th>Tilvalg</th>
-        <th>Tilmeldte (heraf betalt)</th>
+        <th>Tilmeldt (waiting)</th>
+        <th>Godkendt (accepted)</th>
+        <th>Deltaget (attended)</th>
+        <th>Total</th>
      </tr>
 
-     {% for optiongroup in event.optiongroup_set.all %}
-     {% for option in optiongroup.option_set.all %}
+     {% for optiongroup, options in optiongroups %}
+     {% for option, count, waiting, accepted, attended in options %}
      <tr>
        <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
          {% if forloop.first %}{{ optiongroup.name }}{% endif %}
@@ -82,7 +85,10 @@
        <td><a href="/admin/events/option/{{ option.id }}/">
          {{ option.name }}
        </a></td>
-       <td>{{option.attendees.count}} ({{option.paid_selections_count}})</td>
+       <td>{{waiting}}</td>
+       <td>{{accepted}}</td>
+       <td>{{attended}}</td>
+       <td>{{count}}</td>
      </tr>
      {% endfor %}
      {% endfor %}

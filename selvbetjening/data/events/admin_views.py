@@ -74,9 +74,24 @@ def event_statistics(request, event_id, template_name='admin/events/event/statis
         statistics['invoice_payment_total'] += invoice.total_price
         statistics['invoice_paid'] += invoice.paid
 
+    # tilvalg
+
+    optiongroups = []
+    for optiongroup in event.optiongroup_set.all():
+        options = []
+        for option in optiongroup.option_set.all():
+            count = option.selections.count()
+            waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
+            accepted = option.selections.filter(attendee__state=AttendState.accepted).count()
+            attended = option.selections.filter(attendee__state=AttendState.attended).count()
+            options.append((option, count, waiting, accepted, attended))
+
+        optiongroups.append((optiongroup, options))
+
     statistics.update({'event' : event,
                        'attendees_count' : attendees_count,
-                       'new_count' : new_count,})
+                       'new_count' : new_count,
+                       'optiongroups' : optiongroups,})
 
     return render_to_response(template_name,
                               statistics,

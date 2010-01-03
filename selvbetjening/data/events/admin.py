@@ -14,6 +14,7 @@ from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.helpers import AdminForm
 
 from selvbetjening.core.selvadmin.admin import site
+from selvbetjening.data.translation.admin import TranslationInline
 
 from models import Event, Attend, AttendState, Option, OptionGroup, SubOption, Selection
 import admin_views
@@ -108,6 +109,8 @@ class EventAdmin(ModelAdmin):
 
     list_display = ('title', 'startdate', 'changelist_item_actions')
 
+    inlines = [TranslationInline]
+
     fieldsets = (
         (None, {
             'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
@@ -171,7 +174,7 @@ class OptionGroupAdmin(ModelAdmin):
         }),)
 
     raw_id_fields = ('event',)
-    inlines = [OptionInline, ]
+    inlines = [OptionInline, TranslationInline]
 
 site.register(OptionGroup, OptionGroupAdmin)
 
@@ -195,6 +198,6 @@ class OptionAdmin(ModelAdmin):
         )
 
     raw_id_fields = ('group',)
-    inlines = [SubOptionInline, SelectionInline]
+    inlines = [SubOptionInline, SelectionInline, TranslationInline]
 
 site.register(Option, OptionAdmin)
