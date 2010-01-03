@@ -5,8 +5,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.contrib.admin.helpers import AdminForm
+from django.http import Http404, HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
 
 from selvbetjening.core.selvadmin.admin import site
 
@@ -21,20 +22,20 @@ class UserProfileInline(StackedInline):
 
 class UserAdminExt(UserAdmin):
     list_display = ('username', 'first_name', 'last_name', 'email', 'display_age')
-    
+
     def display_age(self, user):
         user_profile = get_or_create_profile(user)
         age = user_profile.get_age()
         return age
     display_age.admin_order_field = 'userprofile__dateofbirth'
     display_age.short_description = _('Age')
-    
+
     add_form = RegistrationForm
-    
+
     def add_view(self, request):
-        # copy of the original add_view, remove this if possible but damm 
+        # copy of the original add_view, remove this if possible but damm
         # it is hard to get the template and forms overwritten ^^
-        
+
         if not self.has_change_permission(request):
             if self.has_add_permission(request) and settings.DEBUG:
                 # Raise Http404 in debug mode so that the user gets a helpful
@@ -53,16 +54,16 @@ class UserAdminExt(UserAdmin):
                 elif '_popup' in request.REQUEST:
                     return self.response_add(request, new_user)
                 else:
-                    request.user.message_set.create(message=msg + ' ' + ugettext("You may edit it again below."))
+                    request.user.message_set.create(message=msg + ' ' + _("You may edit it again below."))
                     return HttpResponseRedirect('../%s/' % new_user.id)
         else:
             form = self.add_form()
-            
+
         adminform = AdminForm(form,
                           [(None, {'fields': form.base_fields.keys()})],
                           {}
-                          )    
-            
+                          )
+
         return render_to_response('admin/auth/user/add_user.html', {
             'title': _('Add user'),
             'form': form,
@@ -80,7 +81,7 @@ class UserAdminExt(UserAdmin):
             'save_as': False,
             'username_help_text': self.model._meta.get_field('username').help_text,
             'root_path': self.admin_site.root_path,
-            'app_label': self.model._meta.app_label,            
+            'app_label': self.model._meta.app_label,
         }, context_instance=template.RequestContext(request))
 
 site.register(User, UserAdminExt)
