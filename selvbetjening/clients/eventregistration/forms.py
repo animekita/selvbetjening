@@ -1,7 +1,7 @@
 # coding=UTF-8
 
 from django.utils.translation import ugettext as _
-from django.utils.translation import ungettext_lazy
+from django.utils.translation import ungettext_lazy, ugettext_lazy
 from django import forms
 
 from selvbetjening.data.events.forms import OptionForms as BaseOptionForms
@@ -36,7 +36,7 @@ class AcceptForm(forms.Form):
 class SignupForm(AcceptForm):
 
     class Meta:
-        layout = ((_(u"Accept terms"), ('confirm', )),)
+        layout = ((ugettext_lazy(u"Accept terms"), ('confirm', )),)
 
     def label(self):
         return _(u'I have read and accept the above described terms')
