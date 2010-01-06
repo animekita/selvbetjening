@@ -402,6 +402,9 @@ class SubOption(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
+pre_delete.connect(delete_caches_on_event_change, sender=SubOption)
+post_save.connect(delete_caches_on_event_change, sender=SubOption)
+
 class Selection(models.Model):
     attendee = models.ForeignKey(Attend)
     option = models.ForeignKey(Option)
