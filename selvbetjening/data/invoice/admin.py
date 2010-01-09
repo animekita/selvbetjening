@@ -18,17 +18,17 @@ class InvoiceAdmin(ModelAdmin):
 
     raw_id_fields = ('user', )
     search_fields = ('name', 'user__username', 'user__first_name', 'user__last_name')
-    
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
         info = self.model._meta.app_label, self.model._meta.module_name
 
         urlpatterns = patterns('',
-                               url(r'^/report/',
+                               url(r'^report/',
                                    self.admin_site.admin_view(admin_views.invoice_report),
                                    name='%s_%s_report' % info),
-                               url(r'^/pay/',
+                               url(r'^pay/',
                                    self.admin_site.admin_view(admin_views.invoice_pay),
                                    name='%s_%s_pay' % info),
                                )
