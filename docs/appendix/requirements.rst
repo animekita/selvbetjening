@@ -1,4 +1,4 @@
-Requirements
+Dependencies
 ============
 
 * Python >= 2.5
@@ -7,6 +7,12 @@ Requirements
 
 * python-mysqldb
 * django-tinymce
-* django-countries http://code.google.com/p/django-countries/
 * South - Django Database Migration (valgfrit, men anbefalet)
 * Sqlalchemy
+
+Inkluderet i Contrib
+--------------------
+
+Følgende afhængigheder er inkluderet i contrib mappen og bliver automatisk tilføjet til python stien af settings_base.py
+
+* django-countries http://code.google.com/p/django-countries/
