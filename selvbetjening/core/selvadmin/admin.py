@@ -18,3 +18,10 @@ class AdminSite(admin.AdminSite):
         links = []
 
 site = AdminSite()
+
+# mailer
+from mailer import admin as maileradmin
+
+site.register(maileradmin.Message, maileradmin.MessageAdmin)
+site.register(maileradmin.DontSendEntry, maileradmin.DontSendEntryAdmin)
+site.register(maileradmin.MessageLog, maileradmin.MessageLogAdmin)

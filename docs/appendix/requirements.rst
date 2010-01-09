@@ -16,3 +16,4 @@ Inkluderet i Contrib
 Følgende afhængigheder er inkluderet i contrib mappen og bliver automatisk tilføjet til python stien af settings_base.py
 
 * django-countries http://code.google.com/p/django-countries/
+* django-mailer http://code.google.com/p/django-mailer/

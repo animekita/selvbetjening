@@ -4,6 +4,9 @@
  * Added country field to member profiles.
  * Removed dependency of textile markup, now using pure html.
  * Added option to send e-mails to users which have selected an option in a group.
+ * Simplified setting files.
+ * Moved some dependencies into a contrib folder for easier installation.
+ * Added outgoing mail query in order to better support mass e-mails.
 
 2.2.0
  * Added pyton library to sso api.
