@@ -4,9 +4,7 @@
 <li><a href="{% url members_profile %}">profil</a></li>
 {% endblock %}
 
-{% block contenthead %}
-<h2>Velkommen {% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}</h2>
-{% endblock %}
+{% block contenthead %}Velkommen {% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}{% endblock %}
 
 {% block content %}
 <p>På denne side kan du se de oplysninger vi har registreret for din bruger. Vi beder dig venligst holde disse oplysninger opdateret. Nederst på siden kan du også se de arrangementer som du har deltaget i, er tilmeldt eller kan tilmelde dig.</p>

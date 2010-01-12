@@ -5,15 +5,11 @@
 <li><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></li>
 {% endblock %}
 
-{% block contenthead %}
-{{event.title|escape}}
-{% endblock %}
-
-{% block sub_content_head %}
-Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}
-{% endblock %}
+{% block contenthead %}{{event.title|escape}}{% endblock %}
 
 {% block content %}
+Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}
+
 {{event.description|safe}}
 
 {% if event.is_registration_open %}

@@ -11,9 +11,7 @@
 <li><a href="{% url members_editprofile %}">rediger</a></li>
 {% endblock %}
 
-{% block contenthead %}
-Ændre personoplysninger
-{% endblock %}
+{% block contenthead %}Ændre personoplysninger{% endblock %}
 
 {% block content %}
 {{ form|uniform:"ændre personoplysninger" }}

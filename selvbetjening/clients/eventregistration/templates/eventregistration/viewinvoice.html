@@ -6,13 +6,7 @@
 <li><span>kvittering</span></li>
 {% endblock %}
 
-{% block contenthead %}
-Kvittering
-{% endblock %}
-
-{% block sub_content_head %}
-{{event.title|escape}}
-{% endblock %}
+{% block contenthead %}Kvittering for {{event.title|escape}}{% endblock %}
 
 {% block content %}
 

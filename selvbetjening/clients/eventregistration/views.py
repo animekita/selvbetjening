@@ -15,7 +15,8 @@ from selvbetjening.data.events.models import Event, Attend
 from selvbetjening.data.events.decorators import \
      event_registration_open_required, \
      event_registration_allowed_required, \
-     event_attendance_required
+     event_attendance_required, \
+     get_event_from_id
 
 from forms import SignupForm, SignoffForm, OptionForms
 
@@ -37,10 +38,11 @@ def view(request, event_id, template_name='eventregistration/view.html'):
                                context_instance=RequestContext(request))
 
 @login_required
+@get_event_from_id
 @event_registration_open_required
 @event_registration_allowed_required
 @disable_invoice_updates
-def signup(request, event_id,
+def signup(request, event,
            template_name='eventregistration/signup.html',
            template_cant_signup='eventregistration/cantsignup.html',
            template_registration_confirmation='eventregistration/registration_confirmation.html',
@@ -48,8 +50,6 @@ def signup(request, event_id,
            form_options_class=OptionForms,
            success_page='eventregistration_view'):
     ''' Let a user sign up to the event. '''
-
-    event = get_object_or_404(Event, id=event_id)
 
     if event.is_attendee(request.user):
         return render_to_response(template_cant_signup,
@@ -106,10 +106,11 @@ def signup(request, event_id,
                               context_instance=RequestContext(request))
 
 @login_required
+@get_event_from_id
 @event_registration_open_required
 @event_attendance_required
 @disable_invoice_updates
-def signoff(request, event_id,
+def signoff(request, event,
            template_name='eventregistration/signoff.html',
            success_page='eventregistration_view',
            form_class=SignoffForm):
@@ -118,7 +119,6 @@ def signoff(request, event_id,
 
     '''
 
-    event = get_object_or_404(Event, id=event_id)
     attendee = Attend.objects.get(user=request.user, event=event)
 
     if request.method == 'POST':
@@ -138,14 +138,15 @@ def signoff(request, event_id,
     return render_to_response(template_name, {'event' : event, 'form' : form}, context_instance=RequestContext(request))
 
 @login_required
+@get_event_from_id
 @event_registration_open_required
 @event_attendance_required
 @disable_invoice_updates
-def change_options(request, event_id, form=OptionForms,
+def change_options(request, event, form=OptionForms,
                    success_page='eventregistration_view',
                    template_name='eventregistration/change_options.html',
                    template_change_confirmation='eventregistration/change_confirmation.html'):
-    event = get_object_or_404(Event, id=event_id)
+
     attendee = Attend.objects.get(user=request.user, event=event)
 
     signup_allowed, render_functions, save_functions = \
@@ -188,9 +189,9 @@ def change_options(request, event_id, form=OptionForms,
                               context_instance=RequestContext(request))
 
 @login_required
+@get_event_from_id
 @event_attendance_required
-def view_invoice(request, event_id, template_name='eventregistration/viewinvoice.html'):
-    event = get_object_or_404(Event, id=event_id)
+def view_invoice(request, event, template_name='eventregistration/viewinvoice.html'):
     attendee = Attend.objects.get(user=request.user, event=event)
 
     if not event.show_invoice_page:
