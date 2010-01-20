@@ -36,7 +36,7 @@ class UniformInputBase(object):
 
     def help_text(self):
         if self.input.help_text is not None:
-            return '<p class="formHint">' + self.input.help_text + '</p>\n'
+            return '<p class="formHint">' + unicode(self.input.help_text) + '</p>\n'
 
     def render_container(self, content):
         if self.is_child:
@@ -109,7 +109,7 @@ class UniformInputCheckbox(UniformInputBase):
 
         help = ''
         if self.input.help_text is not None and len(self.input.help_text) > 0:
-            help = self.input.help_text
+            help = unicode(self.input.help_text)
 
         if not self.is_child:
             parent_input = '$("#id_%s")' % self.input.name
@@ -132,7 +132,7 @@ class UniformInputCheckbox(UniformInputBase):
         #$(this).next().find("table").toggle("normal");
         #});
 
-        return self.input.label_tag(self.input.as_widget(attrs=self.attrs) + required + self.input.label) + help + js + '\n'
+        return self.input.label_tag(self.input.as_widget(attrs=self.attrs) + required + unicode(self.input.label)) + help + js + '\n'
 
     def render(self, children=None):
         return self.render_container(self.error_list() + '<div>' + self.render_input() + '</div>' + self.render_children(children))

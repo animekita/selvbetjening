@@ -1,15 +1,1 @@
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/compressed/uni-form.css" media="screen, projection" />
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/datepicker.js"></script>
-<link href="{{ MEDIA_URL }}css/compressed/datepicker.css" rel="stylesheet" type="text/css" />
-
-<script type="text/javascript">
-function update_child_inputs(parent_input) { 
-    if ((parent_input.attr("checked") == false && parent_input.attr("disabled") == false) ||
-        (parent_input.attr("disabled") == true)) {
-        parent_input.parents("div.ctrlHolder").children(".child_input").attr("disabled", "true")
-    } else {
-        parent_input.parents("div.ctrlHolder").children(".child_input").removeAttr("disabled")
-    }
-}
-</script>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/uni-form.css" media="screen, projection" />

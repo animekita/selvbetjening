@@ -8,13 +8,12 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url members_profile %}">profil</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url members_password_change %}">ændre kodeord</a></li>
+<li><a href="{% url members_editprofile %}">rediger</a></li>
 {% endblock %}
 
-{% block contenthead %}Ændre kodeord{% endblock %}
+{% block contenthead %}Ændre personoplysninger{% endblock %}
 
 {% block content %}
-
-{{ form|uniform:"ændre kodeord" }}
+{{ form|uniform:"Ændre personoplysninger" }}
 
 {% endblock %}

@@ -1,7 +1,9 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth import views as auth_views
+from django.views.generic.simple import direct_to_template
+from django.contrib.auth.decorators import login_required
 
-from views import profile_edit, password_change
+from views import profile_edit, password_change, current_events
 
 urlpatterns = patterns('',
     url(r'^rediger/$', profile_edit,
@@ -28,4 +30,9 @@ urlpatterns = patterns('',
         name='members_password_change'),
     url(r'^skift-kodeord/done/$', auth_views.password_change_done,
         {'template_name':'members/password_change_done.html'}, name='auth_password_change_done'),
+
+    url(r'^arrangementer/', current_events, name='members_current_events'),
+
+    url(r'^', login_required(direct_to_template), {'template': 'profile/profile.html'},
+        name='members_profile'),
 )
