@@ -176,6 +176,15 @@ class NativeUserGroups(NativeBase):
         session.commit()
 
     @classmethod
+    def remove_group(cls, session, group_id):
+        result = session.query(cls).filter_by(gID=group_id).all()
+
+        for object in result:
+            session.delete(object)
+
+        session.commit()
+
+    @classmethod
     def _initialize_sqlalchemy(cls):
         metadata = sqlalchemy.MetaData()
         table = sqlalchemy.Table('UserGroups', metadata,
