@@ -130,9 +130,6 @@ class Event(models.Model):
                                      event=self,
                                      **kwargs)
 
-    def remove_attendee(self, user):
-        self.attend_set.get(user=user).delete()
-
     def is_attendee(self, user):
         if isinstance(user, AnonymousUser):
             return False
@@ -190,6 +187,8 @@ class Attend(models.Model):
 
     class Meta:
         unique_together = ('event', 'user')
+        verbose_name = _(u'attendee')
+        verbose_name_plural = _(u'attendees')
 
     @property
     def selections(self):
@@ -247,6 +246,12 @@ def delete_event_attendees_cache(sender, **kwargs):
 
 pre_delete.connect(delete_event_attendees_cache, sender=Attend)
 post_save.connect(delete_event_attendees_cache, sender=Attend)
+
+def update_invoice_handler_attend(sender, **kwargs):
+    instance = kwargs['instance']
+    instance.invoice.update()
+
+post_delete.connect(update_invoice_handler_attend, sender=Attend)
 
 def update_invoice_with_attend_handler(sender, **kwargs):
     invoice_revision = kwargs['invoice_revision']

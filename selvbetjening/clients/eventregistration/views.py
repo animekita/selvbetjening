@@ -126,7 +126,7 @@ def signoff(request, event,
         if form.is_valid():
             logger.info(request, 'client signed user_id %s off event_id %s' % (request.user.id, event.id))
 
-            event.remove_attendee(attendee.user)
+            attendee.delete()
 
             attendee.invoice.update(force=True)
 

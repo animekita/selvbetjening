@@ -89,5 +89,5 @@ class EventModelTestCase(TestCase):
         attend = Database.attend(user, event)
 
         self.assertTrue(event.is_attendee(user))
-        event.remove_attendee(user)
+        attend.delete()
         self.assertFalse(event.is_attendee(user))
