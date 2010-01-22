@@ -75,13 +75,13 @@ class InvoiceFormattingForm(forms.Form):
         def add(self, line):
             self.lines.append(line)
 
-            if line.revision.is_overpaid():
+            if line.revision.invoice.is_overpaid():
                 self.overpaid_total += line.price
                 self.overpaid.append(line)
-            elif line.revision.in_balance():
+            elif line.revision.invoice.in_balance():
                 self.paid_total += line.price
                 self.paid.append(line)
-            elif line.revision.is_partial():
+            elif line.revision.invoice.is_partial():
                 self.partial_total += line.price
                 self.partial.append(line)
             else:
@@ -90,7 +90,7 @@ class InvoiceFormattingForm(forms.Form):
 
             self.total = self.overpaid_total + self.paid_total + self.partial_total + self.unpaid_total
 
-    def format(self, invoices):
+    def format(self):
         line_groups = {}
 
         for invoice in self.invoices:

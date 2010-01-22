@@ -62,12 +62,12 @@
 
 {% for line in line_group.lines %}
 <tr>
-    <td><p>{{line.revision.invoice.user}}</p></td>
+    <td><p>{{line.revision.invoice.user}}{{line.revision.invoice.latest_revision.in_balance}}</p></td>
 
-    <td>{% if line.revision.is_overpaid %}x{% endif %}</td>
-    <td>{% if line.revision.in_balance %}x{% endif %}</td>
-    <td>{% if line.revision.is_partial %}x{% endif %}</td>
-    <td>{% if line.revision.is_unpaid %}x{% endif %}</td>
+    <td>{% if line.revision.invoice.is_overpaid %}x{% endif %}</td>
+    <td>{% if line.revision.invoice.in_balance %}x{% endif %}</td>
+    <td>{% if line.revision.invoice.is_partial %}x{% endif %}</td>
+    <td>{% if line.revision.invoice.is_unpaid %}x{% endif %}</td>
 
     <td>{{line.price}},-</td>
 </tr>

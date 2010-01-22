@@ -40,12 +40,11 @@ def invoice_report(request,
         sourceform = InvoiceSourceForm(request.REQUEST)
 
         if sourceform.is_valid():
-            invoices = Invoice.objects.all()
-            invoices = sourceform.filter(invoices)
+            invoices = sourceform.filter(Invoice.objects)
 
             formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoices)
             if formattingform.is_valid():
-                line_groups = formattingform.format(invoices)
+                line_groups = formattingform.format()
         else:
             formattingform = InvoiceFormattingForm(request.REQUEST)
     else:
