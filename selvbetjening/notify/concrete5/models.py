@@ -9,6 +9,10 @@ import nativemodels
 from nativemodels import NativeGroups, NativeUsers, NativeUserGroups
 
 def _wrap_listener(func):
+    """
+    Helper function creating a database session and closing it after processing
+    """
+
     def get_listener(listener_id, listener_config):
         def listener(sender, **kwargs):
             session = nativemodels.get_session(listener_config['database_id'])
@@ -22,6 +26,10 @@ def _wrap_listener(func):
 
 @_wrap_listener
 def _get_sync_group_changed_listener(listener_id, config, session, sender, **kwargs):
+    """
+    Called if a group is saved, either updating or creating it on the target installation.
+    """
+
     instance = kwargs.get('instance')
     created = kwargs.get('created')
 
@@ -42,19 +50,26 @@ def _get_sync_group_changed_listener(listener_id, config, session, sender, **kwa
 
 @_wrap_listener
 def _get_sync_group_deleted_listener(listener_id, config, session, sender, **kwargs):
+    """
+    Called if a group is deleted, removing all internal references to the
+    group but does NOT delete it on the target installation.
+    """
+
     instance = kwargs.get('instance')
 
     try:
         group2native = GroupsMapper.objects.get(group=instance, database_id=config['database_id'])
-        nativegroup = NativeGroups.get(session, group2native.native_group_id)
-
-        NativeGroups.delete(session, nativegroup)
 
     except GroupsMapper.DoesNotExist:
         pass
 
 @_wrap_listener
 def _get_sync_group_members_listener(listener_id, config, session, sender, **kwargs):
+    """
+    Called if changes has been made to the user<=>group association, adding or
+    removing users from the groups on all target installations.
+    """
+
     instance = kwargs.get('instance')
     action = kwargs.get('action')
     model = kwargs.get('model')

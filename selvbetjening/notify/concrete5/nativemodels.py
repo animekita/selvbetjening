@@ -74,6 +74,16 @@ class NativeGroups(NativeBase):
         return object
 
     @classmethod
+    def get_by_name(cls, session, gName):
+        result = session.query(cls).filter_by(gName=gName).all()
+
+        object = None
+        if len(result) > 0:
+            object = result[0]
+
+        return object
+
+    @classmethod
     def _initialize_sqlalchemy(cls):
         metadata = sqlalchemy.MetaData()
         table = sqlalchemy.Table('Groups', metadata,
