@@ -27,7 +27,7 @@ urlpatterns = patterns('',
         {'template_name':'members/password_reset_confirm.html'},
         name='auth_password_reset_confirm'),
     url(r'^nulstil-kodeord/reset/done/$', auth_views.password_reset_complete,
-        {'template_name':'members/password_reset_complete'}),
+        {'template_name':'members/password_reset_complete.html'}),
 
     url(r'^skift-kodeord/$', password_change,
         name='members_password_change'),
