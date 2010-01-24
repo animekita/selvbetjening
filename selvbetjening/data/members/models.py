@@ -10,6 +10,17 @@ from countries.models import Country
 
 import signals
 
+def to_age(dateofbirth, reference_date=None):
+    if reference_date is None:
+        reference_date = datetime.date.today()
+
+    if dateofbirth is None:
+        return None
+
+    bday = dateofbirth
+    d = reference_date
+    return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'), db_column='user_id', primary_key=True)
 
@@ -26,12 +37,7 @@ class UserProfile(models.Model):
         verbose_name_plural = _(u'user profiles')
 
     def get_age (self, at_date=None):
-        if at_date is None:
-            at_date = datetime.date.today()
-
-        bday = self.dateofbirth
-        d = at_date
-        return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
+        return to_age(self.dateofbirth, at_date)
     get_age.admin_order_field = 'dateofbirth'
 
     def __unicode__(self):

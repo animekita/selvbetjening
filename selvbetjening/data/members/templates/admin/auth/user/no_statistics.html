@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n admin_modify adminmedia %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">Auth</a> &rsaquo;
+     <a href="../../">User</a> &rsaquo;
+     Statistik
+</div>
+{% endif %}{% endblock %}
+
+{% block content_title %}<h1>Bruger statistik</h1>{% endblock %}
+
+{% block content %}
+
+Der er desværre ikke nok bruger data til rådighed. Prøv igen senere.
+
+{% endblock %}

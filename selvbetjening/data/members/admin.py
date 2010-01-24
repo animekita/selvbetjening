@@ -15,6 +15,8 @@ from shortcuts import get_or_create_profile
 from models import UserProfile
 from forms import RegistrationForm
 
+import admin_views
+
 class UserProfileInline(StackedInline):
     model = UserProfile
     extra = 1
@@ -31,6 +33,21 @@ class UserAdminExt(UserAdmin):
     display_age.short_description = _('Age')
 
     add_form = RegistrationForm
+
+    def get_urls(self):
+        from django.conf.urls.defaults import patterns, url
+
+        info = self.model._meta.app_label, self.model._meta.module_name
+
+        urlpatterns = patterns('',
+                               url(r'^statistics/',
+                                   self.admin_site.admin_view(admin_views.user_statistics),
+                                   name='%s_%s_statistics' % info),
+                               )
+
+        urlpatterns += super(UserAdminExt, self).get_urls()
+
+        return urlpatterns
 
     def add_view(self, request):
         # copy of the original add_view, remove this if possible but damm
