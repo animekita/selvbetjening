@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-05 23:54+0200\n"
+"POT-Creation-Date: 2010-01-24 21:22+0100\n"
 "PO-Revision-Date: 2009-08-05 23:57+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin_views.py:58
+#: admin.py:45
+msgid "Invoice"
+msgstr "Kvittering"
+
+#: admin.py:48
+msgid "Report"
+msgstr "Rapport"
+
+#: admin.py:49
+msgid "Register Payment"
+msgstr "Registrer betaling"
+
+#: admin_views.py:55
 msgid "Source"
 msgstr "Kilde"
 
-#: admin_views.py:62
+#: admin_views.py:59
 msgid "Formatting"
 msgstr "Formatering"
 
@@ -39,13 +51,16 @@ msgstr "Ikke deltaget"
 msgid "Filter attended"
 msgstr "Filtrer på deltagelse"
 
-#: templates/admin/invoice/invoice/change_list.html:15
-#, python-format
-msgid "Add %(name)s"
-msgstr "Tilføj %(name)s"
-
 #: templates/admin/invoice/invoice/goto.html:14
 #: templates/admin/invoice/invoice/report.html:14
 msgid "Home"
 msgstr "Hjem"
 
+#: templates/admin/invoice/invoice/goto.html:29
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Ret venligst fejlen nedenfor."
+msgstr[1] "Ret venligst fejlene nedenfor."
+
+#~ msgid "Add %(name)s"
+#~ msgstr "Tilføj %(name)s"

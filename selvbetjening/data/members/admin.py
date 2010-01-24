@@ -2,7 +2,7 @@ from django import template
 from django.conf import settings
 from django.contrib.admin import StackedInline
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.contrib.admin.helpers import AdminForm

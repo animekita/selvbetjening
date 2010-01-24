@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-05 22:52+0200\n"
+"POT-Creation-Date: 2010-01-24 18:34+0100\n"
 "PO-Revision-Date: 2009-08-05 22:54+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -17,202 +17,243 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin.py:23
-#: admin.py:49
+#: admin.py:46 admin.py:108 admin_views.py:250
+msgid "Actions"
+msgstr "Handlinger"
+
+#: admin.py:118 admin.py:181
 msgid "Conditions"
 msgstr "Betingelser"
 
-#: admin.py:27
-#, fuzzy
+#: admin.py:122
 msgid "Registration Confirmation"
-msgstr "Tilmelding åben"
+msgstr "Registrerings-bekræftigelse"
 
-#: admin.py:31
+#: admin.py:126
 msgid "Change Confirmation"
 msgstr "Ændringsbekræftigelse"
 
-#: admin.py:53
-#, fuzzy
-msgid "Other"
-msgstr "Rækkefølge"
+#: admin.py:130
+msgid "Invoice page"
+msgstr "Kvittering"
 
-#: forms.py:65
+#: admin.py:157
+msgid "Events"
+msgstr "Arrangementer"
+
+#: admin.py:185
+msgid "Other"
+msgstr "Andre"
+
+#: admin_views.py:138
+#, python-format
+msgid "Paid at %(event)s"
+msgstr "Betalt ved %(event)s"
+
+#: admin_views.py:197
+#, python-format
+msgid "Payment at %(event)s checkin"
+msgstr "Betalt ved %(event)s checkin"
+
+#: forms.py:71
 msgid "Choices"
 msgstr "Muligheder"
 
-#: models.py:16
-#: migrations/0001_initial.py:28
+#: logic.py:58
+msgid "You are now signed up to the event."
+msgstr "Du er nu tilmeldt arrangementet."
+
+#: models.py:35
+msgid "Move attendees to accepted list manually"
+msgstr "Flyt deltagere til accepteret liste manuelt"
+
+#: models.py:36
+msgid "Move attendees when a payment have been made"
+msgstr "Flyt deltagere når en betaling er modtaget"
+
+#: models.py:37
+msgid "Always move to accepted list"
+msgstr "Altid flyt til accepteret liste"
+
+#: models.py:45 migrations/0001_initial.py:28
 msgid "title"
 msgstr "Titel"
 
-#: models.py:17
-#: migrations/0001_initial.py:27
-#: migrations/0008_use_html_fields.py:13
-#: migrations/0008_use_html_fields.py:32
+#: models.py:46 migrations/0001_initial.py:27
+#: migrations/0008_use_html_fields.py:13 migrations/0008_use_html_fields.py:32
 msgid "description"
 msgstr "Beskrivelse"
 
-#: models.py:19
-#: migrations/0001_initial.py:25
+#: models.py:48 migrations/0001_initial.py:25
 msgid "start date"
 msgstr "Start dato"
 
-#: models.py:20
-#: migrations/0001_initial.py:26
+#: models.py:49 migrations/0001_initial.py:26
 msgid "end date"
 msgstr "Slut dato"
 
-#: models.py:22
-#: models.py:166
-#: models.py:197
-#: migrations/0001_initial.py:16
-#: migrations/0001_initial.py:48
-#: migrations/0002_new_options.py:23
-#: migrations/0002_new_options.py:40
-#: migrations/0003_event_max.py:13
+#: models.py:57 models.py:278 models.py:332 migrations/0001_initial.py:16
+#: migrations/0001_initial.py:48 migrations/0002_new_options.py:23
+#: migrations/0002_new_options.py:40 migrations/0003_event_max.py:13
 msgid "Maximum attendees"
 msgstr "Maksimal antal deltagere"
 
-#: models.py:23
-#: migrations/0001_initial.py:29
+#: models.py:58 migrations/0001_initial.py:29
 msgid "registration open"
 msgstr "Tilmelding åben"
 
-#: models.py:26
-#: models.py:29
+#: models.py:61 models.py:65 models.py:68
 #, python-format
 msgid "The following variables are available: %s."
 msgstr "De følgende variabler er tilgængelige: %s."
 
-#: models.py:32
+#: models.py:76
 msgid "event"
 msgstr "Event"
 
-#: models.py:33
+#: models.py:77
 msgid "events"
 msgstr "Events"
 
-#: models.py:82
+#: models.py:146
 #, python-format
 msgid "%s"
 msgstr "%s"
 
-#: models.py:129
-#, fuzzy
+#: models.py:171
+msgid "Waiting"
+msgstr "Venter"
+
+#: models.py:172
+msgid "Accepted"
+msgstr "Accepteret"
+
+#: models.py:173
+msgid "Attended"
+msgstr "Deltaget"
+
+#: models.py:190
+msgid "attendee"
+msgstr "deltager"
+
+#: models.py:191
+msgid "attendees"
+msgstr "deltagerer"
+
+#: models.py:215
 msgid "First name"
 msgstr "Fornavn"
 
-#: models.py:134
-#, fuzzy
+#: models.py:220
 msgid "Last name"
 msgstr "Efternavn"
 
-#: models.py:138
+#: models.py:234
 #, python-format
 msgid "%(event_name)s (signed off)"
-msgstr ""
+msgstr "%(event_name)s (afmeldt)"
 
-#: models.py:160
-#: models.py:193
-#: migrations/0001_initial.py:19
+#: models.py:272 models.py:328 migrations/0001_initial.py:19
 #: migrations/0001_initial.py:50
 msgid "Name"
 msgstr "Navn"
 
-#: models.py:161
-#: models.py:194
-#: migrations/0001_initial.py:14
-#: migrations/0001_initial.py:45
-#: migrations/0008_use_html_fields.py:22
-#: migrations/0008_use_html_fields.py:25
-#: migrations/0008_use_html_fields.py:41
+#: models.py:273 models.py:329 migrations/0001_initial.py:14
+#: migrations/0001_initial.py:45 migrations/0008_use_html_fields.py:22
+#: migrations/0008_use_html_fields.py:25 migrations/0008_use_html_fields.py:41
 #: migrations/0008_use_html_fields.py:44
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: models.py:163
-#: migrations/0001_initial.py:46
-#: migrations/0002_new_options.py:21
-#: migrations/0002_new_options.py:38
+#: models.py:275 migrations/0001_initial.py:46
+#: migrations/0002_new_options.py:21 migrations/0002_new_options.py:38
 msgid "Minimum selected"
 msgstr "Minimum antal valgt"
 
-#: models.py:164
-#: migrations/0002_new_options.py:16
+#: models.py:276 migrations/0002_new_options.py:16
 msgid "Maximum selected"
 msgstr "Maksimum antal valgt"
 
-#: models.py:168
-#: models.py:196
-#: migrations/0001_initial.py:13
+#: models.py:280 models.py:331 migrations/0001_initial.py:13
 #: migrations/0002_new_options.py:13
 msgid "Freeze time"
 msgstr "Stop tidspunkt"
 
-#: models.py:169
-#: models.py:201
-#: migrations/0001_initial.py:15
-#: migrations/0002_new_options.py:19
-#: migrations/0002_new_options.py:25
+#: models.py:281 models.py:336 migrations/0001_initial.py:15
+#: migrations/0002_new_options.py:19 migrations/0002_new_options.py:25
 #: migrations/0002_new_options.py:42
 msgid "Order"
 msgstr "Rækkefølge"
 
-#: models.py:177
-msgid "Atendees"
-msgstr "Deltagerer"
+#: templates/admin/events/attend/add_user.html:16
+#: templates/admin/events/attend/billing.html:10
+#: templates/admin/events/attend/change_selections.html:10
+#: templates/admin/events/attend/checkin.html:10
+#: templates/admin/events/attend/checkout.html:10
+#: templates/admin/events/event/statistics.html:6
+msgid "Home"
+msgstr "Hjem"
 
-#: models.py:238
-#, fuzzy
-msgid "Attendees"
-msgstr "Deltagerer"
+#: templates/admin/events/attend/add_user.html:37
+msgid "Filter"
+msgstr "Filter"
 
 #: templates/admin/events/event/change_form.html:8
 msgid "Statistics"
 msgstr "Statistik"
 
 #: templates/admin/events/event/change_form.html:9
-msgid "Print options"
-msgstr "Print tilvalg"
+msgid "Attendees"
+msgstr "Deltagerer"
 
 #: templates/admin/events/event/change_form.html:10
-msgid "Invoice Report"
-msgstr ""
+msgid "Add attendee"
+msgstr "Tilføj deltager"
 
 #: templates/admin/events/event/change_form.html:11
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: templates/admin/events/event/change_form.html:12
 msgid "History"
 msgstr "Historie"
 
-#: templates/admin/events/event/change_form.html:12
+#: templates/admin/events/event/change_form.html:13
 msgid "View on site"
 msgstr "Se på siden"
 
-#: templates/admin/events/event/statistics.html:6
-msgid "Home"
-msgstr "Hjem"
+#~ msgid "Atendees"
+#~ msgstr "Deltagerer"
+
+#~ msgid "Print options"
+#~ msgstr "Print tilvalg"
 
 #~ msgid "I have read and accept the above described terms"
 #~ msgstr "Jeg har læst og accepterer de overstående regler og betingelser."
+
 #~ msgid "You must accept to participate in the event"
 #~ msgstr "Du skal acceptere for at deltage i arrangementet."
+
 #~ msgid "Yes, remove me from the event"
 #~ msgstr "Ja, afmeld mig fra dette arrangement"
+
 #~ msgid "You must accept to remove your participation in the event"
 #~ msgstr "Du skal acceptere for at blive afmeldt arrangementet"
+
 #~ msgid "The maximum number of attendees have been reached"
 #~ msgstr "Det maksimale antal deltagere er opnået"
+
 #~ msgid "You need to select one option from the group %(group)s"
 #~ msgid_plural "You need to select %(count)d options from the group %(group)s"
 #~ msgstr[0] "Du skal vælge mindst et tilvag fra gruppen %(group)s"
 #~ msgstr[1] "Du skal vælge mindst %(count)d tilvag fra gruppen %(group)s"
+
 #~ msgid "You can not select more than one option from the group %(group)s"
 #~ msgid_plural ""
 #~ "You can not select more than %(count)d options from the group %(group)s"
 #~ msgstr[0] "Du kan ikke vælge mere end et tilvalg fra gruppen %(group)s"
 #~ msgstr[1] ""
 #~ "Du kan ikke vælge mere end %(count)d tilvalg fra gruppen %(group)s"
-#~ msgid "You are now signed up to the event."
-#~ msgstr "Du er nu tilmeldt arrangementet."
+
 #~ msgid "You are now removed from the event."
 #~ msgstr "Du er nu afmeldt dette arrangementet."
-
