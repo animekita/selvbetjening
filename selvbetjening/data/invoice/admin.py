@@ -48,8 +48,12 @@ class InvoiceAdmin(ModelAdmin):
         children['InvoiceAdminReport'] = (_('Report'), reverse_lazy('admin:invoice_invoice_report'))
         children['InvoiceAdminRegister'] = (_('Register Payment'), reverse_lazy('admin:invoice_invoice_pay'))
 
+        return links
+
     def remove_from_menu(self, links):
         del links['InvoiceAdmin']
+
+        return links
 
 site.register(Invoice, InvoiceAdmin)
 

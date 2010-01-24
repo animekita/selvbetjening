@@ -7,6 +7,8 @@
  * Simplified setting files.
  * Moved some dependencies into a contrib folder for easier installation.
  * Added outgoing mail query in order to better support mass e-mails.
+ * Added dynamic menu to the admin in order to generate the menu based on installed functionality
+ * Added statistics for user age and join date.
 
 2.2.0
  * Added pyton library to sso api.

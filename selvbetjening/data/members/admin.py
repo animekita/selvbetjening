@@ -59,8 +59,12 @@ class UserAdminExt(UserAdmin):
         children['UserAdminExtGroups'] = (_('Groups'), reverse_lazy('admin:auth_group_changelist'))
         children['UserAdminExtStats'] = (_('Statistics'), reverse_lazy('admin:auth_user_statistics'))
 
+        return links
+
     def remove_from_menu(self, links):
         del links['UserAdminExt']
+
+        return links
 
     def add_view(self, request):
         # copy of the original add_view, remove this if possible but damm

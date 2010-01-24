@@ -27,16 +27,25 @@ class AdminSite(admin.AdminSite):
 
         admin = self._registry[model]
         if hasattr(admin, 'add_to_menu'):
-            admin.add_to_menu(self.Menu.links)
+            self.Menu.links = admin.add_to_menu(self.Menu.links)
 
         return result
 
     def unregister(self, model):
         admin = self._registry[model]
         if hasattr(admin, 'remove_from_menu'):
-            admin.remove_from_menu(self.Menu.links)
+            self.Menu.links = admin.remove_from_menu(self.Menu.links)
 
         return super(AdminSite, self).unregister(model)
+
+    def replace(self, model, admin_class):
+        """
+        Use this function to replace models with new admin classes without
+        invoking the register/unregister logic. This is to preserve any
+        injected menu items in the menu.
+        """
+        super(AdminSite, self).unregister(model)
+        super(AdminSite, self).register(model, admin_class)
 
     class Menu:
         """

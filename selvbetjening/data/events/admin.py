@@ -157,8 +157,12 @@ class EventAdmin(ModelAdmin):
         links['EventAdmin'] = (_('Events'), reverse_lazy('admin:events_event_changelist'),
                                children)
 
+        return links
+
     def remove_from_menu(self, links):
         del links['EventAdmin']
+
+        return links
 
 site.register(Event, EventAdmin)
 
