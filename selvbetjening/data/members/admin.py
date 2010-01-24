@@ -8,8 +8,9 @@ from django.shortcuts import render_to_response
 from django.contrib.admin.helpers import AdminForm
 from django.http import Http404, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
+from django.utils.datastructures import SortedDict
 
-from selvbetjening.core.selvadmin.admin import site
+from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 
 from shortcuts import get_or_create_profile
 from models import UserProfile
@@ -48,6 +49,18 @@ class UserAdminExt(UserAdmin):
         urlpatterns += super(UserAdminExt, self).get_urls()
 
         return urlpatterns
+
+    def add_to_menu(self, links):
+        children = SortedDict()
+
+        links['UserAdminExt'] = (_('Users'), reverse_lazy('admin:auth_user_changelist'),
+                                 children)
+
+        children['UserAdminExtGroups'] = (_('Groups'), reverse_lazy('admin:auth_group_changelist'))
+        children['UserAdminExtStats'] = (_('Statistics'), reverse_lazy('admin:auth_user_statistics'))
+
+    def remove_from_menu(self, links):
+        del links['UserAdminExt']
 
     def add_view(self, request):
         # copy of the original add_view, remove this if possible but damm

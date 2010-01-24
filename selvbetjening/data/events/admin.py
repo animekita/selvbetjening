@@ -12,8 +12,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.helpers import AdminForm
+from django.utils.datastructures import SortedDict
 
-from selvbetjening.core.selvadmin.admin import site
+from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 from selvbetjening.data.translation.admin import TranslationInline
 
 from models import Event, Attend, AttendState, Option, OptionGroup, SubOption, Selection
@@ -79,7 +80,6 @@ class AttendAdmin(ModelAdmin):
         urlpatterns += super(AttendAdmin, self).get_urls()
 
         return urlpatterns
-
 
 site.register(Attend, AttendAdmin)
 
@@ -150,6 +150,15 @@ class EventAdmin(ModelAdmin):
         urlpatterns += super(EventAdmin, self).get_urls()
 
         return urlpatterns
+
+    def add_to_menu(self, links):
+        children = SortedDict()
+
+        links['EventAdmin'] = (_('Events'), reverse_lazy('admin:events_event_changelist'),
+                               children)
+
+    def remove_from_menu(self, links):
+        del links['EventAdmin']
 
 site.register(Event, EventAdmin)
 

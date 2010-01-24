@@ -2,8 +2,10 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from django.contrib.auth.models import User
 from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
 
-from selvbetjening.core.selvadmin.admin import site
+from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 
 from models import Invoice, InvoiceRevision, Line, Payment
 import admin_views
@@ -36,6 +38,18 @@ class InvoiceAdmin(ModelAdmin):
         urlpatterns += super(InvoiceAdmin, self).get_urls()
 
         return urlpatterns
+
+    def add_to_menu(self, links):
+        children = SortedDict()
+
+        links['InvoiceAdmin'] = (_('Invoice'), reverse_lazy('admin:invoice_invoice_changelist'),
+                                 children)
+
+        children['InvoiceAdminReport'] = (_('Report'), reverse_lazy('admin:invoice_invoice_report'))
+        children['InvoiceAdminRegister'] = (_('Register Payment'), reverse_lazy('admin:invoice_invoice_pay'))
+
+    def remove_from_menu(self, links):
+        del links['InvoiceAdmin']
 
 site.register(Invoice, InvoiceAdmin)
 

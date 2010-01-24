@@ -62,25 +62,17 @@
     {% block menu %}
     <div id="menu">
 
-        <a href="{% url admin:index %}"><h2>Dashboard</h2></a>
+        {% for name, link, children in ADMIN_NAVIGATION %}
+            {% if link %}<a href="{{link}}">{% endif %}<h2>{{name}}</h2>{% if link %}</a>{% endif %}
 
-        <a href="{% url admin:auth_user_changelist %}"><h2>Brugere</h2></a>
-
-        <ul>
-            <li><a href="{% url admin:auth_user_statistics %}">Statistik</a></li>
-            <li><a href="{% url admin:auth_group_changelist %}">Grupper</a></li>
-        </ul>
-
-        <a href="{% url admin:events_event_changelist %}"><h2>Arrangementer</h2></a>
-
-        <a href="{% url admin:invoice_invoice_changelist %}"><h2>Fakturaer</h2></a>
-        <ul>
-            <li><a href="{% url admin:invoice_invoice_report %}">Faktura rapport</a></li>
-            <li><a href="{% url admin:invoice_invoice_pay %}">Registrer betaling</a></li>
-        </ul>
+            {% for childname, childlink in children.values %}
+            {% if forloop.first %}<ul>{% endif %}
+                <li><a href="{{childlink}}">{{childname}}</a></li>
+            {% if forloop.last %}</ul>{% endif %}
+            {% endfor %}
+        {% endfor %}
 
         {% block extramenu %}{% endblock %}
-
     </div>
     {% endblock %}
 
