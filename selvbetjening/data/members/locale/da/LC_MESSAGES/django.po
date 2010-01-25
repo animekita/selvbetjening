@@ -23,7 +23,7 @@ msgstr "Alder"
 
 #: admin.py:56
 msgid "Users"
-msgstr "Brugerer"
+msgstr "Brugere"
 
 #: admin.py:59
 msgid "Groups"
