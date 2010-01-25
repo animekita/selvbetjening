@@ -60,6 +60,7 @@
         {% endif %}
 
     {% block menu %}
+    {% if not is_popup %}
     <div id="menu">
 
         {% for name, link, children in ADMIN_NAVIGATION %}
@@ -74,6 +75,7 @@
 
         {% block extramenu %}{% endblock %}
     </div>
+    {% endif %}
     {% endblock %}
 
     <div id="content-wrapper">
