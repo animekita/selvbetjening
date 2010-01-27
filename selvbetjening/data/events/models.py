@@ -60,14 +60,14 @@ class Event(models.Model):
     registration_open = models.BooleanField(_(u'registration open'))
 
     show_registration_confirmation = models.BooleanField(default=False)
-    registration_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    registration_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
     # information
     show_change_confirmation = models.BooleanField(default=False)
-    change_confirmation = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    change_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
     show_invoice_page = models.BooleanField(default=False)
-    invoice_page = HTMLField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev')
+    invoice_page = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
     objects = models.Manager()
 

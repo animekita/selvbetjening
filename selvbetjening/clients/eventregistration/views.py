@@ -76,7 +76,8 @@ def signup(request, event,
                 template = Template(event.registration_confirmation)
                 context = Context({'invoice_rev' : attendee.invoice.latest_revision,
                                    'event' : event,
-                                   'user' : attendee.user,})
+                                   'user' : attendee.user,
+                                   'attendee': attendee})
                 registration_confirmation = template.render(context)
 
                 return render_to_response(template_registration_confirmation,
@@ -159,7 +160,8 @@ def change_options(request, event, form=OptionForms,
                 template = Template(event.change_confirmation)
                 context = Context({'invoice_rev' :  attendee.invoice.latest_revision,
                                    'event' : event,
-                                   'user' : attendee.user,})
+                                   'user' : attendee.user,
+                                   'attendee': attendee})
                 change_confirmation = template.render(context)
 
                 return render_to_response(template_change_confirmation,
@@ -191,7 +193,8 @@ def view_invoice(request, event, template_name='eventregistration/viewinvoice.ht
     template = Template(event.invoice_page)
     context = Context({'invoice_rev' :  attendee.invoice.latest_revision,
                        'event' : event,
-                       'user' : attendee.user,})
+                       'user' : attendee.user,
+                       'attendee': attendee})
 
     rendered_invoice = template.render(context)
 
