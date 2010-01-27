@@ -13,8 +13,6 @@ from selvbetjening.data.members.forms import ProfileForm
 from selvbetjening.data.members.models import UserProfile
 from selvbetjening.data.events.models import Attend
 
-from processor_handlers import viewprofile as viewprofile_handler
-
 def profile_redirect(request):
     if isinstance(request.user, AnonymousUser):
         return HttpResponseRedirect(reverse('members_login'))

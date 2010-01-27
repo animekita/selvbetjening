@@ -4,14 +4,16 @@ import re
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+from django.db.models import OneToOneRel
 
 from countries.models import Country
 
 from selvbetjening.viewhelpers.forms import widgets
 
 from models import UserProfile
-import signals
 from shortcuts import get_or_create_profile
+import signals
 
 class ProfileForm(forms.Form):
     COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
@@ -169,3 +171,18 @@ class RegistrationForm(ProfileForm):
                                   clear_text_password=self.cleaned_data["password1"])
 
         return user
+
+class AdminSelectMigrationUsers(forms.Form):
+    old_user = forms.IntegerField(label=_('Old user account'), widget=ForeignKeyRawIdWidget(OneToOneRel(User, 'id')))
+    new_user = forms.IntegerField(label=_('New user account'), widget=ForeignKeyRawIdWidget(OneToOneRel(User, 'id')))
+
+    def clean(self):
+        try:
+            if self.cleaned_data['old_user'] == self.cleaned_data['new_user']:
+                raise forms.ValidationError(_('Old user account and new user account must be different'))
+
+        except KeyError:
+            pass # if old_user or new_user is not set, then another error should have shown itself
+
+        return self.cleaned_data
+

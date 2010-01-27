@@ -13,6 +13,8 @@ from tinymce.models import HTMLField
 from selvbetjening.data.invoice.models import Invoice
 from selvbetjening.data.invoice.signals import populate_invoice
 
+import processors
+
 _EVENT_CACHE_IDS = []
 
 def purge_cache():

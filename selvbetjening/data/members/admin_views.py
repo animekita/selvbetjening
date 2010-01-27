@@ -1,19 +1,57 @@
 # -- encoding: utf-8 --
-from datetime import date, timedelta
+from datetime import date
 
-from django import shortcuts
 from django.utils.translation import gettext as _
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
+from django.contrib.admin.helpers import AdminForm
+from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.template import RequestContext
 from django.db.models import Min, Max
 
 from django.contrib.auth.models import User
 
 from selvbetjening.data.members.models import UserProfile, to_age
+
+from forms import AdminSelectMigrationUsers
+from processor_handlers import user_migration_processors
+
+def user_migration(request,
+                   admin_site,
+                   template_name='admin/auth/user/migration.html',
+                   confirm_template_name='admin/auth/user/migration_confirm.html'):
+
+    view_processors = ''
+
+    if request.method == 'POST':
+        form = AdminSelectMigrationUsers(request.POST)
+
+        if form.is_valid():
+            # calculate changes
+            old_user = User.objects.get(pk=form.cleaned_data['old_user'])
+            new_user = User.objects.get(pk=form.cleaned_data['new_user'])
+
+            handler = user_migration_processors.get_handler(request, old_user, new_user)
+
+            if request.POST.has_key('do_migration') and handler.is_valid():
+                handler.migrate()
+                request.user.message_set.create(message=_('User account migration accomplished.'))
+                return HttpResponseRedirect(reverse('admin:auth_user_migration'))
+            else:
+                view_processors = handler.render_function()
+                pass
+
+    else:
+        form = AdminSelectMigrationUsers()
+
+    adminform = AdminForm(form,
+                          [(None, {'fields': form.base_fields.keys()})],
+                          {}
+                          )
+
+    return render_to_response(template_name,
+                              {'adminform' : adminform,
+                               'view_processors' : view_processors},
+                              context_instance=RequestContext(request))
 
 def user_age_chart(min_age=5, max_age=80):
     cur_year = date.today().year

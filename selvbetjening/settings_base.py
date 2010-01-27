@@ -37,6 +37,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

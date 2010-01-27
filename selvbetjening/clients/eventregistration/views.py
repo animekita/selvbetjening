@@ -20,10 +20,9 @@ from selvbetjening.data.events.decorators import \
 
 from forms import SignupForm, SignoffForm, OptionForms
 
-import processor_handlers as handlers
+from processor_handlers import signup_processors, change_processors
 
 def list_events(request, template_name='eventregistration/list.html'):
-    ''' Show list of events. '''
     return render_to_response(template_name,
                               { 'events' : Event.objects.order_by('-startdate') },
                               context_instance=RequestContext(request))
@@ -56,21 +55,20 @@ def signup(request, event,
                                   {'event' : event},
                                   context_instance=RequestContext(request))
 
-    signup_allowed, render_functions, save_functions = \
-                  handlers.signup.run_processors(request, request.user, event)
+
+    handler = signup_processors.get_handler(request, request.user, event)
 
     if request.method == 'POST':
         form = form_class(request.POST)
         optionforms = form_options_class(event, request.POST)
 
-        if form.is_valid() and optionforms.is_valid() and signup_allowed:
+        if form.is_valid() and optionforms.is_valid() and handler.is_valid():
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
 
             attendee = event.add_attendee(request.user)
             optionforms.save(attendee=attendee)
 
-            for save_func in save_functions:
-                save_func(attendee)
+            handler.save(attendee)
 
             attendee.invoice.update(force=True)
 
@@ -93,16 +91,13 @@ def signup(request, event,
         form = form_class()
         optionforms = form_options_class(event)
 
-    # Render the signup parts
-    signup_parts = ''
-    for render_func in render_functions:
-        signup_parts += render_func()
+    handler_view = handler.view()
 
     return render_to_response(template_name,
                               {'event' : event,
                                'form' : form,
                                'optionforms' : optionforms,
-                               'signup_parts' : signup_parts},
+                               'signup_parts' : handler_view},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -149,16 +144,14 @@ def change_options(request, event, form=OptionForms,
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    signup_allowed, render_functions, save_functions = \
-                  handlers.change.run_processors(request, attendee)
+    handler = change_processors.get_handler(request, attendee)
 
     if request.method == 'POST':
         form = OptionForms(event, request.POST, attendee=attendee)
-        if form.is_valid() and signup_allowed:
+        if form.is_valid() and handler.is_valid():
             form.save()
 
-            for save_func in save_functions:
-                save_func()
+            handler.save()
 
             attendee.invoice.update(force=True)
 
@@ -178,9 +171,7 @@ def change_options(request, event, form=OptionForms,
     else:
         form = OptionForms(event, attendee=attendee)
 
-    signup_render = ''
-    for render_func in render_functions:
-        signup_render += render_func()
+    signup_render = handler.view()
 
     return render_to_response(template_name,
                               {'optionforms' : form,

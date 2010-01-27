@@ -44,6 +44,10 @@ class UserAdminExt(UserAdmin):
                                url(r'^statistics/',
                                    self.admin_site.admin_view(admin_views.user_statistics),
                                    name='%s_%s_statistics' % info),
+                               url(r'^migrate/',
+                                   self.admin_site.admin_view(admin_views.user_migration),
+                                   {'admin_site': self.admin_site},
+                                   name='%s_%s_migration' % info),
                                )
 
         urlpatterns += super(UserAdminExt, self).get_urls()
@@ -58,6 +62,7 @@ class UserAdminExt(UserAdmin):
 
         children['UserAdminExtGroups'] = (_('Groups'), reverse_lazy('admin:auth_group_changelist'))
         children['UserAdminExtStats'] = (_('Statistics'), reverse_lazy('admin:auth_user_statistics'))
+        children['UserAdminExtMigration'] = (_('Migration'), reverse_lazy('admin:auth_user_migration'))
 
         return links
 

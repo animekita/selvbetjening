@@ -1,17 +1,44 @@
 from django.conf import settings
+from django.template import mark_safe
 
-from selvbetjening import utility
+from selvbetjening.utility import ProcessorHandler, ProcessorRegistry
 
-"""
-processor(request, user, event)
-render_function()
-save_function(attendee)
-"""
-signup = utility.ProcessorHandler(settings, 'EVENTREGISTRATION_SIGNUP_PROCESSORS')
+class SignupHandler(ProcessorHandler):
+    """
+    Each processor is given (request, user, event) in their constructor.
+    """
 
-"""
-processor(request, user, event)
-render_function()
-save_function()
-"""
-change = utility.ProcessorHandler(settings, 'EVENTREGISTRATION_CHANGE_PROCESSORS')
+    def is_valid(self):
+        valid = True
+        for result in self._call_all('is_valid'):
+            valid = valid and result
+
+        return valid
+
+    def view(self):
+        return mark_safe(''.join(self._call_all('view')))
+
+    def save(self, attendee):
+        self._call_all('save', attendee)
+
+signup_processors = ProcessorRegistry(SignupHandler)
+
+class ChangeHandler(ProcessorHandler):
+    """
+    __init__(request, user, event)
+    """
+
+    def is_valid(self):
+        valid = True
+        for result in self._call_all('is_valid'):
+            valid = valid and result
+
+        return valid
+
+    def view(self):
+        return ''.join(self._call_all('view'))
+
+    def save(self):
+        self._call_all('save')
+
+change_processors = ProcessorRegistry(ChangeHandler)

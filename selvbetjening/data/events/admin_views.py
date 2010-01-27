@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from selvbetjening.data.invoice.models import Invoice, Payment
 from selvbetjening.data.members.forms import RegistrationForm
 
-import processor_handlers
+from processor_handlers import change_selection_processors, checkin_processors
 from models import Event, Attend, AttendState
 from forms import PaymentForm
 
@@ -103,23 +103,18 @@ def change_selections(request, attend_id,
     attendee = shortcuts.get_object_or_404(Attend, pk=attend_id)
     event = attendee.event
 
-
-    checkin_allowed, render_functions, save_functions = \
-                   processor_handlers.change_selections.run_processors(request, attendee)
+    handler = change_selection_processors.get_handler(request, attendee)
 
     if request.method == 'POST':
-        if checkin_allowed:
-            for save_func in save_functions:
-                save_func()
+        if handler.is_valid():
+            handler.save()
 
             if request.POST.has_key('do_save_and_list'):
                 return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
             elif request.POST.has_key('do_save_and_checkin'):
                 return HttpResponseRedirect(reverse('admin:events_attend_checkin', args=[attendee.pk]))
 
-    checkin_parts = u''
-    for render_func in render_functions:
-        checkin_parts += render_func()
+    checkin_parts = handler.view()
 
     return render_to_response(template_name,
                               {'event' : event,
@@ -201,12 +196,9 @@ def checkin(request, attend_id,
 
         return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
 
-    submit_allowed, view_functions, save_functions = \
-                  processor_handlers.checkin.run_processors(request, attendee)
+    handler = checkin_processors.get_handler(request, attendee)
 
-    checkin_rendered = ''
-    for view_func in view_functions:
-        checkin_rendered += view_func()
+    checkin_rendered = handler.view()
 
     return render_to_response(template_name,
                               {'event' : event,
