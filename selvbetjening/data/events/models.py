@@ -10,7 +10,7 @@ from django.core.cache import cache
 
 from tinymce.models import HTMLField
 
-from selvbetjening.data.invoice.models import Invoice
+from selvbetjening.data.invoice.models import Invoice, Payment
 from selvbetjening.data.invoice.signals import populate_invoice
 
 import processors
@@ -302,6 +302,21 @@ def update_invoice_with_attend_handler(sender, **kwargs):
                                       managed=True)
 
 populate_invoice.connect(update_invoice_with_attend_handler)
+
+def update_state_on_payment(sender, **kwargs):
+    instance = kwargs['instance']
+    created = kwargs['created']
+
+    if created == True:
+        attends = Attend.objects.filter(invoice=instance.revision.invoice)
+        attends = attends.filter(event__move_to_accepted_policy=AttendeeAcceptPolicy.on_payment)
+        attends = attends.filter(state=AttendState.waiting)
+
+        for attend in attends:
+            attend.state = AttendState.accepted
+            attend.save()
+
+post_save.connect(update_state_on_payment, sender=Payment)
 
 class AttendStateChange(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
