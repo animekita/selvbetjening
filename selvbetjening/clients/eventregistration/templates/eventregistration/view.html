@@ -48,9 +48,105 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
 
 {% else %}
 
-    <p>Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
+    <p><b>Tilmeldingen er ikke åbnet på nuværende tidspunkt.</b></p>
 
 {% endif %}
+
+{% if event.maximum_attendees %}
+<table>
+<tr>
+    <th>Venter på betaling</th>
+    <th>Tilmeldte</th>
+    <th>Max antal tilmeldte</th>
+</tr>
+<tr>
+    <td>{{event.waiting_attendees.count}}</td>
+    <td>{{event.accepted_attendees.count}}</td>
+    <td>{{event.maximum_attendees}}</td>
+</tr>
+</table>
+{% endif %}
+
+<h2>Tilmeldte</h2>
+
+{% ifequal event.move_to_accepted_policy "on_payment" %}
+    {% if event.accepted_attendees %}
+
+        <table class="horizontal">
+            <tr>
+                <th>#</th>
+                <th>Navn</th>
+                <th>Brugernavn</th>
+                <th>&nbsp;</th>
+            </tr>
+
+        {% for attendee in event.accepted_attendees %}
+            <tr
+            {% ifequal attendee.user.id user.id %}
+                class="item_high"
+            {% else %}
+                {% if event.has_been_held and not attendee.has_attended %}
+                    class="item_low"
+                {% endif %}
+            {% endifequal %}
+            >
+                <td>{{forloop.counter}}</td>
+                <td>{{attendee.user.first_name}} {{attendee.user.last_name}}</td>
+                <td>{{attendee.user.username}}</td>
+                <td>
+                {% if event.has_been_held and not attendee.has_attended %}
+                    deltog ikke
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </table>
+
+    {% else %}
+        <p>Ingen tilmeldte.</p>
+    {% endif %}
+
+    <h2>Venter på betaling</h2>
+
+    {% if event.waiting_attendees %}
+
+    <table class="horizontal">
+            <tr>
+                <th>#</th>
+                <th>Navn</th>
+                <th>Brugernavn</th>
+                <th>&nbsp;</th>
+            </tr>
+
+        {% for attendee in event.waiting_attendees %}
+            <tr
+            {% ifequal attendee.user.id user.id %}
+                class="item_high"
+            {% else %}
+                {% if event.has_been_held and not attendee.has_attended %}
+                    class="item_low"
+                {% endif %}
+            {% endifequal %}
+            >
+                <td>{{forloop.counter}}</td>
+                <td>{{attendee.user.first_name}} {{attendee.user.last_name}}</td>
+                <td>{{attendee.user.username}}</td>
+                <td>
+                {% if event.has_been_held and not attendee.has_attended %}
+                    deltog ikke
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </table>
+
+    {% else %}
+        <p>Venter ikke på nogen betalinger.</p>
+    {% endif %}
+
+{% else %}
 
 {% if attendees %}
 
@@ -90,5 +186,7 @@ Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.endd
 {% else %}
     <p>Ingen tilmeldte.</p>
 {% endif %}
+
+{% endifequal %}
 
 {% endblock %}

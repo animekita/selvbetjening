@@ -30,6 +30,7 @@ def delete_caches_on_event_change(sender, **kwargs):
 class AttendeeAcceptPolicy(object):
     manual = 'manual'
     always = 'always'
+    on_payment = 'on_payment'
 
     @staticmethod
     def get_choices():
@@ -43,6 +44,7 @@ class Event(models.Model):
     _CACHED_OPTIONGROUPS_ID = 'event-%d-optiongroups'
     _CACHED_ATTENDEES_ID = 'event-%d-attendees'
     _CACHED_ACCEPTED_ATTENDEES_ID = 'event-%d-accepted-attendees'
+    _CACHED_WAITING_ATTENDEES_ID = 'event-%d-waiting-attendees'
 
     title = models.CharField(_(u'title'), max_length=255)
     description = HTMLField(_(u'description'), blank=True)
@@ -91,12 +93,23 @@ class Event(models.Model):
         return attendees
 
     @property
+    def waiting_attendees(self):
+        cid = self._CACHED_WAITING_ATTENDEES_ID % self.pk
+        attendees = cache.get(cid)
+
+        if attendees is None:
+            attendees = self.attendees.filter(state=AttendState.waiting).order_by('change_timestamp', 'id')
+            cache.set(cid, attendees)
+
+        return attendees
+
+    @property
     def accepted_attendees(self):
         cid = self._CACHED_ACCEPTED_ATTENDEES_ID % self.pk
         attendees = cache.get(cid)
 
         if attendees is None:
-            attendees = self.attendees.exclude(state=AttendState.waiting)
+            attendees = self.attendees.exclude(state=AttendState.waiting).order_by('change_timestamp', 'id')
             cache.set(cid, attendees)
 
         return attendees
@@ -184,6 +197,15 @@ class Attend(models.Model):
                              choices=AttendState.get_choices(),
                              default=AttendState.waiting)
 
+    # changes on shift from accepted to waiting vice versa
+    # this is used to order the attendee lists for either accepted
+    # or waiting. The django api can not query the attend_history
+    # effective so we need this derived variable. In addition it
+    # is only updated when changing from accpeted to waiting in order
+    # to prevent attendees changing place when being checked in.
+    # Please find a fix to this mess!
+    change_timestamp = models.DateTimeField(null=True, blank=True)
+    registration_date = models.DateTimeField(auto_now_add=True, null=True)
 
     objects = AttendManager()
 
@@ -229,6 +251,19 @@ class Attend(models.Model):
         if self.event.move_to_accepted_policy == AttendeeAcceptPolicy.always:
             self.state = AttendState.accepted
 
+        try:
+            latest = self.state_history.latest('timestamp')
+            if not latest.state == self.state:
+                self.state_history.create(state=self.state)
+
+            if (latest.state == AttendState.waiting and (self.state == AttendState.accepted or self.state == AttendState.attended)) or \
+               ((latest.state == AttendState.accepted or latest.state == AttendState.attended) and self.state == AttendState.waiting):
+                self.change_timestamp = datetime.now()
+
+        except AttendStateChange.DoesNotExist:
+            self.state_history.create(state=self.state)
+            self.change_timestamp = datetime.now()
+
         super(Attend, self).save(*args, **kwargs)
 
     def delete(self):
@@ -245,6 +280,7 @@ def delete_event_attendees_cache(sender, **kwargs):
     instance = kwargs['instance']
     cache.delete(Event._CACHED_ATTENDEES_ID % instance.event.pk)
     cache.delete(Event._CACHED_ACCEPTED_ATTENDEES_ID % instance.event.pk)
+    cache.delete(Event._CACHED_WAITING_ATTENDEES_ID % instance.event.pk)
 
 pre_delete.connect(delete_event_attendees_cache, sender=Attend)
 post_save.connect(delete_event_attendees_cache, sender=Attend)
@@ -266,6 +302,12 @@ def update_invoice_with_attend_handler(sender, **kwargs):
                                       managed=True)
 
 populate_invoice.connect(update_invoice_with_attend_handler)
+
+class AttendStateChange(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    state = models.CharField(max_length=32,
+                             choices=AttendState.get_choices())
+    attendee = models.ForeignKey(Attend, related_name='state_history')
 
 class OptionGroup(models.Model):
     _CACHED_OPTIONS_ID = 'optiongroup-%d-options'
