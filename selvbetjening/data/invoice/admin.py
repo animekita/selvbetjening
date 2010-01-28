@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 
-from models import Invoice, InvoiceRevision, Line, Payment
+from models import Invoice, InvoiceRevision, Line, Payment, InvoicePaymentWorkflow
 import admin_views
 
 class InvoiceAdmin(ModelAdmin):
@@ -30,8 +30,11 @@ class InvoiceAdmin(ModelAdmin):
                                url(r'^report/',
                                    self.admin_site.admin_view(admin_views.invoice_report),
                                    name='%s_%s_report' % info),
-                               url(r'^pay/',
+                               url(r'^payment/(?P<workflow_id>[0-9]+)/',
                                    self.admin_site.admin_view(admin_views.invoice_pay),
+                                   name='%s_%s_pay_step2' % info),
+                               url(r'^payment/',
+                                   self.admin_site.admin_view(admin_views.invoice_select_workflow),
                                    name='%s_%s_pay' % info),
                                )
 
@@ -109,3 +112,5 @@ class PaymentAdmin(ModelAdmin):
     invoice.admin_order_field = 'revision_invoice'
 
 site.register(Payment, PaymentAdmin)
+
+site.register(InvoicePaymentWorkflow)

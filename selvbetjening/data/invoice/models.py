@@ -5,6 +5,7 @@ except ImportError:
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 import signals
 import processors
@@ -168,3 +169,11 @@ class Payment(models.Model):
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')
     note = models.CharField(max_length=256, blank=True)
 
+class InvoicePaymentWorkflow(models.Model):
+    name = models.CharField(name=_('Workflow name'), max_length=255)
+
+    notification_email_subject = models.CharField(name=_(u'Notification e-mail subject'), max_length=255)
+    notification_email = models.TextField(name=_(u'Notification e-mail'))
+
+    def __unicode__(self):
+        return self.name

@@ -1,3 +1,5 @@
+# -- encoding: utf-8 --
+
 from decimal import Decimal
 
 from django import forms
@@ -103,47 +105,46 @@ class InvoiceFormattingForm(forms.Form):
 
         return [line_groups[id] for id in line_groups]
 
-class InvoiceGlobalIdForm(forms.Form):
-    revision_id = forms.IntegerField()
-    invoice_id = forms.IntegerField()
-    user_id = forms.IntegerField()
+class InvoicePaymentForm(forms.Form):
+    payment_id = forms.RegexField(max_length=255, regex='^[0-9]+\.[0-9]+\.[0-9]+$')
+    payment = forms.IntegerField()
 
     def __init__(self, *args, **kwargs):
+        self.revision_id = None
+        self.invoice_id = None
+        self.user_id = None
+
         self.revision = None
         self.invoice = None
         self.user = None
+        self.payment = 0
 
-        super(InvoiceGlobalIdForm, self).__init__(*args, **kwargs)
+        super(InvoicePaymentForm, self).__init__(*args, **kwargs)
 
-    def clean_revision_id(self):
-        revision_id = self.cleaned_data['revision_id']
+    def clean_payment(self):
+        self.payment = self.cleaned_data['payment']
+
+        return self.payment
+
+    def clean_payment_id(self):
+        self.revision_id, self.invoice_id, self.user_id = self.cleaned_data['payment_id'].split('.')
 
         try:
-            self.revision = InvoiceRevision.objects.get(pk=revision_id)
+            self.revision = InvoiceRevision.objects.get(pk=self.revision_id)
         except InvoiceRevision.DoesNotExist:
             raise forms.ValidationError(u'Invoice revision does not exist')
 
-        return revision_id
-
-    def clean_invoice_id(self):
-        invoice_id = self.cleaned_data['invoice_id']
-
         try:
-            self.invoice = Invoice.objects.get(pk=invoice_id)
+            self.invoice = Invoice.objects.get(pk=self.invoice_id)
         except Invoice.DoesNotExist:
             raise forms.ValidationError(u'Invoice does not exist')
 
-        return invoice_id
-
-    def clean_user_id(self):
-        user_id = self.cleaned_data['user_id']
-
         try:
-            self.user = User.objects.get(pk=user_id)
+            self.user = User.objects.get(pk=self.user_id)
         except User.DoesNotExist:
             raise forms.ValidationError(u'User does not exist')
 
-        return user_id
+        return self.cleaned_data['payment_id']
 
     def clean(self):
 
