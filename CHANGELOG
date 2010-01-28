@@ -10,6 +10,7 @@
  * Added dynamic menu to the admin in order to generate the menu based on installed functionality
  * Added statistics for user age and join date.
  * Added basic workflow concept to payment registration. Initially with e-mail notification on registration.
+ * Forbedret brugervenlighed af invoice rapporten.
 
 2.2.0
  * Added pyton library to sso api.

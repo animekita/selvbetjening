@@ -46,7 +46,9 @@ class InvoiceFormattingForm(forms.Form):
             for line in invoice.line_set.all():
                 lines.append(line.description)
 
-        self._all_lines = set(lines)
+
+
+        self._all_lines = sorted(set(lines), key=lambda k: k)
 
         self.fields['exclude_lines'].choices = [(line, line) for line in self._all_lines]
 
@@ -103,7 +105,16 @@ class InvoiceFormattingForm(forms.Form):
 
                     line_groups[line.description].add(line)
 
-        return [line_groups[id] for id in line_groups]
+        total = {'overpaid': 0, 'paid': 0, 'partial': 0, 'unpaid': 0, 'total': 0}
+        for id in line_groups:
+            line_group = line_groups[id]
+            total['overpaid'] += line_group.overpaid_total
+            total['paid'] += line_group.paid_total
+            total['partial'] += line_group.partial_total
+            total['unpaid'] += line_group.unpaid_total
+            total['total'] += line_group.total
+
+        return sorted([line_groups[id] for id in line_groups], key=lambda i: i.name), total
 
 class InvoicePaymentForm(forms.Form):
     payment_id = forms.RegexField(max_length=255, regex='^[0-9]+\.[0-9]+\.[0-9]+$')

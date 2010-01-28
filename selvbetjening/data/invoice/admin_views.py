@@ -77,6 +77,7 @@ def invoice_report(request,
 
     invoices = []
     line_groups = []
+    total = None
 
     if request.method == 'POST' or request.GET.has_key('event'):
         sourceform = InvoiceSourceForm(request.REQUEST)
@@ -86,7 +87,7 @@ def invoice_report(request,
 
             formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoices)
             if formattingform.is_valid():
-                line_groups = formattingform.format()
+                line_groups, total = formattingform.format()
         else:
             formattingform = InvoiceFormattingForm(request.REQUEST)
     else:
@@ -104,6 +105,7 @@ def invoice_report(request,
     return render_to_response(template_name,
                               {'invoices' : invoices,
                                'line_groups' : line_groups,
+                               'total' : total,
                                'adminsourceform' : adminsourceform,
                                'adminformattingform' : adminformattingform},
                               context_instance=RequestContext(request))
