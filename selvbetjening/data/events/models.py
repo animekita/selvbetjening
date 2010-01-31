@@ -254,14 +254,16 @@ class Attend(models.Model):
         try:
             latest = self.state_history.latest('timestamp')
             if not latest.state == self.state:
-                self.state_history.create(state=self.state)
+                AttendStateChange.objects.create(state=self.state,
+                                                 attendee=self)
 
             if (latest.state == AttendState.waiting and (self.state == AttendState.accepted or self.state == AttendState.attended)) or \
                ((latest.state == AttendState.accepted or latest.state == AttendState.attended) and self.state == AttendState.waiting):
                 self.change_timestamp = datetime.now()
 
         except AttendStateChange.DoesNotExist:
-            self.state_history.create(state=self.state)
+            AttendStateChange.objects.create(state=self.state,
+                                             attendee=self)
             self.change_timestamp = datetime.now()
 
         super(Attend, self).save(*args, **kwargs)
