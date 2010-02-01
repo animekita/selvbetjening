@@ -47,7 +47,8 @@ def invoice_pay(request,
 
             subject = workflow.notification_email_subject
             content = {'invoice_rev' : attendee.invoice.latest_revision,
-                       'attendee' : attendee}
+                       'attendee' : attendee,
+                       'payment': payment}
 
             message_body = get_template_from_string(workflow.notification_email).render(content)
 

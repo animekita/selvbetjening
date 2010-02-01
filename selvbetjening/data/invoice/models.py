@@ -173,7 +173,7 @@ class InvoicePaymentWorkflow(models.Model):
     name = models.CharField(name=_('Workflow name'), max_length=255)
 
     notification_email_subject = models.CharField(name=_(u'Notification e-mail subject'), max_length=255)
-    notification_email = models.TextField(name=_(u'Notification e-mail'))
+    notification_email = models.TextField(name=_(u'Notification e-mail'), help_text=_('Available variables: attendee, payment, invoice_rev'))
 
     def __unicode__(self):
         return self.name
