@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 
 from tinymce.models import HTMLField
 
-from mailer import send_html_email
+from mailer import send_html_mail
 
 # Create your models here.
 class Mail(models.Model):
@@ -62,7 +62,7 @@ class Mail(models.Model):
         body_html = render_to_string('mailcenter/email/newsletter_html.txt',
                                      { 'body': self.body })
 
-        send_html_email(self.subject, body_plain, body_html,
+        send_html_mail(self.subject, body_plain, body_html,
                   settings.DEFAULT_FROM_EMAIL, recipients)
 
     def __unicode__(self):
