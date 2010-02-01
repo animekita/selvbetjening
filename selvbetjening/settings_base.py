@@ -76,6 +76,8 @@ INSTALLED_APPS = [
 
 # tinymce config
 TINYMCE_DEFAULT_CONFIG = {
+    'convert_urls': False,
+    'relative_urls': False,
     'language': 'en',
     'theme' : 'advanced',
     'width' : '600',
