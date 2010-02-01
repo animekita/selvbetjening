@@ -4,21 +4,21 @@ from django.db import models
 from mailer.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Message.message_body_html'
         db.add_column('mailer_message', 'message_body_html', orm['mailer.message:message_body_html'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Message.message_body_html'
         db.delete_column('mailer_message', 'message_body_html')
-        
-    
-    
+
+
+
     models = {
         'mailer.dontsendentry': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -40,7 +40,6 @@ class Migration:
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'log_message': ('django.db.models.fields.TextField', [], {}),
             'message_body': ('django.db.models.fields.TextField', [], {}),
-            'message_body_html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'priority': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'result': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -49,5 +48,5 @@ class Migration:
             'when_attempted': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
         }
     }
-    
+
     complete_apps = ['mailer']
