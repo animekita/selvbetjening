@@ -1,10 +1,13 @@
+import re
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
 from tinymce.models import HTMLField
-from mailer import send_mail
+
+from mailer import send_html_email
 
 # Create your models here.
 class Mail(models.Model):
@@ -55,10 +58,11 @@ class Mail(models.Model):
         Send e-mails to a list of e-mail adresses.
 
         """
+        body_plain = re.sub(r'<[^>]*?>', '', self.body)
         body_html = render_to_string('mailcenter/email/newsletter_html.txt',
                                      { 'body': self.body })
 
-        send_mail(self.subject, body_html,
+        send_html_email(self.subject, body_plain, body_html,
                   settings.DEFAULT_FROM_EMAIL, recipients)
 
     def __unicode__(self):
