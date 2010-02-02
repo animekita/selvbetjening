@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.contrib.admin.helpers import AdminForm
 from django.utils.translation import ugettext as _
 from django.template.loader import get_template_from_string
+from django.template import Context
 
 if 'mailer' in settings.INSTALLED_APPS:
     from mailer import send_mail
@@ -50,7 +51,7 @@ def invoice_pay(request,
                        'attendee' : attendee,
                        'payment': payment}
 
-            message_body = get_template_from_string(workflow.notification_email).render(content)
+            message_body = get_template_from_string(workflow.notification_email).render(Context(content))
 
             send_mail(subject, message_body, settings.DEFAULT_FROM_EMAIL, [attendee.user.email,])
 
