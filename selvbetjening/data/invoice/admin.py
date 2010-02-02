@@ -29,12 +29,15 @@ class InvoiceAdmin(ModelAdmin):
         urlpatterns = patterns('',
                                url(r'^report/',
                                    self.admin_site.admin_view(admin_views.invoice_report),
+                                   {'model_admin': self},
                                    name='%s_%s_report' % info),
                                url(r'^payment/(?P<workflow_id>[0-9]+)/',
                                    self.admin_site.admin_view(admin_views.invoice_pay),
+                                   {'model_admin': self},
                                    name='%s_%s_pay_step2' % info),
                                url(r'^payment/',
                                    self.admin_site.admin_view(admin_views.invoice_select_workflow),
+                                   {'model_admin': self},
                                    name='%s_%s_pay' % info),
                                )
 

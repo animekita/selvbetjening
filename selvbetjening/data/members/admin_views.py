@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.db.models import Min, Max
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.models import User
 
@@ -16,9 +17,13 @@ from forms import AdminSelectMigrationUsers
 from processor_handlers import user_migration_processors
 
 def user_migration(request,
+                   model_admin,
                    admin_site,
                    template_name='admin/auth/user/migration.html',
                    confirm_template_name='admin/auth/user/migration_confirm.html'):
+
+    if not model_admin.has_change_permission(request, None):
+        raise PermissionDenied
 
     view_processors = ''
 
@@ -134,8 +139,13 @@ def user_join_chart():
             'join_data1': join_span,
             'join_data2': join_span_acc}
 
-def user_statistics(request, template_name='admin/auth/user/statistics.html',
+def user_statistics(request,
+                    model_admin,
+                    template_name='admin/auth/user/statistics.html',
                     template_nodata_name='admin/auth/user/no_statistics.html'):
+
+    if not model_admin.has_change_permission(request, None):
+        raise PermissionDenied
 
     join_data = user_join_chart()
     age_data = user_age_chart()

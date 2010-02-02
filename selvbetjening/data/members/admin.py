@@ -43,10 +43,11 @@ class UserAdminExt(UserAdmin):
         urlpatterns = patterns('',
                                url(r'^statistics/',
                                    self.admin_site.admin_view(admin_views.user_statistics),
+                                   {'model_admin': self},
                                    name='%s_%s_statistics' % info),
                                url(r'^migrate/',
                                    self.admin_site.admin_view(admin_views.user_migration),
-                                   {'admin_site': self.admin_site},
+                                   {'model_admin': self, 'admin_site': self.admin_site},
                                    name='%s_%s_migration' % info),
                                )
 

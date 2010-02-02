@@ -7,6 +7,7 @@ from django.contrib.admin.helpers import AdminForm
 from django.utils.translation import ugettext as _
 from django.template.loader import get_template_from_string
 from django.template import Context
+from django.core.exceptions import PermissionDenied
 
 if 'mailer' in settings.INSTALLED_APPS:
     from mailer import send_mail
@@ -19,7 +20,11 @@ from models import Invoice, InvoicePaymentWorkflow, Payment
 from forms import InvoiceSourceForm, InvoiceFormattingForm, InvoicePaymentForm
 
 def invoice_select_workflow(request,
+                            model_admin,
                             template_name='admin/invoice/invoice/select_workflow.html'):
+
+    if not model_admin.has_change_permission(request, None):
+        raise PermissionDenied
 
     workflows = InvoicePaymentWorkflow.objects.all()
 
@@ -29,8 +34,12 @@ def invoice_select_workflow(request,
 
 def invoice_pay(request,
                 workflow_id,
+                model_admin,
                 payment_form=InvoicePaymentForm,
                 template_name='admin/invoice/invoice/workflow.html'):
+
+    if not model_admin.has_change_permission(request, None):
+        raise PermissionDenied
 
     workflow = get_object_or_404(InvoicePaymentWorkflow, pk=workflow_id)
 
@@ -75,7 +84,11 @@ def invoice_pay(request,
                               context_instance=RequestContext(request))
 
 def invoice_report(request,
+                   model_admin,
                    template_name='admin/invoice/invoice/report.html'):
+
+    if not model_admin.has_change_permission(request, None):
+        raise PermissionDenied
 
     invoices = []
     line_groups = []
