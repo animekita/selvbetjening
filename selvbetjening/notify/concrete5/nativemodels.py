@@ -1,5 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import mapper
+from sqlalchemy.exceptions import OperationalError
+
 from datetime import datetime
 
 from django.conf import settings
@@ -22,14 +24,42 @@ def _sessionmaker(native_db_id):
         else:
             raise ImproperlyConfigured('Unsupported native database engine %s' % config['engine'])
 
-        engine = sqlalchemy.create_engine(url, echo=True)
-        _sessionmakers[native_db_id] = sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True)
+        engine = sqlalchemy.create_engine(url, echo=False)
+        _sessionmakers[native_db_id] = (engine, sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True))
 
     return _sessionmakers[native_db_id]
 
+class SessionWrapper(object):
+    """
+    Safe session which reconnects the engine to the database if necessary.
+    """
+
+    def __init__(self, native_db_id):
+        self._native_db_id = native_db_id
+        self._engine, self._sessionmaker = _sessionmaker(native_db_id)
+        self._session = self._sessionmaker()
+
+    def __getattr__(self, name):
+        def safe_call(*args, **kwargs):
+            orig_func = getattr(self._session, name)
+
+            try:
+                return orig_func(*args, **kwargs)
+            except OperationalError:
+                """ Raised if database connection has timed out """
+                global _sessionmakers
+                del _sessionmakers[self._native_db_id]
+
+                self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
+                self._session = self._sessionmaker()
+
+                new_func = getattr(self._session, name)
+                new_func(*arsg, **kwargs)
+
+        return safe_call
+
 def get_session(native_db_id):
-    sessionmaker = _sessionmaker(native_db_id)
-    return sessionmaker()
+    return SessionWrapper(native_db_id)
 
 class NativeBase(object):
 

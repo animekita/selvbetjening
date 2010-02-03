@@ -26,6 +26,10 @@ LANGUAGE_CODE = 'da-dk'
 LOGIN_REDIRECT_URL = '/profil/'
 LOGIN_URL = '/profil/login/'
 
+DATABASE_OPTIONS = {
+   'init_command': 'SET storage_engine=INNODB',
+}
+
 # base template loaders, middleware and context processors
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
