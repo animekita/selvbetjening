@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.datastructures import SortedDict
 
 from selvbetjening.core.selvadmin.admin import site, reverse_lazy
+from selvbetjening.data.invoice.models import Invoice
 
 from shortcuts import get_or_create_profile
 from models import UserProfile
@@ -25,6 +26,8 @@ class UserProfileInline(StackedInline):
 
 class UserAdminExt(UserAdmin):
     list_display = ('username', 'first_name', 'last_name', 'email', 'display_age')
+
+    search_fields = ('id', 'username', 'first_name', 'last_name', 'email')
 
     def display_age(self, user):
         user_profile = get_or_create_profile(user)

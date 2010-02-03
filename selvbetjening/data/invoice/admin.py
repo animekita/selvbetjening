@@ -4,6 +4,7 @@ from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import lazy
 
 from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 
@@ -19,7 +20,7 @@ class InvoiceAdmin(ModelAdmin):
         }),)
 
     raw_id_fields = ('user', )
-    search_fields = ('name', 'user__username', 'user__first_name', 'user__last_name')
+    search_fields = ('id', 'name', 'user__username', 'user__first_name', 'user__last_name')
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
@@ -91,9 +92,17 @@ class LineInlines(TabularInline):
         return super(LineInlines, self).get_formset(request, obj, **kwargs)
 
 class InvoiceRevisionAdmin(ModelAdmin):
-    list_display = ('id', 'invoice', 'user', 'created_date')
+    def invoice_link(invoice_rev):
+        return u'<a href="%s">%s</a>' % (reverse_lazy('admin:invoice_invoice_change', args=[invoice_rev.invoice.pk]),
+                                        invoice_rev.invoice.name)
+    invoice_link.short_description = _('Invoice')
+    invoice_link.allow_tags = True
+
+    list_display = ('id', lazy(invoice_link, unicode), 'user', 'created_date')
     inlines = [LineInlines,]
     date_hierarchy = 'created_date'
+
+    search_fields = ('id', 'invoice__name')
 
     def user(self, revision):
         return revision.invoice.user
