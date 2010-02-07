@@ -155,6 +155,9 @@ def billing(request, attend_id,
                           },
                           context_instance=RequestContext(request))
 
+def get_checkin_list_url(attendee):
+    return reverse('admin:events_attend_changelist') + '?event__id__exact=%s' % attendee.event.pk
+
 def checkout(request,
             attend_id,
             template_name='admin/events/attend/checkout.html'):
@@ -163,13 +166,15 @@ def checkout(request,
     event = attendee.event
 
     if not attendee.state == AttendState.attended:
-        return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
+        return HttpResponseRedirect(get_checkin_list_url(attendee))
 
     if request.method == 'POST':
         attendee.state = AttendState.accepted
         attendee.save()
 
-        return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
+        request.user.message_set.create(message=u'%s checked out for event %s' % (attendee.user, attendee.event))
+
+        return HttpResponseRedirect(get_checkin_list_url(attendee))
 
     return render_to_response(template_name,
                               {'event' : event,
@@ -183,7 +188,7 @@ def checkin(request, attend_id,
     event = attendee.event
 
     if attendee.state == AttendState.attended:
-        return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
+        return HttpResponseRedirect(get_checkin_list_url(attendee))
 
     if request.method == 'POST':
         if request.POST.has_key('do_checkin_and_pay') and not attendee.invoice.in_balance():
@@ -194,7 +199,9 @@ def checkin(request, attend_id,
         attendee.state = AttendState.attended
         attendee.save()
 
-        return HttpResponseRedirect(reverse('admin:events_attend_changelist'))
+        request.user.message_set.create(message=u'%s checked in for event %s' % (attendee.user, attendee.event))
+
+        return HttpResponseRedirect(get_checkin_list_url(attendee))
 
     handler = checkin_processors.get_handler(request, attendee)
 
