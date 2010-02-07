@@ -180,6 +180,8 @@ class AttendState(object):
     accepted = 'accepted'
     attended = 'attended'
 
+    accepted_states = (accepted, attended)
+
     @staticmethod
     def get_choices():
         return (
@@ -248,7 +250,8 @@ class Attend(models.Model):
         return self.state == AttendState.attended
 
     def save(self, *args, **kwargs):
-        if self.event.move_to_accepted_policy == AttendeeAcceptPolicy.always:
+        if self.event.move_to_accepted_policy == AttendeeAcceptPolicy.always and\
+           self.state not in AttendState.accepted_states:
             self.state = AttendState.accepted
 
         try:
