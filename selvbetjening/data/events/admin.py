@@ -21,7 +21,7 @@ from models import Event, Attend, AttendState, Option, OptionGroup, SubOption, S
 import admin_views
 
 class AttendAdmin(ModelAdmin):
-    def changelist_item_actions(attend):
+    def changelist_item_actions(self, attend):
         actions = ''
 
         actions += u"""
@@ -52,7 +52,7 @@ class AttendAdmin(ModelAdmin):
     list_filter = ('event', 'state')
     list_per_page = 50
     list_display = ('user', 'user_first_name', 'user_last_name', 'state',
-                    in_balance, changelist_item_actions)
+                    in_balance, 'changelist_item_actions')
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
     raw_id_fields = ('user', 'event', 'invoice')

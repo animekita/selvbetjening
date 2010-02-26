@@ -38,6 +38,8 @@ class UserAdminExt(UserAdmin):
 
     add_form = RegistrationForm
 
+    inlines = [UserProfileInline]
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
