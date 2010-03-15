@@ -16,4 +16,3 @@ Følgende afhængigheder er inkluderet i contrib mappen og bliver automatisk til
 
 * django-countries http://code.google.com/p/django-countries/
 * django-mailer http://code.google.com/p/django-mailer/
-* django-tinymce 1.5 http://code.google.com/p/django-tinymce/
