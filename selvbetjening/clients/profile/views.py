@@ -37,13 +37,9 @@ def profile_edit(request,
         except UserProfile.DoesNotExist:
             user_profile = UserProfile.objects.create(user=user)
 
-        dateofbirth = None
-        if user_profile.dateofbirth:
-            dateofbirth = user_profile.dateofbirth.strftime('%d-%m-%Y')
-
         form = form_class(initial={'first_name':user.first_name,
                                    'last_name':user.last_name,
-                                   'dateofbirth': dateofbirth ,
+                                   'dateofbirth': user_profile.dateofbirth ,
                                    'street':user_profile.street,
                                    'city':user_profile.city,
                                    'postalcode':user_profile.postalcode,
