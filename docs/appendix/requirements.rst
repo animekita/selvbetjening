@@ -2,8 +2,7 @@ Dependencies
 ============
 
 * Python >= 2.5
-* Django >= 1.1
-* Patch from http://code.djangoproject.com/ticket/5390
+* Django >= 1.2
 
 * python-mysqldb
 * South - Django Database Migration (valgfrit, men anbefalet)
