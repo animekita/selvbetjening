@@ -1,0 +1,27 @@
+4.0.0 Todo
+
+- Remove dependency on sqlalchamy (multi-db)
+- Bedre håndtering af e-mails
+  - Flere filtre til hvem der skal have e-mails
+  - Bedre e-mail udseende
+  - Standardiser andre e-mail subsystemer med templates osv.
+  - Kontrol mht. hvornår e-mails skal sendes
+    - F.eks. påmindelse omkring tilmelding.
+  - Opdeling af nyhedsbrev i to typer
+  - Tilføj afmeld link i bunden af nyhedsbrevet
+- Definer workflow for hele systemet
+  - Se på kvitteringer, er det den bedste løsning?
+  - Se på tilmelding status
+- Yderligere oprydning i admin
+- Offline strategi
+- Bedre workflow mht. lister over events
+  - Integrere CMS
+- Dynamiske formularer (så vi kan lave mere spændende input)
+- Offentlig profil med Achivements
+- Oversigt over ændringer (events) i selvbetjening
+- Accounting, hvem har gjort hvad
+- Flere økonomiske værktøjer
+- Mere fleksibel betaling input
+- Betaling igennem paypal / google checkout
+- Meget mere gennemtestet, TDD fra nu af.
+- Ical kalender over events.
