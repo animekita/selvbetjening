@@ -8,8 +8,6 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.core.cache import cache
 
-from tinymce.models import HTMLField
-
 from selvbetjening.data.invoice.models import Invoice, Payment
 from selvbetjening.data.invoice.signals import populate_invoice
 
@@ -47,7 +45,7 @@ class Event(models.Model):
     _CACHED_WAITING_ATTENDEES_ID = 'event-%d-waiting-attendees'
 
     title = models.CharField(_(u'title'), max_length=255)
-    description = HTMLField(_(u'description'), blank=True)
+    description = models.TextField(_(u'description'), blank=True)
 
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
@@ -338,7 +336,7 @@ class OptionGroup(models.Model):
 
     event = models.ForeignKey(Event)
     name = models.CharField(_('Name'), max_length=255)
-    description = HTMLField(_('Description'), blank=True)
+    description = models.TextField(_('Description'), blank=True)
 
     minimum_selected = models.IntegerField(_('Minimum selected'), default=0)
     maximum_selected = models.IntegerField(_('Maximum selected'), default=0)
@@ -394,7 +392,7 @@ class Option(models.Model):
 
     group = models.ForeignKey(OptionGroup)
     name = models.CharField(_('Name'), max_length=255)
-    description = HTMLField(_('Description'), blank=True)
+    description = models.TextField(_('Description'), blank=True)
 
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     maximum_attendees = models.IntegerField(_('Maximum attendees'), blank=True, null=True)

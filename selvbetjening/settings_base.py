@@ -77,19 +77,3 @@ INSTALLED_APPS = [
     'selvbetjening.data.invoice',
     'selvbetjening.data.translation',
 ]
-
-# tinymce config
-TINYMCE_DEFAULT_CONFIG = {
-    'convert_urls': False,
-    'relative_urls': False,
-    'language': 'en',
-    'theme' : 'advanced',
-    'width' : '600',
-    'height' : '300',
-    'theme_advanced_toolbar_location' : "top",
-    'theme_advanced_toolbar_align' : "left",
-    'theme_advanced_buttons1' : "fullscreen,separator,preview,separator,bold,italic,underline,strikethrough,separator,bullist,numlist,outdent,indent,separator,undo,redo,separator,link,unlink,separator,cleanup,help,separator,code",
-    'theme_advanced_buttons2' : "",
-    'theme_advanced_buttons3' : "",
-    'plugins' : "preview,fullscreen",
-}
