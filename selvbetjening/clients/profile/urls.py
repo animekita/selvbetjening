@@ -4,13 +4,14 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 
 from views import profile_edit, password_change, current_events
+import forms
 
 urlpatterns = patterns('',
     url(r'^rediger/$', profile_edit,
         name='members_editprofile'),
 
     url(r'^login/$', auth_views.login,
-        {'template_name': 'members/login.html'},
+        {'template_name': 'members/login.html', 'authentication_form': forms.LoginForm},
         name='members_login'),
 
     url(r'^logud/$', auth_views.logout,

@@ -38,6 +38,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -51,6 +52,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
+    'django.core.context_processors.csrf',
 )
 
 # base template directories
@@ -63,6 +65,7 @@ INSTALLED_APPS = [
     'countries',
     'south',
     'mailer',
+    'uni_form',
 
     'django.contrib.sites',
     'django.contrib.auth',

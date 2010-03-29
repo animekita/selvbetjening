@@ -1,9 +1,8 @@
 {% extends "site.html" %}
-
-{% load uniform %}
+{% load uni_form_tags %}
 
 {% block extraheader %}
-{% uniform_header %}
+{% include "form_includes.html" %}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -16,7 +15,9 @@
 
 <p>Hvis du ikke har en selvbetjening bruger, skal du først <a href="{% url quickregistration_register %}">oprette en her</a>.</p>
 
-{{form|uniform:"Log ind"}}
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
 
 <ul class="table-options">
     <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>
