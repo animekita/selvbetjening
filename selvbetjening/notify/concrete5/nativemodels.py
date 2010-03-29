@@ -4,7 +4,6 @@ from sqlalchemy.exceptions import OperationalError
 
 from datetime import datetime
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 _sessionmakers = {}
@@ -12,7 +11,8 @@ def _sessionmaker(native_db_id):
     global _sessionmakers
 
     if not _sessionmakers.has_key(native_db_id):
-        config = settings.DATABASE_NATIVE.get(native_db_id)
+        import django.conf
+        config = django.conf.settings.DATABASE_NATIVE.get(native_db_id)
 
         if config is None:
             raise ImproperlyConfigured('Native database not set correctly')
