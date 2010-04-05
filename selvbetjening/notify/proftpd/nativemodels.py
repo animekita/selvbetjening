@@ -1,6 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import mapper
 from sqlalchemy.exceptions import OperationalError
+import unicodedata
 
 from datetime import datetime
 
@@ -26,6 +27,7 @@ def _sessionmaker(native_db_id):
 
         engine = sqlalchemy.create_engine(url, echo=False)
         _sessionmakers[native_db_id] = (engine, sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True))
+        sqlalchemy.convert_unicode=True
 
     return _sessionmakers[native_db_id]
 
@@ -75,20 +77,24 @@ class NativeBase(object):
 
 class NativeGroups(NativeBase):
     def __init__(self, name, gid, members):
-        self.groupname = name
+        self.groupname = unicode(self.to_ascii(name))
         self.gid = gid
-        self.members = members
+        self.members = unicode(members)
 
     def __repr__(self):
-        return "<NativeGroups(%s)" % self.groupname
+        return u"<NativeGroups(%s)" % self.groupname
+
+    @classmethod
+    def to_ascii(cls, string):
+        return unicodedata.normalize('NFKD', string).encode('ascii','ignore')
 
     @property
     def id(self):
-        return self.groupname
+        return unicode(self.groupname)
 
     @classmethod
     def get_by_name(cls, session, groupname):
-        result = session.query(cls).filter_by(groupname=groupname).all()
+        result = session.query(cls).filter_by(groupname=unicode(cls.to_ascii(groupname))).all()
 
         object = None
         if len(result) > 0:
@@ -97,12 +103,16 @@ class NativeGroups(NativeBase):
         return object
 
     @classmethod
+    def get_all(cls, session):
+        return session.query(cls).all()
+
+    @classmethod
     def _initialize_sqlalchemy(cls):
         metadata = sqlalchemy.MetaData()
         table = sqlalchemy.Table('groups', metadata,
-                                 sqlalchemy.Column('groupname', sqlalchemy.String(255), primary_key=True),
+                                 sqlalchemy.Column('groupname', sqlalchemy.Unicode(255, assert_unicode=True), primary_key=True),
                                  sqlalchemy.Column('gid', sqlalchemy.Integer),
-                                 sqlalchemy.Column('members', sqlalchemy.String(255))
+                                 sqlalchemy.Column('members', sqlalchemy.Unicode(255, assert_unicode=True))
                                  )
 
         mapper(cls, table)
@@ -143,7 +153,7 @@ class NativeUsers(NativeBase):
         metadata = sqlalchemy.MetaData()
         table = sqlalchemy.Table('users', metadata,
                                  sqlalchemy.Column('user_id', sqlalchemy.Integer, primary_key=True),
-                                 sqlalchemy.Column('username', sqlalchemy.String(255)),
+                                 sqlalchemy.Column('username', sqlalchemy.Unicode(255, assert_unicode=True)),
                                  sqlalchemy.Column('passwd', sqlalchemy.String(255)),
                                  sqlalchemy.Column('uid', sqlalchemy.Integer),
                                  sqlalchemy.Column('gid', sqlalchemy.Integer),

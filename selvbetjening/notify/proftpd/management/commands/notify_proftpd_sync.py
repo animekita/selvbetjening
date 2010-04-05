@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
 
 from selvbetjening.notify.proftpd.nativemodels import NativeGroups, NativeUsers, get_session
-from selvbetjening.notify.proftpd.models import GroupsMapper, CompatiblePassword
+from selvbetjening.notify.proftpd.models import GroupsMapper, CompatiblePassword, add_or_update_user
 
 class Command(BaseCommand):
     help = 'Inspect proftpd installations and synchronize groups with Selvbetjening'
@@ -33,7 +33,7 @@ class Command(BaseCommand):
                         nativegroup = NativeGroups.get_by_name(session, group.name)
 
                         if nativegroup is None:
-                            nativegroup = NativeGroups(group.name, config['default_gid'], '')
+                            nativegroup = NativeGroups(unicode(group.name), config['default_gid'], u'')
                             NativeGroups.save(session, nativegroup)
 
                         map = GroupsMapper.objects.create(group=group,
@@ -49,25 +49,7 @@ class Command(BaseCommand):
                 if dosync:
                     print 'Updating user list for group %s' % group.name
 
-
-                    nativegroup = NativeGroups.get_by_name(session, map.native_group_name)
-                    nativegroup.members = ''
-
                     for user in group.user_set.all():
-                        native_user = NativeUsers.get_by_username(session, config['username_format'] % user.username)
-
-                        if native_user is None:
-                            try:
-                                compatiblePassword = CompatiblePassword.objects.get(user=user)
-                                password = compatiblePassword.password
-                            except CompatiblePassword.DoesNotExist:
-                                password = '{none}'
-
-                            native_user = NativeUsers(config['username_format'] % user.username,
-                                                      password,
-                                                      config['default_uid'],
-                                                      config['default_gid'],
-                                                      config['ftp_dir'])
-                            NativeUsers.save(session, native_user)
+                        add_or_update_user(user, group, session, config)
 
             session.close()

@@ -1,5 +1,6 @@
 import sqlalchemy
 import hashlib
+import base64
 
 from django.db import models
 from django.conf import settings
@@ -10,6 +11,49 @@ from selvbetjening.data.members.signals import user_changed_password, user_creat
 
 import nativemodels
 from nativemodels import NativeGroups, NativeUsers
+
+def remove_user_from_group(username, group):
+    group.members = group.members.replace(',%s,' % username, ',')
+
+    if group.members.startswith(username):
+        group.members = group.members[len('%s,' % username):]
+
+
+def add_or_update_user(user, group, session, config, only_update=False):
+    try:
+        try:
+            compatiblePassword = CompatiblePassword.objects.get(user=user)
+            password = compatiblePassword.password
+        except CompatiblePassword.DoesNotExist:
+            password = '{none}'
+
+        native_user = NativeUsers.get_by_username(session, config['username_format'] % user.username)
+
+        if native_user is None and only_update == True:
+            return # no user and we only want to update existing users
+
+        if native_user is None:
+            native_user = NativeUsers(config['username_format'] % user.username,
+                                      password,
+                                      config['default_uid'],
+                                      config['default_gid'],
+                                      config['ftp_dir'])
+            NativeUsers.save(session, native_user)
+        else:
+            native_user.passwd = password
+            NativeUsers.save(session, native_user)
+
+        if group is not None:
+            map = GroupsMapper.objects.get(group=group, database_id=config['database_id'])
+            native_group = NativeGroups.get_by_name(session, map.native_group_name)
+
+            if native_group is not None and (config['username_format'] % native_user.username) not in native_group.members:
+                native_group.members = '%s,%s' % (native_user.username, native_group.members)
+                NativeGroups.save(session, native_group)
+
+    except GroupsMapper.DoesNotExist:
+        # group not present in proftpd, ignore.
+        pass
 
 def _wrap_listener(func):
     """
@@ -86,57 +130,37 @@ def _get_sync_group_members_listener(listener_id, config, session, sender, **kwa
 
     if action == 'add':
         for group in objects:
-            try:
-                map = GroupsMapper.objects.get(group=group, database_id=config['database_id'])
-
-                try:
-                    compatiblePassword = CompatiblePassword.objects.get(user=instance)
-                    password = compatiblePassword.password
-                except CompatiblePassword.DoesNotExist:
-                    password = '{none}'
-
-                native_user = NativeUsers.get_by_username(session, config['username_format'] % instance.username)
-
-                if native_user is None:
-                    native_user = NativeUsers(config['username_format'] % instance.username,
-                                              password,
-                                              config['default_uid'],
-                                              config['default_gid'],
-                                              config['ftp_dir'])
-                    NativeUsers.save(session, native_user)
-
-                native_group = NativeGroups.get_by_name(session, map.native_group_name)
-
-                if native_group is not None and (config['username_format'] % native_user.username) not in native_group.members:
-                    native_group.members = '%s,%s' % (config['username_format'] % native_user.username, native_group.members)
-                    NativeGroups.save(session, native_group)
-
-
-
-            except GroupsMapper.DoesNotExist:
-                # group not present in concrete5, ignore.
-                pass
+            add_or_update_user(instance, group, session, config)
 
     elif action == 'remove':
         for group in objects:
             try:
                 map = GroupsMapper.objects.get(group=group, database_id=config['database_id'])
+                username = config['username_format'] % instance.username
 
-                native_user = NativeUsers.get_by_username(session, config['username_format'] % instance.username)
-
+                native_user = NativeUsers.get_by_username(session, username)
                 NativeUsers.delete(session, native_user)
+
+                native_group = NativeGroups.get_by_name(session, map.native_group_name)
+
+                if native_group is not None:
+                    remove_user_from_group(username, group)
+                    NativeGroups.save(session, native_group)
 
             except GroupsMapper.DoesNotExist:
                 # group not present in concrete5, ignore.
                 pass
 
     elif action == 'clear':
-        native_user = NativeUsers.get_by_username(session, config['username_format'] % instance.username)
+        username = config['username_format'] % instance.username
+        native_user = NativeUsers.get_by_username(session, username)
 
         if native_user is not None:
             NativeUsers.delete(session, native_user)
 
-
+        for group in NativeGroups.get_all(session):
+            remove_user_from_group(username, group)
+            NativeGroups.save(session, group)
 
 listeners = {}
 def connect_listeners(listener_id, config):
@@ -179,14 +203,22 @@ def user_password_changed_or_set(sender, **kwargs):
     instance = kwargs['instance']
     clear_text_password = kwargs['clear_text_password']
 
-    password = '{sha1}%s' % hashlib.sha1(clear_text_password).hexdigest()
+    password = '{sha1}%s' % base64.b64encode(hashlib.sha1(clear_text_password).digest())
 
     try:
         compatiblePassword = CompatiblePassword.objects.get(user=instance)
         compatiblePassword.password = password
         compatiblePassword.save()
     except CompatiblePassword.DoesNotExist:
-        CompatiblePassword.objects.create(user=instance, password=password)
+        compatiblePassword = CompatiblePassword.objects.create(user=instance, password=password)
+
+    for listener_id in getattr(settings, 'NOTIFY_PROFTPD', ()):
+        config = settings.NOTIFY_PROFTPD[listener_id]
+        session = nativemodels.get_session(config['database_id'])
+
+        add_or_update_user(instance, None, session, config, True)
+
+        session.close()
 
 user_created.connect(user_password_changed_or_set)
 user_changed_password.connect(user_password_changed_or_set)
