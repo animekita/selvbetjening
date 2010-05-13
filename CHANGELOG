@@ -1,8 +1,13 @@
 4.0.0
- * Support for Django 1.2
+Admin:
  * Removed tiny-mce editor support (resulting HTML were a mess)
- * Bundled south 0.7 with install (no need to install on new installations)
- * Now using django-uni-form for form rendering
+
+Dependencies:
+ * Now requires Django 1.2
+ * Now requires South 0.7**
+ * Now requires django-uni-form**
+ * Removed requirement for sqlalchamy
+   ** provided in the contrib folder, so no external installation is required
 
 3.0.0
  * Improved support for additional languages.

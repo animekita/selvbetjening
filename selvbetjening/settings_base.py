@@ -74,9 +74,12 @@ INSTALLED_APPS = [
     'django.contrib.admin',
 
     'selvbetjening.core.selvadmin',
+    'selvbetjening.core.database',
 
     'selvbetjening.data.events',
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',
     'selvbetjening.data.translation',
 ]
+
+DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter', ]

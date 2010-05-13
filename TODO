@@ -10,18 +10,18 @@
     - F.eks. påmindelse omkring tilmelding.
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
-  
+
 - Definer workflow for hele systemet
   - Se på kvitteringer, er det den bedste løsning?
   - Se på tilmelding status
-  
+
 - Yderligere oprydning i admin
 
 - Offline strategi
 
 - Bedre workflow mht. lister over events
   - Integrere CMS
-  
+
 - Dynamiske formularer (så vi kan lave mere spændende input)
 
 - Offentlig profil med Achivements
@@ -41,3 +41,10 @@
 - Ical kalender over events.
 
 - Breadcrumbs
+
+
+Mulige projekter
+- GoFlow: http://code.djangoproject.com/wiki/GoFlow
+          http://www.workflowpatterns.com/patterns/control/
+- Audit: http://dev.2degreesnetwork.com/2010/04/announcing-django-audit.html
+- Log:  django-db-log
