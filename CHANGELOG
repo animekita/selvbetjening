@@ -1,6 +1,7 @@
 4.0.0
  * Support for Django 1.2
  * Removed tiny-mce editor support (resulting HTML were a mess)
+ * Bundled south 0.7 with install (no need to install on new installations)
 
 3.0.0
  * Improved support for additional languages.
