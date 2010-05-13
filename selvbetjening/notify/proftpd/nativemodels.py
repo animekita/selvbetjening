@@ -3,8 +3,6 @@ from sqlalchemy.orm import mapper
 from sqlalchemy.exceptions import OperationalError
 import unicodedata
 
-from datetime import datetime
-
 from django.core.exceptions import ImproperlyConfigured
 
 _sessionmakers = {}
@@ -41,6 +39,13 @@ class SessionWrapper(object):
         self._engine, self._sessionmaker = _sessionmaker(native_db_id)
         self._session = self._sessionmaker()
 
+    def reset(self):
+        global _sessionmakers
+        del _sessionmakers[self._native_db_id]
+
+        self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
+        self._session = self._sessionmaker()
+
     def __getattr__(self, name):
         def safe_call(*args, **kwargs):
             orig_func = getattr(self._session, name)
@@ -49,14 +54,10 @@ class SessionWrapper(object):
                 return orig_func(*args, **kwargs)
             except OperationalError:
                 """ Raised if database connection has timed out """
-                global _sessionmakers
-                del _sessionmakers[self._native_db_id]
-
-                self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
-                self._session = self._sessionmaker()
+                self.reset()
 
                 new_func = getattr(self._session, name)
-                new_func(*arsg, **kwargs)
+                new_func(*args, **kwargs)
 
         return safe_call
 
@@ -94,7 +95,11 @@ class NativeGroups(NativeBase):
 
     @classmethod
     def get_by_name(cls, session, groupname):
-        result = session.query(cls).filter_by(groupname=unicode(cls.to_ascii(groupname))).all()
+        try:
+            result = session.query(cls).filter_by(groupname=unicode(cls.to_ascii(groupname))).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(groupname=unicode(cls.to_ascii(groupname))).all()
 
         object = None
         if len(result) > 0:
@@ -104,7 +109,11 @@ class NativeGroups(NativeBase):
 
     @classmethod
     def get_all(cls, session):
-        return session.query(cls).all()
+        try:
+            return session.query(cls).all()
+        except OperationalError:
+            session.reset()
+            return session.query(cls).all()
 
     @classmethod
     def _initialize_sqlalchemy(cls):
@@ -140,7 +149,11 @@ class NativeUsers(NativeBase):
 
     @classmethod
     def get_by_username(cls, session, username):
-        result = session.query(cls).filter_by(username=username).all()
+        try:
+            result = session.query(cls).filter_by(username=username).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(username=username).all()
 
         object = None
         if len(result) > 0:

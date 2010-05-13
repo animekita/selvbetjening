@@ -39,6 +39,13 @@ class SessionWrapper(object):
         self._engine, self._sessionmaker = _sessionmaker(native_db_id)
         self._session = self._sessionmaker()
 
+    def reset(self):
+        global _sessionmakers
+        del _sessionmakers[self._native_db_id]
+
+        self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
+        self._session = self._sessionmaker()
+
     def __getattr__(self, name):
         def safe_call(*args, **kwargs):
             orig_func = getattr(self._session, name)
@@ -47,14 +54,10 @@ class SessionWrapper(object):
                 return orig_func(*args, **kwargs)
             except OperationalError:
                 """ Raised if database connection has timed out """
-                global _sessionmakers
-                del _sessionmakers[self._native_db_id]
-
-                self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
-                self._session = self._sessionmaker()
+                self.reset()
 
                 new_func = getattr(self._session, name)
-                new_func(*arsg, **kwargs)
+                new_func(*args, **kwargs)
 
         return safe_call
 
@@ -95,7 +98,11 @@ class NativeGroups(NativeBase):
 
     @classmethod
     def get(cls, session, gID):
-        result = session.query(cls).filter_by(gID=gID).all()
+        try:
+            result = session.query(cls).filter_by(gID=gID).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(gID=gID).all()
 
         object = None
         if len(result) > 0:
@@ -105,7 +112,11 @@ class NativeGroups(NativeBase):
 
     @classmethod
     def get_by_name(cls, session, gName):
-        result = session.query(cls).filter_by(gName=gName).all()
+        try:
+            result = session.query(cls).filter_by(gName=gName).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(gName=gName).all()
 
         object = None
         if len(result) > 0:
@@ -147,7 +158,11 @@ class NativeUsers(NativeBase):
 
     @classmethod
     def get_by_username(cls, session, uName):
-        result = session.query(cls).filter_by(uName=uName).all()
+        try:
+            result = session.query(cls).filter_by(uName=uName).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(uName=uName).all()
 
         object = None
         if len(result) > 0:
@@ -188,7 +203,11 @@ class NativeUserGroups(NativeBase):
 
     @classmethod
     def get(cls, session, user_id, group_id):
-        result = session.query(cls).filter_by(uID=user_id).filter_by(gID=group_id).all()
+        try:
+            result = session.query(cls).filter_by(uID=user_id).filter_by(gID=group_id).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(uID=user_id).filter_by(gID=group_id).all()
 
         object = None
         if len(result) > 0:
@@ -198,7 +217,11 @@ class NativeUserGroups(NativeBase):
 
     @classmethod
     def remove_user(cls, session, user_id):
-        result = session.query(cls).filter_by(uID=user_id).all()
+        try:
+            result = session.query(cls).filter_by(uID=user_id).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(uID=user_id).all()
 
         for object in result:
             session.delete(object)
@@ -207,7 +230,11 @@ class NativeUserGroups(NativeBase):
 
     @classmethod
     def remove_group(cls, session, group_id):
-        result = session.query(cls).filter_by(gID=group_id).all()
+        try:
+            result = session.query(cls).filter_by(gID=group_id).all()
+        except OperationalError:
+            session.reset()
+            result = session.query(cls).filter_by(gID=group_id).all()
 
         for object in result:
             session.delete(object)
