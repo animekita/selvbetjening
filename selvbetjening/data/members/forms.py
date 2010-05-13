@@ -8,6 +8,7 @@ from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.db.models import OneToOneRel
 
 from countries.models import Country
+from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
 
 from selvbetjening.viewhelpers.forms import widgets
 
@@ -53,11 +54,19 @@ class ProfileForm(forms.Form):
                              label=_(u'Inform me about events and other important changes.'),
                              initial=True, required=False)
 
-    class Meta:
-        layout = ((_(u'Personal Information'), ('first_name', 'last_name', 'dateofbirth', 'phonenumber')),
-                  (_(u'Address'), ('street', 'postalcode', 'city', 'country')),
-                  (_(u'Other'), ('email', 'send_me_email', ))
-                 )
+    layout = Layout(Fieldset(_(u'Personal Information'),
+                             'first_name', 'last_name', 'dateofbirth', 'phonenumber'),
+                    Fieldset(_(u'Address'),
+                             'street', 'postalcode', 'city', 'country'),
+                    Fieldset(_(u'Other'),
+                             'email', 'send_me_email'))
+
+    submit = Submit(_('Change personal information'), _('Change personal information'))
+
+    helper = FormHelper()
+    helper.use_csrf_protection = True
+    helper.add_input(submit)
+    helper.add_layout(layout)
 
     def clean_dateofbirth(self):
         # The birth year must be above 1900 to be compatible with strftime
@@ -109,14 +118,21 @@ class RegistrationForm(ProfileForm):
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow the storage of my personal information on this site."))
 
-    class Meta:
-        layout = ((_(u"personal information"), ('first_name', 'last_name',
-                                                'dateofbirth', 'phonenumber',
-                                                'email', 'send_me_email')),
-                  (_(u"address"), ('street', 'postalcode', 'city')),
-                  (_(u"user"), ('username', 'password1', 'password2')),
-               (_(u"data management terms"), ('tos', ))
-                       )
+    layout = Layout(Fieldset(_(u"personal information"),
+                             'first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email', 'send_me_email'),
+                    Fieldset(_(u"address"),
+                             'street', 'postalcode', 'city', 'country'),
+                    Fieldset(_(u"user"),
+                             'username', 'password1', 'password2'),
+                    Fieldset(_(u"data management terms"),
+                             'tos'))
+
+    helper = FormHelper()
+
+    submit = Submit(_('Create user'), _('Create user'))
+    helper.add_input(submit)
+    helper.use_csrf_protection = True
+    helper.add_layout(layout)
 
     def clean_tos(self):
         if not self.cleaned_data.get('tos', False):

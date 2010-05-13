@@ -1,9 +1,8 @@
 {% extends "site.html" %}
-
-{% load uniform %}
+{% load uni_form_tags %}
 
 {% block extraheader %}
-    {% uniform_header %}
+{% include "form_includes.html" %}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -14,6 +13,9 @@
 {% block contenthead %}Ændre personoplysninger{% endblock %}
 
 {% block content %}
-{{ form|uniform:"Ændre personoplysninger" }}
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
 
 {% endblock %}

@@ -1,5 +1,5 @@
-{% load uniform %}
+{% load uni_form_tags %}
 
 {% for optiongroupform in optionforms %}
-{{optiongroupform|uniform_add}}
+{{optiongroupform|as_uni_form}}
 {% endfor %}

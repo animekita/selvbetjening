@@ -4,6 +4,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext_lazy, ugettext_lazy
 from django import forms
 
+from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
+
 from selvbetjening.data.events.forms import OptionForms as BaseOptionForms
 from selvbetjening.data.events.forms import OptionGroupForm as BaseOptionGroupForm
 
@@ -12,12 +14,14 @@ class DummyWidget(forms.Widget):
         return forms.mark_safe(u'')
 
 class AcceptForm(forms.Form):
-
     def __init__(self, *args, **kwargs):
         super(AcceptForm, self).__init__(*args, **kwargs)
 
         self.fields['confirm'] = forms.BooleanField(widget=forms.CheckboxInput(),
                                                     label=self.label())
+        
+        self.helper = FormHelper()
+        self.helper.use_csrf_protection = True        
 
     def label(self):
         return u'Accept'
@@ -34,9 +38,15 @@ class AcceptForm(forms.Form):
         pass
 
 class SignupForm(AcceptForm):
-
-    class Meta:
-        layout = ((ugettext_lazy(u"Accept terms"), ('confirm', )),)
+    def __init__(self):
+        super(SignupForm, self).__init__()
+        
+        submit = Submit(_('Sign up'), _('Sign up'))
+        self.helper.add_input(submit)
+        
+        layout = Layout(Fieldset(ugettext_lazy(u"Accept terms"),
+                                 'confirm'))
+        self.helper.add_layout(layout)
 
     def label(self):
         return _(u'I have read and accept the above described terms')
@@ -45,6 +55,12 @@ class SignupForm(AcceptForm):
         return _(u'You must accept to participate in the event')
 
 class SignoffForm(AcceptForm):
+    def __init__(self):
+        super(SignoffForm, self).__init__()
+        
+        submit = Submit(_('Sign off'), _('Sign off'))
+        self.helper.add_input(submit)
+    
     def label(self):
         return _(u'Yes, remove me from the event')
 

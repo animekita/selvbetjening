@@ -1,8 +1,8 @@
 {% extends "site.html" %}
-{% load uniform %}
+{% load uni_form_tags %}
 
 {% block extraheader %}
-    {% uniform_header %}
+{% include "form_includes.html" %}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -14,13 +14,16 @@
 
 {% block content %}
 
-{% uniform_begin %}
+<form method="POST" action="">
 
 {% include "eventregistration/options.html" %}
 
 {{ signup_render|safe }}
 
-{% uniform_submit "ændre" %}
-{% uniform_end %}
+<div class="buttonHolder">
+	<input type="submit" name="Ændre" value="Ændre" />
+</div>
+
+</form>
 
 {% endblock %}

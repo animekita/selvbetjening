@@ -1,9 +1,8 @@
 {% extends "site.html" %}
-
-{% load uniform %}
+{% load uni_form_tags %}
 
 {% block extraheader %}
-    {% uniform_header %}
+{% include "form_includes.html" %}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -18,6 +17,8 @@
 <p>Ved at afmelde dig arrangementet vil du blive fjernet fra vores deltagerliste, du vil til have mulighed
 for at tilmelde dig arrangementet igen hvis du ombestemmer dig.</p>
 
-{{form|uniform:"afmeld"}}
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
 
 {% endblock %}

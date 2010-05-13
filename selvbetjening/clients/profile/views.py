@@ -7,11 +7,12 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.contrib.auth.forms import PasswordChangeForm
 
 from selvbetjening.data.members.forms import ProfileForm
 from selvbetjening.data.members.models import UserProfile
 from selvbetjening.data.events.models import Attend
+
+from forms import ChangePasswordForm
 
 def profile_redirect(request):
     if isinstance(request.user, AnonymousUser):
@@ -47,23 +48,26 @@ def profile_edit(request,
                                    'email':user.email
                                   })
 
-    return render_to_response(template_name, {'form' : form}, context_instance=RequestContext(request))
+    return render_to_response(template_name,
+                              {'form' : form},
+                              context_instance=RequestContext(request))
 
 @login_required
 def password_change(request,
                     template_name='members/password_change.html',
-                    post_change_redirect=None):
+                    post_change_redirect=None,
+                    change_password_form=ChangePasswordForm):
 
     if post_change_redirect is None:
         post_change_redirect = 'auth_password_change_done'
 
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
+        form = change_password_form(request.user, request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse(post_change_redirect))
     else:
-        form = PasswordChangeForm(request.user)
+        form = change_password_form(request.user)
 
     return render_to_response(template_name,
                               {'form': form,},
