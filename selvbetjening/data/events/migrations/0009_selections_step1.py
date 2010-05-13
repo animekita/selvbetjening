@@ -43,12 +43,12 @@ class Migration:
     
     models = {
         'events.event': {
-            'change_confirmation': ('HTMLField', [], {'blank': 'True'}),
-            'description': ('HTMLField', ["_(u'description')"], {'blank': 'True'}),
+            'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
+            'description': ('models.TextField', ["_(u'description')"], {'blank': 'True'}),
             'enddate': ('models.DateField', ["_(u'end date')"], {'null': 'True', 'blank': 'True'}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'maximum_attendees': ('models.IntegerField', ["_('Maximum attendees')"], {'default': '0'}),
-            'registration_confirmation': ('HTMLField', [], {'blank': 'True'}),
+            'registration_confirmation': ('models.TextField', [], {'blank': 'True'}),
             'registration_open': ('models.BooleanField', ["_(u'registration open')"], {}),
             'show_change_confirmation': ('models.BooleanField', [], {'default': 'False'}),
             'show_registration_confirmation': ('models.BooleanField', [], {'default': 'False'}),
@@ -84,7 +84,7 @@ class Migration:
             'suboption': ('models.ForeignKey', ['SubOption'], {'null': 'True', 'blank': 'True'})
         },
         'events.optiongroup': {
-            'description': ('HTMLField', ["_('Description')"], {'blank': 'True'}),
+            'description': ('models.TextField', ["_('Description')"], {'blank': 'True'}),
             'event': ('models.ForeignKey', ['Event'], {}),
             'freeze_time': ('models.DateTimeField', ["_('Freeze time')"], {'null': 'True', 'blank': 'True'}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
@@ -95,7 +95,7 @@ class Migration:
             'order': ('models.IntegerField', ["_('Order')"], {'default': '0'})
         },
         'events.option': {
-            'description': ('HTMLField', ["_('Description')"], {'blank': 'True'}),
+            'description': ('models.TextField', ["_('Description')"], {'blank': 'True'}),
             'freeze_time': ('models.DateTimeField', ["_('Freeze time')"], {'null': 'True', 'blank': 'True'}),
             'group': ('models.ForeignKey', ['OptionGroup'], {}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),

@@ -43,15 +43,15 @@ class Migration:
         db.delete_column('events_attend', 'registration_date')
 
         # Changing field 'Event.registration_confirmation'
-        # (to signature: HTMLField(blank=True))
+        # (to signature: models.TextField(blank=True))
         db.alter_column('events_event', 'registration_confirmation', orm['events.event:registration_confirmation'])
 
         # Changing field 'Event.invoice_page'
-        # (to signature: HTMLField(blank=True))
+        # (to signature: models.TextField(blank=True))
         db.alter_column('events_event', 'invoice_page', orm['events.event:invoice_page'])
 
         # Changing field 'Event.change_confirmation'
-        # (to signature: HTMLField(blank=True))
+        # (to signature: models.TextField(blank=True))
         db.alter_column('events_event', 'change_confirmation', orm['events.event:change_confirmation'])
 
 
@@ -108,7 +108,7 @@ class Migration:
         },
         'events.event': {
             'change_confirmation': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'description': ('HTMLField', ["_(u'description')"], {'blank': 'True'}),
+            'description': ('models.TextField', ["_(u'description')"], {'blank': 'True'}),
             'enddate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'invoice_page': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -123,7 +123,7 @@ class Migration:
             'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         'events.option': {
-            'description': ('HTMLField', ["_('Description')"], {'blank': 'True'}),
+            'description': ('models.TextField', ["_('Description')"], {'blank': 'True'}),
             'freeze_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['events.OptionGroup']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -133,7 +133,7 @@ class Migration:
             'price': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '6', 'decimal_places': '2'})
         },
         'events.optiongroup': {
-            'description': ('HTMLField', ["_('Description')"], {'blank': 'True'}),
+            'description': ('models.TextField', ["_('Description')"], {'blank': 'True'}),
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['events.Event']"}),
             'freeze_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

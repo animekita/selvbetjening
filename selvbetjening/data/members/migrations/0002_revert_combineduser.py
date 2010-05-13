@@ -8,7 +8,8 @@ class Migration:
 
     def forwards(self):
         # rename user_ptr_id to user_id
-        db.rename_column('members_userprofile', 'user_ptr_id', 'user_id')
+        #db.rename_column('members_userprofile', 'user_ptr_id', 'user_id')
+        pass
 
     def backwards(self):
         "Write your backwards migration here"

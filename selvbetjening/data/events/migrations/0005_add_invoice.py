@@ -6,6 +6,10 @@ from selvbetjening.data.events.models import *
 
 class Migration:
 
+    depends_on = (
+               ("invoice", "0001_initial"),
+    )
+
     def forwards(self, orm):
 
         # Adding field 'Attend.invoice'
