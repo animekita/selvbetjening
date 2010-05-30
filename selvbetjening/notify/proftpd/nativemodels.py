@@ -43,7 +43,7 @@ class SessionWrapper(object):
         global _sessionmakers
         del _sessionmakers[self._native_db_id]
 
-        self._engine, self._sessionmaker = _sessionmaker(self.native_db_id)
+        self._engine, self._sessionmaker = _sessionmaker(self._native_db_id)
         self._session = self._sessionmaker()
 
     def __getattr__(self, name):
