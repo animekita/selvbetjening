@@ -5,14 +5,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
-from tinymce.models import HTMLField
-
 from mailer import send_html_mail
 
 # Create your models here.
 class Mail(models.Model):
     subject = models.CharField(max_length=128)
-    body = HTMLField()
+    body = models.TextField()
     date_created = models.DateField(editable=False, auto_now_add=True)
     recipients = models.ManyToManyField(User, editable=False)
 
