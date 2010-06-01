@@ -48,3 +48,7 @@ Mulige projekter
           http://www.workflowpatterns.com/patterns/control/
 - Audit: http://dev.2degreesnetwork.com/2010/04/announcing-django-audit.html
 - Log:  django-db-log
+
+Admin:
+http://bitbucket.org/izi/django-admin-tools/wiki/Home
+http://code.google.com/p/django-grappelli/wiki/changelog_2_1
