@@ -27,3 +27,7 @@ SESSION_COOKIE_DOMAIN = '.alpha.kita.dk'
 
 # Change this key!
 SECRET_KEY = 'change:me'
+
+# Notify configurations
+NOTIFY_CONCRETE5 = []
+#NOTIFY_CONCRETE5['example'] = {'database_id' : 'DATABASE_ID'}

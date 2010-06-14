@@ -1,59 +1,118 @@
 from django.test import TransactionTestCase
 from django.contrib.auth.models import Group
-from django.db import connections
 
 from selvbetjening.data.events.tests import Database
+from selvbetjening.notify.tests import BaseNotifyTestCase
 
-import models
+from models import GroupC5Group, C5Group, C5User, C5UserGroups, registry
 
-class Concrete5BaseTestCase(TransactionTestCase):
-    def init_database(self, database_id):
-        models.connect_listeners(database_id, {'database_id' : database_id})
+class Concrete5BaseTestCase(BaseNotifyTestCase):
+    _active_test_file = __file__
 
-        import os
-        c5_path = os.path.abspath(os.path.dirname(__file__))
+    def register_notify(self, database_id):
+        registry.register(database_id, {'database_id' : database_id})
 
-        sqlfile = open(os.path.join(c5_path, 'fixtures/nativedb.sql'), 'r')
+    def unregister_notify(self, database_id):
+        registry.unregister(database_id)
 
-        cursor = connections['intranet'].cursor()
-
-        cursor.executescript(sqlfile.read())
-
-        sqlfile.close()
-
-    def destroy_database(self, database_id):
-        models.disconnect_listeners(database_id)
-
-class Concrete5TestCase(Concrete5BaseTestCase):
-    def setUp(self):
-        self.init_database('intranet')
-
-    def tearDown(self):
-        self.destroy_database('intranet')
-
+class Concrete5GroupTestCase(Concrete5BaseTestCase):
     def test_add_new_group(self):
-        self.assertEqual(models.GroupC5Group.objects.all().count(), 0)
+        """
+        Add new group
+
+        Check that an identical group is created in C5
+        """
+
+        self.assertEqual(GroupC5Group.objects.all().count(), 0)
 
         Group.objects.create(name='test group')
 
-        self.assertEqual(models.GroupC5Group.objects.all().count(), 1)
-        self.assertEqual(models.C5Group.objects.all().count(), 1)
+        def check(database_id):
+            self.assertEqual(1,
+                             GroupC5Group.objects.\
+                             filter(database_id=database_id).\
+                             count())
+
+            self.assertEqual(1,
+                             C5Group.objects.\
+                             using(database_id).\
+                             all().\
+                             count())
+
+        self.check_databases(check)
 
     def test_remove_group(self):
-        self.test_add_new_group()
+        """
+        Remove group
 
-        group = Group.objects.all()[0]
+        Check that the group is NOT removed from C5
+        """
+
+        group = Group.objects.create(name='test group')
         group.delete()
 
-        self.assertEqual(models.GroupC5Group.objects.all().count(), 0)
-        self.assertEqual(models.C5Group.objects.all().count(), 1)
+        def check(database_id):
+            self.assertEqual(0,
+                             GroupC5Group.objects.\
+                             filter(database_id=database_id).\
+                             count())
 
+            self.assertEqual(1,
+                             C5Group.objects.\
+                             using(database_id).\
+                             all().\
+                             count())
+
+        self.check_databases(check)
+
+    def test_modify_group(self):
+        """
+        Make changes to a group
+
+        Check that chages are propagated to C5
+        """
+
+        group = Group.objects.create(name='test group')
+
+        def check(database_id):
+            c5group = C5Group.objects.\
+                      get(group=group, database_id=database_id)
+
+            self.assertEqual(group.name, c5group.name)
+
+        self.check_databases(check)
+
+        group.name = 'new name'
+        group.save()
+
+        self.check_databases(check)
+
+    def test_get_group_special_syntax(self):
+        """
+        Get a group using the special syntax
+        """
+
+        group = Group.objects.create(name='test group')
+
+        def check(database_id):
+            c5group = C5Group.objects.get(group=group, database_id=database_id)
+            self.assertEqual(group.name, c5group.name)
+
+            self.assertRaises(C5Group.DoesNotExist, C5Group.objects.get,
+                              group=100, database_id=database_id)
+
+        self.check_databases(check)
+
+class Concrete5UserTestCase(Concrete5BaseTestCase):
     def test_add_user(self):
-        import wingdbstub
+        """
+        Add new user
 
-        self.test_add_new_group()
+        Check that user is created in C5 and associated with
+        the correct groups
+        """
 
-        group = Group.objects.all()[0]
+        group = Group.objects.create(name='test group')
 
         user1 = Database.new_user()
         user2 = Database.new_user()
@@ -61,46 +120,72 @@ class Concrete5TestCase(Concrete5BaseTestCase):
         user1.groups.add(group)
         user2.groups.add(group)
 
-        self.assertEqual(2, models.C5User.objects.all().count())
+        def check(database_id):
+            self.assertEqual(2,
+                             C5User.objects.\
+                             using(database_id).\
+                             all().\
+                             count())
 
-    #def test_remove_user(self):
-        #self.test_add_user()
+            groupc5group = GroupC5Group.objects.\
+                           get(group=group, database_id=database_id)
 
-#class Concrete5MultipleInstancesTestCase(Concrete5BaseTestCase):
-    #def setUp(self):
-        #self.init_database('test_c53')
-        #self.init_database('test_c52')
+            c5group = C5Group.objects.\
+                      using(database_id).\
+                      get(pk=groupc5group.c5group_id)
 
-    #def tearDown(self):
-        #self.destroy_database('test_c53')
-        #self.destroy_database('test_c52')
+            self.assertEqual(2, c5group.users.count())
 
-    #def test_add_user(self):
-        #group = Group.objects.create(name='test group')
+        self.check_databases(check)
 
-        #self.assertEqual(models.GroupsMapper.objects.all().count(), 2)
+    def test_remove_user(self):
+        """
+        Remove a user from a group
 
-        #user1 = Database.new_user()
-        #user2 = Database.new_user()
+        Check that the user relation is removed from C5
+        """
 
-        #user1.groups.add(group)
-        #user2.groups.add(group)
+        group = Group.objects.create(name='test group')
 
-        #def check_database(database_id):
-            #session = nativemodels.get_session(database_id)
+        user1 = Database.new_user()
+        user2 = Database.new_user()
 
-            #native_group = nativemodels.NativeGroups.get(session, group.id)
-            #native_user1 = nativemodels.NativeUsers.get_by_username(session, user1.username)
-            #native_user2 = nativemodels.NativeUsers.get_by_username(session, user2.username)
+        user1.groups.add(group)
+        user2.groups.add(group)
 
-            #native_ug1 = nativemodels.NativeUserGroups.get(session, native_user1.id, native_group.id)
-            #native_ug2 = nativemodels.NativeUserGroups.get(session, native_user2.id, native_group.id)
+        user1.groups.remove(group)
 
-            #self.assertEqual(native_ug1.uID, native_user1.id)
-            #self.assertEqual(native_ug2.gID, group.id)
+        def check(database_id):
+            self.assertEqual(1,
+                             C5UserGroups.objects.\
+                                          using(database_id).\
+                                          all().\
+                                          count())
 
-        #check_database('test_c53')
-        #check_database('test_c52')
+        self.check_databases(check)
 
+    def test_clear_users(self):
+        """
+        Clear groups from a user
 
+        Check that the user relations are removed from C5
+        """
 
+        group1 = Group.objects.create(name='test group1')
+        group2 = Group.objects.create(name='test group2')
+
+        user1 = Database.new_user()
+
+        user1.groups.add(group1)
+        user1.groups.add(group2)
+
+        user1.groups.clear()
+
+        def check(database_id):
+            self.assertEqual(0,
+                             C5UserGroups.objects.\
+                                          using(database_id).\
+                                          all().\
+                                          count())
+
+        self.check_databases(check)

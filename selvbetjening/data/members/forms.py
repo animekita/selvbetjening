@@ -16,6 +16,8 @@ from models import UserProfile
 from shortcuts import get_or_create_profile
 import signals
 
+from django.utils.functional import lazy
+
 class ProfileForm(forms.Form):
     COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
 
@@ -23,6 +25,7 @@ class ProfileForm(forms.Form):
                           widget=forms.TextInput(),
                           label=_(u'first name'),
                           required=True)
+
     last_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
                           label=_(u'last name'),

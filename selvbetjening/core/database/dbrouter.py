@@ -28,3 +28,4 @@ class DatabaseRouter(object):
             return db in self._external_tables[model]
 
         return db == 'default' or model._meta.app_label in ['contenttypes', ]
+

@@ -282,6 +282,15 @@ class DatabaseOperations(object):
             return field.db_type(connection=self._get_connection())
         except TypeError:
             return field.db_type()
+        
+    def _alter_set_defaults(self, field, name, params, sqls): 
+        "Subcommand of alter_column that sets default values (overrideable)"
+        # Next, set any default
+        if not field.null and field.has_default():
+            default = field.get_default()
+            sqls.append(('ALTER COLUMN %s SET DEFAULT %%s ' % (self.quote_name(name),), [default]))
+        else:
+            sqls.append(('ALTER COLUMN %s DROP DEFAULT' % (self.quote_name(name),), []))
 
     def alter_column(self, table_name, name, field, explicit_name=True, ignore_constraints=False):
         """
@@ -332,19 +341,14 @@ class DatabaseOperations(object):
         # SQLs is a list of (SQL, values) pairs.
         sqls = [(self.alter_string_set_type % params, [])]
 
-        # Next, set any default
-        if not field.null and field.has_default():
-            default = field.get_default()
-            sqls.append(('ALTER COLUMN %s SET DEFAULT %%s ' % (self.quote_name(name),), [default]))
-        else:
-            sqls.append(('ALTER COLUMN %s DROP DEFAULT' % (self.quote_name(name),), []))
-
-
         # Next, nullity
         if field.null:
             sqls.append((self.alter_string_set_null % params, []))
         else:
             sqls.append((self.alter_string_drop_null % params, []))
+
+        # Next, set any default
+        self._alter_set_defaults(field, name, params, sqls)
 
         # Finally, actually change the column
         if self.allows_combined_alters:
@@ -760,7 +764,7 @@ class DatabaseOperations(object):
         self.pending_create_signals.append((app_label, model_names))
 
 
-    def send_pending_create_signals(self):
+    def send_pending_create_signals(self, verbosity=0, interactive=False):
         # Group app_labels together
         signals = SortedDict()
         for (app_label, model_names) in self.pending_create_signals:
@@ -770,11 +774,14 @@ class DatabaseOperations(object):
                 signals[app_label] = list(model_names)
         # Send only one signal per app.
         for (app_label, model_names) in signals.iteritems():
-            self.really_send_create_signal(app_label, list(set(model_names)))
+            self.really_send_create_signal(app_label, list(set(model_names)),
+                                           verbosity=verbosity,
+                                           interactive=interactive)
         self.pending_create_signals = []
 
 
-    def really_send_create_signal(self, app_label, model_names):
+    def really_send_create_signal(self, app_label, model_names,
+                                  verbosity=0, interactive=False):
         """
         Sends a post_syncdb signal for the model specified.
 
@@ -801,9 +808,6 @@ class DatabaseOperations(object):
                 created_models.append(model)
 
         if created_models:
-            # syncdb defaults -- perhaps take these as options?
-            verbosity = 1
-            interactive = True
 
             if hasattr(dispatcher, "send"):
                 # Older djangos

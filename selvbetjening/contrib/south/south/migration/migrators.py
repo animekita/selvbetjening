@@ -17,8 +17,9 @@ from south.signals import ran_migration
 
 
 class Migrator(object):
-    def __init__(self, verbosity=0):
+    def __init__(self, verbosity=0, interactive=False):
         self.verbosity = int(verbosity)
+        self.interactive = bool(interactive)
 
     @staticmethod
     def title(target):
@@ -60,15 +61,18 @@ class Migrator(object):
         raise NotImplementedError()
 
     def run_migration_error(self, migration, extra_info=''):
-        return (' ! Error found during real run of migration! Aborting.\n'
-                '\n'
-                ' ! Since you have a database that does not support running\n'
-                ' ! schema-altering statements in transactions, we have had \n'
-                ' ! to leave it in an interim state between migrations.\n'
-                '%s\n'
-                ' ! The South developers regret this has happened, and would\n'
-                ' ! like to gently persuade you to consider a slightly\n'
-                ' ! easier-to-deal-with DBMS.\n') % extra_info
+        return (
+            ' ! Error found during real run of migration! Aborting.\n'
+            '\n'
+            ' ! Since you have a database that does not support running\n'
+            ' ! schema-altering statements in transactions, we have had \n'
+            ' ! to leave it in an interim state between migrations.\n'
+            '%s\n'
+            ' ! The South developers regret this has happened, and would\n'
+            ' ! like to gently persuade you to consider a slightly\n'
+            ' ! easier-to-deal-with DBMS.\n'
+            ' ! NOTE: The error which caused the migration to fail is further up.'
+        ) % extra_info
 
     def run_migration(self, migration):
         migration_function = self.direction(migration)
@@ -192,6 +196,7 @@ class FakeMigrator(MigratorWrapper):
 
 
 class LoadInitialDataMigrator(MigratorWrapper):
+    
     def load_initial_data(self, target):
         if target is None or target != target.migrations[-1]:
             return
@@ -256,6 +261,8 @@ class Forwards(Migrator):
             record.save()
 
     def format_backwards(self, migration):
+        if migration.no_dry_run():
+            return "   (migration cannot be dry-run; cannot discover commands)"
         old_debug, old_dry_run = south.db.db.debug, south.db.db.dry_run
         south.db.db.debug = south.db.db.dry_run = True
         stdout = sys.stdout
@@ -286,7 +293,8 @@ class Forwards(Migrator):
                     return False
         finally:
             # Call any pending post_syncdb signals
-            south.db.db.send_pending_create_signals()
+            south.db.db.send_pending_create_signals(verbosity=self.verbosity,
+                                                    interactive=self.interactive)
         return True
 
 

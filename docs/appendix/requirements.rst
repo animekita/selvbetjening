@@ -13,5 +13,5 @@ Følgende afhængigheder er inkluderet i contrib mappen og bliver automatisk til
 
 * django-countries http://code.google.com/p/django-countries/
 * django-mailer http://code.google.com/p/django-mailer/
-* South 0.7 - Django Database Migration
+* South 0.7.1 - Django Database Migration
 * django-uni-form
