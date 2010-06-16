@@ -10,21 +10,25 @@ class BaseListener(object):
 
 class BaseNotifyRegistry(object):
     def __init__(self):
-        self._listeners = {}
+        self._registry = {}
+        self.listeners = {}
         self._routing = []
 
     def register(self, listener_id, config):
-        if not listener_id in self._listeners:
-            self._listeners[listener_id] = []
+        if listener_id in self._registry:
+            raise RuntimeError('listener with given id already registered')
+
+        self._registry[listener_id] = []
+        self.listeners[listener_id] = config
 
         for signal, listener_class, sender in self._routing:
             listener = listener_class(listener_id, config)
 
             signal.connect(listener.handler, sender=sender)
-            self._listeners[listener_id].append((signal, listener, sender))
+            self._registry[listener_id].append((signal, listener, sender))
 
     def unregister(self, listener_id):
-        for signal, listener, sender in self._listeners[listener_id]:
+        for signal, listener, sender in self._registry[listener_id]:
             signal.disconnect(listener.handler, sender=sender)
 
-        del self._listeners[listener_id]
+        del self._registry[listener_id]

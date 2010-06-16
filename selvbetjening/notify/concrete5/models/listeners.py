@@ -5,37 +5,6 @@ from selvbetjening.notify import BaseListener
 from native import GroupC5Group
 from concrete5 import C5Group, C5User, C5UserGroups
 
-class GroupChangedListener(BaseListener):
-    def handler(self, sender, **kwargs):
-        """
-        Called if a group is changed resulting in two outcomes:
-         - The C5 group is updated
-         - If no C5 group exists a new group is created
-        """
-
-        instance = kwargs.get('instance')
-        created = kwargs.get('created')
-
-        try:
-            gmap = GroupC5Group.objects.get(group=instance,
-                                            database_id=self._database_id)
-
-            c5group = C5Group.objects.\
-                    using(self._database_id).\
-                    get(pk=gmap.c5group_id)
-
-            c5group.name = instance.name
-            c5group.save()
-
-        except GroupC5Group.DoesNotExist:
-            c5group = C5Group.objects.\
-                    using(self._database_id).\
-                    create(name=instance.name, description=u'')
-
-            GroupC5Group.objects.create(group=instance,
-                                        c5group_id=c5group.pk,
-                                        database_id=self._database_id)
-
 class GroupMembersChangedListener(BaseListener):
     def handler(self, sender, **kwargs):
         """

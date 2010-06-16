@@ -1,9 +1,12 @@
+from django.core.management.base import CommandError
 from django.test import TransactionTestCase
 from django.contrib.auth.models import Group
 from django.conf import settings
 
 from selvbetjening.data.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase
+from selvbetjening.notify.proftpd.management.commands import \
+     notify_proftpd_manage, notify_proftpd_status
 
 from models import registry, ProftpdGroup, ProftpdUser, GroupProftpdGroup,\
      CompatiblePassword
@@ -22,22 +25,6 @@ class ProftpdBaseTestCase(BaseNotifyTestCase):
 
     def unregister_notify(self, database_id):
         registry.unregister(database_id)
-
-class ProftpdGroupTestCase(ProftpdBaseTestCase):
-    def test_remove_group(self):
-        """
-        Group is removed and with it all user associations
-        but the proftpd group itself is not removed.
-        """
-
-        Group.objects.create(name='TestGroup')
-
-        def check(database_id):
-            pass
-
-        self.check_databases(check)
-
-        self.fail("write test")
 
 class ProftpdUserTestCase(ProftpdBaseTestCase):
     def test_add_user_to_group(self):
@@ -114,6 +101,69 @@ class ProftpdUserTestCase(ProftpdBaseTestCase):
             self.assertTrue(proftpdGroup.is_member(USERNAME_FORMAT % user2.username))
 
         self.check_databases(check)
+
+class ProftpdNotifyManagementCommandTestCase(ProftpdBaseTestCase):
+    def test_add_relation_wrong_groups(self):
+        command = notify_proftpd_manage.Command()
+
+        self.assertRaises(CommandError, command.handle,
+                          'add', 'testgroup', 'testgroup')
+
+    def test_add_relation(self):
+        group = Group.objects.create(name='TestGroup')
+
+        def setup(database_id):
+            proftpdGroup = ProftpdGroup.objects.using(database_id).\
+                                                create(name='TestGroup',
+                                                       gid=3000)
+
+        self.check_databases(setup)
+
+        command = notify_proftpd_manage.Command()
+        command.handle('add', 'TestGroup', 'TestGroup')
+
+        def check(database_id):
+            self.assertEqual(1,
+                             GroupProftpdGroup.objects.\
+                             filter(database_id=database_id).count())
+
+        self.check_databases(check)
+
+    def test_remove_relation(self):
+        group = Group.objects.create(name='TestGroup')
+
+        def setup(database_id):
+            proftpdGroup = ProftpdGroup.objects.using(database_id).\
+                                                create(name='TestGroup',
+                                                       gid=3000)
+
+            GroupProftpdGroup.objects.create(group=group,
+                                             proftpdgroup_name=proftpdGroup.name,
+                                             database_id=database_id)
+
+        self.check_databases(setup)
+
+        user1 = Database.new_user()
+        user2 = Database.new_user()
+
+        user1.groups.add(group)
+        user2.groups.add(group)
+
+        command = notify_proftpd_manage.Command()
+        command.handle('remove', 'TestGroup', 'TestGroup')
+
+        def check(database_id):
+            self.assertFalse(GroupProftpdGroup.objects.\
+                             filter(group=group,
+                                 database_id=database_id,
+                                 proftpdgroup_name=group.name).\
+                             exists())
+
+        self.check_databases(check)
+
+    def test_status(self):
+        command = notify_proftpd_status.Command()
+        command.handle()
 
 class TestSetCompatPassword(TransactionTestCase):
     def test_set_new_password(self):

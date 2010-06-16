@@ -32,11 +32,21 @@ INSTALLED_APPS.extend([
 
     'selvbetjening.notify',
     'selvbetjening.notify.concrete5',
+    'selvbetjening.notify.proftpd',
 
 ])
 
-# import localsettings, a per deployment configuration file
-try:
-    from settings_local import *
-except ImportError:
-    pass
+DATABASES = {
+    'default': {
+        'NAME': 'default',
+        'ENGINE': 'django.db.backends.sqlite3',
+    },
+    'ext_database1': {
+        'NAME': 'ext_database1',
+        'ENGINE': 'django.db.backends.sqlite3',
+    },
+    'ext_database2': {
+        'NAME': 'ext_database2',
+        'ENGINE': 'django.db.backends.sqlite3',
+    }
+}

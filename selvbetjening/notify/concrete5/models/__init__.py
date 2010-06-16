@@ -9,18 +9,15 @@ from selvbetjening.notify import BaseNotifyRegistry
 
 from native import GroupC5Group
 from concrete5 import C5Group, C5User, C5UserGroups
-from listeners import GroupChangedListener, GroupMembersChangedListener
+from listeners import GroupMembersChangedListener
 
 class C5NotifyRegistry(BaseNotifyRegistry):
     def __init__(self):
         super(C5NotifyRegistry, self).__init__()
 
-        self._routing = [(signals.post_save,
-                          GroupChangedListener,
-                          Group),
-                         (signals.m2m_changed,
+        self._routing = [(signals.m2m_changed,
                           GroupMembersChangedListener,
-                          User.groups.through)]
+                          User.groups.through),]
 
 registry = C5NotifyRegistry()
 
