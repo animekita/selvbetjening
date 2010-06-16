@@ -221,4 +221,4 @@ class Concrete5ManagementTestCase(Concrete5BaseTestCase):
 
     def test_management_status(self):
         command = notify_c5_status.Command()
-        command.handle()
+        command.handle('silent')

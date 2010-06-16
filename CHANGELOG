@@ -2,12 +2,16 @@
 Admin:
  * Removed tiny-mce editor support (resulting HTML were a mess)
 
+Notify:
+ * Rewritten notify modules for more stability and added a new management api
+
 Dependencies:
  * Now requires Django 1.2
  * Now requires South 0.7**
  * Now requires django-uni-form**
  * Removed requirement for sqlalchamy
-   ** provided in the contrib folder, so no external installation is required
+
+ ** provided in the contrib folder, so no external installation is required
 
 3.0.0
  * Improved support for additional languages.

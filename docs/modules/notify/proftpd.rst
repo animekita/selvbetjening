@@ -14,5 +14,5 @@ En selvbetjening gruppe kan derfor være tilknyttet en, og kun en,
 gruppe i proftpd. Eftersom proftpd gruppe navnet er dens primære
 nøgle så synkroniseres deres navne ikke imellem de to.
 
-Slettes selvbetjening gruppen fjernes gruppen ikke fra proftpd, dog
-bliver alle medlemskaber fjernet.
+Slettes selvbetjening gruppen bliver der ikke ændret noget ved
+proftpd gruppen.

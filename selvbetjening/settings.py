@@ -36,6 +36,7 @@ INSTALLED_APPS.extend([
 
 ])
 
+# this would normally be placed in the local settings file
 DATABASES = {
     'default': {
         'NAME': 'default',
@@ -50,3 +51,5 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
     }
 }
+
+SITE_URL = 'dev.anime-kita.dk'

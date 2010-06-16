@@ -163,7 +163,7 @@ class ProftpdNotifyManagementCommandTestCase(ProftpdBaseTestCase):
 
     def test_status(self):
         command = notify_proftpd_status.Command()
-        command.handle()
+        command.handle('silent')
 
 class TestSetCompatPassword(TransactionTestCase):
     def test_set_new_password(self):

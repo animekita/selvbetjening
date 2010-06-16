@@ -98,32 +98,49 @@ class RecipientGroupFormTest(TestCase):
 
 class MailModelTest(TestCase):
     def setUp(self):
-        self.mailobj = Mail.objects.create(subject='test', body='test', date_created=date.today())
+        self.mailobj = Mail.objects.create(subject='test',
+                                           body='test',
+                                           date_created=date.today())
 
         self.users = []
+
         for i in range(10):
-            user = auth_models.User.objects.create_user('user' + str(i), '', 'user' + str(i) + '@ex.ex')
+            user = auth_models.User.objects.create_user('user' + str(i),
+                                                        '',
+                                                        'user' + str(i) + '@ex.ex')
+
             self.users.append(user)
-            UserProfile.objects.create(user=user, dateofbirth=date.today(), send_me_email=True)
+            UserProfile.objects.create(user=user,
+                                       dateofbirth=date.today(),
+                                       send_me_email=True)
+
+    def send_email(self):
+        from mailer.management.commands import send_mail
+        command = send_mail.Command()
+        command.handle_noargs()
 
     def test_send_mail_single(self):
         self.mailobj.send_preview(['example@example.org',])
+        self.send_email()
 
         self.assertEqual(len(mail.outbox), 1)
 
     def test_send_mail_multiple(self):
         self.mailobj.send_preview(['example@example.org', 'example2@example.org'])
+        self.send_email()
 
         self.assertEqual(len(mail.outbox), 2)
 
     def test_send_mail_to_users(self):
         self.mailobj.send(self.users)
+        self.send_email()
 
         self.assertEqual(len(mail.outbox), 10)
         self.assertEqual(len(self.mailobj.recipients.all()), 10)
 
     def test_filter(self):
         self.mailobj.send(self.users[:5])
+        self.send_email()
 
         accept, deny = self.mailobj.recipient_filter(self.users)
         self.assertEqual(len(accept), 5)

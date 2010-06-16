@@ -8,10 +8,5 @@ from selvbetjening.core.selvadmin.admin import site
 import selvbetjening.data.members.admin
 import selvbetjening.data.events.admin
 import selvbetjening.data.invoice.admin
-
-# Mailcenter
-
-from selvbetjening.clients.mailcenter.admin import MailAdmin
-from selvbetjening.clients.mailcenter.models import Mail
-
-site.register(Mail, MailAdmin)
+import selvbetjening.clients.mailcenter.admin
+import selvbetjening.notify.concrete5.admin

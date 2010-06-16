@@ -19,9 +19,9 @@ class AcceptForm(forms.Form):
 
         self.fields['confirm'] = forms.BooleanField(widget=forms.CheckboxInput(),
                                                     label=self.label())
-        
+
         self.helper = FormHelper()
-        self.helper.use_csrf_protection = True        
+        self.helper.use_csrf_protection = True
 
     def label(self):
         return u'Accept'
@@ -38,12 +38,12 @@ class AcceptForm(forms.Form):
         pass
 
 class SignupForm(AcceptForm):
-    def __init__(self):
-        super(SignupForm, self).__init__()
-        
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+
         submit = Submit(_('Sign up'), _('Sign up'))
         self.helper.add_input(submit)
-        
+
         layout = Layout(Fieldset(ugettext_lazy(u"Accept terms"),
                                  'confirm'))
         self.helper.add_layout(layout)
@@ -55,12 +55,12 @@ class SignupForm(AcceptForm):
         return _(u'You must accept to participate in the event')
 
 class SignoffForm(AcceptForm):
-    def __init__(self):
-        super(SignoffForm, self).__init__()
-        
+    def __init__(self, *args, **kwargs):
+        super(SignoffForm, self).__init__(*args, **kwargs)
+
         submit = Submit(_('Sign off'), _('Sign off'))
         self.helper.add_input(submit)
-    
+
     def label(self):
         return _(u'Yes, remove me from the event')
 

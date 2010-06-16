@@ -1,10 +1,5 @@
 4.0.0 Todo
 
-- Remove dependency on sqlalchamy (multi-db)
-  - Redifiner formål med proftpd igennem test
-  - Meget bedre sync
-  - Mere robust error håndtering
-
 - Dynamiske formularer (så vi kan lave mere spændende input)
 
 - Mere fleksibel betaling input
