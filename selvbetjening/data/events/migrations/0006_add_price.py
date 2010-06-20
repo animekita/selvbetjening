@@ -5,21 +5,21 @@ from django.db import models
 from selvbetjening.data.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Option.price'
-        db.add_column('events_option', 'price', models.IntegerField())
-        
-    
-    
+        db.add_column('events_option', 'price', models.IntegerField(default=0))
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Option.price'
         db.delete_column('events_option', 'price')
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'description': ('models.TextField', ["_(u'description')"], {'blank': 'True'}),
@@ -69,5 +69,5 @@ class Migration:
             'users': ('models.ManyToManyField', ['User'], {'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events']

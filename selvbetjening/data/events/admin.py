@@ -25,21 +25,21 @@ class AttendAdmin(ModelAdmin):
         actions = ''
 
         actions += u"""
-        <a href="%s"><input type="button" value="Ændre tilvalg"/></a>
-        """ % reverse('admin:events_attend_selections_change', args=[attend.pk])
+                <a href="%s"><input type="button" value="Ændre tilvalg"/></a>
+                """ % reverse('admin:events_attend_selections_change', args=[attend.pk])
 
         actions += u"""
-        <a href="%s"><input type="button" value="Billing"/></a>
-        """ % reverse('admin:events_attend_billing', args=[attend.pk])
+                <a href="%s"><input type="button" value="Billing"/></a>
+                """ % reverse('admin:events_attend_billing', args=[attend.pk])
 
         if attend.state == AttendState.attended:
             actions += u"""
-            <a href="%s"><input type="button" value="Checkout"/></a>
-            """ % reverse('admin:events_attend_checkout', args=[attend.pk])
+                    <a href="%s"><input type="button" value="Checkout"/></a>
+                    """ % reverse('admin:events_attend_checkout', args=[attend.pk])
         else:
             actions += u"""
-            <a href="%s"><input style="font-weight: bold;" type="button" value="Checkin"/></a>
-            """ % reverse('admin:events_attend_checkin', args=[attend.pk])
+                    <a href="%s"><input style="font-weight: bold;" type="button" value="Checkin"/></a>
+                    """ % reverse('admin:events_attend_checkin', args=[attend.pk])
 
         return actions
     changelist_item_actions.allow_tags = True
@@ -87,20 +87,20 @@ class EventAdmin(ModelAdmin):
     def changelist_item_actions(self, event):
 
         actions = u"""
-        <a href="%s"><input type="button" value="Statistik"/></a>
-        """ % reverse('admin:events_event_statistics', args=[event.id,])
+                <a href="%s"><input type="button" value="Statistik"/></a>
+                """ % reverse('admin:events_event_statistics', args=[event.id,])
 
         actions += u"""
-        <a href="%s?event__id__exact=%s"><input type="button" value="Tilmeldte"/></a>
-        """ % (reverse('admin:events_attend_changelist'), event.id)
+                <a href="%s?event__id__exact=%s"><input type="button" value="Tilmeldte"/></a>
+                """ % (reverse('admin:events_attend_changelist'), event.id)
 
         actions += u"""
-        <a href="%s"><input type="button" value="Tilmeld person"/></a>
-        """ % reverse('admin:events_event_attendees_new', args=[event.id,])
+                <a href="%s"><input type="button" value="Tilmeld person"/></a>
+                """ % reverse('admin:events_event_attendees_new', args=[event.id,])
 
         actions += u"""
-        <a href="%s"><input type="button" value="Indstillinger"/></a>
-        """ % reverse('admin:events_event_change', args=[event.id,])
+                <a href="%s"><input type="button" value="Indstillinger"/></a>
+                """ % reverse('admin:events_event_change', args=[event.id,])
 
         return actions
 
@@ -114,23 +114,23 @@ class EventAdmin(ModelAdmin):
     fieldsets = (
         (None, {
             'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
-        }),
+            }),
         (_('Conditions'), {
             'fields' : ('maximum_attendees', 'move_to_accepted_policy', ),
             'classes' : ('collapse', ),
-        }),
+            }),
         (_('Registration Confirmation'), {
             'fields' : ('show_registration_confirmation', 'registration_confirmation'),
             'classes' : ('collapse', ),
-        }),
+            }),
         (_('Change Confirmation'), {
             'fields' : ('show_change_confirmation', 'change_confirmation'),
             'classes' : ('collapse', ),
-        }),
+            }),
         (_('Invoice page'), {
             'fields' : ('show_invoice_page', 'invoice_page'),
             'classes' : ('collapse', ),
-        }),
+            }),
     )
 
     def get_urls(self):
@@ -139,13 +139,13 @@ class EventAdmin(ModelAdmin):
         info = self.model._meta.app_label, self.model._meta.module_name
 
         urlpatterns = patterns('',
-            url(r'^(.+)/statistics/',
-                self.admin_site.admin_view(admin_views.event_statistics),
-                name='%s_%s_statistics' % info),
-            url(r'^(.+)/attendees/new/',
-                self.admin_site.admin_view(admin_views.add_user),
-                name='%s_%s_attendees_new' % info),
-            )
+                               url(r'^(.+)/statistics/',
+                                   self.admin_site.admin_view(admin_views.event_statistics),
+                                   name='%s_%s_statistics' % info),
+                               url(r'^(.+)/attendees/new/',
+                                   self.admin_site.admin_view(admin_views.add_user),
+                                   name='%s_%s_attendees_new' % info),
+                               )
 
         urlpatterns += super(EventAdmin, self).get_urls()
 
@@ -168,7 +168,6 @@ site.register(Event, EventAdmin)
 
 class OptionInline(TabularInline):
     model = Option
-    exclude = ['users', ]
 
 class OptionGroupAdmin(ModelAdmin):
     list_display = ('event', 'name',)
@@ -177,14 +176,14 @@ class OptionGroupAdmin(ModelAdmin):
     fieldsets = (
         (None, {
             'fields' : ('event', 'name', 'description'),
-        }),
+            }),
         (_('Conditions'), {
             'fields' : ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
             'classes' : ('collapse', ),
-        }),
+            }),
         (_('Other'), {
             'fields' : ('order',),
-        }),)
+            }),)
 
     raw_id_fields = ('event',)
     inlines = [OptionInline, TranslationInline]
@@ -208,7 +207,7 @@ class OptionAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('group', 'name', 'description', 'price')}),
         ('Conditions', {'fields': ('freeze_time', 'maximum_attendees', 'order'), 'classes' : ('collapse',)}),
-        )
+    )
 
     raw_id_fields = ('group',)
     inlines = [SubOptionInline, SelectionInline, TranslationInline]

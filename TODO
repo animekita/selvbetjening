@@ -1,10 +1,21 @@
 4.0.0 Todo
 
-- Dynamiske formularer (så vi kan lave mere spændende input)
+Op til næste arrangement
+----------------------------------
 
+Design og usability:
+- Revidering af kvittering interface og hele profil interfacet
+- Yderligere oprydning i admin
+- Oversigt over ændringer (events) i selvbetjening
+
+Funktionelt:
 - Mere fleksibel betaling input
-
 - Betaling igennem paypal / google checkout
+
+Nice to have
+---------------------------------
+
+- Dynamiske formularer (så vi kan lave mere spændende input)
 
 - Bedre håndtering af e-mails
   - Flere filtre til hvem der skal have e-mails
@@ -15,20 +26,12 @@
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
 
-- Definer workflow for hele systemet
-  - Se på kvitteringer, er det den bedste løsning?
-  - Se på tilmelding status
-
-- Yderligere oprydning i admin
-
 - Offline strategi
 
 - Bedre workflow mht. lister over events
   - Integrere CMS
 
 - Offentlig profil med Achivements
-
-- Oversigt over ændringer (events) i selvbetjening
 
 - Accounting, hvem har gjort hvad
 
@@ -38,10 +41,7 @@
 
 - Breadcrumbs
 
-
 Mulige projekter
-- GoFlow: http://code.djangoproject.com/wiki/GoFlow
-          http://www.workflowpatterns.com/patterns/control/
 - Audit: http://dev.2degreesnetwork.com/2010/04/announcing-django-audit.html
 - Log:  django-db-log
 

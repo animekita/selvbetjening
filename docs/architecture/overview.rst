@@ -2,14 +2,16 @@
 Oversigt
 ========
 
-Selvbetjening er opdelt i tre forskellige typer moduler; data, clients og viewhelpers.
+Selvbetjening er opdelt i fire forskellige typer moduler; core, data, clients og viewhelpers.
 
+ Core moduler::
+  Core moduler indeholder centrale funktioner for selvbetjening som bruges af alle andre moduler.
  Data moduler::
-  Data modulerne indeholder informationer og procedurer der er centrale for selvbetjening. Data modulerne er indbyrdes afhængige af hinanden så alle data modulerne er påkrævet for en installation.
+  Data modulerne definerer informationer som er centrale for selvbetjening, og som derfor antages er tilgængelige for alle installationer (og derfor er disse moduler derfor altid installeret).
  Client moduler::
-  Client modulerne står for manipulation af data modulerne. Modulerne er kun afhængige af data modulerne og ikke af andre client moduler. Disse er derfor velegnet til at fjerne og tilføje alt efter den enkelte forenings behov.
+  Client modulerne står for manipulation af data modulerne samt defineringen af yderlige data. Disse er anset for at være valgfrie, så man må ikke antage at et client modul er installeret.
  Viewhelpers::
-  Bruges af clienterne til diverse formål såsom rendering af formularer. Kan bruges af flere forskellige clienter.
+  Indeholder hjælper funktioner som ikke er centrale for selvbetjening og er målrettet rendering af elementer på siden.
 
 .. image:: images/architecture.png
 
