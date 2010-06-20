@@ -8,7 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.template import Context, Template
 
-from selvbetjening.data.logging import logger
+from selvbetjening.core.logging import logger
+
 from selvbetjening.data.invoice.models import Invoice
 from selvbetjening.data.invoice.decorators import disable_invoice_updates
 from selvbetjening.data.events.models import Event, Attend
