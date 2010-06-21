@@ -10,9 +10,13 @@
 <li><a href="{% url members_editprofile %}">rediger</a></li>
 {% endblock %}
 
-{% block contenthead %}Ændre personoplysninger{% endblock %}
+{% block contenthead %}Opdater dine personoplysninger{% endblock %}
 
 {% block content %}
+
+<p>Som udgangspunkt er dine personoplysninger <b>kun</b> tilgænglige af foreningens ledelse, og bruges hvis de skal i kontakt med dig.</p>
+
+<p>Du kan også vise disse oplysninger på din profil som kun kan ses af andre medlemmer af foreningen. Du kan kontrollerer hvilke oplysninger der er synlige, på privacy siden.</p>
 
 {% with form.helper as helper %}
     {% uni_form form helper %}

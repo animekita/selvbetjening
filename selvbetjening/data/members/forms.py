@@ -1,6 +1,7 @@
 # coding=UTF-8
 import re
 
+from django.conf import settings
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -8,18 +9,28 @@ from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.db.models import OneToOneRel
 
 from countries.models import Country
-from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
+from uni_form.helpers import FormHelper, Submit, Layout, Row, HTML
 
 from selvbetjening.viewhelpers.forms import widgets
+from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
 
-from models import UserProfile
+from models import UserProfile, UserCommunication, UserWebsite
 from shortcuts import get_or_create_profile
 import signals
 
-from django.utils.functional import lazy
-
-class ProfileForm(forms.Form):
+class BaseProfileForm(forms.Form):
     COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+
+        if self.user is not None:
+            initial = kwargs.get('initial', {})
+            initial.update(self._build_initial())
+
+            kwargs['initial'] = initial
+
+        super(BaseProfileForm, self).__init__(*args, **kwargs)
 
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
@@ -33,8 +44,8 @@ class ProfileForm(forms.Form):
 
     email = forms.EmailField(max_length=75, label=_(u'email'))
 
-    dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(years=range(1910, 2010)),
-                                  label=_(u'date of birth'))
+    dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(
+        years=range(1910, 2010)), label=_(u'date of birth'))
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
@@ -57,19 +68,20 @@ class ProfileForm(forms.Form):
                              label=_(u'Inform me about events and other important changes.'),
                              initial=True, required=False)
 
-    layout = Layout(Fieldset(_(u'Personal Information'),
-                             'first_name', 'last_name', 'dateofbirth', 'phonenumber'),
-                    Fieldset(_(u'Address'),
-                             'street', 'postalcode', 'city', 'country'),
-                    Fieldset(_(u'Other'),
-                             'email', 'send_me_email'))
+    def _build_initial(self):
+        user_profile = get_or_create_profile(self.user)
 
-    submit = Submit(_('Change personal information'), _('Change personal information'))
+        initial = {'first_name' : self.user.first_name,
+                   'last_name' : self.user.last_name,
+                   'dateofbirth' : user_profile.dateofbirth,
+                   'street' : user_profile.street,
+                   'city' : user_profile.city,
+                   'postalcode' : user_profile.postalcode,
+                   'phonenumber' : user_profile.phonenumber,
+                   'email' : self.user.email
+                   }
 
-    helper = FormHelper()
-    helper.use_csrf_protection = True
-    helper.add_input(submit)
-    helper.add_layout(layout)
+        return initial
 
     def clean_dateofbirth(self):
         # The birth year must be above 1900 to be compatible with strftime
@@ -78,35 +90,222 @@ class ProfileForm(forms.Form):
 
         return self.cleaned_data['dateofbirth']
 
-    def save(self, user):
+    def save(self, user=None):
         """
         Update user profile and user records
         """
+        if user is None:
+            user = self.user
+
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
 
         profile = get_or_create_profile(user)
-        if profile is not None:
-            profile.dateofbirth = self.cleaned_data['dateofbirth']
-            profile.street = self.cleaned_data['street']
-            profile.postalcode = self.cleaned_data['postalcode']
-            profile.city = self.cleaned_data['city']
-            profile.phonenumber = self.cleaned_data['phonenumber']
-            profile.send_me_email = self.cleaned_data['send_me_email']
-            profile.save()
-        else:
-            UserProfile.objects.create(user=user,
-                                       dateofbirth=self.cleaned_data['dateofbirth'],
-                                       city=self.cleaned_data['city'],
-                                       street=self.cleaned_data['street'],
-                                       postalcode=self.cleaned_data['postalcode'],
-                                       phonenumber=self.cleaned_data['phonenumber'],
-                                       send_me_email=self.cleaned_data['send_me_email'])
+
+        profile.dateofbirth = self.cleaned_data['dateofbirth']
+        profile.street = self.cleaned_data['street']
+        profile.postalcode = self.cleaned_data['postalcode']
+        profile.city = self.cleaned_data['city']
+        profile.phonenumber = self.cleaned_data['phonenumber']
+        profile.send_me_email = self.cleaned_data['send_me_email']
+        profile.save()
+
+class ProfileForm(BaseProfileForm):
+    COMMUNICATION_FIELDNAME = 'usercommunication_%s'
+    WEBSITE_NAME_FIELDNAME = 'userwebsite_name_%s'
+    WEBSITE_URL_FIELDNAME = 'userwebsite_url_%s'
+
+    def __init__(self, user, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+
+        communications = UserCommunication.objects.filter(user=user)
+        for communication in communications:
+            field_name = ProfileForm.COMMUNICATION_FIELDNAME % communication.method
+
+            initial[field_name] = communication.identification
+
+        for website in UserWebsite.objects.filter(user=user):
+            name_field = ProfileForm.WEBSITE_NAME_FIELDNAME % website.pk
+            url_field = ProfileForm.WEBSITE_URL_FIELDNAME % website.pk
+
+            initial[name_field] = website.name
+            initial[url_field] = website.url
+
+        kwargs['initial'] = initial
+        kwargs['user'] = user
+
+        super(ProfileForm, self).__init__(*args, **kwargs)
+
+        if len(args) > 0:
+            post = args[0]
+            self._build_new_websites(post)
+
+        methods = self._build_communication()
+        websites = self._build_websites()
+
+        layout = Layout(InlineFieldset(_(u'Basic Information'),
+                                       'first_name', 'last_name', 'dateofbirth', ),
+                        InlineFieldset(_(u'Address'),
+                                       'street', 'postalcode', 'city', 'country'),
+                        InlineFieldset(_(u'Contact Information'),
+                                       'phonenumber', 'email', 'send_me_email',
+                                       *methods),
+                        InlineFieldset(_(u'Your Homepages (shown on your profile)'), *websites))
+
+        submit = Submit(_('Change personal information'),
+                        _('Change personal information'))
+
+        self.helper = FormHelper()
+        self.helper.use_csrf_protection = True
+        self.helper.add_input(submit)
+        self.helper.add_layout(layout)
+
+    def _build_communication(self):
+        methods = []
+        for method, method_name in UserCommunication.METHOD_CHOICES:
+            field_name = self.COMMUNICATION_FIELDNAME % method
+
+            self.fields[field_name] = \
+                forms.CharField(max_length=255,
+                                label=method_name,
+                                required=False)
+
+            methods.append(field_name)
+
+        return methods
+
+    def _add_website_fields(self, form, name_field, url_field):
+        form.fields[name_field] = forms.CharField(max_length=32,
+                                                      required=False,
+                                                      label=_(u'Name'))
+
+        form.fields[url_field] = forms.URLField(required=False,
+                                                label=_(u'URL'))
+
+    def _build_new_websites(self, post):
+        self.new_website_keys = []
+
+        for data_key in post:
+            if self.WEBSITE_NAME_FIELDNAME % 'new' in data_key:
+                try:
+                    new_id = data_key[len(self.WEBSITE_NAME_FIELDNAME) + 2 : -1]
+                    new_id = int(new_id)
+                except:
+                    continue
+
+                key = 'new[%s]' % new_id
+                self.new_website_keys.append(key)
+
+                name_field = self.WEBSITE_NAME_FIELDNAME % key
+                url_field = self.WEBSITE_URL_FIELDNAME % key
+
+                self._add_website_fields(self, name_field, url_field)
+
+    def _build_websites(self):
+        websites = []
+
+        for website in UserWebsite.objects.filter(user=self.user):
+            name_field = ProfileForm.WEBSITE_NAME_FIELDNAME % website.pk
+            url_field = ProfileForm.WEBSITE_URL_FIELDNAME % website.pk
+
+            self._add_website_fields(self, name_field, url_field)
+
+            websites.append(Row(name_field, url_field))
+
+        link_text = _(u'Add website')
+        add_url = '%sgraphics/icons/add.png' % settings.MEDIA_URL
+
+
+        template_field_name = self.WEBSITE_NAME_FIELDNAME % 'new[ELEMENT_ID]'
+        template_field_url = self.WEBSITE_URL_FIELDNAME % 'new[ELEMENT_ID]'
+        template_form = forms.Form()
+        self._add_website_fields(template_form,
+                                 template_field_name,
+                                 template_field_url)
+
+        template_row = Row(template_field_name, template_field_url).render(template_form)
+        template_row = template_row.replace("\n", '')
+
+        html = """
+        <script type="text/javascript">
+        var counter = 0
+        var template = '%s';
+
+        function addWebsiteElement(element) {
+
+        new_element = template.replace(/ELEMENT_ID/g, counter);
+        counter++;
+
+        $('fieldset .ctrlHolder').last().before(new_element);
+
+        }
+        </script>
+
+        <div class="ctrlHolder">
+        <img src="%s" /> <a href="javascript:void(0);" onclick="return addWebsiteElement(this);">%s</a>
+        </div>
+        """
+
+        websites.append(HTML(html % (template_row, add_url, unicode(link_text))))
+
+        return websites
+
+    def save(self):
+        super(ProfileForm, self).save()
+
+        user = self.user
+
+        for method, method_name in UserCommunication.METHOD_CHOICES:
+            field_name = self.COMMUNICATION_FIELDNAME % method
+
+            identification = self.cleaned_data.get(field_name, '')
+
+            try:
+                user_communication = UserCommunication.objects.get(user=user,
+                                                                   method=method)
+
+                if identification == '':
+                    user_communication.delete()
+                else:
+                    user_communication.identification = identification
+                    user_communication.save()
+
+            except UserCommunication.DoesNotExist:
+                if identification != '':
+                    UserCommunication.objects.create(user=user,
+                                                     method=method,
+                                                     identification=identification)
+
+        for website in UserWebsite.objects.filter(user=user):
+            name_field = self.WEBSITE_NAME_FIELDNAME % website.pk
+            url_field = self.WEBSITE_URL_FIELDNAME % website.pk
+
+            name_value = self.cleaned_data.get(name_field, '')
+            url_value = self.cleaned_data.get(url_field, '')
+
+            if name_value != '' and url_value != '':
+                website.name = name_value
+                website.url = url_value
+                website.save()
+            else:
+                website.delete()
+
+        for key in getattr(self, 'new_website_keys', []):
+            name_field = self.WEBSITE_NAME_FIELDNAME % key
+            url_field = self.WEBSITE_URL_FIELDNAME % key
+
+            name_value = self.cleaned_data.get(name_field, '')
+            url_value = self.cleaned_data.get(url_field, '')
+
+            if name_value != '' and url_value != '':
+                UserWebsite.objects.create(user=user,
+                                           name=name_value,
+                                           url=url_value)
 
 username_re = re.compile("^[a-zA-Z0-9_]+$")
 
-class RegistrationForm(ProfileForm):
+class RegistrationForm(BaseProfileForm):
     """ Form for registering a new user account. """
 
     username = forms.CharField(max_length=30,
@@ -121,13 +320,13 @@ class RegistrationForm(ProfileForm):
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow the storage of my personal information on this site."))
 
-    layout = Layout(Fieldset(_(u"personal information"),
+    layout = Layout(InlineFieldset(_(u"personal information"),
                              'first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email', 'send_me_email'),
-                    Fieldset(_(u"address"),
+                    InlineFieldset(_(u"address"),
                              'street', 'postalcode', 'city', 'country'),
-                    Fieldset(_(u"user"),
+                    InlineFieldset(_(u"user"),
                              'username', 'password1', 'password2'),
-                    Fieldset(_(u"data management terms"),
+                    InlineFieldset(_(u"data management terms"),
                              'tos'))
 
     helper = FormHelper()

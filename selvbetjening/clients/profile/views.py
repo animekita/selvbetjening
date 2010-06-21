@@ -22,31 +22,17 @@ def profile_redirect(request):
 
 @login_required
 def profile_edit(request,
-                 template_name='members/profile_edit.html',
+                 template_name='profile/profile_edit.html',
                  success_page='members_profile',
                  form_class=ProfileForm):
     if request.method == 'POST':
-        form = form_class(request.POST)
+        form = form_class(request.user, request.POST)
         if form.is_valid():
-            form.save(request.user)
+            form.save()
             request.user.message_set.create(message=_(u'Personal information updated'))
             return HttpResponseRedirect(reverse(success_page))
     else:
-        user = request.user
-        try:
-            user_profile = user.get_profile()
-        except UserProfile.DoesNotExist:
-            user_profile = UserProfile.objects.create(user=user)
-
-        form = form_class(initial={'first_name':user.first_name,
-                                   'last_name':user.last_name,
-                                   'dateofbirth': user_profile.dateofbirth,
-                                   'street':user_profile.street,
-                                   'city':user_profile.city,
-                                   'postalcode':user_profile.postalcode,
-                                   'phonenumber':user_profile.phonenumber,
-                                   'email':user.email
-                                  })
+        form = form_class(request.user)
 
     return render_to_response(template_name,
                               {'form' : form},
@@ -54,7 +40,7 @@ def profile_edit(request,
 
 @login_required
 def password_change(request,
-                    template_name='members/password_change.html',
+                    template_name='profile/password_change.html',
                     post_change_redirect=None,
                     change_password_form=ChangePasswordForm):
 

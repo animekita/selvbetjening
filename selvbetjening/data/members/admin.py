@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from django.contrib.admin import StackedInline
+from django.contrib.admin import StackedInline, TabularInline
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -14,7 +14,7 @@ from selvbetjening.core.selvadmin.admin import site, reverse_lazy
 from selvbetjening.data.invoice.models import Invoice
 
 from shortcuts import get_or_create_profile
-from models import UserProfile
+from models import UserProfile, UserWebsite, UserCommunication
 from forms import RegistrationForm
 
 import admin_views
@@ -23,6 +23,14 @@ class UserProfileInline(StackedInline):
     model = UserProfile
     extra = 1
     max_num = 1
+
+class UserWebsiteInline(TabularInline):
+    model = UserWebsite
+    extra = 0
+
+class UserCommunicationInline(TabularInline):
+    model = UserCommunication
+    extra = 0
 
 class UserAdminExt(UserAdmin):
     list_display = ('username', 'first_name', 'last_name', 'email', 'display_age')
@@ -38,7 +46,7 @@ class UserAdminExt(UserAdmin):
 
     add_form = RegistrationForm
 
-    inlines = [UserProfileInline]
+    inlines = [UserProfileInline, UserWebsiteInline, UserCommunicationInline]
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url

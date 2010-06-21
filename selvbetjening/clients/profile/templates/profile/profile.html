@@ -4,53 +4,121 @@
 <li><a href="{% url members_profile %}">profil</a></li>
 {% endblock %}
 
-{% block contenthead %}Velkommen {% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}{% endblock %}
+{% block contenthead %}{{user.username}}{% endblock %}
 
 {% block content %}
-<p>På denne side kan du se de oplysninger vi har registreret for din bruger. Vi beder dig venligst holde disse oplysninger opdateret. Nederst på siden kan du også se de arrangementer som du har deltaget i, er tilmeldt eller kan tilmelde dig.</p>
 
-<h2>Personoplysninger</h2>
+<div id="profile-info">
 
-<table class="vertical">
+
+<table id="profile-matrix" class="vertical">
 <tr>
-    <th>Navn</th>
+    <th>Navn:</th>
     <td>{{user.first_name}} {{user.last_name}}</td>
 </tr>
 <tr>
-    <th>Fødselsdag</th>
-    <td>{{user.get_profile.dateofbirth|date:"d/m - Y"}}</td>
+    <th>Fødselsdato:</th>
+    <td>{{user.get_profile.dateofbirth|date:"d/m - Y"}} ({{user.get_profile.get_age}} år)</td>
 </tr>
+
 <tr>
-    <th>Alder</th>
-    <td>{{user.get_profile.get_age}}</td>
+    <th>Adresse:</th>
+    <td>
+    {{user.get_profile.street}}<br/>
+    {% if user.get_profile.postalcode %}{{user.get_profile.postalcode}}{% endif %} {{user.get_profile.city}}<br/>
+    {{user.get_profile.country}}
+    </td>
 </tr>
-<tr>
-    <th>Email</th>
-    <td>{{user.email}}</td>
+
+<tr class="pause">
+    <td colspan="2"></td>
 </tr>
+
 <tr>
-    <th>Må vi sende emails til dig?</th>
-    <td>{{user.get_profile.send_me_email|yesno}}</td>
-</tr>
-<tr>
-    <th>Telefon #</th>
+    <th>Telefon:</th>
     <td >{% if user.get_profile.phonenumber %}{{user.get_profile.phonenumber}}{% endif %}</td>
 </tr>
 <tr>
-    <th>Gade</th>
-    <td >{{user.get_profile.street}}</td>
+    <th>Email:</th>
+    <td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
 </tr>
-<tr>
-    <th>Postnummer &amp; by</th>
-    <td>{% if user.get_profile.postalcode %}{{user.get_profile.postalcode}}{% endif %} {{user.get_profile.city}}</td>
-</tr>
-<tr>
-    <th>Land</th>
-    <td>{{user.get_profile.country}}</td>
-</tr>
-</table>
+{% for communication in user.usercommunication_set.all %}
 
-<p><a href="{% url members_editprofile %}">Ændre personoplysninger</a></p>
+<tr>
+    <th>{{communication.get_method_display}}</th>
+    <td>{{communication.identification}}</td>
+</tr>
+
+{% endfor %}
+
+{% for website in user.userwebsite_set.all %}
+
+{% if forloop.first %}
+<tr class="pause">
+    <td colspan="2"></td>
+</tr>
+{% endif %}
+
+<tr>
+    {% if forloop.first %}<th>Hjemmesider</th>{% else %}<th>&nbsp;</th>{% endif %}
+    <td><a href="{{website.url}}">{{website.name}}</a></td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+<div id="profile-image">
+    <img src="{{MEDIA_URL}}profile-test.jpg">
+</div>
+
+<div id="profile-achivements">
+
+<h2>Achivements</h2>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Medlem af foreningen Anime Kita <span class="profile-achivement-comment">(medlemsnummer #1)</span>
+</div>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Mest inaktive aktive (stalker) på forummet <span class="profile-achivement-comment">(2007)</span>
+</div>
+
+<h3>Arrangementer</h3>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Kita Træf 06.1
+</div>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Kita Træf 07.1
+</div>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Chibi Træf 10.6
+</div>
+
+<h3>Arbejde i foreningen</h3>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Formand <span class="profile-achivement-comment">(2007-2010)</span>
+</div>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Teknik og WWW rådet <span class="profile-achivement-comment">(2006-)</span>
+</div>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Planlægningsrådet <span class="profile-achivement-comment">(Kita Træf 10.1)</span>
+</div>
+
+<h3>Konkurrencer</h3>
+
+<div class="profile-achivement">
+    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />1. Plads i Holdquiz, Kita Træf 10.1
+</div>
+
+</div>
 
 {{ add_to_profile|safe }}
 

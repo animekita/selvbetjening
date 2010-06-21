@@ -21,15 +21,37 @@ def to_age(dateofbirth, reference_date=None):
     d = reference_date
     return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
 
+class UserWebsite(models.Model):
+    user = models.ForeignKey(User, verbose_name=_(u'user'), db_column='user_id')
+
+    name = models.CharField(max_length=32)
+    url = models.URLField()
+
+class UserCommunication(models.Model):
+    METHOD_CHOICES = (('skype', 'skype'),
+                      ('msn', 'MSN'),
+                      ('jabber', 'Jabber'),)
+
+    user = models.ForeignKey(User, verbose_name=_(u'user'), db_column='user_id')
+
+    method = models.CharField(max_length=12, choices=METHOD_CHOICES)
+    identification = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('method', 'user')
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'), db_column='user_id', primary_key=True)
 
     dateofbirth = models.DateField(_(u'date of birth'), blank=True, null=True)
+
     street = models.CharField(_(u'street'), max_length=255, blank=True)
     postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
     city = models.CharField(_(u'city'), max_length=255, blank=True)
     country = models.ForeignKey(Country, default='DK', blank=True, null=True)
+
     phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
+
     send_me_email = models.BooleanField(_(u'Send me emails'))
 
     class Meta:
