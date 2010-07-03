@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 
 class GroupProftpdGroup(models.Model):
     group = models.ForeignKey(Group)
-    proftpdgroup_name = models.TextField()
+    proftpdgroup_name = models.CharField(max_length=255)
     database_id = models.CharField(max_length=32)
 
     class Meta:

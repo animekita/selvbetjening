@@ -3,11 +3,16 @@ from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 
-from views import profile_edit, password_change, current_events
+from views import profile_edit, password_change, current_events, profile_page,\
+     picture_edit
+
 import forms
 
 urlpatterns = patterns('',
-    url(r'^rediger/$', profile_edit,
+    url(r'^opdater/billede/$', picture_edit,
+        name='members_editpicture'),
+
+    url(r'^opdater/$', profile_edit,
         name='members_editprofile'),
 
     url(r'^login/$', auth_views.login,
@@ -37,6 +42,5 @@ urlpatterns = patterns('',
 
     url(r'^arrangementer/', current_events, name='members_current_events'),
 
-    url(r'^', login_required(direct_to_template), {'template': 'profile/profile.html'},
-        name='members_profile'),
+    url(r'^', profile_page, name='members_profile'),
 )

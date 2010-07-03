@@ -12,13 +12,25 @@ from selvbetjening.data.members.forms import ProfileForm
 from selvbetjening.data.members.models import UserProfile
 from selvbetjening.data.events.models import Attend
 
-from forms import ChangePasswordForm
+from forms import ChangePasswordForm, ChangePictureForm
+from processor_handlers import profile_page_processors
 
 def profile_redirect(request):
     if isinstance(request.user, AnonymousUser):
         return HttpResponseRedirect(reverse('members_login'))
     else:
         return HttpResponseRedirect(reverse('members_profile'))
+
+@login_required
+def profile_page(request,
+                 template_name= 'profile/profile.html'):
+
+    handler = profile_page_processors.get_handler(request, request.user)
+    add_to_profile = handler.view()
+
+    return render_to_response(template_name,
+                              {'add_to_profile' : add_to_profile,},
+                              context_instance=RequestContext(request))
 
 @login_required
 def profile_edit(request,
@@ -36,6 +48,26 @@ def profile_edit(request,
 
     return render_to_response(template_name,
                               {'form' : form},
+                              context_instance=RequestContext(request))
+
+@login_required
+def picture_edit(request,
+                 form_class=ChangePictureForm,
+                 template_name='profile/picture_edit.html'):
+
+    if request.method == 'POST':
+        form = form_class(data=request.POST, files=request.FILES)
+
+        if form.is_valid():
+            profile = request.user.get_profile()
+            profile.picture = form.cleaned_data['picture']
+            profile.save()
+
+    else:
+        form = form_class()
+
+    return render_to_response(template_name,
+                              {'form': form},
                               context_instance=RequestContext(request))
 
 @login_required

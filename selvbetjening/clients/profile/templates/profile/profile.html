@@ -68,56 +68,12 @@
 </table>
 </div>
 
-<div id="profile-image">
-    <img src="{{MEDIA_URL}}profile-test.jpg">
-</div>
-
-<div id="profile-achivements">
-
-<h2>Achivements</h2>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Medlem af foreningen Anime Kita <span class="profile-achivement-comment">(medlemsnummer #1)</span>
-</div>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Mest inaktive aktive (stalker) på forummet <span class="profile-achivement-comment">(2007)</span>
-</div>
-
-<h3>Arrangementer</h3>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Kita Træf 06.1
-</div>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Kita Træf 07.1
-</div>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Chibi Træf 10.6
-</div>
-
-<h3>Arbejde i foreningen</h3>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Formand <span class="profile-achivement-comment">(2007-2010)</span>
-</div>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Teknik og WWW rådet <span class="profile-achivement-comment">(2006-)</span>
-</div>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />Planlægningsrådet <span class="profile-achivement-comment">(Kita Træf 10.1)</span>
-</div>
-
-<h3>Konkurrencer</h3>
-
-<div class="profile-achivement">
-    <img src="{{MEDIA_URL}}graphics/icons/medal_gold_3.png" />1. Plads i Holdquiz, Kita Træf 10.1
-</div>
-
+<div id="profile-image" class="right">
+    {% if user.get_profile.picture %}
+    <img src="{{MEDIA_URL}}{{user.get_profile.picture}}">
+    {% else %}
+    <img src="{{MEDIA_URL}}/no_account_picture.jpg">
+    {% endif %}
 </div>
 
 {{ add_to_profile|safe }}

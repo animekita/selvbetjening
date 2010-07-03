@@ -1,0 +1,26 @@
+{% extends "site.html" %}
+{% load uni_form_tags %}
+
+{% block extraheader %}
+{% include "form_includes.html" %}
+{% endblock %}
+
+{% block contenthead %}Opdater dit billede{% endblock %}
+
+{% block content %}
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+<h2>Dit nuværende billede</h2>
+
+<div id="profile-image">
+    {% if user.get_profile.picture %}
+    <img src="{{MEDIA_URL}}{{user.get_profile.picture}}">
+    {% else %}
+    <img src="{{MEDIA_URL}}/no_account_picture.jpg">
+    {% endif %}
+</div>
+
+{% endblock %}

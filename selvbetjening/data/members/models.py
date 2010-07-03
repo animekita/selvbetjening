@@ -54,11 +54,13 @@ class UserProfile(models.Model):
 
     send_me_email = models.BooleanField(_(u'Send me emails'))
 
+    picture = models.FileField(upload_to='pictures/', blank=True)
+
     class Meta:
         verbose_name = _(u'user profile')
         verbose_name_plural = _(u'user profiles')
 
-    def get_age (self, at_date=None):
+    def get_age(self, at_date=None):
         return to_age(self.dateofbirth, at_date)
     get_age.admin_order_field = 'dateofbirth'
 
