@@ -4,13 +4,19 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 
 from views import profile_edit, password_change, current_events, profile_page,\
-     picture_edit
+     picture_edit, privacy_edit
 
 import forms
 
 urlpatterns = patterns('',
+    url(r'^vis/(?P<username>[0-9a-zA-Z_\-]+)/$', profile_page,
+        name='members_public_profile'),
+
     url(r'^opdater/billede/$', picture_edit,
         name='members_editpicture'),
+
+    url(r'^opdater/privacy/$', privacy_edit,
+        name='members_editprivacy'),
 
     url(r'^opdater/$', profile_edit,
         name='members_editprofile'),
@@ -20,7 +26,7 @@ urlpatterns = patterns('',
         name='members_login'),
 
     url(r'^logud/$', auth_views.logout,
-        {'template_name': 'profile/logout.html'},
+        {'template_name': 'profile/logout.html',},
         name='members_logout'),
 
     url(r'^nulstil-kodeord/$', auth_views.password_reset,
@@ -37,8 +43,6 @@ urlpatterns = patterns('',
 
     url(r'^skift-kodeord/$', password_change,
         name='members_password_change'),
-    url(r'^skift-kodeord/done/$', auth_views.password_change_done,
-        {'template_name':'profile/password_change_done.html'}, name='auth_password_change_done'),
 
     url(r'^arrangementer/', current_events, name='members_current_events'),
 

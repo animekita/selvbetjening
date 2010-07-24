@@ -26,7 +26,7 @@
 
 <p><i>Formatet består af invoice revision ID. invoice ID . user ID</i></p>
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
 {% if form.errors %}
 <p class="errornote">

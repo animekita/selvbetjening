@@ -39,11 +39,11 @@ msgstr "Jeg accepterer at denne side gemmer de personoplysninger jeg vidergiver.
 
 #: forms.py:36
 msgid "personal information"
-msgstr "personlig information"
+msgstr "Personlig information"
 
 #: forms.py:39
 msgid "address"
-msgstr "adresse"
+msgstr "Adresse"
 
 #: forms.py:40
 msgid "user"

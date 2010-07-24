@@ -23,7 +23,7 @@
 
 {% include "admin/events/attend/navigation_part.html" %}
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
 {{ checkin_parts|safe }}
 

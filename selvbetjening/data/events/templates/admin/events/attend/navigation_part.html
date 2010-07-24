@@ -1,4 +1,4 @@
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
     <div class="submit-row">
     <a style="float: left;" href="{% url admin:events_attend_selections_change attendee.pk %}"><input type="button" value="Ændre tilvalg" /></a>
     <a style="float: left;" href="{% url admin:events_attend_billing attendee.pk %}"><input type="button" value="Billing" /></a>

@@ -1,0 +1,11 @@
+{% extends "site.html" %}
+
+{% block breadcrumbs %}
+<li><a href="{% url members_profile %}">profil</a></li>
+{% endblock %}
+
+{% block contenthead %}{{username}}{% endblock %}
+
+{% block content %}
+<p class="error">Denne profil er ikke offentlig tilgængelig!</p>
+{% endblock %}

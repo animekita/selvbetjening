@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from countries.models import Country
+from sorl.thumbnail.fields import ThumbnailField
 
 import signals
 
@@ -41,9 +42,13 @@ class UserCommunication(models.Model):
         unique_together = ('method', 'user')
 
 class UserProfile(models.Model):
+    SEX = (('', ''), ('male', _('male')), ('female', _('female')))
+
     user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'), db_column='user_id', primary_key=True)
 
     dateofbirth = models.DateField(_(u'date of birth'), blank=True, null=True)
+
+    sex = models.CharField(_(u'sex'), blank=True, max_length=6, choices=SEX, default='')
 
     street = models.CharField(_(u'street'), max_length=255, blank=True)
     postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
@@ -54,7 +59,7 @@ class UserProfile(models.Model):
 
     send_me_email = models.BooleanField(_(u'Send me emails'))
 
-    picture = models.FileField(upload_to='pictures/', blank=True)
+    picture = ThumbnailField(upload_to='pictures/', blank=True, size=(260,260), quality=100)
 
     class Meta:
         verbose_name = _(u'user profile')
@@ -66,3 +71,15 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return _(u'Registration profile for %s') % self.user
+
+    def save(self, *args, **kwargs):
+        picture = None
+
+        try:
+            old = UserProfile.objects.get(pk=self.pk)
+            if old.picture != self.picture:
+                old.picture.delete()
+        except:
+            pass
+
+        super(UserProfile, self).save(*args, **kwargs)

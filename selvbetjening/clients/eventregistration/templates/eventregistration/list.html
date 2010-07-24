@@ -14,25 +14,39 @@
 
 {% block list %}
 {% if events %}
-
-    <table class="horizontal">
-    <tr>
-        <th>Navn</th>
-        <th>Dato</th>
-        <th>År</th>
-        <th style="width:30%">&nbsp;</th>
-    </tr>
+<table class="horizontal">
 
     {% for event in events %}
+        {% ifchanged event.startdate.year %}
+        <tr>
+            <th colspan="3">
+            {{event.startdate.year}}
+            </th>
+        </tr>
+        {% endifchanged %}
+
         <tr>
             <td><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></td>
-            <td>{{event.startdate.day}}/{{event.startdate.month}} - {{event.enddate.day}}/{{event.enddate.month}}</td>
-            <td>{{event.startdate.year}}</td>
+
+            <td>
+            {% if event.startdate.month == event.enddate.month %}
+                {% if event.startdate.day == event.enddate.day %}
+                    {{event.startdate.day}}
+                {% else %}
+                    {{event.startdate.day}}-{{event.enddate.day}}
+                {% endif %}
+                {{event.startdate|date:"F"}}
+
+            {% else %}
+                {{event.startdate.day}} {{event.startdate|date:"F"}} - {{event.enddate.day}} {{event.enddate|date:"F"}}
+            {% endif %}
+            </td>
+
             <td>{% if event.is_registration_open %}Åben for tilmelding{% endif %}</td>
         </tr>
+
     {% endfor %}
     </table>
-
 {% else %}
 
     <p>Ingen registrerede arrangementer.</p>

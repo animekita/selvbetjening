@@ -4,10 +4,10 @@
 <li><a href="{% url members_logout %}">logud</a></li>
 {% endblock %}
 
-{% block contenthead %}Log ud{% endblock %}
+{% block contenthead %}Du er nu logget ud{% endblock %}
 
 {% block content %}
 
-<p>Du er nu logget af...</p>
+<p><a href="{% url members_login %}">Tryk her for at logge ind igen.</a></p>
 
 {% endblock %}

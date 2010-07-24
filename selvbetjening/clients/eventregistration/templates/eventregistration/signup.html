@@ -5,7 +5,6 @@
 {% include "form_includes.html" %}
 {% endblock %}
 
-
 {% block breadcrumbs %}
 <li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
 <li><span>tilmeld dig {{event.title}}</span></li>
@@ -17,9 +16,12 @@
 
 <p>Når du tilmelder dig dette arrangement vil dit navn og brugernavn blive vist <b>offentligt</b> i en liste over deltagere.</p>
 
-<form method="POST" action="">
+<form action="" class="uniForm" method="POST">
+{% csrf_token %}
 
-{{form|as_uni_form}}
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
 
 {% if event.has_options %}
 <h2>Tilvalg</h2>

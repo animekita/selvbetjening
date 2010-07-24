@@ -6,6 +6,8 @@ from django import forms
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 
+from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+
 from selvbetjening.data.events.forms import OptionForms as BaseOptionForms
 from selvbetjening.data.events.forms import OptionGroupForm as BaseOptionGroupForm
 
@@ -41,12 +43,10 @@ class SignupForm(AcceptForm):
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
 
-        submit = Submit(_('Sign up'), _('Sign up'))
-        self.helper.add_input(submit)
-
-        layout = Layout(Fieldset(ugettext_lazy(u"Accept terms"),
-                                 'confirm'))
+        layout = Layout(InlineFieldset(ugettext_lazy(u"Accept terms"),
+                                       'confirm'))
         self.helper.add_layout(layout)
+        self.helper.form_tag = False
 
     def label(self):
         return _(u'I have read and accept the above described terms')
@@ -58,8 +58,11 @@ class SignoffForm(AcceptForm):
     def __init__(self, *args, **kwargs):
         super(SignoffForm, self).__init__(*args, **kwargs)
 
+        layout = Layout(InlineFieldset('', 'confirm'))
+
         submit = Submit(_('Sign off'), _('Sign off'))
         self.helper.add_input(submit)
+        self.helper.add_layout(layout)
 
     def label(self):
         return _(u'Yes, remove me from the event')

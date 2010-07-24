@@ -26,7 +26,7 @@
 <h1>Du er ved at fjerne denne bruger fra eventet</h1>
 <p>Før du gør dette burde du sikre dig at der ikke er registeret fejlagtige betalinger for denne bruger.</p>
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
     <div class="submit-row" >
     <input style="float: left; font-size: 200%;" type="submit" value="Checkout" name="do_checkout" />
     </div>

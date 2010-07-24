@@ -3,20 +3,11 @@
 Til næste udgivelse
 ----------------------------------
 
-- Offentlig profil med Achivements
-  - Privacy
-  - Medlemstatus
-  - Tilmeldingstidspunkt
-  - Arrangementer
-
-- Se på integration af forum database (evt flyt over på notify)
-
-- Se på fejl med ftp
+- Ikke tested
+  - nulstil kodeord
 
 - Få den sat op til staging
 - Feedback fra rådet
-
-- Få rettet alle forms der ikke virker
 
 Forum
 -----

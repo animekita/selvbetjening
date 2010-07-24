@@ -1,5 +1,5 @@
 =====================================
-django-uni-form (Django Uni-Form)
+django-uni-form (django-uni-form)
 =====================================
 
 Django_ forms are easily rendered as tables,
@@ -10,7 +10,11 @@ format.
 
 `Uni-form`_ has been selected as the base model for the design of the forms.
 
-**Note:** Django Uni-Form 0.7 breaks backwards compatibility with previous versions of Django Uni-Form. See ``Updating legacy Django Uni-Form to 0.7``. All you have to do is update templates that call on the Django Uni-Form template tag from::
+**Warning:** django-uni-form 0.8 and higher renders django.form.field labels with the 'safe' filter. If you have user generated form field labels you should take this into consideration.
+
+**Note:** django-uni-form 0.8 and higher lays out the HTML for the uni_form tag differently than previous versions. The errorMsg div is now outside the fieldset as it should be.
+
+**Note:** django-uni-form 0.7 and higher breaks backwards compatibility with previous versions of django-uni-form. All you have to do is update templates that call on the django-uni-form template tag from::
 
     {% load uni_form %}
     
@@ -20,6 +24,11 @@ To::
 
 Installation
 ============
+
+Dependencies
+~~~~~~~~~~~~
+
+ * JQuery
 
 Installing django-uni-form
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,26 +48,29 @@ Add *'uni_form'* to your INSTALLED_APPS in settings.py::
 Depending on your setup, you may need to copy the media files to your local 
 media folder::
 
-    cp -r <location-of-django-uni-form>/uni_form/media/uni_form/uni-form-generic.css <my-project>/media/uni_form/uni-form-generic.css
-    cp -r <location-of-django-uni-form>/uni_form/media/uni_form/uni-form.css <my-project>/media/uni_form/uni-form.css
-    cp -r <location-of-django-uni-form>/uni_form/media/uni_form/uni-form.jquery.js <my-project>/media/uni_form/uni-form.jquery.js    
+    cp -r <location-of-django-uni-form>/uni_form/media/uni_form <directory-for-my-project's-media-files>
     
 Displaying the media files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Django Uni-Form requires three media files.  You can see how we call them by looking in the templates/includes.html file. You can call those files in several ways:
+First, make sure you're linking to a copy of jQuery.  It's recommended that you use the version hosted on Google's servers since the user's browser might already have it cached.  (You can get the url for the latest version of jQuery at http://scriptsrc.net/.)  But there are some cases in which you'll want to host jQuery yourself, such as if you're doing development offline::
 
-1. Manually by copying the HTML into your own templates::
+    <script src="{{ MEDIA_URL }}js/jquery.js" type="text/javascript"></script>
 
-    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni-form-generic.css" type="text/css" />
+Beyond jQuery, django-uni-form requires three media files.  You can see how we call them by looking in the templates/includes.html file. You can call those files in several ways.
+
+1. The best way is probably to copy this HTML into your templates.  (This allows you to make use of django_compressor, a dead easy media compressor for Django that's also hosted here on github.)  Here's the HTML::
+
     <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni-form.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/default.uni-form.css" type="text/css" />
+    <!-- note that there's also blue.uni-form.css and dark.uni-form.css available if you want to try changing things up -->
     <script src="{{ MEDIA_URL }}uni_form/uni-form.jquery.js" type="text/javascript"></script>
 
-2. Via use of the Django **includes** built-in template tag.
+2. Another way is to use Django's built-in **includes** template tag::
 
     {% include "uni_form/includes.html" %}
     
-3. With some additional setup described below, via use of the Django Uni-Form **uni_form_setup** template tag.
+3. A third way is to use the django-uni-form **uni_form_setup** template tag.  Note that you'll need some additional setup for this::
 
     {% uni_form_setup %}
 
@@ -72,25 +84,24 @@ If you want to take advantage of the uni_form_setup tag, then you'll need to mak
 Customizations on '*' required fields (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you don't like the use of '*' (asterisk) to denote required fields you can simply overrride the Django Uni-Form field.html. In your Django project's templates directory create a new directory called `uni_form`. Copy the Django Uni-Form field.html file to that directory and make the desired changes. For example::
+If you don't like the use of '*' (asterisk) to denote required fields you can simply overrride the django-uni-form field.html. In your Django project's templates directory create a new directory called `uni_form`. Copy the django-uni-form field.html file to that directory and make the desired changes. For example::
 
     cd ~/<my-projects>/<my-awesome-django-project>/templates/
     mkdir uni_form
     cd uni_form/
-    cp <my-site-packages>/Django-uni-form/uni_form/templates/field.html .
+    cp <my-site-packages>/Django-uni-form/uni_form/templates/uni_form/field.html .
     
 Now you could change the asterisk to any other character, an image icon, or whatever else you want.
 
 Using Uni-Form strict fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Django Uni-Form implements form fields in html differently than the standard Uni-Form. If you want to adhere to the strict definition of Django Uni-Form relplace the field.html file with field.strict.html. You can just follow these instructions::
+django-uni-form implements form fields in html differently than the standard Uni-Form. If you want to adhere to the strict definition of django-uni-form relplace the field.html file with field.strict.html. You can just follow these instructions::
 
     cd ~/<my-projects>/<my-awesome-django-project>/templates/
     mkdir uni_form
     cd uni_form/
     cp <my-site-packages>/Django-uni-form/uni_form/templates/field.strict.html field.html
-
 
 ----
 

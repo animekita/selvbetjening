@@ -68,6 +68,10 @@ class BaseProfileForm(forms.Form):
                              label=_(u'Inform me about events and other important changes.'),
                              initial=True, required=False)
 
+    sex = forms.ChoiceField(label=_(u'sex'),
+                            choices=UserProfile.SEX,
+                            required=False)
+
     def _build_initial(self):
         user_profile = get_or_create_profile(self.user)
 
@@ -78,7 +82,8 @@ class BaseProfileForm(forms.Form):
                    'city' : user_profile.city,
                    'postalcode' : user_profile.postalcode,
                    'phonenumber' : user_profile.phonenumber,
-                   'email' : self.user.email
+                   'email' : self.user.email,
+                   'sex' : user_profile.sex,
                    }
 
         return initial
@@ -109,6 +114,7 @@ class BaseProfileForm(forms.Form):
         profile.city = self.cleaned_data['city']
         profile.phonenumber = self.cleaned_data['phonenumber']
         profile.send_me_email = self.cleaned_data['send_me_email']
+        profile.sex = self.cleaned_data['sex']
         profile.save()
 
 class ProfileForm(BaseProfileForm):
@@ -145,7 +151,7 @@ class ProfileForm(BaseProfileForm):
         websites = self._build_websites()
 
         layout = Layout(InlineFieldset(_(u'Basic Information'),
-                                       'first_name', 'last_name', 'dateofbirth', ),
+                                       'first_name', 'last_name', 'dateofbirth', 'sex',),
                         InlineFieldset(_(u'Address'),
                                        'street', 'postalcode', 'city', 'country'),
                         InlineFieldset(_(u'Contact Information'),
@@ -321,7 +327,7 @@ class RegistrationForm(BaseProfileForm):
                              label=_(u"I allow the storage of my personal information on this site."))
 
     layout = Layout(InlineFieldset(_(u"personal information"),
-                             'first_name', 'last_name', 'dateofbirth', 'phonenumber', 'email', 'send_me_email'),
+                             'first_name', 'last_name', 'dateofbirth', 'sex', 'phonenumber', 'email', 'send_me_email'),
                     InlineFieldset(_(u"address"),
                              'street', 'postalcode', 'city', 'country'),
                     InlineFieldset(_(u"user"),
@@ -382,7 +388,8 @@ class RegistrationForm(BaseProfileForm):
                                    street=self.cleaned_data['street'],
                                    postalcode=self.cleaned_data['postalcode'],
                                    phonenumber=self.cleaned_data['phonenumber'],
-                                   send_me_email=self.cleaned_data['send_me_email'])
+                                   send_me_email=self.cleaned_data['send_me_email'],
+                                   sex=self.cleaned_data['sex'],)
 
         signals.user_created.send(sender=self,
                                   instance=user,

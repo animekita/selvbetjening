@@ -43,7 +43,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -66,6 +65,7 @@ INSTALLED_APPS = [
     'south',
     'mailer',
     'uni_form',
+    'sorl.thumbnail',
 
     'django.contrib.sites',
     'django.contrib.auth',

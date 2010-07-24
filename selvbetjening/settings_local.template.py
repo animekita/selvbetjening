@@ -29,5 +29,17 @@ SESSION_COOKIE_DOMAIN = '.alpha.kita.dk'
 SECRET_KEY = 'change:me'
 
 # Notify configurations
+
+"""
+NOTIFY_CONCRETE5['example'] = {'database_id' : 'DATABASE_ID'}
+"""
 NOTIFY_CONCRETE5 = []
-#NOTIFY_CONCRETE5['example'] = {'database_id' : 'DATABASE_ID'}
+
+"""
+NOTIFY_PROFTPD['example'] = {'database_id' : 'DATABASE_ID',
+                             'default_gid' : 1,
+                             'default_uid' : 1,
+                             'ftp_dir' : '/var/ftp/',
+                             'username_format' : '%s@domain.tld'}
+"""
+NOTIFY_PROFTPD = []

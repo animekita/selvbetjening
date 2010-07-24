@@ -1,14 +1,23 @@
 4.0.0
+General:
+ * Lots of small improvements internally and externally
+ * Removed own form rendering library in favor for django-uni-form
+
 Admin:
  * Removed tiny-mce editor support (resulting HTML were a mess)
 
 Notify:
  * Rewritten notify modules for more stability and added a new management api
 
+Profile:
+ * Added public profiles with privacy settings
+ * Improved profile management interface
+
 Dependencies:
  * Now requires Django 1.2
  * Now requires South 0.7**
  * Now requires django-uni-form**
+ * Now requires sorl-thumbnail**
  * Removed requirement for sqlalchamy
 
  ** provided in the contrib folder, so no external installation is required

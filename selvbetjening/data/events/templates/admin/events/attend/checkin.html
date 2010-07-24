@@ -39,7 +39,7 @@ Total: {{attendee.invoice.total_price}},- &nbsp; &nbsp; &nbsp; Heraf betalt: {{a
 </div>
 </fieldset>
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
     <div class="submit-row" >
     <input style="float: left; font-size: 200%;" type="submit" value="Betal og Checkin" class="default" name="do_checkin_and_pay" />
     <input style="float: left; font-size: 200%;" type="submit" value="Checkin uden betaling" name="do_checkin" />

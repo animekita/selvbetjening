@@ -10,7 +10,6 @@ from django.template import Context, Template
 
 from selvbetjening.core.logging import logger
 
-from selvbetjening.data.invoice.models import Invoice
 from selvbetjening.data.invoice.decorators import disable_invoice_updates
 from selvbetjening.data.events.models import Event, Attend
 from selvbetjening.data.events.decorators import \
