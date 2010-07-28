@@ -1,4 +1,10 @@
-{% extends "site.html" %}
+{% extends "profile/profile.html" %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Tilmeldte arrangementer' 'members_current_events' %}
+{% endblock %}
 
 {% block contenthead %}Arrangementer{% endblock %}
 
@@ -25,7 +31,7 @@
     {% endifchanged %}
 
     <tr>
-        <td><a href="{% url eventregistration_view attend.event.id %}">{{attend.event.title}}</a></td>
+        <td><a href="{% url eventregistration_information attend.event.id %}">{{attend.event.title}}</a></td>
 
         <td>
         {% if attend.event.startdate.month == attend.event.enddate.month %}

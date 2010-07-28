@@ -9,6 +9,11 @@
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/admin.css" />
+
+{% load adminmedia %}
+<script type="text/javascript">
+window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+</script>
 </head>
 {% load i18n %}
 

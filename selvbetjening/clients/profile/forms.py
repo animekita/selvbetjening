@@ -6,6 +6,7 @@ from django import forms
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, HTML
 
 from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.data.members.forms import UsernameField, validate_username
 
 from processor_handlers import extended_privacy_processors
 from models import UserPrivacy
@@ -23,6 +24,21 @@ class ChangePasswordForm(PasswordChangeForm):
     submit = Submit(_('Change password'), _('Change password'))
     helper.add_input(submit)
     helper.use_csrf_protection = True
+
+class ChangeUsernameForm(forms.Form):
+    new_username = UsernameField()
+
+    helper = FormHelper()
+
+    layout = Layout(InlineFieldset(_('New username'), 'new_username'))
+    submit = Submit(_('Change username'), _('Change username'))
+
+    helper.add_layout(layout)
+    helper.add_input(submit)
+    helper.use_csrf_protection = True
+
+    def clean_new_username(self):
+        return validate_username(self.cleaned_data['new_username'])
 
 class ChangePictureForm(forms.Form):
     picture = forms.ImageField()

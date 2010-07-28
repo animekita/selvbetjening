@@ -8,12 +8,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
+from django.contrib.formtools.preview import FormPreview
 
 from selvbetjening.data.members.forms import ProfileForm
 from selvbetjening.data.members.models import UserProfile
 from selvbetjening.data.events.models import Attend
 
-from forms import ChangePasswordForm, ChangePictureForm, PrivacyForm
+from forms import ChangePasswordForm, ChangePictureForm, PrivacyForm, ChangeUsernameForm
 from processor_handlers import profile_page_processors
 from models import UserPrivacy
 
@@ -24,22 +25,15 @@ def profile_redirect(request):
         return HttpResponseRedirect(reverse('members_profile'))
 
 @login_required
-def profile_page(request,
-                 username=None,
-                 template_name='profile/profile.html',
-                 template_no_access_name='profile/profile_no_access.html'):
+def public_profile_page(request,
+                        username,
+                        template_name='profile/public_profile.html',
+                        template_no_access_name='profile/profile_no_access.html'):
 
-    if username is None:
-        user = request.user
-        privacy = UserPrivacy.full_access()
-        own_profile = True
-        own_privacy, created = UserPrivacy.objects.get_or_create(user=user)
+    user = get_object_or_404(User, username=username)
+    privacy, created = UserPrivacy.objects.get_or_create(user=user)
 
-    else:
-        user = get_object_or_404(User, username=username)
-        privacy, created = UserPrivacy.objects.get_or_create(user=user)
-        own_profile = False
-        own_privacy = None
+    own_profile = False
 
     if privacy.public_profile:
         handler = profile_page_processors.get_handler(request, user)
@@ -47,15 +41,33 @@ def profile_page(request,
 
         return render_to_response(template_name,
                                   {'viewed_user' : user,
-                                   'own_profile' : own_profile,
-                                   'own_privacy' : own_privacy,
                                    'privacy' : privacy,
                                    'add_to_profile' : add_to_profile,},
                                   context_instance=RequestContext(request))
 
-    # show no access page
-    return render_to_response(template_no_access_name,
-                              {'username' : user.username},
+    else:
+        return render_to_response(template_no_access_name,
+                                  {'username' : user.username},
+                                  context_instance=RequestContext(request))
+
+@login_required
+def profile_page(request,
+                 template_name='profile/profile.html'):
+
+    user = request.user
+    privacy = UserPrivacy.full_access()
+
+    own_profile = True
+    own_privacy, created = UserPrivacy.objects.get_or_create(user=user)
+
+    handler = profile_page_processors.get_handler(request, user)
+    add_to_profile = handler.view(own_profile)
+
+    return render_to_response(template_name,
+                              {'viewed_user' : user,
+                               'privacy' : privacy,
+                               'own_privacy' : own_privacy,
+                               'add_to_profile' : add_to_profile,},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -151,3 +163,22 @@ def current_events(request,
     return render_to_response(template_name,
                               {'attends': attends},
                               context_instance=RequestContext(request))
+
+class UsernameChangeView(FormPreview):
+    preview_template = 'profile/username_change_confirm.html'
+    form_template = 'profile/username_change.html'
+
+    def __call__(self, request, *args, **kwargs):
+        return super(UsernameChangeView, self).__call__(request, *args, **kwargs)
+
+    def process_preview(self, request, form, context):
+        context['new_username'] = form.cleaned_data['new_username']
+
+    def done(self, request, cleaned_data):
+        request.user.username = cleaned_data['new_username']
+        request.user.save()
+
+        request.user.message_set.create(message=_(u'Username changed'))
+        return HttpResponseRedirect(reverse('members_profile'))
+
+username_change = login_required(UsernameChangeView(ChangeUsernameForm))

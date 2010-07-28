@@ -1,8 +1,4 @@
-{% extends "site.html" %}
-
-{% block breadcrumbs %}
-<li><a href="{% url members_profile %}">profil</a></li>
-{% endblock %}
+{% extends "profile/public_profile.html" %}
 
 {% block contenthead %}{{username}}{% endblock %}
 

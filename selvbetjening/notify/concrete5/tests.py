@@ -161,6 +161,36 @@ class Concrete5UserTestCase(Concrete5BaseTestCase):
 
         self.check_databases(check)
 
+    def test_rename_user(self):
+        group = Group.objects.create(name='test group')
+
+        def setup(database_id):
+            c5Group = C5Group.objects.using(database_id).\
+                                            create(name='TestGroup',
+                                                   description='')
+
+            GroupC5Group.objects.create(group=group,
+                                        c5group_id=c5Group.pk,
+                                        database_id=database_id)
+
+        self.check_databases(setup)
+
+        user = Database.new_user()
+
+        user.groups.add(group)
+
+        user.username = 'brand_new_username'
+        user.save()
+
+        def check(database_id):
+            self.assertEqual(1,
+                             C5User.objects.\
+                                    using(database_id).\
+                                    filter(username='brand_new_username').\
+                                    count())
+
+        self.check_databases(check)
+
 class Concrete5ManagementTestCase(Concrete5BaseTestCase):
     def test_add_relation_wrong_groups(self):
         command = notify_c5_manage.Command()

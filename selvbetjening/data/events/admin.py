@@ -119,18 +119,21 @@ class EventAdmin(ModelAdmin):
             'fields' : ('maximum_attendees', 'move_to_accepted_policy', ),
             'classes' : ('collapse', ),
             }),
-        (_('Registration Confirmation'), {
-            'fields' : ('show_registration_confirmation', 'registration_confirmation'),
+        (_('Custom signup message'), {
+            'fields' : ('show_custom_signup_message', 'custom_signup_message'),
             'classes' : ('collapse', ),
             }),
-        (_('Change Confirmation'), {
-            'fields' : ('show_change_confirmation', 'change_confirmation'),
+        (_('Custom change message'), {
+            'fields' : ('show_custom_change_message', 'custom_change_message'),
             'classes' : ('collapse', ),
             }),
-        (_('Invoice page'), {
-            'fields' : ('show_invoice_page', 'invoice_page'),
+        (_('Custom status page'), {
+            'fields' : ('show_custom_status_page', 'custom_status_page'),
             'classes' : ('collapse', ),
             }),
+        (_('Email on signup'), {
+            'fields' : ('email_on_signup', 'email_subject', 'email_body'),
+            'classes' : ('collapse', )}),
     )
 
     def get_urls(self):
@@ -182,7 +185,7 @@ class OptionGroupAdmin(ModelAdmin):
             'classes' : ('collapse', ),
             }),
         (_('Other'), {
-            'fields' : ('order',),
+            'fields' : ('order', 'public_statistic',),
             }),)
 
     raw_id_fields = ('event',)

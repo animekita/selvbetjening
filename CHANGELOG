@@ -1,7 +1,13 @@
 4.0.0
 General:
- * Lots of small improvements internally and externally
+ * Lots of small bugfixes and improvements
  * Removed own form rendering library in favor for django-uni-form
+ * Added support for breadcrumbs
+
+Logging:
+ * Rewrote logging framework to use the database
+ * Added admin interface
+ * Added RSS interface
 
 Admin:
  * Removed tiny-mce editor support (resulting HTML were a mess)
@@ -10,8 +16,14 @@ Notify:
  * Rewritten notify modules for more stability and added a new management api
 
 Profile:
- * Added public profiles with privacy settings
  * Improved profile management interface
+ * Added public profiles with privacy settings (facebook-style)
+ * Added page to change username
+
+Event registration
+ * Improved event registration interface
+ * Merged different invoices into one single status page
+ * Added email on registration
 
 Dependencies:
  * Now requires Django 1.2

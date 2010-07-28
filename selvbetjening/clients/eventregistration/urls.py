@@ -9,8 +9,12 @@ urlpatterns = patterns(
         name='eventregistration_view_all'),
 
     url(r'^se/(?P<event_id>[0-9]+)/$',
-        views.view,
-        name='eventregistration_view'),
+        views.information,
+        name='eventregistration_information'),
+
+    url(r'^se/(?P<event_id>[0-9]+)/tilmeldte/$',
+        views.attendees,
+        name='eventregistration_attendees'),
 
     url(r'^se/(?P<event_id>[0-9]+)/tilmeld/$',
         views.signup,
@@ -24,8 +28,8 @@ urlpatterns = patterns(
         views.change_options,
         name='eventregistration_change_options'),
 
-    url(r'^se/(?P<event_id>[0-9]+)/kvittering/$',
+    url(r'^se/(?P<event_id>[0-9]+)/status/$',
         views.view_invoice,
-        name='eventregistration_view_invoice'),
+        name='eventregistration_status'),
 
 )

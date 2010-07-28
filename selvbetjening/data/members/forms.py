@@ -18,6 +18,28 @@ from models import UserProfile, UserCommunication, UserWebsite
 from shortcuts import get_or_create_profile
 import signals
 
+username_re = re.compile("^[a-zA-Z0-9_]+$")
+
+def validate_username(username):
+    if not username_re.match(username):
+        raise forms.ValidationError(_(u'Usernames can only contain letters, numbers and underscores'))
+
+    try:
+        User.objects.get(username__exact=username)
+    except User.DoesNotExist:
+        return username
+
+    raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
+
+class UsernameField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 30
+        kwargs['widget'] = forms.TextInput()
+        kwargs['label'] = _(u"username")
+        kwargs['help_text'] = _(u"Your username can only contain the characters a-z, underscore and numbers.")
+
+        super(UsernameField, self).__init__(*args, **kwargs)
+
 class BaseProfileForm(forms.Form):
     COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
 
@@ -84,6 +106,8 @@ class BaseProfileForm(forms.Form):
                    'phonenumber' : user_profile.phonenumber,
                    'email' : self.user.email,
                    'sex' : user_profile.sex,
+                   'send_me_email' : user_profile.send_me_email,
+                   'country' : user_profile.country.pk,
                    }
 
         return initial
@@ -95,6 +119,14 @@ class BaseProfileForm(forms.Form):
 
         return self.cleaned_data['dateofbirth']
 
+    def clean_country(self):
+        try:
+            country = Country.objects.get(pk=self.cleaned_data['country'])
+
+            return country
+        except Country.DoesNotExist:
+            raise forms.ValidationError(_(u'Invalid country selected'))
+
     def save(self, user=None):
         """
         Update user profile and user records
@@ -104,6 +136,7 @@ class BaseProfileForm(forms.Form):
 
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
         user.save()
 
         profile = get_or_create_profile(user)
@@ -112,6 +145,7 @@ class BaseProfileForm(forms.Form):
         profile.street = self.cleaned_data['street']
         profile.postalcode = self.cleaned_data['postalcode']
         profile.city = self.cleaned_data['city']
+        profile.country = self.cleaned_data['country']
         profile.phonenumber = self.cleaned_data['phonenumber']
         profile.send_me_email = self.cleaned_data['send_me_email']
         profile.sex = self.cleaned_data['sex']
@@ -309,15 +343,10 @@ class ProfileForm(BaseProfileForm):
                                            name=name_value,
                                            url=url_value)
 
-username_re = re.compile("^[a-zA-Z0-9_]+$")
-
 class RegistrationForm(BaseProfileForm):
     """ Form for registering a new user account. """
 
-    username = forms.CharField(max_length=30,
-                               widget=forms.TextInput(),
-                               label=_(u"username"),
-                               help_text=_(u"Your username can only contain the characters a-z, underscore and numbers."))
+    username = UsernameField()
     password1 = forms.CharField(widget=forms.PasswordInput(),
                                 label=_(u"password"))
     password2 = forms.CharField(widget=forms.PasswordInput(),
@@ -351,15 +380,7 @@ class RegistrationForm(BaseProfileForm):
     def clean_username(self):
         """ Validates that the username is alphanumeric and is not in use. """
 
-        if not username_re.match(self.cleaned_data['username']):
-            raise forms.ValidationError(_(u'Usernames can only contain letters, numbers and underscores'))
-
-        try:
-            User.objects.get(username__exact=self.cleaned_data['username'])
-        except User.DoesNotExist:
-            return self.cleaned_data['username']
-
-        raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
+        return validate_username(self.cleaned_data['username'])
 
     def clean_password2(self):
         """ Validates that the two password inputs match. """

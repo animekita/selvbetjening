@@ -8,12 +8,14 @@ from django.contrib.auth.models import Group, User
 
 from selvbetjening.core.database.dbrouter import DatabaseRouter
 from selvbetjening.notify import BaseNotifyRegistry
+from selvbetjening.data.members.signals import user_changed_username
 
 import listeners # initialize listeners
 
 from native import CompatiblePassword, GroupProftpdGroup
 from proftpd import ProftpdGroup, ProftpdUser
-from listeners import MemberPasswordChangedListener, GroupMembersChangedListener
+from listeners import MemberPasswordChangedListener, \
+     GroupMembersChangedListener, UserChangedUsernameListener
 
 class ProftpdNotifyRegistry(BaseNotifyRegistry):
     def __init__(self):
@@ -24,7 +26,10 @@ class ProftpdNotifyRegistry(BaseNotifyRegistry):
                           User.groups.through),
                          (signals.post_save,
                           MemberPasswordChangedListener,
-                          CompatiblePassword)]
+                          CompatiblePassword),
+                         (user_changed_username,
+                          UserChangedUsernameListener,
+                          None),]
 
 registry = ProftpdNotifyRegistry()
 

@@ -1,13 +1,14 @@
-{% extends "site.html" %}
+{% extends "events/base_event.html" %}
 {% load uni_form_tags %}
 
 {% block extraheader %}
 {% include "form_includes.html" %}
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><span>afmeld dig fra {{event.title}}</span></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Fjern tilmelding' 'eventregistration_signoff' event.pk %}
 {% endblock %}
 
 {% block contenthead %}Afmeld arrangement{% endblock %}

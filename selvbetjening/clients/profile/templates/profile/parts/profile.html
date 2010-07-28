@@ -1,0 +1,101 @@
+<div id="profile-info">
+
+<table id="profile-matrix" class="vertical">
+{% if privacy.public_name %}
+<tr>
+    <th>Navn:</th>
+    <td>{{viewed_user.first_name}} {{viewed_user.last_name}}</td>
+</tr>
+{% endif %}
+{% if privacy.public_age %}
+<tr>
+    <th>Fødselsdato:</th>
+    <td>{{viewed_user.get_profile.dateofbirth|date:"d/m - Y"}} ({{viewed_user.get_profile.get_age}} år)</td>
+</tr>
+{% endif %}
+{% if privacy.public_sex %}
+<tr>
+    <th>Køn:</th>
+    <td>{{viewed_user.get_profile.get_sex_display}}</td>
+</tr>
+{% endif %}
+
+{% if privacy.public_town %}
+<tr>
+    <th>Adresse:</th>
+    <td>
+    {% if viewed_user.get_profile.postalcode %}{{viewed_user.get_profile.postalcode}}{% endif %} {{viewed_user.get_profile.city}}<br/>
+    {{viewed_user.get_profile.country}}
+    </td>
+</tr>
+{% endif %}
+
+{% if privacy.public_name or privacy.public_age or privacy.public_town %}
+<tr class="pause">
+    <td colspan="2"></td>
+</tr>
+{% endif %}
+
+{% if privacy.public_join_date %}
+<tr>
+    <th>Medlem siden:</th>
+    <td>
+    {{viewed_user.date_joined|date:"d/m - Y"}}
+    </td>
+</tr>
+
+<tr class="pause">
+    <td colspan="2"></td>
+</tr>
+{% endif %}
+
+{% if privacy.public_phonenumber %}
+<tr>
+    <th>Telefon:</th>
+    <td >{% if viewed_user.get_profile.phonenumber %}{{viewed_user.get_profile.phonenumber}}{% endif %}</td>
+</tr>
+{% endif %}
+{% if privacy.public_email %}
+<tr>
+    <th>Email:</th>
+    <td><a href="mailto:{{viewed_user.email}}">{{viewed_user.email}}</a></td>
+</tr>
+{% endif %}
+
+{% if privacy.public_contact %}
+{% for communication in viewed_user.usercommunication_set.all %}
+<tr>
+    <th>{{communication.get_method_display}}</th>
+    <td>{{communication.identification}}</td>
+</tr>
+{% endfor %}
+{% endif %}
+
+{% if privacy.public_websites %}
+{% for website in viewed_user.userwebsite_set.all %}
+
+{% if forloop.first %}
+<tr class="pause">
+    <td colspan="2"></td>
+</tr>
+{% endif %}
+
+<tr>
+    {% if forloop.first %}<th>Hjemmesider</th>{% else %}<th>&nbsp;</th>{% endif %}
+    <td><a href="{{website.url}}">{{website.name}}</a></td>
+</tr>
+{% endfor %}
+{% endif %}
+
+</table>
+</div>
+
+<div id="profile-image" class="right">
+    {% if viewed_user.get_profile.picture %}
+    <img src="{{viewed_user.get_profile.picture.url}}">
+    {% else %}
+    <img src="{{MEDIA_URL}}/no_account_picture.jpg">
+    {% endif %}
+</div>
+
+{{ add_to_profile|safe }}

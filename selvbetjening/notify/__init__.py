@@ -24,7 +24,11 @@ class BaseNotifyRegistry(object):
         for signal, listener_class, sender in self._routing:
             listener = listener_class(listener_id, config)
 
-            signal.connect(listener.handler, sender=sender)
+            kwargs = {}
+            if sender is not None:
+                kwargs['sender'] = sender
+
+            signal.connect(listener.handler, **kwargs)
             self._registry[listener_id].append((signal, listener, sender))
 
     def unregister(self, listener_id):

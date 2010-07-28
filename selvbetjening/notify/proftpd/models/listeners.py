@@ -113,6 +113,26 @@ class MemberPasswordChangedListener(BaseListener):
         except ProftpdUser.DoesNotExist:
             pass
 
+class UserChangedUsernameListener(BaseListener):
+    def handler(self, sender, **kwargs):
+        old_username = self._config['username_format'] % kwargs['old_username']
+        new_username = self._config['username_format'] % kwargs['new_username']
+
+        try:
+            proftpdUser = ProftpdUser.objects.using(self._database_id).\
+                                              get(username=old_username)
+
+            proftpdUser.username = new_username
+            proftpdUser.save()
+
+            for group in ProftpdGroup.objects.using(self._database_id).all():
+                if group.is_member(old_username):
+                    group.remove_member(old_username)
+                    group.add_member(new_username)
+
+        except ProftpdUser.DoesNotExist:
+            pass
+
 def user_password_changed_or_set(sender, **kwargs):
     user = kwargs['instance']
     clear_text_password = kwargs['clear_text_password']

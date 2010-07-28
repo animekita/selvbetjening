@@ -1,7 +1,9 @@
-{% extends "site.html" %}
+{% extends "events/base.html" %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Arrangementer' 'eventregistration_view_all' %}
 {% endblock %}
 
 {% block contenthead %}Arrangementer{% endblock %}
@@ -26,7 +28,7 @@
         {% endifchanged %}
 
         <tr>
-            <td><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></td>
+            <td><a href="{% url eventregistration_information event.id %}">{{event.title}}</a></td>
 
             <td>
             {% if event.startdate.month == event.enddate.month %}

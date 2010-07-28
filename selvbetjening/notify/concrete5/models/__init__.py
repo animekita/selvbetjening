@@ -6,10 +6,11 @@ from django.contrib.auth.models import Group, User
 from selvbetjening.core.database.dbrouter import DatabaseRouter
 
 from selvbetjening.notify import BaseNotifyRegistry
+from selvbetjening.data.members.signals import user_changed_username
 
 from native import GroupC5Group
 from concrete5 import C5Group, C5User, C5UserGroups
-from listeners import GroupMembersChangedListener
+from listeners import GroupMembersChangedListener, UserChangedUsernameListener
 
 class C5NotifyRegistry(BaseNotifyRegistry):
     def __init__(self):
@@ -17,7 +18,10 @@ class C5NotifyRegistry(BaseNotifyRegistry):
 
         self._routing = [(signals.m2m_changed,
                           GroupMembersChangedListener,
-                          User.groups.through),]
+                          User.groups.through),
+                         (user_changed_username,
+                          UserChangedUsernameListener,
+                          None),]
 
 registry = C5NotifyRegistry()
 

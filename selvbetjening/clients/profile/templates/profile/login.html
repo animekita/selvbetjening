@@ -5,8 +5,10 @@
 {% include "form_includes.html" %}
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url members_login %}">log ind</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Log ind' 'members_login' %}
 {% endblock %}
 
 {% block contenthead %}Log ind{% endblock %}

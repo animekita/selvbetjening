@@ -1,4 +1,4 @@
-{% extends "site.html" %}
+{% extends "eventregistration/base.html" %}
 
 {% block breadcrumbs %}
 <li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
@@ -9,6 +9,6 @@
 
 {% block content %}
 
-<p>Du er allerede tilmeldt dette arrangement, følg <a href="{% url eventregistration_view event.id %}">dette link</a> for at se en liste over deltagere til arrangementet.</p>
+<p>Du er allerede tilmeldt dette arrangement, følg <a href="{% url eventregistration_attendees event.id %}">dette link</a> for at se en liste over deltagere til arrangementet.</p>
 
 {% endblock %}

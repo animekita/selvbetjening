@@ -1,0 +1,15 @@
+{% extends "site.html" %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Din profil' 'members_profile' %}
+{% endblock %}
+
+{% block contenthead %}{{viewed_user.username}}{% endblock %}
+
+{% block content %}
+
+{% include "profile/parts/profile.html" %}
+
+{% endblock %}

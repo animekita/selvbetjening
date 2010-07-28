@@ -1,22 +1,23 @@
-{% extends "site.html" %}
+{% extends "events/base_event.html" %}
 {% load uni_form_tags %}
 
 {% block extraheader %}
 {% include "form_includes.html" %}
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventregistration_change_options event.id %}">tilvalg for {{event.title}}</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Ændre tilvalg' 'eventregistration_change_options' %}
 {% endblock %}
 
 {% block contenthead %}Ændre tilvalg{% endblock %}
 
 {% block content %}
 
-<form method="POST" action="">
+<form method="POST" class="uniForm" action="">{% csrf_token %}
 
-{% include "eventregistration/options.html" %}
+{% include "eventregistration/parts/options.html" %}
 
 {{ signup_render|safe }}
 

@@ -1,8 +1,14 @@
-{% extends "site.html" %}
+{% extends "profile/profile.html" %}
 {% load uni_form_tags %}
 
 {% block extraheader %}
 {% include "form_includes.html" %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Opdater dit billede' 'members_editpicture' %}
 {% endblock %}
 
 {% block contenthead %}Opdater dit billede{% endblock %}

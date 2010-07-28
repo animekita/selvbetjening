@@ -91,3 +91,19 @@ class GroupMembersChangedListener(BaseListener):
 
         except C5User.DoesNotExist:
             pass
+
+class UserChangedUsernameListener(BaseListener):
+    def handler(self, sender, **kwargs):
+        old_username = kwargs['old_username']
+        new_username = kwargs['new_username']
+
+        try:
+            user = C5User.objects.\
+                          using(self._database_id).\
+                          get(username=old_username)
+
+            user.username = new_username
+            user.save()
+
+        except C5User.DoesNotExist:
+            pass

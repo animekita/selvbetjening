@@ -1,38 +1,17 @@
 4.0.0 Todo
+==========
 
-Til næste udgivelse
-----------------------------------
+Bruger forbedringer:
+ - Betaling igennem paypal 	/ google checkout
 
-- Ikke tested
-  - nulstil kodeord
-
-- Få den sat op til staging
-- Feedback fra rådet
-
-Forum
------
-
-- Få forum op og spille
-
-Inden næste træf
-----------------
-
-- Revidering af kvittering interface
+4.1.0 Todo
+==========
 
 Admin:
-- Yderligere oprydning i admin
-- Oversigt over ændringer (events) i selvbetjening
+  - Yderligere oprydning i admin
+  - Permissions, lav admin brugbar af andre end mig
 
-Funktionelt:
-- Mere fleksibel betaling input
-- Betaling igennem paypal / google checkout
-
-Nice to have
----------------------------------
-
-- Dynamiske formularer (så vi kan lave mere spændende input)
-
-- Bedre håndtering af e-mails
+Bedre håndtering af e-mails:
   - Flere filtre til hvem der skal have e-mails
   - Bedre e-mail udseende
   - Standardiser andre e-mail subsystemer med templates osv.
@@ -41,25 +20,28 @@ Nice to have
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
 
+5.0.0 Todo
+==========
+
+Andet:
+- Dynamiske formularer (så vi kan lave mere spændende input)
 - Offline strategi
 
-- Bedre workflow mht. lister over events
-  - Integrere CMS
+Noget helt andet
+================
 
-- Accounting, hvem har gjort hvad
+Inden træf oprettelse
+----------------------------------
 
-- Mere finfølende adgang til systemet, hvem kan hvad?
+- Få selvbetjening op på staging
+- Test nulstil kodeord
+- Fix links til selvbetjening for forsiden
+- Send info ud omkring opdatering
 
-- Flere økonomiske værktøjer
+Forum
+-----
 
-- Ical kalender over events.
-
-- Breadcrumbs
-
-Mulige projekter
-- Audit: http://dev.2degreesnetwork.com/2010/04/announcing-django-audit.html
-- Log:  django-db-log
-
-Admin:
-http://bitbucket.org/izi/django-admin-tools/wiki/Home
-http://code.google.com/p/django-grappelli/wiki/changelog_2_1
+- Undersøg forum krav igen
+- Kan vi bruge vanilla igen eller skal der noget nyt til?
+- Lav test installation / upgrade
+- Convert design til det nye forum

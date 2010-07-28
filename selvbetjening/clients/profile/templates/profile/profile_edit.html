@@ -1,13 +1,14 @@
-{% extends "site.html" %}
+{% extends "profile/profile.html" %}
 {% load uni_form_tags %}
 
 {% block extraheader %}
 {% include "form_includes.html" %}
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url members_profile %}">profil</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url members_editprofile %}">rediger</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Opdater personoplysninger' 'members_editprofile' %}
 {% endblock %}
 
 {% block contenthead %}Opdater dine personoplysninger{% endblock %}

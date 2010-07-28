@@ -1,13 +1,14 @@
-{% extends "site.html" %}
+{% extends "events/base_event.html" %}
 {% load uni_form_tags %}
 
 {% block extraheader %}
 {% include "form_includes.html" %}
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><span>tilmeld dig {{event.title}}</span></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Tilmeld arrangement' 'eventregistration_signup' event.pk %}
 {% endblock %}
 
 {% block contenthead %}Tilmeld arrangement{% endblock %}
@@ -26,7 +27,7 @@
 {% if event.has_options %}
 <h2>Tilvalg</h2>
 
-{% include "eventregistration/options.html" %}
+{% include "eventregistration/parts/options.html" %}
 {% endif %}
 
 {{ signup_parts|safe }}

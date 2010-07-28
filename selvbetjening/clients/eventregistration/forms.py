@@ -71,6 +71,20 @@ class SignoffForm(AcceptForm):
         return _(u'You must accept to remove your participation in the event')
 
 class OptionGroupForm(BaseOptionGroupForm):
+
+    def __init__(self, *args, **kwargs):
+        super(OptionGroupForm, self).__init__(*args, **kwargs)
+
+        layout = Layout(InlineFieldset(self.optiongroup.name,
+                                       *[field_id for field_id in self.fields],
+                                       help_text=self.optiongroup.description))
+
+        self.helper = FormHelper()
+
+        self.helper.add_layout(layout)
+        self.helper.form_tag = False
+        self.helper.use_csrf_protection = True
+
     def _should_save(self, option, suboptions, disabled):
         return disabled == False
 

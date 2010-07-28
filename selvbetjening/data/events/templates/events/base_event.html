@@ -1,0 +1,9 @@
+{% extends "events/base.html" %}
+
+{% block breadcrumb %}
+    {% with event.title|escape as event_title %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb event_title 'eventregistration_information' event.pk %}
+    {% endwith %}
+{% endblock %}

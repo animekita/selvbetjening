@@ -48,10 +48,15 @@ MIDDLEWARE_CLASSES = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
     'selvbetjening.context_processors.admin_navigation',
-    'django.core.context_processors.i18n',
+
+    'django.core.context_processors.media',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
     'django.core.context_processors.csrf',
+    'django.core.context_processors.request',
+
+    'django.contrib.messages.context_processors.messages',
 )
 
 # base template directories
@@ -66,6 +71,7 @@ INSTALLED_APPS = [
     'mailer',
     'uni_form',
     'sorl.thumbnail',
+    'crumbs',
 
     'django.contrib.sites',
     'django.contrib.auth',
@@ -80,6 +86,7 @@ INSTALLED_APPS = [
     'selvbetjening.data.members',
     'selvbetjening.data.invoice',
     'selvbetjening.data.translation',
+    'selvbetjening.data.logger',
 ]
 
 DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter', ]

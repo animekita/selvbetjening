@@ -1,73 +1,14 @@
-{% extends "site.html" %}
+{% extends "events/base_event.html" %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventregistration_view event.id %}">{{event.title}}</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Tilmeldte' 'eventregistration_attendees' event.pk %}
 {% endblock %}
 
-{% block contenthead %}{{event.title|escape}}{% endblock %}
+{% block contenthead %}Tilmeldte{% endblock %}
 
 {% block content %}
-Dato: {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}
-
-{{event.description|safe}}
-
-{% if event.is_registration_open %}
-
-    {% if user.is_authenticated %}
-        {% if not userIsSignedup %}
-            {% if event.is_registration_allowed %}
-            <ul class="table-options">
-                <li>&#187; <a href="{% url eventregistration_signup event.id %}">Tilmeld dig dette arrangement</a></li>
-            </ul>
-            {% else %}
-            <p>Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
-            {% endif %}
-        {% else %}
-        <ul class="table-options">
-            <li>&#187; <a href="{% url eventregistration_signoff event.id %}">Afmeld dig fra dette arrangement</a></li>
-        </ul>
-            {% if event.has_options %}
-            <ul class="table-options">
-            <li>&#187; <a href="{% url eventregistration_change_options event.id %}">Ændre tilvalg</a></li>
-            {% if event.show_invoice_page %}
-            <li>&#187; <a href="{% url eventregistration_view_invoice event.id %}">Se kvittering</a></li>
-            {% endif %}
-            </ul>
-            {% endif %}
-
-        {% endif %}
-    {% endif %}
-
-    {% if not user.is_authenticated %}
-        <ul class="table-options">
-            <li>&#187; <a href="{% url quickregistration_register %}">Bliv medlem</a></li>
-            <li>&#187; <a href="{% url eventregistration_signup event.id %}">Tilmeld dig nu. (kræver medlemsskab)</a></li>
-        </ul>
-    {% endif %}
-
-{% else %}
-
-    <p><b>Tilmeldingen er ikke åbnet på nuværende tidspunkt.</b></p>
-
-{% endif %}
-
-{% if event.maximum_attendees %}
-<table>
-<tr>
-    <th>Venter på betaling</th>
-    <th>Tilmeldte</th>
-    <th>Max antal tilmeldte</th>
-</tr>
-<tr>
-    <td>{{event.waiting_attendees.count}}</td>
-    <td>{{event.accepted_attendees.count}}</td>
-    <td>{{event.maximum_attendees}}</td>
-</tr>
-</table>
-{% endif %}
-
-<h2>Tilmeldte</h2>
 
 {% ifequal event.move_to_accepted_policy "on_payment" %}
     {% if event.accepted_attendees %}

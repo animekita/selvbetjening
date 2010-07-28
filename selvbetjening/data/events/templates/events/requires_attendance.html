@@ -1,8 +1,9 @@
-{% extends "site.html" %}
+{% extends "events/base_event.html" %}
 
-{% block breadcrumbs %}
-<li><a href="{% url eventregistration_view_all %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url eventregistration_view event.id %}">kræver tilmelding</a></li>
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Tilmelding kræves' %}
 {% endblock %}
 
 {% block contenthead %}Tilmelding påkrævet{% endblock %}

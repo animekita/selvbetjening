@@ -59,15 +59,23 @@ class Event(models.Model):
     maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
-    show_registration_confirmation = models.BooleanField(default=False)
-    registration_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
-
     # information
-    show_change_confirmation = models.BooleanField(default=False)
-    change_confirmation = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
+    show_custom_signup_message = models.BooleanField(default=False)
+    custom_signup_message = models.TextField(blank=True,
+        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
-    show_invoice_page = models.BooleanField(default=False)
-    invoice_page = models.TextField(blank=True, help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
+    show_custom_change_message = models.BooleanField(default=False)
+    custom_change_message = models.TextField(blank=True,
+        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
+
+    show_custom_status_page = models.BooleanField(default=False)
+    custom_status_page = models.TextField(blank=True,
+        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
+
+    # email
+    email_on_signup = models.BooleanField(default=False)
+    email_subject = models.CharField(max_length=255, blank=True)
+    email_body = models.TextField(blank=True, help_text='available variables: event, attendee, invoice_rev')
 
     objects = models.Manager()
 
@@ -345,6 +353,8 @@ class OptionGroup(models.Model):
 
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     order = models.IntegerField(_('Order'), default=0)
+
+    public_statistic = models.BooleanField(default=False)
 
     class Translation:
         fields = ('name', 'description')

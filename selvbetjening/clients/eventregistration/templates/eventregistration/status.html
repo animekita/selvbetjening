@@ -1,0 +1,49 @@
+{% extends "events/base_event.html" %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Tilmelding status' 'eventregistration_status' event.pk %}
+{% endblock %}
+
+{% block contenthead %}Tilmelding status{% endblock %}
+
+{% block content %}
+
+{% if show_signup_message %}
+    {% if custom_signup_message %}
+        {{custom_signup_message|safe}}
+    {% else %}
+        <p class="notice">Vi har modtaget din tilmelding til {{event.title|escape}}.</p>
+    {% endif %}
+{% endif %}
+
+{% if show_change_message %}
+    {% if custom_change_message %}
+        {{custom_change_message|safe}}
+    {% else %}
+        <p class="notice">Dine tilvalg er blevet rettet.</p>
+    {% endif %}
+{% endif %}
+
+{% if custom_status_page %}
+    {{custom_status_page|safe}}
+{% else %}
+
+    {% if attendee.state == "waiting" %}
+        <p>Vi har modtaget din tilmelding til arrangementet <i>{{event.title|escape}}</i> men vi har <b>ikke godkendt</b> den endnu. Du er derfor ikke sikret en plads til arrangementet før din tilmelding er godkendt.</p>
+
+        <p>Hvorfor din tilmelding ikke er godkendt endnu er afhængig af hvilket arrangement du har tilmeldt dig. Det burde fremgå på <a href="{% url eventregistration_information event.pk %}">informationssiden</a> hvad der skal gøres for at blive godkendt.</p>
+    {% endif %}
+
+    {% if attendee.state == "accepted" %}
+        <p>Vi har registreret din tilmelding til arrangementet <i>{{event.title|escape}}</i> så din plads til arrangementet er sikret.</p>
+    {% endif %}
+
+    {% if attendee.state == "attended" %}
+        <p>Vi har registreret dig som at have deltaget til dette arrangement.</p>
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

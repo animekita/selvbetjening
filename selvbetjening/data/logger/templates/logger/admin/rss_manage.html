@@ -1,0 +1,27 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_modify adminmedia %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">Logger</a> &rsaquo;
+     <a href="../../">Entry</a> &rsaquo;
+     RSS
+</div>
+{% endif %}{% endblock %}
+
+{% block content_title %}
+<h1>Log RSS</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Ny RSS feed</h2>
+<p>Et nyt rss feed er blevet lavet til dig, brug følgende link for at tilgå det.</p>
+
+<p style="border: solid #000000 1px;">{{SITE_URL}}{% url admin:logger_entry_rss savedlog.key %}</p>
+
+{% endblock %}

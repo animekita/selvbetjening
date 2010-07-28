@@ -8,5 +8,6 @@ from selvbetjening.core.selvadmin.admin import site
 import selvbetjening.data.members.admin
 import selvbetjening.data.events.admin
 import selvbetjening.data.invoice.admin
+import selvbetjening.data.logger.admin
 import selvbetjening.clients.mailcenter.admin
 import selvbetjening.notify.concrete5.admin

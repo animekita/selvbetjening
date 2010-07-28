@@ -102,6 +102,43 @@ class ProftpdUserTestCase(ProftpdBaseTestCase):
 
         self.check_databases(check)
 
+    def test_username_changed(self):
+        """
+        Username is changed.
+
+        Check that username changes are reflected in proftpd.
+        """
+
+        group = Group.objects.create(name='TestGroup')
+
+        def setup(database_id):
+            proftpdGroup = ProftpdGroup.objects.using(database_id).\
+                                                create(name='TestGroup',
+                                                       gid=3000)
+
+            GroupProftpdGroup.objects.create(group=group,
+                                             proftpdgroup_name=proftpdGroup.name,
+                                             database_id=database_id)
+
+        self.check_databases(setup)
+
+        user = Database.new_user()
+        user.groups.add(group)
+
+        user.username = 'brand_new_username'
+        user.save()
+
+        def check(database_id):
+            users = ProftpdUser.objects.\
+                                using(database_id).\
+                                filter(username=USERNAME_FORMAT % 'brand_new_username').\
+                                count()
+
+            self.assertEqual(1, users)
+
+        self.check_databases(check)
+
+
 class ProftpdNotifyManagementCommandTestCase(ProftpdBaseTestCase):
     def test_add_relation_wrong_groups(self):
         command = notify_proftpd_manage.Command()
