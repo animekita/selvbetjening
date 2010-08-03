@@ -5,6 +5,7 @@ Dependencies
 * Django >= 1.2
 
 * python-mysqldb
+* python-imaging
 
 Inkluderet i Contrib
 --------------------
