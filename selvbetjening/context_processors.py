@@ -1,5 +1,4 @@
 from selvbetjening.data.members import messaging
-from selvbetjening.core.selvadmin.admin import site
 
 def site_urls(request):
     from django.conf import settings

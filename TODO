@@ -45,3 +45,5 @@ Forum
 - Kan vi bruge vanilla igen eller skal der noget nyt til?
 - Lav test installation / upgrade
 - Convert design til det nye forum
+
+http://github.com/justquick/django-activity-stream
