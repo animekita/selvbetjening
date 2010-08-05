@@ -55,7 +55,7 @@ class UserProfile(models.Model):
     city = models.CharField(_(u'city'), max_length=255, blank=True)
     country = models.ForeignKey(Country, default='DK', blank=True, null=True)
 
-    phonenumber = models.PositiveIntegerField(_(u'phonenumber'), blank=True, null=True)
+    phonenumber = models.CharField(_(u'phonenumber'), max_length=32, blank=True, null=True)
 
     send_me_email = models.BooleanField(_(u'Send me emails'))
 
