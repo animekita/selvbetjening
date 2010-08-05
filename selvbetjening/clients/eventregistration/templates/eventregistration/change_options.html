@@ -8,7 +8,7 @@
 {% block breadcrumb %}
     {{ block.super }}
     {% load breadcrumb_tags %}
-    {% add_crumb 'Ændre tilvalg' 'eventregistration_change_options' %}
+    {% add_crumb 'Ændre tilvalg' 'eventregistration_change_options' event.pk %}
 {% endblock %}
 
 {% block contenthead %}Ændre tilvalg{% endblock %}
