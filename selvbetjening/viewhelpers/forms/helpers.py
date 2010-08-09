@@ -17,4 +17,4 @@ class InlineFieldset(Fieldset):
             self.css = self.css + ' ' + ext_class
 
         if help_text is not None:
-            self.fields.insert(0, HTML(unicode(help_text)))
+            self.fields = [HTML(unicode(help_text))] + list(self.fields)
