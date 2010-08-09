@@ -29,16 +29,18 @@ Noget helt andet
 Inden træf oprettelse
 ----------------------------------
 
+- E-mails ved tilmelding
+- E-mails ved betaling
+
 - Andre jobs
   - Gennemgå diff af settings filer
 
 Install procedurer
- - Maintenance mode
  - Update
+ - Update settings (database permissions and notify)
  - Fix db
  - Syncdb
  - Migrate
- - Fjern maint mode
 
 Forum
 -----
