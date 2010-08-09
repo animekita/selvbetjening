@@ -75,10 +75,11 @@ class OptionGroupForm(BaseOptionGroupForm):
     def __init__(self, *args, **kwargs):
         super(OptionGroupForm, self).__init__(*args, **kwargs)
 
-        layout = Layout(InlineFieldset(self.optiongroup.name,
-                                       *[field_id for field_id in self.fields],
-                                       help_text=self.optiongroup.description,
-                                       large_hints=True))
+        fields = [self.optiongroup.name,] + [field_id for field_id in self.fields]
+        options = {'help_text' : self.optiongroup.description,
+                   'large_hints' : True}
+
+        layout = Layout(InlineFieldset(*fields, **options))
 
         self.helper = FormHelper()
 
