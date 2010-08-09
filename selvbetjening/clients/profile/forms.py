@@ -102,17 +102,20 @@ class PrivacyForm(forms.ModelForm):
             self.initial[key] = value
             extended_fields.append(key)
 
-        layout = Layout(InlineFieldset(None,
-                                   'public_profile'),
-                    InlineFieldset(_('Visible on my profile'),
-                                   'public_name', 'public_age', 'public_sex',
-                                   'public_join_date',
-                                   'public_email', 'public_phonenumber',
-                                   'public_town', 'public_contact',
-                                   'public_websites', *extended_fields,
-                                   ext_class='privacy_settings',
-                                   help_text=_('Select the information which is to be visible on your profile.')),
-                    HTML(self.html))
+        # args and kwargs is a fix for python 2.5
+        fields = [_('Visible on my profile'),
+                  'public_name', 'public_age', 'public_sex',
+                  'public_join_date',
+                  'public_email', 'public_phonenumber',
+                  'public_town', 'public_contact',
+                  'public_websites',] + extended_fields
+
+        options = {'ext_class' : 'privacy_settings',
+                  'help_text' : _('Select the information which is to be visible on your profile.')}
+
+        layout = Layout(InlineFieldset(None, 'public_profile'),
+                        InlineFieldset(*fields, **options),
+                        HTML(self.html))
 
         submit = Submit(_('Update privacy settings'), _('Update privacy settings'))
 
