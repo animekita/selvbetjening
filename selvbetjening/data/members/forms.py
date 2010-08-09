@@ -84,7 +84,8 @@ class BaseProfileForm(forms.Form):
                                 choices=COUNTRY_CHOICES,
                                 required=False, initial='DK',)
 
-    phonenumber = forms.IntegerField(label=_(u'phonenumber'), required=False)
+    phonenumber = forms.RegexField(label=_(u'phonenumber'), required=False,
+                                   regex=r'(\+[0-9]{2}( )?)?([0-9]{8})')
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u'Inform me about events and other important changes.'),
