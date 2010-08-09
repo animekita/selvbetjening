@@ -32,16 +32,6 @@ Inden træf oprettelse
 - E-mails ved tilmelding
 - E-mails ved betaling
 
-- Andre jobs
-  - Gennemgå diff af settings filer
-
-Install procedurer
- - Update
- - Update settings (database permissions and notify)
- - Fix db
- - Syncdb
- - Migrate
-
 Forum
 -----
 
