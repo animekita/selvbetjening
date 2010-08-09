@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.contrib.formtools.preview import FormPreview
 
+from selvbetjening.data.logger import logger
 from selvbetjening.data.members.forms import ProfileForm
 from selvbetjening.data.members.models import UserProfile
 from selvbetjening.data.events.models import Attend
@@ -175,8 +176,16 @@ class UsernameChangeView(FormPreview):
         context['new_username'] = form.cleaned_data['new_username']
 
     def done(self, request, cleaned_data):
+        old_username = request.user.username
+
         request.user.username = cleaned_data['new_username']
         request.user.save()
+
+        log_msg = '<user %s> changed name to <user %s>' %\
+                    (old_username, cleaned_data['new_username'])
+
+        logger.log('profile', 'profile-edit', log_msg,
+                   request=request)
 
         request.user.message_set.create(message=_(u'Username changed'))
         return HttpResponseRedirect(reverse('members_profile'))
