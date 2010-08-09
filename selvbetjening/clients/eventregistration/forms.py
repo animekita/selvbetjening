@@ -77,7 +77,8 @@ class OptionGroupForm(BaseOptionGroupForm):
 
         layout = Layout(InlineFieldset(self.optiongroup.name,
                                        *[field_id for field_id in self.fields],
-                                       help_text=self.optiongroup.description))
+                                       help_text=self.optiongroup.description,
+                                       large_hints=True))
 
         self.helper = FormHelper()
 
