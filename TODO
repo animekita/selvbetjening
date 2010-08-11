@@ -1,9 +1,3 @@
-4.0.0 Todo
-==========
-
-Bruger forbedringer:
- - Betaling igennem paypal 	/ google checkout
-
 4.1.0 Todo
 ==========
 
@@ -20,6 +14,8 @@ Bedre håndtering af e-mails:
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
 
+- Paypal betaling
+
 5.0.0 Todo
 ==========
 
@@ -33,10 +29,8 @@ Noget helt andet
 Inden træf oprettelse
 ----------------------------------
 
-- Få selvbetjening op på staging
-- Test nulstil kodeord
-- Fix links til selvbetjening for forsiden
-- Send info ud omkring opdatering
+- E-mails ved tilmelding
+- E-mails ved betaling
 
 Forum
 -----

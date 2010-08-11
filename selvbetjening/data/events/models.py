@@ -313,7 +313,7 @@ def update_invoice_with_attend_handler(sender, **kwargs):
     for attendee in Attend.objects.filter(invoice=invoice):
         for selection in attendee.selections:
             invoice_revision.add_line(description=unicode(selection),
-                                      price=selection.option.price,
+                                      price=selection.price,
                                       managed=True)
 
 populate_invoice.connect(update_invoice_with_attend_handler)
@@ -472,6 +472,8 @@ class Option(models.Model):
 class SubOption(models.Model):
     option = models.ForeignKey(Option)
     name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=6, decimal_places=2,
+                                blank=True, null=True, default=None)
 
     class Translation:
         fields = ('name',)
@@ -490,6 +492,14 @@ class Selection(models.Model):
     attendee = models.ForeignKey(Attend)
     option = models.ForeignKey(Option)
     suboption = models.ForeignKey(SubOption, blank=True, null=True)
+
+    @property
+    def price(self):
+        if self.suboption is not None and \
+           self.suboption.price is not None:
+            return self.suboption.price
+        else:
+            return self.option.price
 
     class Meta:
         unique_together = (('attendee', 'option'))
