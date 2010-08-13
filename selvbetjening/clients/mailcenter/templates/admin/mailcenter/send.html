@@ -20,7 +20,7 @@
 
 <h3>Send E-mails for {{ mail }}</h3>
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
     {% for fieldset in adminform %}
       {% include "admin/includes/fieldset.html" %}
