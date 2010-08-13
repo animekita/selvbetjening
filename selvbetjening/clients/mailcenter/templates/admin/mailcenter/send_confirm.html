@@ -22,7 +22,7 @@
 
 <p>Denne email vil blive sendt til {{accept|length}} personer.{% if deny %} {{deny|length}} personer er blevet ignoreret.{% endif %}</p>
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
     {% for fieldset in adminform %}
       {% include "admin/includes/fieldset.html" %}
