@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core import mail
 
-import ssoapi
+from selv_sso_lib import ssoapi
 
 try:
     ssoapi.SERVICE_ID = settings.SAPI_SERVICE_ID

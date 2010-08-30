@@ -219,7 +219,6 @@ class Thumbnail(object):
             im = processor(im, self.requested_size, self.opts)
 
         self.data = im
-
         filelike = not isinstance(self.dest, basestring)
         if not filelike:
             dest_extension = os.path.splitext(self.dest)[1][1:]

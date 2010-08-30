@@ -80,7 +80,10 @@ class BaseThumbnailFieldFile(ImageFieldFile):
             name_kwargs[key] = args.get(key)
         source = getattr(self.instance, self.field.name)
         dest = build_thumbnail_name(source.name, **name_kwargs)
-        return DjangoThumbnail(source, relative_dest=dest, **kwargs)
+        return DjangoThumbnail(source,
+                               src_storage=self.storage,
+                               dst_storage=self.storage,
+                               relative_dest=dest, **kwargs)
 
     def _build_thumbnail_tag(self, thumb):
         opts = dict(src=escape(thumb), width=thumb.width(),

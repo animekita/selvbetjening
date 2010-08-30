@@ -6,7 +6,7 @@ from django.conf import settings
 from django.template import Template, Context, TemplateSyntaxError
 from sorl.thumbnail.base import ThumbnailException
 from sorl.thumbnail.tests.classes import BaseTest, RELATIVE_PIC_NAME
-
+from django.core.files.storage import default_storage, Storage
 
 class ThumbnailTagTest(BaseTest):
     def render_template(self, source):
@@ -110,9 +110,9 @@ class ThumbnailTagTest(BaseTest):
         output = self.render_template('src="'
             '{% thumbnail source 240x240 %}"')
         expected = '%s_240x240_q85.jpg' % expected_base
-        expected_fn = os.path.join(settings.MEDIA_ROOT, expected)
+        expected_fn = default_storage.path(expected)
         self.verify_thumbnail((240, 180), expected_filename=expected_fn)
-        expected_url = ''.join((settings.MEDIA_URL, expected))
+        expected_url = default_storage.url(expected)
         self.assertEqual(output, 'src="%s"' % expected_url)
 
         # Size from context variable
@@ -120,17 +120,17 @@ class ThumbnailTagTest(BaseTest):
         output = self.render_template('src="'
             '{% thumbnail source size %}"')
         expected = '%s_90x100_q85.jpg' % expected_base
-        expected_fn = os.path.join(settings.MEDIA_ROOT, expected)
+        expected_fn = default_storage.path(expected)
         self.verify_thumbnail((90, 67), expected_filename=expected_fn)
-        expected_url = ''.join((settings.MEDIA_URL, expected))
+        expected_url = default_storage.url(expected)
         self.assertEqual(output, 'src="%s"' % expected_url)
         # as a string:
         output = self.render_template('src="'
             '{% thumbnail source strsize %}"')
         expected = '%s_80x90_q85.jpg' % expected_base
-        expected_fn = os.path.join(settings.MEDIA_ROOT, expected)
+        expected_fn = default_storage.path(expected)
         self.verify_thumbnail((80, 60), expected_filename=expected_fn)
-        expected_url = ''.join((settings.MEDIA_URL, expected))
+        expected_url = default_storage.url(expected)
         self.assertEqual(output, 'src="%s"' % expected_url)
 
         # On context
@@ -143,9 +143,9 @@ class ThumbnailTagTest(BaseTest):
             '{% thumbnail source 240x240 sharpen crop quality=95 %}"')
         # Note that the opts are sorted to ensure a consistent filename.
         expected = '%s_240x240_crop_sharpen_q95.jpg' % expected_base
-        expected_fn = os.path.join(settings.MEDIA_ROOT, expected)
+        expected_fn = default_storage.path(expected)
         self.verify_thumbnail((240, 240), expected_filename=expected_fn)
-        expected_url = ''.join((settings.MEDIA_URL, expected))
+        expected_url = default_storage.url(expected)
         self.assertEqual(output, 'src="%s"' % expected_url)
 
         # With option and quality on context (also using its unicode method to

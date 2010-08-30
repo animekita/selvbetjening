@@ -2,6 +2,7 @@ import unittest
 import os
 from PIL import Image
 from django.conf import settings
+from django.core.files.storage import default_storage
 from sorl.thumbnail.base import Thumbnail
 
 try:
@@ -21,8 +22,8 @@ def get_default_settings():
 
 DEFAULT_THUMBNAIL_SETTINGS = get_default_settings()
 RELATIVE_PIC_NAME = "sorl-thumbnail-test_source.jpg"
-PIC_NAME = os.path.join(settings.MEDIA_ROOT, RELATIVE_PIC_NAME)
-THUMB_NAME = os.path.join(settings.MEDIA_ROOT, "sorl-thumbnail-test_%02d.jpg")
+PIC_NAME = default_storage.path(RELATIVE_PIC_NAME)
+THUMB_NAME = default_storage.path("sorl-thumbnail-test_%02d.jpg")
 PIC_SIZE = (800, 600)
 
 
