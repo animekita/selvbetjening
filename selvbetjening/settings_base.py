@@ -89,4 +89,6 @@ INSTALLED_APPS = [
     'selvbetjening.data.logger',
 ]
 
+DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter',]
+
 SOUTH_TESTS_MIGRATE = False

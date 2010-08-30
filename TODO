@@ -1,3 +1,9 @@
+4.0.0 Bugfix
+============
+
+- Achivements
+  - Ret fejl ved sletning af event
+
 4.1.0 Todo
 ==========
 
@@ -16,6 +22,11 @@ Bedre håndtering af e-mails:
 
 - Paypal betaling
 
+Achivements
+  - Opdel event achivements i flere mapper
+  - Tilføj mere informative beskrivelser
+  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
+
 5.0.0 Todo
 ==========
 
@@ -26,12 +37,6 @@ Andet:
 Noget helt andet
 ================
 
-Inden træf oprettelse
-----------------------------------
-
-- E-mails ved tilmelding
-- E-mails ved betaling
-
 Forum
 -----
 
@@ -41,3 +46,4 @@ Forum
 - Convert design til det nye forum
 
 http://github.com/justquick/django-activity-stream
+http://nedbatchelder.com/blog/201008/django_superuser_login_trapdoor.html

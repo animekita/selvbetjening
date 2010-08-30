@@ -4,6 +4,10 @@ import urllib
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 
+SERVICE_ID = 'test'
+AUTH_TOKEN_KEY = 'kita_auth_token'
+SELVBETJENING_API = 'http://alpha.kita.dk:8001'
+
 class AuthenticationServerException(Exception) : pass
 class ErrorContactingAuthenticationServerException(AuthenticationServerException) : pass
 class AuthenticationServerReturnsErrorException(AuthenticationServerException) : pass
@@ -52,10 +56,6 @@ class SelvbetjeningResponseHandler(ContentHandler):
         self._buffer += char.replace('\n', '').strip()
 
 class SelvbetjeningIntegrationSSO(object):
-    SERVICE_ID = 'test'
-    AUTH_TOKEN_KEY = 'kita_auth_token'
-    SELVBETJENING_API = 'http://test.selvbetjening.dk:8001'
-
     def __init__(self, auth_token=None):
         if auth_token is None:
             self._auth_token = None
@@ -67,7 +67,7 @@ class SelvbetjeningIntegrationSSO(object):
                 self._auth_token = None
 
     def authenticate(self, username, password):
-        url = '%s/authenticate/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID)
+        url = '%s/authenticate/%s/' % (SELVBETJENING_API, SERVICE_ID)
         response = self._call(url, {'username' : username, 'password' : password})
 
         authentication = self._parse(response, SelvbetjeningResponseHandler)
@@ -88,7 +88,7 @@ class SelvbetjeningIntegrationSSO(object):
         if self._auth_token is None:
             return False
 
-        url = '%s/validate/%s/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID, self._auth_token)
+        url = '%s/validate/%s/%s/' % (SELVBETJENING_API, SERVICE_ID, self._auth_token)
         response = self._call(url)
 
         if 'accepted' in response:
@@ -98,7 +98,7 @@ class SelvbetjeningIntegrationSSO(object):
         if self._auth_token is None:
             raise InfoNoAuthenticatedUserException
 
-        url = '%s/info/%s/%s/' % (self.SELVBETJENING_API, self.SERVICE_ID, self._auth_token)
+        url = '%s/info/%s/%s/' % (SELVBETJENING_API, SERVICE_ID, self._auth_token)
         response = self._call(url)
 
         session_info = self._parse(response, SelvbetjeningResponseHandler)
