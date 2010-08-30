@@ -1,5 +1,4 @@
 from selvbetjening.data.members import messaging
-from selvbetjening.core.selvadmin.admin import site
 
 def site_urls(request):
     from django.conf import settings
@@ -9,4 +8,5 @@ def site_urls(request):
             'session_message' : messaging.read(request)}
 
 def admin_navigation(request):
+    from selvbetjening.core.selvadmin.admin import site
     return {'ADMIN_NAVIGATION': site.Menu.links.values()}
