@@ -1,15 +1,32 @@
-4.0.0 Bugfix
-============
+Bugfix
+======
 
 - Achivements
   - Ret fejl ved sletning af event
 
-4.1.0 Todo
-==========
+New stuff
+=========
 
 Admin:
-  - Yderligere oprydning i admin
+  - Helt ny admin
   - Permissions, lav admin brugbar af andre end mig
+  - Oprydning i gammel admin
+
+Kreditkort modul:
+  - Paypal betaling e.l.
+
+Achivements
+  - Opdel event achivements i flere mapper
+  - Tilføj mere informative beskrivelser
+  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
+
+Refactor
+  - Oprydning i arch
+  - Fjern dependencies
+  - Lav byggesystem
+
+6.0.0 Todo
+==========
 
 Bedre håndtering af e-mails:
   - Flere filtre til hvem der skal have e-mails
@@ -19,16 +36,6 @@ Bedre håndtering af e-mails:
     - F.eks. påmindelse omkring tilmelding.
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
-
-- Paypal betaling
-
-Achivements
-  - Opdel event achivements i flere mapper
-  - Tilføj mere informative beskrivelser
-  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
-
-5.0.0 Todo
-==========
 
 Andet:
 - Dynamiske formularer (så vi kan lave mere spændende input)
