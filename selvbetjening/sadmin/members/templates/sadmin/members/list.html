@@ -1,0 +1,21 @@
+{% extends "sadmin/base/site.html" %}
+
+{% block content %}
+<div class="block">
+  <form method="GET" action="">
+    <input type="text" id="searchbox" name="search" autofocus="autofocus" autocomplete="off" placeholder="Søg efter et medlem" required="required" {% if query %}value="{{query}}"{% endif %} /> <input type="submit" value="" />
+  </form>
+</div>
+
+<div id="searchresults">
+  {% include "sadmin/members/parts/search.html" %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{block.super}}
+<script type="text/javascript">
+init_livesearch($('#searchbox'), $('#searchresults'), '{% url sadmin:members_ajax_search %}?search=');
+</script>
+{% endblock %}

@@ -41,30 +41,14 @@
 
     <nav>
      <ul>
-       <li class="current"><a href="#">Brugerkatalog</a></li>
-       <li><a href="#">Arrangementer</a></li>
-       <li><a href="#">Achievements</a></li>
-       <li><a href="#">Adgangskontrol</a></li>
+       {% for item in sadmin_navigation %}
+       <li><a href="{{item.url}}">{{item.name}}</a></li>
+       {% endfor %}
      </ul>
     </nav>
 
     <div id="main">
-      <div class="block">
-        <form method="GET" action="">
-          <input type="text" name="usersearch" autofocus="autofocus" autocomplete="off" placeholder="Søg efter et medlem" required="required" /> <input type="submit" name="search" value="" />
-        </form>
-      </div>
-
-      <div>
-        <table>
-          <tr><th>Brugernavn</th><th>Navn</th><th>&nbsp;</th></tr>
-          <tr><td>sema</td><td>Casper S. Jensen</td><td><a href="#">vis</a></td></tr>
-          <tr><td>sema</td><td>Casper S. Jensen</td><td><a href="#">vis</a></td></tr>
-          <tr><td>sema</td><td>Casper S. Jensen</td><td><a href="#">vis</a></td></tr>
-          <tr><td>sema</td><td>Casper S. Jensen</td><td><a href="#">vis</a></td></tr>
-          <tr><td>sema</td><td>Casper S. Jensen</td><td><a href="#">vis</a></td></tr>
-        </table>
-      </div>
+      {% block content %}{% endblock %}
     </div>
 
     <footer>
@@ -91,6 +75,8 @@
   <script src="{{MEDIA_URL}}sadmin/js/profiling/yahoo-profiling.min.js"></script>
   <script src="{{MEDIA_URL}}sadmin/js/profiling/config.js?v=1"></script>
   <!-- end profiling code -->
+  
+  {% block scripts %}{% endblock %}
 
 </body>
 </html>

@@ -12,7 +12,7 @@ nav ul li { float: left; padding: 0.5em 1.5em 0.5em; }
 nav ul li a { color: #ffffff; text-decoration: none; font-size: 1.3em; font-weight: bold; }
 
 nav ul li:hover, nav ul li.current { background-color: #a40000; }
-nav ul li a:hover { color: #ffffff; }
+nav ul li a:hover, nav ul li a:active, nav ul li a:visited { color: #ffffff; }
 
 /** General **/
 .block { background-color: #729fcf; padding: 1em; overflow: auto; margin-bottom: 1em; }

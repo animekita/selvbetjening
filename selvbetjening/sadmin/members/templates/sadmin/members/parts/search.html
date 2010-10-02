@@ -1,0 +1,6 @@
+<table>
+    <tr><th>Brugernavn</th><th>Navn</th><th>&nbsp;</th></tr>
+    {% for user in users %}
+    <tr><td>{{user.username}}</td><td>{{user.first_name}} {{user.last_name}}</td><td><a href="{% url sadmin:members_view user.username %}">vis</a></td></tr>
+    {% endfor %}
+</table>
