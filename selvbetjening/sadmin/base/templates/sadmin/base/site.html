@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html>{% load sadmin_menu %}
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
@@ -22,6 +22,7 @@
 
   <!-- CSS : implied media="all" -->
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/base.css?v=1">
+  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/uni-form.css?v=1">
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/style.css?v=1">
 
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
@@ -29,6 +30,8 @@
 
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="{{MEDIA_URL}}sadmin/js/modernizr-1.5.min.js"></script>
+
+  {% block extraheader %}{% endblock %}
 
 </head>
 
@@ -39,15 +42,26 @@
     <h1>Selvbetjening</h1>
     </header>
 
-    <nav>
-     <ul>
-       {% for item in sadmin_navigation %}
-       <li><a href="{{item.url}}">{{item.name}}</a></li>
+    <nav class="primary-nav">
+     <ul>{% get_menu main as main_nav %}
+       {% for item in main_nav %}
+       <li><a href="{{item.url}}">{{item.label}}</a></li>
        {% endfor %}
      </ul>
     </nav>
 
+    {% block navigation %}{% endblock %}
+
     <div id="main">
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
       {% block content %}{% endblock %}
     </div>
 
@@ -75,7 +89,7 @@
   <script src="{{MEDIA_URL}}sadmin/js/profiling/yahoo-profiling.min.js"></script>
   <script src="{{MEDIA_URL}}sadmin/js/profiling/config.js?v=1"></script>
   <!-- end profiling code -->
-  
+
   {% block scripts %}{% endblock %}
 
 </body>

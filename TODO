@@ -25,6 +25,29 @@ Refactor
   - Fjern dependencies
   - Lav byggesystem
 
+Ny admin
+========
+
+- Adgangskontrol <-- 1
+
+- Events
+  - Nyt event <-- 3
+  - Find event <-- 2
+  - Rediger event <-- 3
+  - Statistik / rapport for event <-- 5
+  - Tilmeldte <-- 2
+    - Checkin <-- 4
+  - Registrer betaling <-- 3
+
+- Design
+  - Anden header
+  - Login side
+  - Menu desgin
+
+- Would be nice
+  - Subsystem til breadcrumbs
+  - Udvid menu system så aktive sider vises
+
 6.0.0 Todo
 ==========
 

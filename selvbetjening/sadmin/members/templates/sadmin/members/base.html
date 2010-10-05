@@ -1,0 +1,14 @@
+{% extends "sadmin/base/site.html" %}
+{% load sadmin_menu %}
+
+{% block navigation %}
+{{ block.super }}
+
+<nav class="secondary-nav">
+  <ul>{% get_menu members as members_nav %}
+    {% for item in members_nav %}
+      <li><a href="{{item.url}}">{{item.label}}</a></li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endblock %}

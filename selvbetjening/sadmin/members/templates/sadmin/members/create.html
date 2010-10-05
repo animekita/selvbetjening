@@ -1,0 +1,10 @@
+{% extends "sadmin/members/base.html" %}
+{% load uni_form_tags sadmin_menu %}
+
+{% block content %}
+
+    {% with form.helper as helper %}
+        {% uni_form form helper %}
+    {% endwith %}
+
+{% endblock %}

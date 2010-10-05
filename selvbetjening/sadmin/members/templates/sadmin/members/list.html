@@ -1,9 +1,9 @@
-{% extends "sadmin/base/site.html" %}
+{% extends "sadmin/members/base.html" %}
 
 {% block content %}
 <div class="block">
   <form method="GET" action="">
-    <input type="text" id="searchbox" name="search" autofocus="autofocus" autocomplete="off" placeholder="Søg efter et medlem" required="required" {% if query %}value="{{query}}"{% endif %} /> <input type="submit" value="" />
+    <input type="text" id="searchbox" name="search" autofocus="autofocus" autocomplete="off" placeholder="Søg efter et medlem" required="required" {% if query %}value="{{query}}"{% endif %} /> <input type="submit" value="" id="searchsubmit" />
   </form>
 </div>
 

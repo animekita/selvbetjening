@@ -1,27 +1,21 @@
-/* Author: 
+/* Author:
 
 */
 
 function init_livesearch(searchbox, resultsArea, searchUrl) {
-    var duration = 400;
     var typeDelay = 200;
 
-    // Auto update live-search onkeyup
     searchbox.keyup(function () {
-        // Don't update live-search if it's got the same value as last time
         if (this.value != this.lastValue) {
-            var q = this.value;
+            var query = this.value;
 
-            // Stop previous ajax-request
-            if (this.timer) {
-                clearTimeout(this.timer);
+            if (this.requestTimer) {
+                clearTimeout(this.requestTimer);
             }
 
-            // Start a new ajax-request in X ms
-            this.timer = setTimeout(function () {
-                jQuery.get(searchUrl + q, function (data) {
-                    // Show live-search if results and search-term aren't empty
-                    if (data.length && q.length) {
+            this.requestTimer = setTimeout(function() {
+                jQuery.get(searchUrl + query, function(data) {
+                    if (data.length && query.length) {
                         resultsArea.html(data);
                     }
                     else {
@@ -30,7 +24,7 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
                 });
             }, typeDelay);
 
-            this.lastValue = q;
+            this.lastValue = query;
         }
     });
 };

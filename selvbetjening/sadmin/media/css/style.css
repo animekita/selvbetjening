@@ -1,41 +1,72 @@
-body { padding: 1em 2em 0 2em; background-color: #eeeeec; color: #000000; }
+body { padding: 1em 0 0 0; background-color: #eeeeec; color: #000000; }
 a { text-decoration: none; font-style: italic; }
 
 /** Header **/
-header { background-color: black; color: #ffffff; padding: 1.5em 0 0.5em 1em; margin-bottom: 1em; }
+header { background-color: black; color: #ffffff; padding: 1.5em 0 0.5em 3em; margin-bottom: 1em; }
 header h1 { width: 317px; height: 61px; background: url("../images/logo.png") no-repeat; text-indent: -9999px; }
 
 /** Navigation **/
 nav { background-color: #000000; overflow: auto; margin-bottom: 1em; }
 
 nav ul li { float: left; padding: 0.5em 1.5em 0.5em; }
-nav ul li a { color: #ffffff; text-decoration: none; font-size: 1.3em; font-weight: bold; }
+nav ul li a { color: #ffffff; text-decoration: none; font-weight: bold; font-style: normal; }
 
 nav ul li:hover, nav ul li.current { background-color: #a40000; }
 nav ul li a:hover, nav ul li a:active, nav ul li a:visited { color: #ffffff; }
 
+nav.primary-nav ul li a { font-size: 1.3em; }
+
 /** General **/
+#main { width: 100%; background-color: #eeeeec; }
 .block { background-color: #729fcf; padding: 1em; overflow: auto; margin-bottom: 1em; }
 
-/** Search field **/
-form input[type="text"] {
-  border: 1px solid #fff;
-  background: #fafafa; 
-  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#fafafa)); 
-  background: -moz-linear-gradient(top, #f2f2f2, #fafafa);
+/** Tables **/
+table tr td, table tr th { padding: 0.5em; text-align: left; }
+table tr th { font-size: 1.2em; color: #555753; font-style: italic; }
+table tr td { font-size: 1.5em; }
+
+/* Forms */
+.uniForm { width: 650px;  background-color: #eeeeec; padding: 1em;}
+
+form input[type="text"], .uniForm .textInput {
   font-size: 24px;
   font-family: "Myriad Pro", "Trebuchet MS", sans-serif;
+  padding: 6px 5px 6px 10px;
+  text-shadow: 1px 1px 1px #fff;
+  min-width: 600px;
+  outline: none;
+
+  -moz-box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.24);
+}
+
+.uniForm .buttonHolder { margin: 1em 0 2em 0; padding:1em;	text-align:right; background-color: #729fcf; }
+.uniForm .buttonHolder input { font-size: 24px; }
+
+.uniForm select { padding:5px 3px; }
+
+.uniForm legend { font-size: 2em; padding: 1em 0 0.5em 0; }
+.uniForm label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
+.uniForm .multiField label { display: inline; }
+
+
+/** Search field **/
+#searchbox {
+  float: left;
+  margin: 3px 0px;
+  border: 1px solid #fff;
+
+  background: #fafafa;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#fafafa));
+  background: -moz-linear-gradient(top, #f2f2f2, #fafafa);
+
   -moz-box-shadow: 1px 1px 3px #555;
   -webkit-box-shadow: 1px 1px 3px #555;
   -box-shadow: 1px 1px 3px #555;
-  outline: none;
-  padding: 6px 5px 6px 20px;
-  text-shadow: 1px 1px 1px #fff;
-  min-width: 600px;
-  float: left;
-  margin: 3px 0px;
 }
-form input[type="submit"] {
+
+#searchsubmit {
   background: #f2f2f2 url(../images/search.png) no-repeat center center;
   height: 43px;
   width: 50px;
@@ -49,9 +80,33 @@ form input[type="submit"] {
   outline: none;
   cursor: pointer;
 }
-input[type="submit"]:hover { background-color:#ffffff; }
 
-/** Tables **/
-table tr td, table tr th { padding: 0.5em; text-align: left; }
-table tr th { font-size: 1.2em; color: #555753; font-style: italic; }
-table tr td { font-size: 1.5em; }
+#searchsubmit:hover { background-color:#ffffff; }
+
+/** Messages **/
+ul.messages { margin: 0 3em 0.5em 3em; list-style: none; }
+ul li.success {
+  padding: 1em;
+  font-size: 1.2em;
+
+  background-color: #c5fa92;
+
+  -moz-box-shadow :1px 1px 3px #555;
+  -webkit-box-shadow :1px 1px 3px #555;
+  -box-shadow: 1px 1px 3px #555;
+
+  -moz-border-radius-topleft:5px;
+  -webkit-border-top-left-radius:5px;
+
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-right-radius:5px;
+
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius:5px;
+
+    -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius:5px;
+
+  background: -webkit-gradient(linear, left top, left bottom, from(#c5fa92), to(#ACE07A));
+  background: -moz-linear-gradient(top, #c5fa92, #ACE07A);
+}
