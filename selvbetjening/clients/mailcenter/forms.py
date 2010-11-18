@@ -5,9 +5,6 @@ from django.contrib.auth.models import User
 from selvbetjening.data.events.models import Event, OptionGroup
 from selvbetjening.data.members.shortcuts import get_or_create_profile
 
-class SendPreviewEmailForm(forms.Form):
-    email = forms.EmailField()
-
 class SelectGroupForm(forms.Form):
     group = forms.CharField(max_length=128, label=_('Recipient group'), widget=forms.Select())
 
@@ -58,22 +55,6 @@ class SelectGroupForm(forms.Form):
 
         return recipients
 
-class ConfirmGroupForm(SelectGroupForm):
-    confirm = forms.BooleanField(widget=forms.CheckboxInput(),
-                             label=_(u'Send emails to the selected individuals'))
 
-    class Meta:
-        layout = (
-            ('', ('confirm', ('group', {'display' : 'hidden'}))),
-              )
-
-    def clean_confirm(self):
-        """
-        Validates that the user accepted the Terms of Service.
-
-        """
-        if self.cleaned_data.get('confirm', False):
-                return self.cleaned_data['confirm']
-        raise forms.ValidationError(_(u'You must confirm the list of recipients before sending to them.'))
 
 

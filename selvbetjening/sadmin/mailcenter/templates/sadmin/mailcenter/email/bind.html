@@ -1,0 +1,28 @@
+{% extends "sadmin/mailcenter/email/base.html" %}
+{% load uni_form_tags %}
+
+{% block content %}
+
+<p>You can bind an e-mail to an event in Selvbetjening, sending the bound e-mail
+each time the event is triggered. The recipient of this e-mail is the user for
+which the event concerns.</p>
+
+<p>E.g. the <i>"user registered for event"</i> event is triggered when a user registers
+for the event, and a bound e-mail would be send to that given user.</p>
+
+<p>Depending on the bound event, additional parameters are made available for the e-mail template. A user parameter, representing the receiver, is always present. Furthermore, bound e-mails can't be send as mass e-mail.</p>
+
+<form method="POST" action="" class="uniForm">
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+<div class="buttonHolder">
+  <input type="submit" name="submit_email_source" value="Bind to Event"
+    class="submit submitButton" />
+</div>
+
+</form>
+
+{% endblock %}

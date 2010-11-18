@@ -1,0 +1,16 @@
+{% extends "sadmin/mailcenter/base.html" %}
+{% load sadmin_menu %}
+
+{% block page_heading %}
+    <h1>{{email.subject}}</h1>
+{% endblock %}
+
+{% block navigation %}
+{{ block.super }}
+
+<nav class="secondary-nav">
+  {% get_menu email as navigation %}
+  {% include "sadmin/base/parts/menu.html" %}
+</nav>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "sadmin/mailcenter/email/base.html" %}
+{% load uni_form_tags %}
+
+{% block content %}
+
+<form method="POST" action="" class="uniForm">
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+</form>
+
+{% endblock %}

@@ -56,42 +56,42 @@ class BaseProfileForm(forms.Form):
 
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
-                          label=_(u'first name'),
+                          label=_(u'First name'),
                           required=True)
 
     last_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
-                          label=_(u'last name'),
+                          label=_(u'Last name'),
                           required=True)
 
-    email = forms.EmailField(max_length=75, label=_(u'email'))
+    email = forms.EmailField(max_length=75, label=_(u'E-mail'))
 
     dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(
-        years=range(1910, 2010)), label=_(u'date of birth'))
+        years=range(1910, 2010)), label=_(u'Date of birth'))
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
-                             label=_(u'street'),
+                             label=_(u'Street'),
                              required=False)
-    postalcode = forms.IntegerField(label=_(u'postal code'), required=False)
+    postalcode = forms.IntegerField(label=_(u'Postal code'), required=False)
 
     city = forms.CharField(max_length=255,
                            widget=forms.TextInput(),
-                           label=_(u'city'),
+                           label=_(u'City'),
                            required=False)
 
-    country = forms.ChoiceField(label=_(u'country'),
+    country = forms.ChoiceField(label=_(u'Country'),
                                 choices=COUNTRY_CHOICES,
                                 required=False, initial='DK',)
 
-    phonenumber = forms.RegexField(label=_(u'phonenumber'), required=False,
+    phonenumber = forms.RegexField(label=_(u'Phonenumber'), required=False,
                                    regex=r'(\+[0-9]{2}( )?)?([0-9]{8})')
 
     send_me_email = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u'Inform me about events and other important changes.'),
                              initial=True, required=False)
 
-    sex = forms.ChoiceField(label=_(u'sex'),
+    sex = forms.ChoiceField(label=_(u'Sex'),
                             choices=UserProfile.SEX,
                             required=False)
 

@@ -5,10 +5,7 @@
 {{ block.super }}
 
 <nav class="secondary-nav">
-  <ul>{% get_menu members as members_nav %}
-    {% for item in members_nav %}
-      <li><a href="{{item.url}}">{{item.label}}</a></li>
-    {% endfor %}
-  </ul>
+  {% get_menu members as navigation %}
+  {% include "sadmin/base/parts/menu.html" %}
 </nav>
 {% endblock %}

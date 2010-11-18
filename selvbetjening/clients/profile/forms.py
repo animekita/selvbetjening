@@ -14,7 +14,10 @@ from models import UserPrivacy
 class LoginForm(AuthenticationForm):
     helper = FormHelper()
 
-    submit = Submit(_('Sign in'), _('Sign in'))
+    layout = Layout(InlineFieldset(None, 'username', 'password'))
+    submit = Submit('submit_login', _('Sign in'))
+
+    helper.add_layout(layout)
     helper.add_input(submit)
     helper.use_csrf_protection = True
 

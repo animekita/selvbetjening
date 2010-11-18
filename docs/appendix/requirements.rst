@@ -6,6 +6,7 @@ Dependencies
 
 * python-mysqldb
 * python-imaging
+* django-debug-toolbar
 
 Inkluderet i Contrib
 --------------------

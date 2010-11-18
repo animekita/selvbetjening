@@ -2,6 +2,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ModelForm
 
+from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
+
+from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+
 from selvbetjening.data.translation.utility import translate_model
 from selvbetjening.data.invoice.models import Payment
 
@@ -17,14 +21,6 @@ class OptionGroupForm(forms.Form):
             selections = [selection for selection in self.attendee.selections if selection.option.group == optiongroup]
         else:
             selections = []
-
-        class Meta:
-            layout = [[optiongroup.name,
-                       [],
-                       optiongroup.description,
-                       optiongroup.id],]
-
-        self.Meta = Meta
 
         kwargs['initial'] = {}
         for selection in selections:
@@ -52,6 +48,20 @@ class OptionGroupForm(forms.Form):
             self._display_option(option, disabled, suboptions)
             self._register_clean_function(option, selected, disabled)
 
+        # setup display related settings
+
+        fields = [self.optiongroup.name,] + [field_id for field_id in self.fields]
+        options = {'help_text' : self.optiongroup.description,
+                   'large_hints' : True}
+
+        layout = Layout(InlineFieldset(*fields, **options))
+
+        self.helper = FormHelper()
+
+        self.helper.add_layout(layout)
+        self.helper.form_tag = False
+        self.helper.use_csrf_protection = True
+
     def _should_save(self, option, suboptions, disabled):
         return True
 
@@ -71,8 +81,6 @@ class OptionGroupForm(forms.Form):
             self.fields[self._get_sub_id(option)] = forms.ChoiceField(label=_('Choices'),
                                                                       choices=choices,
                                                                       required=False)
-
-        self.Meta.layout[0][1].append((self._get_id(option), display_params))
 
     def _register_clean_function(self, option, selected_initially, disabled):
         pass
@@ -139,3 +147,13 @@ class PaymentForm(ModelForm):
     class Meta:
         model = Payment
         fields = ('amount', 'note')
+
+    layout = Layout(InlineFieldset(_(u'Payment'), *Meta.fields))
+    submit = Submit('submit_payment', _('Pay'))
+
+    helper = FormHelper()
+
+    helper.add_layout(layout)
+    helper.add_input(submit)
+    helper.form_tag = True
+    helper.use_csrf_protection = True

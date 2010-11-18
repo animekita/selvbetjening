@@ -1,54 +1,36 @@
-<!doctype html>{% load sadmin_menu %}
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
-<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
+{% extends "sadmin/base/base.html" %}
+{% load sadmin_menu %}
 
-  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-       Remove this if you use the .htaccess -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+{% block body %}
+    <header class="top-header"><div class="center">
 
-  <title>Selvbetjening v5.0</title>
+      <h1>Selvbetjening</h1>
+      <h2>v5.0</h2>
 
-  <!--  Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+      <nav class="authentication-nav">
+        <ul>
+          <li>authenticated as {{user.username}}</li>
+          <li><a href="{% url sadmin:logout %}">logout</a></li>
+        </ul>
+      </nav>
 
-  <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-  <link rel="shortcut icon" href="{{MEDIA_URL}}sadmin/favicon.ico">
+    </div></header>
 
-  <!-- CSS : implied media="all" -->
-  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/base.css?v=1">
-  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/uni-form.css?v=1">
-  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/style.css?v=1">
+    <nav class="primary-nav"><div class="center">
+        {% get_menu main as navigation_collection %}
+        <ul>
+        {% for navigation in navigation_collection %}
+          <li>{{navigation.label|lower}}{% include "sadmin/base/parts/menu.html" %}</li>
+        {% endfor %}
+        </ul>
 
-  <!-- Uncomment if you are specifically targeting less enabled mobile browsers
-  <link rel="stylesheet" media="handheld" href="{{MEDIA_URL}}sadmin/css/handheld.css?v=1">  -->
+    </div></nav>
 
-  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
-  <script src="{{MEDIA_URL}}sadmin/js/modernizr-1.5.min.js"></script>
+    <div class="center">
 
-  {% block extraheader %}{% endblock %}
-
-</head>
-
-<body>
-
-  <div id="container">
-    <header>
-    <h1>Selvbetjening</h1>
+    <header class="page-header">
+    {% block page_heading %}{% endblock %}
     </header>
-
-    <nav class="primary-nav">
-     <ul>{% get_menu main as main_nav %}
-       {% for item in main_nav %}
-       <li><a href="{{item.url}}">{{item.label}}</a></li>
-       {% endfor %}
-     </ul>
-    </nav>
 
     {% block navigation %}{% endblock %}
 
@@ -63,6 +45,8 @@
     {% endif %}
 
       {% block content %}{% endblock %}
+    </div>
+
     </div>
 
     <footer>
@@ -92,5 +76,4 @@
 
   {% block scripts %}{% endblock %}
 
-</body>
-</html>
+{% endblock %}

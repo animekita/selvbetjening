@@ -6,9 +6,11 @@ from django.db.models import Q
 from django.utils.translation import ugettext as _
 import operator
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 
 from selvbetjening.data.members.forms import ProfileForm, RegistrationForm
 from selvbetjening.sadmin.base.sadmin import SAdminContext
+from selvbetjening.sadmin.base.decorators import sadmin_access_required
 
 from forms import AccessForm
 
@@ -27,6 +29,8 @@ def _search(request):
 
     return (query, qs)
 
+@sadmin_access_required
+@permission_required('user.change_user')
 def list(request,
          template_name='sadmin/members/list.html'):
 
@@ -37,6 +41,8 @@ def list(request,
                                'users' : qs},
                               context_instance=SAdminContext(request))
 
+@sadmin_access_required
+@permission_required('user.change_user')
 def view(request,
          username,
          template_name='sadmin/members/view.html'):
@@ -53,10 +59,12 @@ def view(request,
         form = ProfileForm(user)
 
     return render_to_response(template_name,
-                              {'user' : user,
+                              {'user_obj' : user,
                                'form' : form},
                               context_instance=SAdminContext(request))
 
+@sadmin_access_required
+@permission_required('user.change_user')
 def view_access(request,
                 username,
                 template_name='sadmin/members/view_access.html'):
@@ -76,6 +84,8 @@ def view_access(request,
                                'form': form},
                               context_instance=SAdminContext(request))
 
+@sadmin_access_required
+@permission_required('user.add_user')
 def create(request,
            template_name='sadmin/members/create.html'):
 
@@ -94,6 +104,8 @@ def create(request,
                               {'form': form},
                               context_instance=SAdminContext(request))
 
+@sadmin_access_required
+@permission_required('user.change_user')
 def ajax_search(request,
                 template_name='sadmin/members/ajax/search.html'):
     query, qs = _search(request)

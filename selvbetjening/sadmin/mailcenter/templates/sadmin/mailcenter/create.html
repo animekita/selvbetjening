@@ -1,0 +1,23 @@
+{% extends "sadmin/mailcenter/base.html" %}
+{% load uni_form_tags %}
+
+{% block page_heading %}
+    <h1>E-mail Draft</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="" class="uniForm">
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+<div class="buttonHolder">
+  <input type="submit" name="submit_email_template" value="Gem e-mail"
+    class="submit submitButton" />
+</div>
+
+</form>
+
+{% endblock %}

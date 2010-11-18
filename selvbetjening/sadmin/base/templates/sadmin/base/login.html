@@ -1,0 +1,29 @@
+{% extends "sadmin/base/base.html" %}
+{% load uni_form_tags %}
+
+{% block body %}
+<div class="center">
+
+    <header class="login-header">
+        <h1>Selvbetjening</h1>
+        <h2>v5.0</h2>
+    </header>
+
+    {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="login-box">
+
+        {% with form.helper as helper %}
+            {% uni_form form helper %}
+        {% endwith %}
+
+    </div>
+</div>
+
+{% endblock %}

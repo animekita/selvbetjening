@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 
 class Navigation(object):
-    def __init__(self):
+    def __init__(self, label=None):
+        self.label = label
         self.options = []
 
     def register(self, option):
@@ -11,9 +12,10 @@ class Navigation(object):
         return self.options.__iter__()
 
 class Option(object):
-    def __init__(self, label, url):
+    def __init__(self, label, url, available=None):
         self.label = label
         self.url = url
+        self.available = available if not None else lambda user: True
 
 class OptionProxy(object):
     """
@@ -25,6 +27,10 @@ class OptionProxy(object):
         self.context = context
 
     @property
+    def available(self):
+        return self.option.available(self.context['user'])
+
+    @property
     def url(self):
         if callable(self.option.url):
             return self.option.url(self.context)
@@ -34,6 +40,10 @@ class OptionProxy(object):
     @property
     def label(self):
         return self.option.label
+
+    def __iter__(self):
+        elements = [OptionProxy(element, self.context) for element in self.option]
+        return elements.__iter__()
 
 registry = {}
 

@@ -12,6 +12,7 @@ contrib.add_contrib_to_python_path()
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 STATIC_DEBUG = DEBUG
+INTERNAL_IPS = ('127.0.0.1',)
 
 # base settings
 AUTH_PROFILE_MODULE = 'members.UserProfile'
@@ -44,6 +45,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+#    'debug_toolbar.middleware.DebugToolbarMiddleware'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -73,6 +75,7 @@ INSTALLED_APPS = [
     'uni_form',
     'sorl.thumbnail',
     'crumbs',
+    'debug_toolbar',
 
     'django.contrib.sites',
     'django.contrib.auth',

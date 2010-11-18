@@ -29,10 +29,13 @@ class Invoice(models.Model):
 
     @property
     def latest_revision(self):
-        if self.revision_set.count() == 0:
-            return InvoiceRevision.objects.create(invoice=self)
-        else:
-            return self.revision_set.latest('id')
+        if not hasattr(self, '_latest_revision'):
+            try:
+                self._latest_revision = self.revision_set.latest('id')
+            except InvoiceRevision.DoesNotExist:
+                self._latest_revision = InvoiceRevision.objects.create(invoice=self)
+
+        return self._latest_revision
 
     @property
     def line_set(self):

@@ -7,55 +7,45 @@ from django.template.loader import render_to_string
 
 from mailer import send_html_mail
 
-# Create your models here.
-class Mail(models.Model):
+import sources
+import conditions
+
+class EmailSpecification(models.Model):
+    # source
+    event = models.CharField(max_length=64, default='', blank=True,
+                             choices=[(key, sources.sources[key][0]) for key in sources.sources])
+
+    source_enabled = models.BooleanField(default=False)
+
+    # conditions
+    # see foreign key on Condition model
+
+    # template
     subject = models.CharField(max_length=128)
     body = models.TextField()
+
+    # meta
     date_created = models.DateField(editable=False, auto_now_add=True)
     recipients = models.ManyToManyField(User, editable=False)
 
-    def is_draft(self):
-        return (len(self.recipients.all()) == 0)
-    is_draft.boolean = True
+    def is_valid(self):
+        return False
 
-    def send(self, users):
-        """
-        Sends mails to a list of users, while registering the list of users in the recipients
-        relation.
+    def passes_conditions(self, user, **kwargs):
+        return True
 
-        """
-        emails = []
-        for user in users:
-            emails.append(user.email)
-            self.recipients.add(user)
-        self._send_mail(emails)
+    def send_email(self, users, bypass_conditions=False, **kwargs):
+        if not hasattr(users, '__iter__'):
+            users = [users,]
 
-    def send_preview(self, emails):
-        self._send_mail(emails)
+        if not bypass_conditions:
+            users = [user for user in users if self.passes_conditions(user, **kwargs)]
 
-    def recipient_filter(self, recipients):
-        """
-        Filter a list of recipient users, dividing them into an "accept" and a "deny" group based
-        on previous send e-mail to those users. A touple containing two lists are returned.
-        ([accept], [deny])
+        self._send_email(users)
 
-        """
-        accept = []
-        deny = []
-        current_recipients = self.recipients.all()
-        for recipient in recipients:
-            if recipient in current_recipients:
-                deny.append(recipient)
-            else:
-                accept.append(recipient)
+        return len(users)
 
-        return (accept, deny)
-
-    def _send_mail(self, recipients):
-        """
-        Send e-mails to a list of e-mail adresses.
-
-        """
+    def _send_email(self, recipients):
         body_plain = re.sub(r'<[^>]*?>', '', self.body)
         body_html = render_to_string('mailcenter/email/newsletter_html.txt',
                                      { 'body': self.body })
@@ -65,3 +55,24 @@ class Mail(models.Model):
 
     def __unicode__(self):
         return self.subject
+
+class Condition(models.Model):
+    specification = models.ForeignKey(EmailSpecification, related_name='conditions')
+
+    negate_condition = models.BooleanField(default=False)
+
+    field = models.CharField(max_length=256)
+    comparator = models.CharField(max_length=256)
+    argument = models.CharField(max_length=256)
+
+    @property
+    def field_choices(self):
+        choices = []
+        parameters = ['user',]
+        import wingdbstub
+        for parameter in parameters:
+            name, param_type, fields = conditions.parameters[parameter]
+            choices.append((name, [(field[0], field[1]) for field in fields]))
+
+        return choices
+

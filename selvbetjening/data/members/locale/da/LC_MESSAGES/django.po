@@ -73,40 +73,40 @@ msgstr ""
 "Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
 
 #: forms.py:59
-msgid "first name"
+msgid "First name"
 msgstr "Fornavn"
 
 #: forms.py:64
-msgid "last name"
+msgid "Last name"
 msgstr "Efternavn"
 
 #: forms.py:67
-msgid "email"
-msgstr "Email"
+msgid "E-mail"
+msgstr "E-mail"
 
 #: forms.py:70 models.py:49 migrations/0000_initial.py:14
 #: migrations/0003_enforce_dob_null.py:10
-msgid "date of birth"
+msgid "Date of birth"
 msgstr "Fødselsdag"
 
 #: forms.py:74 models.py:53 migrations/0000_initial.py:15
-msgid "street"
+msgid "Street"
 msgstr "Vej"
 
 #: forms.py:76 models.py:54 migrations/0000_initial.py:18
-msgid "postal code"
+msgid "Postal code"
 msgstr "Postnummer"
 
 #: forms.py:80 models.py:55 migrations/0000_initial.py:13
-msgid "city"
+msgid "City"
 msgstr "By"
 
 #: forms.py:83
-msgid "country"
+msgid "Country"
 msgstr "Land"
 
 #: forms.py:87 models.py:58 migrations/0000_initial.py:16
-msgid "phonenumber"
+msgid "Phonenumber"
 msgstr "Telefonnummer"
 
 #: forms.py:90
@@ -114,7 +114,7 @@ msgid "Inform me about events and other important changes."
 msgstr "Informer mig omkring arrangementer og andre tiltag igennem min e-mail."
 
 #: forms.py:93 models.py:51
-msgid "sex"
+msgid "Sex"
 msgstr "Køn"
 
 #: forms.py:118

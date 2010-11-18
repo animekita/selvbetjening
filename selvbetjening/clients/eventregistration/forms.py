@@ -23,7 +23,10 @@ class AcceptForm(forms.Form):
                                                     label=self.label())
 
         self.helper = FormHelper()
-        self.helper.use_csrf_protection = True
+        self.helper.add_layout(Layout(InlineFieldset(self.heading(), 'confirm')))
+
+    def heading(self):
+        return None
 
     def label(self):
         return u'Accept'
@@ -71,21 +74,6 @@ class SignoffForm(AcceptForm):
         return _(u'You must accept to remove your participation in the event')
 
 class OptionGroupForm(BaseOptionGroupForm):
-
-    def __init__(self, *args, **kwargs):
-        super(OptionGroupForm, self).__init__(*args, **kwargs)
-
-        fields = [self.optiongroup.name,] + [field_id for field_id in self.fields]
-        options = {'help_text' : self.optiongroup.description,
-                   'large_hints' : True}
-
-        layout = Layout(InlineFieldset(*fields, **options))
-
-        self.helper = FormHelper()
-
-        self.helper.add_layout(layout)
-        self.helper.form_tag = False
-        self.helper.use_csrf_protection = True
 
     def _should_save(self, option, suboptions, disabled):
         return disabled == False

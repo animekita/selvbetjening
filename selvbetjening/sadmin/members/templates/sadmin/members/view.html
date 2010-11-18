@@ -5,13 +5,14 @@
 {{ block.super }}
 
 <nav class="secondary-nav">
-  <ul>{% get_menu member as member_nav %}
-    {% for item in member_nav %}
-      <li><a href="{{item.url}}">{{item.label}}</a></li>
-    {% endfor %}
-  </ul>
+  {% get_menu member as navigation %}
+  {% include "sadmin/base/parts/menu.html" %}
 </nav>
 
+{% endblock %}
+
+{% block page_heading %}
+<h1>{{user_obj.username}}</h1>
 {% endblock %}
 
 {% block content %}

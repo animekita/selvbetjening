@@ -4,59 +4,87 @@ Bugfix
 - Achivements
   - Ret fejl ved sletning af event
 
-New stuff
-=========
+Stuff for svscon
+================
 
-Admin:
-  - Helt ny admin
-  - Permissions, lav admin brugbar af andre end mig
-  - Oprydning i gammel admin
+Email system
+------------
+
+- Add parameter help for template
+- Add filters for bind event and send                       HARD
+- Outgoing e-mail queue (create generic data view?)         HARD
+- Add actual code which binds to events and manages them    HARD
+
+CPR
+---
+
+- Tilføj CPR checkin modul
+
+Uge 1
+-----
+
+- Design
+  - Menu desgin
+    - Fix markering af aktiv side
+  - Gennemgå alt form og få det til at se pænt ud, specielt med hensyn til font size
+
+- Oprydning
+  - Fjern checkin handler fra checkin
+
+Uge 2
+-----
 
 Kreditkort modul:
   - Paypal betaling e.l.
 
-Achivements
-  - Opdel event achivements i flere mapper
-  - Tilføj mere informative beskrivelser
-  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
+Uge 3
+-----
 
 Refactor
   - Oprydning i arch
   - Fjern dependencies
   - Lav byggesystem
 
-Ny admin
-========
+Personnumre til checkin
 
-- Adgangskontrol <-- 1
+Uge 4
+-----
 
+Admin:
+  - Helt ny admin
+  - Fjern gammel admin
+
+Kan vente til senere
+====================
+
+Admin
 - Events
-  - Nyt event <-- 3
-  - Find event <-- 2
-  - Rediger event <-- 3
-  - Statistik / rapport for event <-- 5
-  - Tilmeldte <-- 2
-    - Checkin <-- 4
-  - Registrer betaling <-- 3
+  - Quick checkin
+  - Register betaling interface
 
-- Design
-  - Anden header
-  - Login side
-  - Menu desgin
+Checkin
+  - System til personnummer checkin
 
-- Would be nice
-  - Subsystem til breadcrumbs
-  - Udvid menu system så aktive sider vises
+Stuff for Kita
+==============
+
+Achivements
+  - Opdel event achivements i flere mapper
+  - Tilføj mere informative beskrivelser
+  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
+
+Admin:
+  - Permissions, lav admin brugbar af andre end mig
 
 6.0.0 Todo
 ==========
 
 Bedre håndtering af e-mails:
-  - Flere filtre til hvem der skal have e-mails
+  + Flere filtre til hvem der skal have e-mails
+  + Standardiser andre e-mail subsystemer med templates osv.
   - Bedre e-mail udseende
-  - Standardiser andre e-mail subsystemer med templates osv.
-  - Kontrol mht. hvornår e-mails skal sendes
-    - F.eks. påmindelse omkring tilmelding.
+  + Kontrol mht. hvornår e-mails skal sendes
+    + F.eks. påmindelse omkring tilmelding.
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
 
@@ -77,3 +105,7 @@ Forum
 
 http://github.com/justquick/django-activity-stream
 http://nedbatchelder.com/blog/201008/django_superuser_login_trapdoor.html
+http://github.com/eldarion/brabeion Badges
+http://celeryproject.org/ Query system
+http://www.rabbitmq.com/ Query system
+http://github.com/agiliq/Django-Socialauth OAuth support and multisite support

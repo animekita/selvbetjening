@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, url, include
 from django.template import RequestContext
 
 import nav
+import urls
 
 class SAdmin(object):
     def __init__(self):
@@ -13,9 +14,10 @@ class SAdmin(object):
     @property
     def urls(self):
         url_patterns = patterns('selvbetjening.sadmin.base.views',
-            url(r'^$', 'dashboard', name='dashboard'),
             *[(r'^%s/' % module, include(url_pattern)) for module, url_pattern in self._urls]
         )
+
+        url_patterns = url_patterns + urls.url_patterns
 
         return (url_patterns, 'sadmin', 'sadmin')
 

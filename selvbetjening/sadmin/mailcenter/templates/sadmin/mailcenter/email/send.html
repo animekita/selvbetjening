@@ -1,0 +1,16 @@
+{% extends "sadmin/mailcenter/email/base.html" %}
+{% load uni_form_tags %}
+
+{% block content %}
+
+<ul class="messages">
+    <li class="warning">WARNING: Be aware that you are about to send a newsletter to {{recipients|length}} users. Please ensure that the e-mail is correct and all filters are applied correctly.</li>
+</ul>
+
+<p>Currently this e-mail will be sent to {{recipients|length}} receipients. Configure the <a href="{% url sadmin:mailcenter_email_filter email.pk %}">e-mail filter</a> to change who will receive this e-mail.</p>
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+{% endblock %}

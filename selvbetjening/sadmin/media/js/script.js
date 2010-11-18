@@ -15,7 +15,7 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
 
             this.requestTimer = setTimeout(function() {
                 jQuery.get(searchUrl + query, function(data) {
-                    if (data.length && query.length) {
+                    if (data.length) {
                         resultsArea.html(data);
                     }
                     else {
