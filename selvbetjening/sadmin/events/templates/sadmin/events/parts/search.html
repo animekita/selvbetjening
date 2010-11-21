@@ -1,0 +1,6 @@
+<table>
+    <tr><th>Title</th><th>Date</th><th>&nbsp;</th></tr>
+    {% for event in queryset %}
+    <tr><td>{{event.title}}</td><td>{{event.startdate}}</td><td><a href="{% url sadmin:events_view_attendees event.pk %}">vis</a></td></tr>
+    {% endfor %}
+</table>

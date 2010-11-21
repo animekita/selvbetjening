@@ -1,0 +1,11 @@
+<table>
+    <tr><th>Brugernavn</th><th>Navn</th><th>Status</th><th>Betalt</th><th>&nbsp;</th></tr>
+    {% for attendee in queryset %}
+    <tr>
+        <td>{{attendee.user.username}}</td>
+        <td>{{attendee.user.first_name}} {{attendee.user.last_name}}</td>
+        <td>{{attendee.state}}</td>
+        <td>{{attendee.invoice.in_balance}}</td>
+        <td><a href="{% url sadmin:events_view_attendee event.pk attendee.pk %}">rediger</a></td></tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,34 @@
+{% extends "sadmin/events/base.html" %}
+{% load sadmin_menu %}
+
+{% block navigation %}
+{{ block.super }}
+
+<nav class="secondary-nav">
+  <ul>{% get_menu events as events_nav %}
+    {% for item in events_nav %}
+      <li><a href="{{item.url}}">{{item.label}}</a></li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="block">
+  <form method="GET" action="">
+    <input type="text" id="searchbox" name="search" autofocus="autofocus" autocomplete="off" placeholder="Søg efter et medlem" required="required" {% if query %}value="{{query}}"{% endif %} /> <input type="submit" value="" id="searchsubmit" />
+  </form>
+</div>
+
+<div id="searchresults">
+  {% include "sadmin/events/parts/search.html" %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{block.super}}
+<script type="text/javascript">
+init_livesearch($('#searchbox'), $('#searchresults'), '{% url sadmin:events_ajax_search %}?search=');
+</script>
+{% endblock %}
