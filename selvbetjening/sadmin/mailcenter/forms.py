@@ -5,8 +5,10 @@ from django.contrib.auth.models import User
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
 
 from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
-from selvbetjening.clients.mailcenter.models import EmailSpecification, Condition
+from selvbetjening.clients.mailcenter.models import EmailSpecification,\
+     UserConditions, AttendConditions, EventConditions
 from selvbetjening.clients.eventregistration.forms import AcceptForm
+from selvbetjening.data.events.models import Event, Option, AttendState
 
 class SendPreviewEmailForm(forms.Form):
     username = forms.CharField()
@@ -67,31 +69,78 @@ class EmailSourceForm(forms.ModelForm):
     helper.add_layout(layout)
     helper.form_tag = False
 
-class ConditionForm(forms.ModelForm):
+class BaseConditionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.specification = kwargs.pop('email_specification')
+
+        try:
+            kwargs['instance'] = self.Meta.model.objects.get(specification=self.specification)
+        except self.Meta.model.DoesNotExist:
+            pass
+
+        super(BaseConditionForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        instance = super(BaseConditionForm, self).save(commit=False)
+        instance.specification = self.specification
+
+        return instance.save()
+
+class UserConditionForm(BaseConditionForm):
     class Meta:
-        model = Condition
-        fields = ('negate_condition', 'field', 'comparator', 'argument')
+        model = UserConditions
+        exclude = ['specification',]
 
-    negate_condition = forms.BooleanField(label=_(u'Negate'), required=False)
-    field = forms.ChoiceField()
-    comparator = forms.ChoiceField()
-    argument = forms.CharField()
-
-    layout = Layout(InlineFieldset(_('Condition'),
-                                   Row('negate_condition', 'field', 'comparator', 'argument')))
+    layout = Layout(InlineFieldset(_('User'),
+                                   Row('user_age_comparator', 'user_age_argument')))
 
     helper = FormHelper()
     helper.add_layout(layout)
     helper.form_tag = False
 
-    def __init__(self, *args, **kwargs):
-        specification = kwargs.pop('email_specification')
+class AttendeeConditionForm(BaseConditionForm):
+    class Meta:
+        model = AttendConditions
+        exclude = ['specification',]
 
-        super(ConditionForm, self).__init__(*args, **kwargs)
+    attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
-        try:
-            self.instance.specification
-        except EmailSpecification.DoesNotExist:
-            self.instance.specification = specification
+    layout = Layout(InlineFieldset(_('Attends'), 'attends_event',
+                                   Row('attends_selection_comparator', 'attends_selection_argument'),
+                                   'attends_status'))
 
-        self.fields['field'].choices = self.instance.field_choices
+    helper = FormHelper()
+    helper.add_layout(layout)
+    helper.form_tag = False
+
+class EventConditionForm(BaseConditionForm):
+    class Meta:
+        model = EventConditions
+        exclude = ['specification']
+
+    attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
+
+    layout = Layout(InlineFieldset(_('Event'),
+                                   Row('attends_selection_comparator',
+                                       'attends_selection_argument'),
+                                   'attends_status'))
+
+    helper = FormHelper()
+    helper.add_layout(layout)
+    helper.form_tag = False
+
+class ConditionFormRegistry(object):
+    def __init__(self):
+        self._condition_forms = {}
+
+    def register(self, condition, form):
+        self._condition_forms[condition] = form
+
+    def get_forms(self, keys):
+        return [self._condition_forms[key.__class__] for key in keys]
+
+conditionform_registry = ConditionFormRegistry()
+
+conditionform_registry.register(UserConditions, UserConditionForm)
+conditionform_registry.register(AttendConditions, AttendeeConditionForm)
+conditionform_registry.register(EventConditions, EventConditionForm)

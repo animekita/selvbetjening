@@ -7,12 +7,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
+from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.base.decorators import sadmin_access_required
 from selvbetjening.clients.mailcenter.models import EmailSpecification
 
-from forms import EmailTemplateForm, EmailSourceForm, ConditionForm, \
-     SendPreviewEmailForm, SendNewsletterForm
+from forms import EmailTemplateForm, EmailSourceForm, \
+     SendPreviewEmailForm, SendNewsletterForm, conditionform_registry
 
 #@sadmin_access_required
 #@permission_required('mailcenter.change_emailspecification')
@@ -151,9 +152,21 @@ def filter_email(request,
 
     email = get_object_or_404(EmailSpecification, pk=email_pk)
 
-    form = ConditionForm(email_specification=email)
+    form_classes = conditionform_registry.get_forms(email.conditions)
+    ConditionForms = form_collection_builder(form_classes)
+
+    if request.method == 'POST':
+        forms = ConditionForms(request.POST, email_specification=email)
+
+        if forms.is_valid():
+            forms.save()
+
+            messages.success(request, _(u'Filter successfully updated'))
+
+    else:
+        forms = ConditionForms(email_specification=email)
 
     return render_to_response(template_name,
                               {'email': email,
-                               'form': form},
+                               'forms': forms,},
                               context_instance=SAdminContext(request))

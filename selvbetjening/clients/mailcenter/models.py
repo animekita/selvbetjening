@@ -7,18 +7,20 @@ from django.template.loader import render_to_string
 
 from mailer import send_html_mail
 
+from selvbetjening.data.events.models import Event, Option, AttendState, Attend
+from selvbetjening.core.models import ListField
+
 import sources
-import conditions
 
 class EmailSpecification(models.Model):
     # source
     event = models.CharField(max_length=64, default='', blank=True,
-                             choices=[(key, sources.sources[key][0]) for key in sources.sources])
+                             choices=sources.registry.get_choices())
 
     source_enabled = models.BooleanField(default=False)
 
     # conditions
-    # see foreign key on Condition model
+    # see condition models below
 
     # template
     subject = models.CharField(max_length=128)
@@ -31,7 +33,35 @@ class EmailSpecification(models.Model):
     def is_valid(self):
         return False
 
+    @property
+    def _required_parameters(self):
+        parameters = sources.default_parameters
+
+        try:
+            source = sources.registry.get(self.event)
+            parameters = source['parameters']
+        except KeyError:
+            pass
+
+        return parameters
+
+    @property
+    def conditions(self):
+        parameters = self._required_parameters
+        conditions = []
+
+        for condition in ALL_CONDITIONS:
+            if condition.accepts(parameters):
+                instance, created = condition.objects.get_or_create(specification=self)
+                conditions.append(instance)
+
+        return conditions
+
     def passes_conditions(self, user, **kwargs):
+        for condition in self.conditions:
+            if not condition.passes(user, **kwargs):
+                return False
+
         return True
 
     def send_email(self, users, bypass_conditions=False, **kwargs):
@@ -56,23 +86,118 @@ class EmailSpecification(models.Model):
     def __unicode__(self):
         return self.subject
 
-class Condition(models.Model):
-    specification = models.ForeignKey(EmailSpecification, related_name='conditions')
+class UserConditions(models.Model):
+    AGE_COMPARATOR_CHOICES = {'<': ('<', lambda age, argument: age < argument),
+                              '=': ('=', lambda age, argument: age == argument),
+                              '>': ('>', lambda age, argument: age > argument)}
 
-    negate_condition = models.BooleanField(default=False)
+    specification = models.OneToOneField(EmailSpecification)
 
-    field = models.CharField(max_length=256)
-    comparator = models.CharField(max_length=256)
-    argument = models.CharField(max_length=256)
+    user_age_comparator = models.CharField(max_length='1', default='<',
+                                           choices=[(key, AGE_COMPARATOR_CHOICES[key][0])
+                                                    for key
+                                                    in AGE_COMPARATOR_CHOICES])
 
-    @property
-    def field_choices(self):
-        choices = []
-        parameters = ['user',]
-        import wingdbstub
-        for parameter in parameters:
-            name, param_type, fields = conditions.parameters[parameter]
-            choices.append((name, [(field[0], field[1]) for field in fields]))
+    user_age_argument = models.IntegerField(blank=True, default=None, null=True)
 
-        return choices
+    @staticmethod
+    def accepts(parameters):
+        return User in parameters
 
+    def passes(self, user, **kwargs):
+        if self.user_age_argument is None:
+            return True
+
+        name, comparator = self.AGE_COMPARATOR_CHOICES[self.user_age_comparator]
+
+        return comparator(user.get_profile().get_age(), self.user_age_argument)
+
+class AttendConditions(models.Model):
+    ATTEND_STATUS_CHOICES = AttendState.get_choices()
+
+    specification = models.OneToOneField(EmailSpecification)
+
+    attends_event = models.ForeignKey(Event, blank=True, null=True, default=None)
+    attends_selection_comparator = models.CharField(max_length=12, default='someof',
+                                                    choices=(('someof', 'Selected some of'),
+                                                             ('allof', 'Selected all of')),)
+    attends_selection_argument = models.ManyToManyField(Option, blank=True)
+    attends_status = ListField(choices=ATTEND_STATUS_CHOICES, blank=True,
+                               default=ATTEND_STATUS_CHOICES[0][0])
+
+    @staticmethod
+    def accepts(parameters):
+        return (User in parameters) and (Attend not in parameters)
+
+    def passes(self, user, **kwargs):
+        event = kwargs.pop('event')
+
+        try:
+            event.attendees.objects.get(user=user)
+        except Attend.DoesNotExist:
+            return False
+
+        # use EventConditions
+
+
+
+class EventConditions(models.Model):
+    ATTEND_STATUS_CHOICES = AttendState.get_choices()
+
+    specification = models.OneToOneField(EmailSpecification)
+
+    attends_event = models.ForeignKey(Event, blank=True, null=True, default=None)
+    attends_selection_comparator = models.CharField(max_length=12, default='someof',
+                                                    choices=(('someof', 'Selected some of'),
+                                                             ('allof', 'Selected all of')),)
+    attends_selection_argument = models.ManyToManyField(Option, blank=True)
+    attends_status = ListField(choices=ATTEND_STATUS_CHOICES, blank=True,
+                               default=ATTEND_STATUS_CHOICES[0][0])
+
+    @staticmethod
+    def accepts(parameters):
+        return Attend in parameters
+
+    def passes(self, user, **kwargs):
+        attendee = kwargs.pop('attendee')
+
+        if not attendee.event == self.attends_event:
+            return False
+
+        desired_selections = self.attends_selection_argument.objects.all()
+
+        if len(selections) > 0:
+            actual_selections = attendee.selections.objects.all()
+            hits = 0
+
+            for desired_selection in desired_selections:
+                if desired_selection in actual_selections:
+                    hits += 1
+
+            if self.attends_selection_comparator == 'someof':
+                if hits == 0:
+                    return False
+
+            if self.attends_selection_comparator == 'allof':
+                if not hits == len(desired_selections):
+                    return False
+
+        if len(self.attends_status) > 0:
+            if not attendee.status in self.attends_status:
+                return False
+
+        return True
+
+
+ALL_CONDITIONS = [AttendConditions, UserConditions, EventConditions]
+
+def source_triggered_handler(sender, **kwargs):
+    source_key = kwargs.pop('source_key')
+    user = kwargs.pop('user')
+
+    specifications = EmailSpecification.objects.filter(event=source_key)
+
+    for specification in specifications:
+        specification.send_email(user, **arguments)
+
+sources.source_triggered.connect(source_triggered_handler)

@@ -5,11 +5,12 @@ from datetime import date, datetime
 from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
+from django.db.models.signals import post_delete, post_save, pre_delete, pre_save, Signal
 from django.core.cache import cache
 
 from selvbetjening.data.invoice.models import Invoice, Payment
 from selvbetjening.data.invoice.signals import populate_invoice
+from selvbetjening.clients.mailcenter.sources import registry as source_registry
 
 import processors
 
@@ -332,6 +333,19 @@ def update_state_on_payment(sender, **kwargs):
             attend.save()
 
 post_save.connect(update_state_on_payment, sender=Payment)
+
+attends_event_signal = Signal(providing_args=['user', 'attendee'])
+
+def attends_event_handler(sender, **kwargs):
+    instance = kwargs.pop('instance')
+    created = kwargs.pop('created')
+
+    attends_event_signal.send(user=instance.user, attendee=instance)
+
+post_save.connect(attends_event_handler, sender=Attend)
+
+source_registry.register('attends_event_signal', _(u'User registered for event'),
+                         [Attend], attends_event_signal)
 
 class AttendStateChange(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)

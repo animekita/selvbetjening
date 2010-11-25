@@ -4,66 +4,38 @@ Bugfix
 - Achivements
   - Ret fejl ved sletning af event
 
-Stuff for svscon
-================
-
-Email system
-------------
-
-- Add parameter help for template
-- Add filters for bind event and send                       HARD
-- Outgoing e-mail queue (create generic data view?)         HARD
-- Add actual code which binds to events and manages them    HARD
-
-CPR
----
-
-- Tilføj CPR checkin modul
-
-Uge 1
------
-
-- Design
-  - Menu desgin
-    - Fix markering af aktiv side
-  - Gennemgå alt form og få det til at se pænt ud, specielt med hensyn til font size
-
 - Oprydning
   - Fjern checkin handler fra checkin
 
-Uge 2
------
+Stuff for svscon
+================
 
-Kreditkort modul:
-  - Paypal betaling e.l.
+Features - før 1. januar
+- Betaling med giro kort, pluggable system til id numre
+- Send tidligere e-mails, email systemet
+- Opsætning på server
 
-Uge 3
------
+Features - efter 1. januar
+
+- Checkin af folk
+- Registrer betaling interface
+- CPR checkin
+
+Email system
+============
+
+- Outgoing e-mail queue (create generic data view?)         HARD
+- Oprydning i models, attendee conditions model er forkert og kan merges
+- Lav sidste events
+- Test det igennem
+- Gør det pænt (Add parameter help for template)
 
 Refactor
-  - Oprydning i arch
-  - Fjern dependencies
-  - Lav byggesystem
+========
 
-Personnumre til checkin
-
-Uge 4
------
-
-Admin:
-  - Helt ny admin
-  - Fjern gammel admin
-
-Kan vente til senere
-====================
-
-Admin
-- Events
-  - Quick checkin
-  - Register betaling interface
-
-Checkin
-  - System til personnummer checkin
+- Oprydning i arch
+- Fjern dependencies
+- Lav byggesystem
 
 Stuff for Kita
 ==============

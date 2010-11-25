@@ -8,12 +8,18 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
+        # Adding field 'EmailSpecification.event'
+        db.add_column('mailcenter_emailspecification', 'event', self.gf('django.db.models.fields.CharField')(default='', max_length=64, blank=True), keep_default=False)
+
         # Adding field 'EmailSpecification.source_enabled'
         db.add_column('mailcenter_emailspecification', 'source_enabled', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
 
 
     def backwards(self, orm):
         
+        # Deleting field 'EmailSpecification.event'
+        db.delete_column('mailcenter_emailspecification', 'event')
+
         # Deleting field 'EmailSpecification.source_enabled'
         db.delete_column('mailcenter_emailspecification', 'source_enabled')
 
@@ -54,15 +60,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'mailcenter.condition': {
-            'Meta': {'object_name': 'Condition'},
-            'argument': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'comparator': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'field': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'negate_condition': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'specification': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'conditions'", 'to': "orm['mailcenter.EmailSpecification']"})
         },
         'mailcenter.emailspecification': {
             'Meta': {'object_name': 'EmailSpecification'},

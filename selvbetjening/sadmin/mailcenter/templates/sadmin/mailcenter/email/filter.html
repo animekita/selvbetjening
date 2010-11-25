@@ -5,9 +5,18 @@
 
 <form method="POST" action="" class="uniForm">
 
-{% with form.helper as helper %}
-    {% uni_form form helper %}
-{% endwith %}
+{% for form in forms %}
+
+    {% with form.helper as helper %}
+        {% uni_form form helper %}
+    {% endwith %}
+
+{% endfor %}
+
+<div class="buttonHolder">
+  <input type="submit" name="submit_update_conditions" value="Gem filter"
+    class="submit submitButton" />
+</div>
 
 </form>
 
