@@ -1,5 +1,5 @@
-Versioner
-=========
+Versionsnumre
+=============
 
 Til at angive versioner bruges formatet x.y.z, hvor x er major version, y minor version og z bugfix. Der gælder de følgende regler:
 

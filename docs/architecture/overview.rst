@@ -2,16 +2,26 @@
 Oversigt
 ========
 
-Selvbetjening er opdelt i fire forskellige typer moduler; core, data, clients og viewhelpers.
+Selvbetjening er opdelt i fire forskellige typer moduler; core, viewbase, portal, sadmin, api og notify.
 
- Core moduler::
-  Core moduler indeholder centrale funktioner for selvbetjening som bruges af alle andre moduler.
- Data moduler::
-  Data modulerne definerer informationer som er centrale for selvbetjening, og som derfor antages er tilgængelige for alle installationer (og derfor er disse moduler derfor altid installeret).
- Client moduler::
-  Client modulerne står for manipulation af data modulerne samt defineringen af yderlige data. Disse er anset for at være valgfrie, så man må ikke antage at et client modul er installeret.
- Viewhelpers::
-  Indeholder hjælper funktioner som ikke er centrale for selvbetjening og er målrettet rendering af elementer på siden.
+ Core
+  Core modulerne definerer informationer og tilbyder funktionalitet som er centrale for selvbetjening. Der antages at alle core moduler altid er installeret eftersom de regnes som at være centrale for Selvbetjening.
+
+ ViewBase
+  ViewBase modulerne er målrettet rendering af elementer til en webbrowser og skal ses som en hjælp til andre moduler der har behov for dette.
+
+ Portal
+  Portal modulerne implementerer et web interface målrettet medlemmer af en forening.
+
+ SAdmin
+  SAdmin modulerne implementerer et web interface målrettet administrationen af en forening.
+
+ API
+  API modulerne blotlægger et webservice API (pull) som kan bruges af andre systemer til at snakke med Selvbetjening.
+
+ Notify
+  Notify modulerne implementerer et push baseret system til at meddele andre systemer om hændelser i Selvbetjening..
+
 
 .. image:: images/architecture.png
 

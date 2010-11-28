@@ -10,14 +10,14 @@ Denne dokumentation er målrettet software udviklere der skal arbejde på Selvbe
 System Definition
 =================
 
-Selvbetjening fungere som den elektroniske grænseflade mellem en foreningen og dens medlemmer. Selvbetjening er tænkt som en samling moduler der udgør hjertet i den tekniske del af foreningen. Visse services, såsom et forum, installeres separat med Selvbetjening, og kobles sammen med Selvbetjening for at danne en samlet løsning.
+Selvbetjening fungere som den elektroniske grænseflade mellem en foreningen og dens medlemmer. Selvbetjening er tænkt som en samling moduler der udgør hjertet i den tekniske del af foreningen. Visse services, såsom et forum, installeres separat og kobles sammen med Selvbetjening for at danne en samlet løsning.
 
 Følgende områder er derfor i fokus for Selvbetjening:
 
 1. Et samlet system hvor medlemmer opretter *en* bruger som sammenknytter alle foreningens elektroniske systemer. F.eks. en forenings forum og selvbetjening selv.
 2. Administration og tilmelding til arrangement.
 3. Administration af kontingenter, betalinger, brugeroplysninger og nyhedsbrev.
-4. Modularitet, ikke alle Selvbetjening installationer er ens, derfor skal Selvbetjening kunne modificeres efter den enkelte forenings formål.
+4. Modularitet, ikke alle installationer er ens, derfor skal Selvbetjening kunne modificeres efter den enkelte forenings behov.
 
 Arkitektur
 ==========
