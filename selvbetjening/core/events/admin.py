@@ -15,7 +15,7 @@ from django.contrib.admin.helpers import AdminForm
 from django.utils.datastructures import SortedDict
 
 from selvbetjening.core.selvadmin.admin import site, reverse_lazy
-from selvbetjening.data.translation.admin import TranslationInline
+from selvbetjening.core.translation.admin import TranslationInline
 
 from models import Event, Attend, AttendState, Option, OptionGroup, SubOption, Selection
 import admin_views

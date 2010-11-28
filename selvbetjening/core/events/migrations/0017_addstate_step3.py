@@ -2,20 +2,20 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Deleting field 'Attend.has_attended'
         db.delete_column('events_attend', 'has_attended')
-    
+
     def backwards(self, orm):
-        
+
         # Adding field 'Attend.has_attended'
         db.add_column('events_attend', 'has_attended', orm['events.attend:has_attended'])
-    
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -114,5 +114,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
-    
+
     complete_apps = ['events']

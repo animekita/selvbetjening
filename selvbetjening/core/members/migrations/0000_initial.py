@@ -2,12 +2,12 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.members.models import *
+from selvbetjening.core.members.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'UserProfile'
         db.create_table('members_userprofile', (
             ('city', models.CharField(_(u'city'), max_length=255, blank=True)),
@@ -20,16 +20,16 @@ class Migration:
             ('id', models.AutoField(primary_key=True)),
         ))
         db.send_create_signal('members', ['UserProfile'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'UserProfile'
         db.delete_table('members_userprofile')
-        
-    
-    
+
+
+
     models = {
         'members.userprofile': {
             'city': ('models.CharField', ["_(u'city')"], {'max_length': '255', 'blank': 'True'}),
@@ -46,5 +46,5 @@ class Migration:
             'id': ('models.AutoField', [], {'primary_key': 'True'})
         }
     }
-    
+
     complete_apps = ['members']

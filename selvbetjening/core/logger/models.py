@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from selvbetjening.data.events.models import Event
+from selvbetjening.core.events.models import Event
 
 class Entry(models.Model):
     message = models.CharField(max_length=255)

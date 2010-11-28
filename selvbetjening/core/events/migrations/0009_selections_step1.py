@@ -2,12 +2,12 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'SubOption'
         db.create_table('events_suboption', (
             ('id', models.AutoField(primary_key=True)),
@@ -15,7 +15,7 @@ class Migration:
             ('option', models.ForeignKey(orm.Option)),
         ))
         db.send_create_signal('events', ['SubOption'])
-        
+
         # Adding model 'Selection'
         db.create_table('events_selection', (
             ('attendee', models.ForeignKey(orm.Attend)),
@@ -24,23 +24,23 @@ class Migration:
             ('option', models.ForeignKey(orm.Option)),
         ))
         db.send_create_signal('events', ['Selection'])
-        
+
         # Creating unique_together for [attendee, option] on Selection.
         db.create_unique('events_selection', ['attendee_id', 'option_id'])
-    
+
     def backwards(self, orm):
-        
+
         # Deleting model 'SubOption'
         db.delete_table('events_suboption')
-        
+
         # Deleting model 'Selection'
         db.delete_table('events_selection')
-        
+
         # Deleting unique_together for [attendee, option] on Selection.
         db.delete_unique('events_selection', ['attendee_id', 'option_id'])
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -106,5 +106,5 @@ class Migration:
             'users': ('models.ManyToManyField', ['User'], {'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events']

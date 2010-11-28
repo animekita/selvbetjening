@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.datastructures import SortedDict
 
 from selvbetjening.core.selvadmin.admin import site, reverse_lazy
-from selvbetjening.data.invoice.models import Invoice
+from selvbetjening.core.invoice.models import Invoice
 
 from shortcuts import get_or_create_profile
 from models import UserProfile, UserWebsite, UserCommunication

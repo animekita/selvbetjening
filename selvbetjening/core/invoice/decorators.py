@@ -1,4 +1,4 @@
-from selvbetjening.data.invoice.models import Invoice
+from selvbetjening.core.invoice.models import Invoice
 
 def disable_invoice_updates(func):
     def _disable_invoice_updates(*args, **kw):

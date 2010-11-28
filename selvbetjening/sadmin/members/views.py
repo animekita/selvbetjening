@@ -8,7 +8,7 @@ import operator
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 
-from selvbetjening.data.members.forms import ProfileForm, RegistrationForm
+from selvbetjening.core.members.forms import ProfileForm, RegistrationForm
 from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.base.decorators import sadmin_access_required
 

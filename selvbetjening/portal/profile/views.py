@@ -10,10 +10,10 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.contrib.formtools.preview import FormPreview
 
-from selvbetjening.data.logger import logger
-from selvbetjening.data.members.forms import ProfileForm
-from selvbetjening.data.members.models import UserProfile
-from selvbetjening.data.events.models import Attend
+from selvbetjening.core.logger import logger
+from selvbetjening.core.members.forms import ProfileForm
+from selvbetjening.core.members.models import UserProfile
+from selvbetjening.core.events.models import Attend
 
 from forms import ChangePasswordForm, ChangePictureForm, PrivacyForm, ChangeUsernameForm
 from processor_handlers import profile_page_processors

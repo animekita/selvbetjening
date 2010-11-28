@@ -13,7 +13,7 @@ from selvbetjening.sadmin.base.views import generic_search_page_unsecure
 from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.base.decorators import sadmin_access_required
-from selvbetjening.clients.mailcenter.models import EmailSpecification
+from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from forms import EmailTemplateForm, EmailSourceForm, \
      SendPreviewEmailForm, SendNewsletterForm, conditionform_registry

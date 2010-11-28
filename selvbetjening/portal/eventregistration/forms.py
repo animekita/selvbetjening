@@ -6,10 +6,10 @@ from django import forms
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
-from selvbetjening.data.events.forms import OptionForms as BaseOptionForms
-from selvbetjening.data.events.forms import OptionGroupForm as BaseOptionGroupForm
+from selvbetjening.core.events.forms import OptionForms as BaseOptionForms
+from selvbetjening.core.events.forms import OptionGroupForm as BaseOptionGroupForm
 
 class DummyWidget(forms.Widget):
     def render(self):

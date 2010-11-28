@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from selvbetjening.data.events.tests import Database as EventDatabase
+from selvbetjening.core.events.tests import Database as EventDatabase
 
 class VerifyTestCase(TestCase):
     def test_invalid_sessionid(self):

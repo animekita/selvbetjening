@@ -3,7 +3,7 @@ from django.test import TransactionTestCase
 from django.contrib.auth.models import Group
 from django.conf import settings
 
-from selvbetjening.data.events.tests import Database
+from selvbetjening.core.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase
 from selvbetjening.notify.proftpd.management.commands import \
      notify_proftpd_manage, notify_proftpd_status

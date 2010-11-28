@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
 
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
-from selvbetjening.clients.mailcenter.models import EmailSpecification,\
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.core.mailcenter.models import EmailSpecification,\
      UserConditions, AttendConditions, EventConditions
-from selvbetjening.clients.eventregistration.forms import AcceptForm
-from selvbetjening.data.events.models import Event, Option, AttendState
+from selvbetjening.portal.eventregistration.forms import AcceptForm
+from selvbetjening.core.events.models import Event, Option, AttendState
 
 class SendPreviewEmailForm(forms.Form):
     username = forms.CharField()

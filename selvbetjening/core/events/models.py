@@ -8,9 +8,9 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save, Signal
 from django.core.cache import cache
 
-from selvbetjening.data.invoice.models import Invoice, Payment
-from selvbetjening.data.invoice.signals import populate_invoice
-from selvbetjening.clients.mailcenter.sources import registry as source_registry
+from selvbetjening.core.invoice.models import Invoice, Payment
+from selvbetjening.core.invoice.signals import populate_invoice
+from selvbetjening.core.mailcenter.sources import registry as source_registry
 
 import processors
 

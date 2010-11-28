@@ -2,48 +2,48 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Changing field 'Event.description'
         db.alter_column('events_event', 'description', models.TextField(_(u'description'), blank=True))
-        
+
         # Changing field 'Event.registration_confirmation'
         db.alter_column('events_event', 'registration_confirmation', models.TextField(blank=True))
-        
+
         # Changing field 'Event.change_confirmation'
         db.alter_column('events_event', 'change_confirmation', models.TextField(blank=True))
-        
+
         # Changing field 'Option.description'
         db.alter_column('events_option', 'description', models.TextField(_('Description'), blank=True))
-        
+
         # Changing field 'OptionGroup.description'
         db.alter_column('events_optiongroup', 'description', models.TextField(_('Description'), blank=True))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Changing field 'Event.description'
         db.alter_column('events_event', 'description', models.TextField(_(u'description'), blank=True))
-        
+
         # Changing field 'Event.registration_confirmation'
         db.alter_column('events_event', 'registration_confirmation', models.TextField(blank=True))
-        
+
         # Changing field 'Event.change_confirmation'
         db.alter_column('events_event', 'change_confirmation', models.TextField(blank=True))
-        
+
         # Changing field 'Option.description'
         db.alter_column('events_option', 'description', models.TextField(_('Description'), blank=True))
-        
+
         # Changing field 'OptionGroup.description'
         db.alter_column('events_optiongroup', 'description', models.TextField(_('Description'), blank=True))
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -97,5 +97,5 @@ class Migration:
             'users': ('models.ManyToManyField', ['User'], {'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events']

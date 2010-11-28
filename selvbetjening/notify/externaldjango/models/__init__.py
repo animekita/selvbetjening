@@ -4,9 +4,9 @@ from django.db.models import signals
 from django.contrib.auth.models import Group, User
 
 from selvbetjening.core.database.dbrouter import DatabaseRouter
+from selvbetjening.core.members.signals import user_changed_username
 
 from selvbetjening.notify import BaseNotifyRegistry
-from selvbetjening.data.members.signals import user_changed_username
 
 from native import GroupDjangoGroup
 from externaldjango import DjangoGroup, DjangoUser

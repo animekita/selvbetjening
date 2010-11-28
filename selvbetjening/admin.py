@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from selvbetjening.core.selvadmin.admin import site
 
 # initialize admin site
-import selvbetjening.data.members.admin
-import selvbetjening.data.events.admin
-import selvbetjening.data.invoice.admin
-import selvbetjening.data.logger.admin
+import selvbetjening.core.members.admin
+import selvbetjening.core.events.admin
+import selvbetjening.core.invoice.admin
+import selvbetjening.core.logger.admin
 import selvbetjening.notify.concrete5.admin

@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.models import User
 
-from selvbetjening.data.members.models import UserProfile, to_age
+from selvbetjening.core.members.models import UserProfile, to_age
 
 from forms import AdminSelectMigrationUsers
 from processor_handlers import user_migration_processors

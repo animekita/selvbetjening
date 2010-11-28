@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from uni_form.helpers import FormHelper, Submit, Layout, Row, HTML
 
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
 class AccessForm(forms.ModelForm):
     class Meta:

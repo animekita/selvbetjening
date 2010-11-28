@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 
 from mailer import send_html_mail
 
-from selvbetjening.data.events.models import Event, Option, AttendState, Attend
+from selvbetjening.core.events.models import Event, Option, AttendState, Attend
 from selvbetjening.core.models import ListField
 
 import sources

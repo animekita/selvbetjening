@@ -2,17 +2,17 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.members.models import *
+from selvbetjening.core.members.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
         db.alter_column('members_userprofile', 'dateofbirth', models.DateField(_(u'date of birth'), null=True, blank=True))
 
     def backwards(self, orm):
         "Write your backwards migration here"
         pass
-    
+
     models = {
         'members.userprofile': {
             'city': ('models.CharField', ["_(u'city')"], {'max_length': '255', 'blank': 'True'}),
@@ -28,5 +28,5 @@ class Migration:
             'id': ('models.AutoField', [], {'primary_key': 'True'})
         }
     }
-    
+
     complete_apps = ['members']

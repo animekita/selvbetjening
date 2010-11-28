@@ -5,8 +5,8 @@ from django import forms
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, HTML
 
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
-from selvbetjening.data.members.forms import UsernameField, validate_username
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.core.members.forms import UsernameField, validate_username
 
 from processor_handlers import extended_privacy_processors
 from models import UserPrivacy

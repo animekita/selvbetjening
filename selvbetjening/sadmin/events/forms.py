@@ -3,8 +3,8 @@ from django.utils.translation import ugettext as _
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 
-from selvbetjening.data.events.models import AttendState, Attend, Event
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.core.events.models import AttendState, Attend, Event
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
 class EventForm(forms.ModelForm):
     class Meta:

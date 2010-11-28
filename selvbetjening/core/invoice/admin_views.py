@@ -14,7 +14,7 @@ if 'mailer' in settings.INSTALLED_APPS:
 else:
     from django.core.mail import send_mail
 
-from selvbetjening.data.events.models import Attend
+from selvbetjening.core.events.models import Attend
 
 from models import Invoice, InvoicePaymentWorkflow, Payment
 from forms import InvoiceSourceForm, InvoiceFormattingForm, InvoicePaymentForm

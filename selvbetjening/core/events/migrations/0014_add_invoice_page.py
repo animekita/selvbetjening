@@ -2,30 +2,30 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Event.show_invoice_page'
         db.add_column('events_event', 'show_invoice_page', models.BooleanField(default=False))
-        
+
         # Adding field 'Event.invoice_page'
         db.add_column('events_event', 'invoice_page', models.TextField(blank=True))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Event.show_invoice_page'
         db.delete_column('events_event', 'show_invoice_page')
-        
+
         # Deleting field 'Event.invoice_page'
         db.delete_column('events_event', 'invoice_page')
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -92,5 +92,5 @@ class Migration:
             'price': ('models.DecimalField', [], {'default': '0', 'max_digits': '6', 'decimal_places': '2'})
         }
     }
-    
+
     complete_apps = ['events']

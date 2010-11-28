@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from selvbetjening.data.members.forms import RegistrationForm
+from selvbetjening.core.members.forms import RegistrationForm
 
 def register(request,
              success_page='quickregistration_complete',

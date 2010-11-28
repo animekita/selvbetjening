@@ -87,11 +87,12 @@ INSTALLED_APPS = [
     'selvbetjening.core.selvadmin',
     'selvbetjening.core.database',
 
-    'selvbetjening.data.events',
-    'selvbetjening.data.members',
-    'selvbetjening.data.invoice',
-    'selvbetjening.data.translation',
-    'selvbetjening.data.logger',
+    'selvbetjening.core.events',
+    'selvbetjening.core.members',
+    'selvbetjening.core.invoice',
+    'selvbetjening.core.translation',
+    'selvbetjening.core.logger',
+    'selvbetjening.core.mailcenter',
 ]
 
 DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter',]

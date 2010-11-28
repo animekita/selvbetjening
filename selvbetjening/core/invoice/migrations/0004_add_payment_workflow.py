@@ -1,12 +1,12 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.invoice.models import *
+from selvbetjening.core.invoice.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'InvoicePaymentWorkflow'
         db.create_table('invoice_invoicepaymentworkflow', (
             ('id', orm['invoice.invoicepaymentworkflow:id']),
@@ -15,40 +15,40 @@ class Migration:
             ('notification_email', orm['invoice.invoicepaymentworkflow:notification_email']),
         ))
         db.send_create_signal('invoice', ['InvoicePaymentWorkflow'])
-        
+
         # Changing field 'InvoiceRevision.created_date'
         # (to signature: django.db.models.fields.DateTimeField(auto_now_add=True, blank=True))
         db.alter_column('invoice_invoicerevision', 'created_date', orm['invoice.invoicerevision:created_date'])
-        
+
         # Changing field 'Line.managed'
         # (to signature: django.db.models.fields.BooleanField(blank=True))
         db.alter_column('invoice_line', 'managed', orm['invoice.line:managed'])
-        
+
         # Changing field 'Payment.created_date'
         # (to signature: django.db.models.fields.DateTimeField(auto_now_add=True, blank=True))
         db.alter_column('invoice_payment', 'created_date', orm['invoice.payment:created_date'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'InvoicePaymentWorkflow'
         db.delete_table('invoice_invoicepaymentworkflow')
-        
+
         # Changing field 'InvoiceRevision.created_date'
         # (to signature: models.DateTimeField(auto_now_add=True))
         db.alter_column('invoice_invoicerevision', 'created_date', orm['invoice.invoicerevision:created_date'])
-        
+
         # Changing field 'Line.managed'
         # (to signature: models.BooleanField())
         db.alter_column('invoice_line', 'managed', orm['invoice.line:managed'])
-        
+
         # Changing field 'Payment.created_date'
         # (to signature: models.DateTimeField(auto_now_add=True))
         db.alter_column('invoice_payment', 'created_date', orm['invoice.payment:created_date'])
-        
-    
-    
+
+
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -116,5 +116,5 @@ class Migration:
             'signee': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'signed_payment_set'", 'null': 'True', 'to': "orm['auth.User']"})
         }
     }
-    
+
     complete_apps = ['invoice']

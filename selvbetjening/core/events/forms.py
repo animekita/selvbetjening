@@ -4,10 +4,10 @@ from django.forms import ModelForm
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
-from selvbetjening.data.translation.utility import translate_model
-from selvbetjening.data.invoice.models import Payment
+from selvbetjening.core.translation.utility import translate_model
+from selvbetjening.core.invoice.models import Payment
 
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):

@@ -2,28 +2,28 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Dropping ManyToManyField 'Option.users'
         db.delete_table('events_option_users')
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Adding ManyToManyField 'Option.users'
         db.create_table('events_option_users', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('option', models.ForeignKey(Option, null=False)),
             ('user', models.ForeignKey(user, null=False))
         ))
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -88,5 +88,5 @@ class Migration:
             'price': ('models.IntegerField', [], {'default': '0'})
         }
     }
-    
+
     complete_apps = ['events']

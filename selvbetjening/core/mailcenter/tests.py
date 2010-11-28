@@ -4,8 +4,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core import mail
 
-from selvbetjening.data.members.models import UserProfile
-from selvbetjening.data.events.models import Event, Attend, AttendState
+from selvbetjening.core.members.models import UserProfile
+from selvbetjening.core.events.models import Event, Attend, AttendState
 
 from models import EmailSpecification, UserConditions, AttendConditions
 

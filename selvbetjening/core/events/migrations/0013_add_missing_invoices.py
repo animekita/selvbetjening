@@ -3,7 +3,7 @@
 from south.db import db
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
 

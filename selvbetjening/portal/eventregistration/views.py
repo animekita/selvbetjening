@@ -9,10 +9,10 @@ from django.template import Context, Template, RequestContext
 from django.template.loader import get_template_from_string
 from django.utils.translation import ugettext as _
 
-from selvbetjening.data.logger import logger
-from selvbetjening.data.invoice.decorators import disable_invoice_updates
-from selvbetjening.data.events.models import Event, Attend
-from selvbetjening.data.events import decorators as eventdecorators
+from selvbetjening.core.logger import logger
+from selvbetjening.core.invoice.decorators import disable_invoice_updates
+from selvbetjening.core.events.models import Event, Attend
+from selvbetjening.core.events import decorators as eventdecorators
 
 from forms import SignupForm, SignoffForm, OptionForms
 from processor_handlers import signup_processors, change_processors

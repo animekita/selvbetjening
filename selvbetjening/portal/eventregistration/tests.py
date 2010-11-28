@@ -3,8 +3,8 @@ from datetime import date, timedelta, datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from selvbetjening.data.events.tests import Database
-from selvbetjening.data.events import models
+from selvbetjening.core.events.tests import Database
+from selvbetjening.core.events import models
 
 from forms import OptionGroupForm
 

@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import redirect_to, direct_to_template
 
-from selvbetjening.clients.profile.views import profile_redirect
+from selvbetjening.portal.profile.views import profile_redirect
 
 import admin
 
@@ -9,16 +9,13 @@ urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
 
     (r'^profil/',
-     include('selvbetjening.data.members.urls')),
+     include('selvbetjening.core.members.urls')),
 
     (r'^bliv-medlem/',
-     include('selvbetjening.clients.quickregistration.urls')),
+     include('selvbetjening.portal.quickregistration.urls')),
 
     (r'^events/',
-     include('selvbetjening.clients.eventregistration.urls')),
-
-    (r'^mailcenter/',
-     include('selvbetjening.clients.mailcenter.urls')),
+     include('selvbetjening.portal.eventregistration.urls')),
 
     (r'^api/',
      include('selvbetjening.api.sso.urls')),

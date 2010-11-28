@@ -1,36 +1,36 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.invoice.models import *
+from selvbetjening.core.invoice.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Line.managed'
         db.add_column('invoice_line', 'managed', models.BooleanField(default=False))
-        
+
         # Deleting field 'Invoice.managed'
         db.delete_column('invoice_invoice', 'managed')
-        
+
         # Deleting field 'Invoice.dropped'
         db.delete_column('invoice_invoice', 'dropped')
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Line.managed'
         db.delete_column('invoice_line', 'managed')
-        
+
         # Adding field 'Invoice.managed'
         db.add_column('invoice_invoice', 'managed', models.BooleanField(default=False))
-        
+
         # Adding field 'Invoice.dropped'
         db.add_column('invoice_invoice', 'dropped', models.BooleanField(default=False))
-        
-    
-    
+
+
+
     models = {
         'auth.user': {
             '_stub': True,
@@ -62,5 +62,5 @@ class Migration:
             'signee': ('models.ForeignKey', ['User'], {'related_name': "'signed_payment_set'", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['invoice']

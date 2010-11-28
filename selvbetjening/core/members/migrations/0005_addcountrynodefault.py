@@ -2,26 +2,26 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.members.models import *
+from selvbetjening.core.members.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Changing field 'UserProfile.country'
         # (to signature: django.db.models.fields.related.ForeignKey(to=orm['countries.Country'], null=True, blank=True))
         db.alter_column('members_userprofile', 'country_id', orm['members.userprofile:country'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Changing field 'UserProfile.country'
         # (to signature: django.db.models.fields.related.ForeignKey(to=orm['countries.Country']))
         db.alter_column('members_userprofile', 'country_id', orm['members.userprofile:country'])
-        
-    
-    
+
+
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -76,5 +76,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True', 'primary_key': 'True', 'db_column': "'user_id'"})
         }
     }
-    
+
     complete_apps = ['members']

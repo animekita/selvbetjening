@@ -3,12 +3,12 @@
 from south.db import db
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     no_dry_run = True
-    
+
     def forwards(self, orm):
         for user in orm['auth.User'].objects.all():
             for option in user.option_set.all():
@@ -17,11 +17,11 @@ class Migration:
                     attendee.selection_set.create(option=option)
                 except ObjectDoesNotExist:
                     pass
-    
+
     def backwards(self, orm):
         "Write your backwards migration here"
-    
-    
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -120,5 +120,5 @@ class Migration:
             'permissions': ('models.ManyToManyField', ['Permission'], {'verbose_name': "_('permissions')", 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events', 'auth']

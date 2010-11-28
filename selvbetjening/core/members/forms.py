@@ -11,8 +11,8 @@ from django.db.models import OneToOneRel
 from countries.models import Country
 from uni_form.helpers import FormHelper, Submit, Layout, Row, HTML
 
-from selvbetjening.viewhelpers.forms import widgets
-from selvbetjening.viewhelpers.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms import widgets
+from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
 from models import UserProfile, UserCommunication, UserWebsite
 from shortcuts import get_or_create_profile

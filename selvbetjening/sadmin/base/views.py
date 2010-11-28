@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from selvbetjening.clients.profile.forms import LoginForm
+from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.base.decorators import sadmin_access_required
 

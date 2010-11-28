@@ -1,12 +1,12 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.invoice.models import *
+from selvbetjening.core.invoice.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'InvoiceRevision'
         db.create_table('invoice_invoicerevision', (
             ('id', models.AutoField(primary_key=True)),
@@ -14,7 +14,7 @@ class Migration:
             ('created_date', models.DateTimeField(auto_now_add=True)),
         ))
         db.send_create_signal('invoice', ['InvoiceRevision'])
-        
+
         # Adding model 'Line'
         db.create_table('invoice_line', (
             ('price', models.IntegerField(default=0)),
@@ -23,7 +23,7 @@ class Migration:
             ('revision', models.ForeignKey(orm.InvoiceRevision)),
         ))
         db.send_create_signal('invoice', ['Line'])
-        
+
         # Adding model 'Invoice'
         db.create_table('invoice_invoice', (
             ('dropped', models.BooleanField(default=False)),
@@ -33,7 +33,7 @@ class Migration:
             ('name', models.CharField(max_length=256)),
         ))
         db.send_create_signal('invoice', ['Invoice'])
-        
+
         # Adding model 'Payment'
         db.create_table('invoice_payment', (
             ('signee', models.ForeignKey(orm['auth.User'], related_name='signed_payment_set', null=True, blank=True)),
@@ -44,25 +44,25 @@ class Migration:
             ('revision', models.ForeignKey(orm.InvoiceRevision)),
         ))
         db.send_create_signal('invoice', ['Payment'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'InvoiceRevision'
         db.delete_table('invoice_invoicerevision')
-        
+
         # Deleting model 'Line'
         db.delete_table('invoice_line')
-        
+
         # Deleting model 'Invoice'
         db.delete_table('invoice_invoice')
-        
+
         # Deleting model 'Payment'
         db.delete_table('invoice_payment')
-        
-    
-    
+
+
+
     models = {
         'auth.user': {
             '_stub': True,
@@ -95,5 +95,5 @@ class Migration:
             'signee': ('models.ForeignKey', ['User'], {'related_name': "'signed_payment_set'", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['invoice']

@@ -2,48 +2,48 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Event.show_change_confirmation'
         db.add_column('events_event', 'show_change_confirmation', models.BooleanField(default=False))
-        
+
         # Adding field 'Event.show_registration_confirmation'
         db.add_column('events_event', 'show_registration_confirmation', models.BooleanField(default=False))
-        
+
         # Adding field 'Event.registration_confirmation'
         db.add_column('events_event', 'registration_confirmation', models.TextField(blank=True))
-        
+
         # Adding field 'Event.change_confirmation'
         db.add_column('events_event', 'change_confirmation', models.TextField(blank=True))
-        
+
         # Changing field 'Option.price'
         db.alter_column('events_option', 'price', models.IntegerField(default=0))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Event.show_change_confirmation'
         db.delete_column('events_event', 'show_change_confirmation')
-        
+
         # Deleting field 'Event.show_registration_confirmation'
         db.delete_column('events_event', 'show_registration_confirmation')
-        
+
         # Deleting field 'Event.registration_confirmation'
         db.delete_column('events_event', 'registration_confirmation')
-        
+
         # Deleting field 'Event.change_confirmation'
         db.delete_column('events_event', 'change_confirmation')
-        
+
         # Changing field 'Option.price'
         db.alter_column('events_option', 'price', models.IntegerField())
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -97,5 +97,5 @@ class Migration:
             'users': ('models.ManyToManyField', ['User'], {'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['events']

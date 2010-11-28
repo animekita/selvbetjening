@@ -2,80 +2,80 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.members.models import *
+from selvbetjening.core.members.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'UserProfile.country'
         db.add_column('members_userprofile', 'country', orm['members.userprofile:country'])
-        
+
         # Changing field 'UserProfile.city'
         # (to signature: django.db.models.fields.CharField(max_length=255, blank=True))
         db.alter_column('members_userprofile', 'city', orm['members.userprofile:city'])
-        
+
         # Changing field 'UserProfile.street'
         # (to signature: django.db.models.fields.CharField(max_length=255, blank=True))
         db.alter_column('members_userprofile', 'street', orm['members.userprofile:street'])
-        
+
         # Changing field 'UserProfile.dateofbirth'
         # (to signature: django.db.models.fields.DateField(null=True, blank=True))
         db.alter_column('members_userprofile', 'dateofbirth', orm['members.userprofile:dateofbirth'])
-        
+
         # Changing field 'UserProfile.phonenumber'
         # (to signature: django.db.models.fields.PositiveIntegerField(null=True, blank=True))
         db.alter_column('members_userprofile', 'phonenumber', orm['members.userprofile:phonenumber'])
-        
+
         # Changing field 'UserProfile.user'
         # (to signature: django.db.models.fields.related.ForeignKey(to=orm['auth.User'], unique=True, primary_key=True, db_column='user_id'))
         db.alter_column('members_userprofile', 'user_id', orm['members.userprofile:user'])
-        
+
         # Changing field 'UserProfile.postalcode'
         # (to signature: django.db.models.fields.PositiveIntegerField(null=True, blank=True))
         db.alter_column('members_userprofile', 'postalcode', orm['members.userprofile:postalcode'])
-        
+
         # Changing field 'UserProfile.send_me_email'
         # (to signature: django.db.models.fields.BooleanField(blank=True))
         db.alter_column('members_userprofile', 'send_me_email', orm['members.userprofile:send_me_email'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'UserProfile.country'
         db.delete_column('members_userprofile', 'country_id')
-        
+
         # Changing field 'UserProfile.city'
         # (to signature: models.CharField(_(u'city'), max_length=255, blank=True))
         db.alter_column('members_userprofile', 'city', orm['members.userprofile:city'])
-        
+
         # Changing field 'UserProfile.street'
         # (to signature: models.CharField(_(u'street'), max_length=255, blank=True))
         db.alter_column('members_userprofile', 'street', orm['members.userprofile:street'])
-        
+
         # Changing field 'UserProfile.dateofbirth'
         # (to signature: models.DateField(_(u'date of birth'), null=True, blank=True))
         db.alter_column('members_userprofile', 'dateofbirth', orm['members.userprofile:dateofbirth'])
-        
+
         # Changing field 'UserProfile.phonenumber'
         # (to signature: models.PositiveIntegerField(_(u'phonenumber'), null=True, blank=True))
         db.alter_column('members_userprofile', 'phonenumber', orm['members.userprofile:phonenumber'])
-        
+
         # Changing field 'UserProfile.user'
         # (to signature: models.ForeignKey(orm['auth.User'], unique=True, primary_key=True, db_column='user_id'))
         db.alter_column('members_userprofile', 'user_id', orm['members.userprofile:user'])
-        
+
         # Changing field 'UserProfile.postalcode'
         # (to signature: models.PositiveIntegerField(_(u'postal code'), null=True, blank=True))
         db.alter_column('members_userprofile', 'postalcode', orm['members.userprofile:postalcode'])
-        
+
         # Changing field 'UserProfile.send_me_email'
         # (to signature: models.BooleanField(_(u'Send me emails')))
         db.alter_column('members_userprofile', 'send_me_email', orm['members.userprofile:send_me_email'])
-        
-    
-    
+
+
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -130,5 +130,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True', 'primary_key': 'True', 'db_column': "'user_id'"})
         }
     }
-    
+
     complete_apps = ['members']

@@ -3,27 +3,27 @@
 from south.db import db
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     no_dry_run = True
-    
+
     def forwards(self, orm):
         for attendee in orm['events.Attend'].objects.all():
             if attendee.has_attended:
                 attendee.state = 'attended'
             else:
                 attendee.state = 'accepted'
-            
+
             attendee.save()
-    
+
     def backwards(self, orm):
         for attendee in orm['events.Attend'].objects.all():
             if attendee.state == 'attended':
                 attendee.has_attended = True
                 attendee.save()
-    
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -123,5 +123,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
-    
+
     complete_apps = ['events', 'auth']

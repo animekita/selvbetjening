@@ -2,30 +2,30 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Changing field 'SubOption.name'
         db.alter_column('events_suboption', 'name', models.CharField(max_length=255))
-        
+
         # Changing field 'Option.price'
         db.alter_column('events_option', 'price', models.DecimalField(default=0, max_digits=6, decimal_places=2))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Changing field 'SubOption.name'
         db.alter_column('events_suboption', 'name', models.TextField(max_length=255))
-        
+
         # Changing field 'Option.price'
         db.alter_column('events_option', 'price', models.IntegerField(default=0))
-        
-    
-    
+
+
+
     models = {
         'events.event': {
             'change_confirmation': ('models.TextField', [], {'blank': 'True'}),
@@ -90,5 +90,5 @@ class Migration:
             'price': ('models.DecimalField', [], {'default': '0', 'max_digits': '6', 'decimal_places': '2'})
         }
     }
-    
+
     complete_apps = ['events']

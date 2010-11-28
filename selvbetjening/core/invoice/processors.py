@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 
-from selvbetjening.data.members.processor_handlers import user_migration_processors
+from selvbetjening.core.members.processor_handlers import user_migration_processors
 
 import models
 

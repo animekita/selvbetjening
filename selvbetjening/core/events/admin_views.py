@@ -13,8 +13,8 @@ from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.helpers import AdminForm
 from django.contrib.auth.models import User
 
-from selvbetjening.data.invoice.models import Invoice, Payment
-from selvbetjening.data.members.forms import RegistrationForm
+from selvbetjening.core.invoice.models import Invoice, Payment
+from selvbetjening.core.members.forms import RegistrationForm
 
 from processor_handlers import change_selection_processors, checkin_processors
 from models import Event, Attend, AttendState

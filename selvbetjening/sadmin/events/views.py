@@ -8,10 +8,10 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 
-from selvbetjening.data.events.models import Event, AttendState, Attend, AttendState
-from selvbetjening.data.events.processor_handlers import change_selection_processors, checkin_processors
-from selvbetjening.data.events.forms import PaymentForm, OptionForms
-from selvbetjening.data.invoice.models import Invoice, Payment
+from selvbetjening.core.events.models import Event, AttendState, Attend, AttendState
+from selvbetjening.core.events.processor_handlers import change_selection_processors, checkin_processors
+from selvbetjening.core.events.forms import PaymentForm, OptionForms
+from selvbetjening.core.invoice.models import Invoice, Payment
 
 from selvbetjening.sadmin.base.views import generic_search_page_unsecure
 from selvbetjening.sadmin.base.sadmin import SAdminContext

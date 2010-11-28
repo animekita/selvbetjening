@@ -2,16 +2,16 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.events.models import *
+from selvbetjening.core.events.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
         pass
-        
+
     def backwards(self, orm):
         pass
-    
+
     models = {
         'auth.user': {
             '_stub': True,
@@ -55,5 +55,5 @@ class Migration:
             'order': ('models.IntegerField', ["_('Order')"], {'default': '0'})
         }
     }
-    
+
     complete_apps = ['events']

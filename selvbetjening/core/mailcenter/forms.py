@@ -2,8 +2,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from selvbetjening.data.events.models import Event, OptionGroup
-from selvbetjening.data.members.shortcuts import get_or_create_profile
+from selvbetjening.core.events.models import Event, OptionGroup
+from selvbetjening.core.members.shortcuts import get_or_create_profile
 
 class SelectGroupForm(forms.Form):
     group = forms.CharField(max_length=128, label=_('Recipient group'), widget=forms.Select())

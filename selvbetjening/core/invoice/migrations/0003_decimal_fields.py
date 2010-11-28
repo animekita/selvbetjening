@@ -1,30 +1,30 @@
 
 from south.db import db
 from django.db import models
-from selvbetjening.data.invoice.models import *
+from selvbetjening.core.invoice.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Changing field 'Line.price'
         db.alter_column('invoice_line', 'price', models.DecimalField(default=0, max_digits=6, decimal_places=2))
-        
+
         # Changing field 'Payment.amount'
         db.alter_column('invoice_payment', 'amount', models.DecimalField(max_digits=6, decimal_places=2))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Changing field 'Line.price'
         db.alter_column('invoice_line', 'price', models.IntegerField(default=0))
-        
+
         # Changing field 'Payment.amount'
         db.alter_column('invoice_payment', 'amount', models.IntegerField())
-        
-    
-    
+
+
+
     models = {
         'auth.user': {
             '_stub': True,
@@ -56,5 +56,5 @@ class Migration:
             'signee': ('models.ForeignKey', ['User'], {'related_name': "'signed_payment_set'", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['invoice']

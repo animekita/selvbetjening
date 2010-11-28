@@ -4,7 +4,7 @@ import base64
 from django.contrib.auth.models import Group
 
 from selvbetjening.notify import BaseListener
-from selvbetjening.data.members.signals import user_changed_password, user_created
+from selvbetjening.core.members.signals import user_changed_password, user_created
 
 from native import GroupProftpdGroup, CompatiblePassword
 from proftpd import ProftpdGroup, ProftpdUser

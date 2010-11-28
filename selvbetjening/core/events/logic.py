@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.template import Context, Template
 
-from selvbetjening.data.invoice.decorators import disable_invoice_updates
+from selvbetjening.core.invoice.decorators import disable_invoice_updates
 
 import decorators
 import forms
