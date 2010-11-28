@@ -340,7 +340,7 @@ def attends_event_handler(sender, **kwargs):
     instance = kwargs.pop('instance')
     created = kwargs.pop('created')
 
-    attends_event_signal.send(user=instance.user, attendee=instance)
+    attends_event_signal.send(instance.event, user=instance.user, attendee=instance)
 
 post_save.connect(attends_event_handler, sender=Attend)
 

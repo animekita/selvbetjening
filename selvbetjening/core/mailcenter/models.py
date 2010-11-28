@@ -131,7 +131,7 @@ class GenericAttendeeConditions(models.Model):
                                default=ATTEND_STATUS_CHOICES[0][0])
 
     def passes(self, user, attendee=None):
-        if self.attends_event is None:
+        if self.event is None:
             return True
 
         try:
@@ -177,7 +177,7 @@ class AttendConditions(GenericAttendeeConditions):
         return (Attend not in parameters)
 
     def passes(self, user, **kwargs):
-        return super(BoundAttendConditions, self).passes(user)
+        return super(AttendConditions, self).passes(user)
 
 class BoundAttendConditions(GenericAttendeeConditions):
     """

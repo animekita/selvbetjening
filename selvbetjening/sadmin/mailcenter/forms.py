@@ -6,7 +6,7 @@ from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
 
 from selvbetjening.viewbase.forms.helpers import InlineFieldset
 from selvbetjening.core.mailcenter.models import EmailSpecification,\
-     UserConditions, AttendConditions, EventConditions
+     UserConditions, AttendConditions, BoundAttendConditions
 from selvbetjening.portal.eventregistration.forms import AcceptForm
 from selvbetjening.core.events.models import Event, Option, AttendState
 
@@ -105,7 +105,7 @@ class AttendeeConditionForm(BaseConditionForm):
 
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
-    layout = Layout(InlineFieldset(_('Attends'), 'attends_event',
+    layout = Layout(InlineFieldset(_('Attends'), 'event',
                                    Row('attends_selection_comparator', 'attends_selection_argument'),
                                    'attends_status'))
 
@@ -113,16 +113,15 @@ class AttendeeConditionForm(BaseConditionForm):
     helper.add_layout(layout)
     helper.form_tag = False
 
-class EventConditionForm(BaseConditionForm):
+class BoundAttendConditionForm(BaseConditionForm):
     class Meta:
-        model = EventConditions
+        model = BoundAttendConditions
         exclude = ['specification']
 
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
-    layout = Layout(InlineFieldset(_('Event'),
-                                   Row('attends_selection_comparator',
-                                       'attends_selection_argument'),
+    layout = Layout(InlineFieldset(_('Event'), 'event',
+                                   Row('attends_selection_comparator', 'attends_selection_argument'),
                                    'attends_status'))
 
     helper = FormHelper()
@@ -143,4 +142,4 @@ conditionform_registry = ConditionFormRegistry()
 
 conditionform_registry.register(UserConditions, UserConditionForm)
 conditionform_registry.register(AttendConditions, AttendeeConditionForm)
-conditionform_registry.register(EventConditions, EventConditionForm)
+conditionform_registry.register(BoundAttendConditions, BoundAttendConditionForm)
