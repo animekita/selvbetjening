@@ -59,7 +59,6 @@ def generic_search_page_unsecure(request,
                                  extra_context=None):
 
     query = request.GET.get('search', None)
-    import wingdbstub
 
     if query is not None and len(query.strip()) == 0:
         query = None

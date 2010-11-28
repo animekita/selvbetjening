@@ -7,6 +7,9 @@ url_patterns = patterns('selvbetjening.sadmin.mailcenter.views',
     url(r'^email/(?P<email_pk>[0-9]+)/bind/$', 'bind_email', name='mailcenter_email_bind'),
     url(r'^email/(?P<email_pk>[0-9]+)/$', 'update_email', name='mailcenter_email_update'),
     url(r'^create/$', 'update_email', name='mailcenter_emails_create'),
+    url(r'^outgoing/$', 'list_outgoing_emails', name='mailcenter_outgoing_list'),
+
+    url(r'^ajax/outgoingsearch/', 'ajax_outgoing_search', name='mailcenter_ajax_outgoing_search'),
 
     url(r'^$', 'list_emails', name='mailcenter_emails_list'),
 )

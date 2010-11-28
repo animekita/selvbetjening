@@ -1,0 +1,6 @@
+<table>
+    <tr><th>Emne</th><th>Modtager</th><th>&nbsp;</th></tr>
+    {% for mail in queryset %}
+    <tr><td>{{mail.subject}}</td><td>{{mail.to_address}}</td><td>&nbsp;</td></tr>
+    {% endfor %}
+</table>

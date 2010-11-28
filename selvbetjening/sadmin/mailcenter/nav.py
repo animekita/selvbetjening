@@ -15,6 +15,10 @@ mailcenter_menu.register(nav.Option(_(u'Create E-mail Draft'), 'sadmin:mailcente
     lambda user: user.has_perm('mailcenter.add_emailspecification'))
 )
 
+mailcenter_menu.register(nav.Option(_(u'Outgoing e-mails'), 'sadmin:mailcenter_outgoing_list',
+    lambda user: user.has_perm('mailcenter.add_emailspecification'))
+)
+
 # email menu
 email_menu = nav.Navigation()
 nav.registry['email'] = email_menu

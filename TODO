@@ -24,9 +24,6 @@ Features - efter 1. januar
 Email system
 ============
 
-- Outgoing e-mail queue (create generic data view?)         HARD
-- Oprydning i models, attendee conditions model er forkert og kan merges
-- Lav sidste events
 - Test det igennem
 - Gør det pænt (Add parameter help for template)
 

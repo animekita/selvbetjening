@@ -112,56 +112,35 @@ class UserConditions(models.Model):
 
         return comparator(user.get_profile().get_age(), self.user_age_argument)
 
-class AttendConditions(models.Model):
+class GenericAttendeeConditions(models.Model):
+    class Meta:
+        abstract = True
+
     ATTEND_STATUS_CHOICES = AttendState.get_choices()
 
     specification = models.OneToOneField(EmailSpecification)
 
-    attends_event = models.ForeignKey(Event, blank=True, null=True, default=None)
+    event = models.ForeignKey(Event, blank=True, null=True, default=None)
+
     attends_selection_comparator = models.CharField(max_length=12, default='someof',
                                                     choices=(('someof', 'Selected some of'),
                                                              ('allof', 'Selected all of')),)
     attends_selection_argument = models.ManyToManyField(Option, blank=True)
+
     attends_status = ListField(choices=ATTEND_STATUS_CHOICES, blank=True,
                                default=ATTEND_STATUS_CHOICES[0][0])
 
-    @staticmethod
-    def accepts(parameters):
-        return (User in parameters) and (Attend not in parameters)
-
-    def passes(self, user, **kwargs):
-        event = kwargs.pop('event')
+    def passes(self, user, attendee=None):
+        if self.attends_event is None:
+            return True
 
         try:
-            event.attendees.objects.get(user=user)
+            if attendee is None:
+                attendee = self.event.attendees.objects.get(user=user)
         except Attend.DoesNotExist:
             return False
 
-        # use EventConditions
-
-
-
-class EventConditions(models.Model):
-    ATTEND_STATUS_CHOICES = AttendState.get_choices()
-
-    specification = models.OneToOneField(EmailSpecification)
-
-    attends_event = models.ForeignKey(Event, blank=True, null=True, default=None)
-    attends_selection_comparator = models.CharField(max_length=12, default='someof',
-                                                    choices=(('someof', 'Selected some of'),
-                                                             ('allof', 'Selected all of')),)
-    attends_selection_argument = models.ManyToManyField(Option, blank=True)
-    attends_status = ListField(choices=ATTEND_STATUS_CHOICES, blank=True,
-                               default=ATTEND_STATUS_CHOICES[0][0])
-
-    @staticmethod
-    def accepts(parameters):
-        return Attend in parameters
-
-    def passes(self, user, **kwargs):
-        attendee = kwargs.pop('attendee')
-
-        if not attendee.event == self.attends_event:
+        if not attendee.event == self.event:
             return False
 
         desired_selections = self.attends_selection_argument.objects.all()
@@ -188,8 +167,33 @@ class EventConditions(models.Model):
 
         return True
 
+class AttendConditions(GenericAttendeeConditions):
+    """
+    Checks if the user attends a given event.
+    """
 
-ALL_CONDITIONS = [AttendConditions, UserConditions, EventConditions]
+    @staticmethod
+    def accepts(parameters):
+        return (Attend not in parameters)
+
+    def passes(self, user, **kwargs):
+        return super(BoundAttendConditions, self).passes(user)
+
+class BoundAttendConditions(GenericAttendeeConditions):
+    """
+    Checks if a user attends a given event and checks the
+    event matches with the event passed by the source.
+    """
+
+    @staticmethod
+    def accepts(parameters):
+        return Attend in parameters
+
+    def passes(self, user, **kwargs):
+        attendee = kwargs.pop('attendee')
+        return super(BoundAttendConditions, self).passes(user, attendee)
+
+ALL_CONDITIONS = [UserConditions, AttendConditions, BoundAttendConditions]
 
 def source_triggered_handler(sender, **kwargs):
     source_key = kwargs.pop('source_key')

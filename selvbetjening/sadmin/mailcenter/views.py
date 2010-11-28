@@ -7,6 +7,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
+from mailer.models import Message
+
+from selvbetjening.sadmin.base.views import generic_search_page_unsecure
 from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.base.decorators import sadmin_access_required
@@ -170,3 +173,18 @@ def filter_email(request,
                               {'email': email,
                                'forms': forms,},
                               context_instance=SAdminContext(request))
+
+#@sadmin_access_required
+#@permission_required('mailcenter.change_emailspecification')
+def list_outgoing_emails(request,
+                         template_name='sadmin/mailcenter/outgoing.html'):
+
+    return generic_search_page_unsecure(request,
+                                        search_fields=('subject', 'to_address', ),
+                                        queryset=Message.objects.order_by('priority').all,
+                                        template_name=template_name,
+                                        default_to_empty_queryset=False)
+
+def ajax_outgoing_search(request):
+    return list_outgoing_emails(request,
+                                template_name='sadmin/mailcenter/ajax/outgoing.html')
