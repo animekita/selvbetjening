@@ -86,18 +86,6 @@ def signup(request, event,
 
             attendee.invoice.update(force=True)
 
-            if event.email_on_signup:
-                subject = event.email_subject
-                context = {'event' : event,
-                           'invoice_rev' : attendee.invoice.latest_revision,
-                           'attendee' : attendee}
-
-                template = get_template_from_string(event.email_body)
-                message_body = template.render(Context(context))
-
-                send_mail(subject, message_body,
-                          settings.DEFAULT_FROM_EMAIL, [attendee.user.email,])
-
             return HttpResponseRedirect(
                 reverse(success_page, kwargs={'event_id' : event.pk}) + '?signup=1')
 

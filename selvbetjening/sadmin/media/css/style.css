@@ -83,6 +83,7 @@ nav.primary-nav ul li, nav.secondary-nav ul li { float: left; padding: 0.5em 1.5
                                                  color: #ffffff; text-decoration: none;
 												 font-weight: bold; font-style: normal; }
 
+nav.primary-nav ul li a, nav.secondary-nav ul li a { color: #ffffff; }
 
 nav.primary-nav ul li { font-size: 1.4em; }
 nav.secondary-nav ul li { font-size: 1.2em; }
@@ -102,6 +103,7 @@ nav.primary-nav li:hover ul, nav.primary-nav li ul:hover { display: block; }
 table tr td, table tr th { padding: 0.5em; text-align: left; }
 table tr th { font-size: 1.2em; color: #555753; font-style: italic; }
 table tr td { font-size: 1.5em; }
+table tr th h3 { font-size: 1.5em; color: #000000; font-style: normal; }
 
 /* Forms */
 .uniForm { width: 650px; padding: 1em;}
@@ -111,7 +113,7 @@ form input[type="text"], .uniForm .textInput, .uniForm textarea {
   font-family: "Myriad Pro", "Trebuchet MS", sans-serif;
   padding: 6px 5px 6px 10px;
   text-shadow: 1px 1px 1px #fff;
-  max-width: 600px;
+  width: 600px;
   outline: none;
 
   -moz-box-shadow: inset 0 1px 3px rgba(0,0,0,.4);

@@ -7,15 +7,21 @@ Bugfix
 - Oprydning
   - Fjern checkin handler fra checkin
 
-Stuff for svscon
-================
+Til svscon før 1. januar
+========================
 
-Features - før 1. januar
-- Betaling med giro kort, pluggable system til id numre
-- Send tidligere e-mails, email systemet
+- Finpuds admin indtil jeg er tilfreds
+  - Emails og tilføj e-mails til event
+  - Pluggable id nummer system
+
+Senere
+
+- Tilføj giro kort
+- Revidering af tilmelding interface og finpudsning af indstillinger, sprog mm
 - Opsætning på server
 
-Features - efter 1. januar
+Til svscon efter 1. januar
+==========================
 
 - Checkin af folk
 - Registrer betaling interface
@@ -24,13 +30,13 @@ Features - efter 1. januar
 Email system
 ============
 
+- Lav links fra event til e-mail oprettelse
 - Test det igennem
-- Gør det pænt (Add parameter help for template)
+- Permissions
 
 Refactor
 ========
 
-- Oprydning i arch
 - Fjern dependencies
 - Lav byggesystem
 
@@ -49,11 +55,9 @@ Admin:
 ==========
 
 Bedre håndtering af e-mails:
-  + Flere filtre til hvem der skal have e-mails
-  + Standardiser andre e-mail subsystemer med templates osv.
   - Bedre e-mail udseende
   + Kontrol mht. hvornår e-mails skal sendes
-    + F.eks. påmindelse omkring tilmelding.
+    + F.eks. påmindelse omkring tilmelding
   - Opdeling af nyhedsbrev i to typer
   - Tilføj afmeld link i bunden af nyhedsbrevet
 

@@ -131,9 +131,6 @@ class EventAdmin(ModelAdmin):
             'fields' : ('show_custom_status_page', 'custom_status_page'),
             'classes' : ('collapse', ),
             }),
-        (_('Email on signup'), {
-            'fields' : ('email_on_signup', 'email_subject', 'email_body'),
-            'classes' : ('collapse', )}),
     )
 
     def get_urls(self):

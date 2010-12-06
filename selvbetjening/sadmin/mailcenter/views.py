@@ -16,11 +16,11 @@ from selvbetjening.sadmin.base.decorators import sadmin_access_required
 from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
-from forms import EmailTemplateForm, EmailSourceForm, \
+from forms import EmailTemplateForm, EmailSourceForm, CreateEmailForm, \
      SendPreviewEmailForm, SendNewsletterForm, conditionform_registry
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def list_emails(request,
                 template_name='sadmin/mailcenter/list.html'):
 
@@ -30,41 +30,50 @@ def list_emails(request,
                               {'emails': emails},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
-def update_email(request,
-                 email_pk=None):
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
+def create_email(request):
 
-    if email_pk is not None:
-        email = get_object_or_404(EmailSpecification, pk=email_pk)
-        template_name='sadmin/mailcenter/email/update.html'
+    if request.method == 'POST':
+        form = CreateEmailForm(request.POST)
+
+        if form.is_valid():
+            email = form.save()
+
+            messages.success(request, _('Email successfully created'))
+            return HttpResponseRedirect(
+                    reverse('sadmin:mailcenter_email_update', kwargs={'email_pk': email.pk}))
+
     else:
-        email = None
-        template_name='sadmin/mailcenter/create.html'
+        form = CreateEmailForm()
+
+    return render_to_response('sadmin/mailcenter/create.html',
+                              {'form': form},
+                              context_instance=SAdminContext(request))
+
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
+def update_email(request, email_pk):
+
+    email = get_object_or_404(EmailSpecification, pk=email_pk)
 
     if request.method == 'POST':
         form = EmailTemplateForm(request.POST, instance=email)
 
         if form.is_valid():
-            saved = form.save()
-
-            if email is None:
-                messages.success(request, _(u'E-mail specification successfully saved'))
-                return HttpResponseRedirect(
-                    reverse('sadmin:mailcenter_email_update', kwargs={'email_pk': saved.pk}))
-            else:
-                messages.success(request, _(u'E-mail specification sucessfully updated'))
+            form.save()
+            messages.success(request, _(u'E-mail specification sucessfully updated'))
 
     else:
         form = EmailTemplateForm(instance=email)
 
-    return render_to_response(template_name,
+    return render_to_response('sadmin/mailcenter/email/update.html',
                               {'form': form,
                                'email': email},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def bind_email(request,
                email_pk,
                template_name='sadmin/mailcenter/email/bind.html'):
@@ -86,8 +95,8 @@ def bind_email(request,
                                'email': email},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def preview_email(request,
                   email_pk,
                   template_name='sadmin/mailcenter/email/preview.html'):
@@ -113,8 +122,8 @@ def preview_email(request,
                                'email': email},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def send_email(request,
                email_pk,
                template_name='sadmin/mailcenter/email/send.html',
@@ -148,8 +157,8 @@ def send_email(request,
                                'recipients': recipients},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def filter_email(request,
                  email_pk,
                  template_name='sadmin/mailcenter/email/filter.html'):
@@ -175,8 +184,8 @@ def filter_email(request,
                                'forms': forms,},
                               context_instance=SAdminContext(request))
 
-#@sadmin_access_required
-#@permission_required('mailcenter.change_emailspecification')
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
 def list_outgoing_emails(request,
                          template_name='sadmin/mailcenter/outgoing.html'):
 
@@ -189,3 +198,13 @@ def list_outgoing_emails(request,
 def ajax_outgoing_search(request):
     return list_outgoing_emails(request,
                                 template_name='sadmin/mailcenter/ajax/outgoing.html')
+
+@sadmin_access_required
+@permission_required('mailcenter.change_emailspecification')
+def view_outgoing_email(request, message_pk):
+
+    message = get_object_or_404(Message, pk=message_pk)
+
+    return render_to_response('sadmin/mailcenter/outgoing-view.html',
+                              {'message': message},
+                              context_instance=SAdminContext(request))

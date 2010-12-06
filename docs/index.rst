@@ -28,35 +28,59 @@ Arkitektur
 
    architecture/*
 
-Moduler
-=======
-
-Data moduler
-------------
+Core
+----
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
-   modules/data/*
+   modules/core/*
 
-Viewhelper moduler
-------------
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   modules/viewhelpers/*
-
-Client moduler
-------------
+ViewBase
+--------
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
-   modules/clients/*
+   modules/viewbase/*
+
+Portal
+------
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   modules/portal/*
+
+SAdmin
+------
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   modules/sadmin/*
+
+API
+---
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   modules/api/*
+
+Notify
+------
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   modules/notify/*
 
 Appendix
 ========

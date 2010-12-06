@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
+from django.template import Template, Context
 
 from mailer import send_html_mail
 
@@ -34,7 +35,7 @@ class EmailSpecification(models.Model):
         return False
 
     @property
-    def _required_parameters(self):
+    def required_parameters(self):
         parameters = sources.default_parameters
 
         try:
@@ -47,7 +48,7 @@ class EmailSpecification(models.Model):
 
     @property
     def conditions(self):
-        parameters = self._required_parameters
+        parameters = self.required_parameters
         conditions = []
 
         for condition in ALL_CONDITIONS:
@@ -68,20 +69,29 @@ class EmailSpecification(models.Model):
         if not hasattr(users, '__iter__'):
             users = [users,]
 
-        if not bypass_conditions:
-            users = [user for user in users if self.passes_conditions(user, **kwargs)]
+        email_counter = 0
 
-        self._send_email(users)
+        for user in users:
+            if bypass_conditions or self.passes_conditions(user, **kwargs):
+                self._send_email(user, **kwargs)
+                email_counter += 1
 
-        return len(users)
+        return email_counter
 
-    def _send_email(self, recipients):
-        body_plain = re.sub(r'<[^>]*?>', '', self.body)
-        body_html = render_to_string('mailcenter/email/newsletter_html.txt',
-                                     { 'body': self.body })
+    def _send_email(self, user, **kwargs):
+        body_plain, body_html = self._compile_body(user=user, **kwargs)
 
         send_html_mail(self.subject, body_plain, body_html,
-                  settings.DEFAULT_FROM_EMAIL, recipients)
+                  settings.DEFAULT_FROM_EMAIL, (user.email,))
+
+    def _compile_body(self, user, **kwargs):
+        context = Context(kwargs)
+        context.update({'user': user})
+
+        body_plain = Template(re.sub(r'<[^>]*?>', '', self.body)).render(context)
+        body_html = Template(self.body).render(context)
+
+        return (body_plain, body_html)
 
     def __unicode__(self):
         return self.subject

@@ -1,5 +1,5 @@
 {% extends "sadmin/mailcenter/email/base.html" %}
-{% load uni_form_tags %}
+{% load uni_form_tags i18n %}
 
 {% block content %}
 
@@ -10,7 +10,7 @@
 {% endwith %}
 
 <div class="buttonHolder">
-  <input type="submit" name="submit_email_template" value="Gem e-mail"
+  <input type="submit" name="submit_email_template" value="{% trans "Save" %}"
     class="submit submitButton" />
 </div>
 

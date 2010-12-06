@@ -1,11 +1,13 @@
 {% extends "sadmin/mailcenter/base.html" %}
-{% load uni_form_tags %}
+{% load uni_form_tags i18n %}
 
 {% block page_heading %}
-    <h1>E-mail Draft</h1>
+    <h1>{% trans "Create E-mail Draft" %}</h1>
 {% endblock %}
 
 {% block content %}
+
+<p>Please select the subject of the new e-mail draft.</p>
 
 <form method="POST" action="" class="uniForm">
 
@@ -14,7 +16,7 @@
 {% endwith %}
 
 <div class="buttonHolder">
-  <input type="submit" name="submit_email_template" value="Gem e-mail"
+  <input type="submit" name="submit_email_template" value="{% trans "Create" %}"
     class="submit submitButton" />
 </div>
 

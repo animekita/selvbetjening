@@ -73,11 +73,6 @@ class Event(models.Model):
     custom_status_page = models.TextField(blank=True,
         help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
-    # email
-    email_on_signup = models.BooleanField(default=False)
-    email_subject = models.CharField(max_length=255, blank=True)
-    email_body = models.TextField(blank=True, help_text='available variables: event, attendee, invoice_rev')
-
     objects = models.Manager()
 
     class Translation:
@@ -135,6 +130,9 @@ class Event(models.Model):
 
     # event state
     def has_been_held(self):
+        if self.enddate is None:
+            return False
+
         return self.enddate < date.today()
 
     def is_registration_open(self):
