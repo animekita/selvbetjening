@@ -3,4 +3,4 @@ from selvbetjening.sadmin.base.sadmin import site
 import urls
 import nav
 
-site.register_urls('mailcenter', urls.url_patterns)
+#site.register_urls('mailcenter', urls.url_patterns)

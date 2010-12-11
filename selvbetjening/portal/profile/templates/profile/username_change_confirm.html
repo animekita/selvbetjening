@@ -1,7 +1,8 @@
 {% extends "profile/username_change.html" %}
 {% load uni_form_tags %}
 
-{% block extraheader %}
+{% block extrastyle %}
+{{ block.super }}
 {% include "form_includes.html" %}
 {% endblock %}
 

@@ -1,11 +1,3 @@
 {% extends "sadmin/base/site.html" %}
-{% load sadmin_menu %}
 
-{% block navigation %}
-{{ block.super }}
-
-<nav class="secondary-nav">
-  {% get_menu members as navigation %}
-  {% include "sadmin/base/parts/menu.html" %}
-</nav>
 {% endblock %}

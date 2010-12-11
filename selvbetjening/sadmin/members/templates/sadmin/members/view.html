@@ -1,19 +1,7 @@
 {% extends "sadmin/members/base.html" %}
-{% load uni_form_tags sadmin_menu %}
+{% load uni_form_tags %}
 
-{% block navigation %}
-{{ block.super }}
-
-<nav class="secondary-nav">
-  {% get_menu member as navigation %}
-  {% include "sadmin/base/parts/menu.html" %}
-</nav>
-
-{% endblock %}
-
-{% block page_heading %}
-<h1>{{user_obj.username}}</h1>
-{% endblock %}
+{% block content_title %}<h1>{{user_obj.username}}</h1>{% endblock %}
 
 {% block content %}
 

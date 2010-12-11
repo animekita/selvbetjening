@@ -1,7 +1,8 @@
 {% extends "events/base_event.html" %}
 {% load uni_form_tags %}
 
-{% block extraheader %}
+{% block extrastyle %}
+{{ block.super }}
 {% include "form_includes.html" %}
 {% endblock %}
 

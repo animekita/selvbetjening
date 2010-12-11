@@ -6,24 +6,6 @@ from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 from selvbetjening.core.events.models import AttendState, Attend, Event
 from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
-class EventForm(forms.ModelForm):
-    class Meta:
-        model = Event
-
-    def __init__(self, *args, **kwargs):
-        super(EventForm, self).__init__(*args, **kwargs)
-
-        layout_fields = [_('Event')] + list(self.fields)
-        layout = Layout(InlineFieldset(*layout_fields))
-
-        helper = FormHelper()
-        helper.add_layout(layout)
-        helper.add_input(Submit('submit_event', _('Save Event')))
-        helper.form_tag = True
-        helper.use_csrf_protection = True
-
-        self.helper = helper
-
 class AttendeeForm(forms.ModelForm):
     class Meta:
         model = Attend

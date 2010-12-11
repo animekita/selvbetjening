@@ -1,11 +1,13 @@
 {% extends "sadmin/base/base.html" %}
-{% load sadmin_menu %}
 
 {% block body %}
+    {% if not is_popup %}
     <header class="top-header"><div class="center">
 
+    {% block branding %}
       <h1>Selvbetjening</h1>
       <h2>v5.0</h2>
+    {% endblock %}
 
       <nav class="authentication-nav">
         <ul>
@@ -17,22 +19,32 @@
     </div></header>
 
     <nav class="primary-nav"><div class="center">
-        {% get_menu main as navigation_collection %}
         <ul>
         {% for navigation in navigation_collection %}
           <li>{{navigation.label|lower}}{% include "sadmin/base/parts/menu.html" %}</li>
         {% endfor %}
         </ul>
-
     </div></nav>
+    {% endif %}
 
     <div class="center">
 
     <header class="page-header">
-    {% block page_heading %}{% endblock %}
+    {% block pretitle %}{% endblock %}
+    {% block content_title %}{% if title %}<h2>{{ title }}</h2>{% endif %}{% endblock %}
     </header>
 
-    {% block navigation %}{% endblock %}
+    {% block navigation %}
+    {% if menu %}
+      <nav class="secondary-nav">
+      <ul>
+        {% for item in menu %}
+          <li><a href="{{item.url}}">{{item.label|lower}}</a></li>
+        {% endfor %}
+      </ul>
+      </nav>
+    {% endif %}
+    {% endblock %}
 
     <div id="main">
 
@@ -44,7 +56,10 @@
     </ul>
     {% endif %}
 
-      {% block content %}{% endblock %}
+    {% block content %}
+    {% block object-tools %}{% endblock %}
+    {{ content }}
+    {% endblock %}
     </div>
 
     </div>

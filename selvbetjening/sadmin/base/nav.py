@@ -1,22 +1,5 @@
 from django.core.urlresolvers import reverse
 
-class Navigation(object):
-    def __init__(self, label=None):
-        self.label = label
-        self.options = []
-
-    def register(self, option):
-        self.options.append(option)
-
-    def __iter__(self):
-        return self.options.__iter__()
-
-class Option(object):
-    def __init__(self, label, url, available=None):
-        self.label = label
-        self.url = url
-        self.available = available if not None else lambda user: True
-
 class OptionProxy(object):
     """
     Wraps an option while containing data and methods which is request specific.
@@ -44,6 +27,26 @@ class OptionProxy(object):
     def __iter__(self):
         elements = [OptionProxy(element, self.context) for element in self.option]
         return elements.__iter__()
+
+class Navigation(object):
+    def __init__(self, label=None):
+        self.label = label
+        self.options = []
+
+    def register(self, option):
+        self.options.append(option)
+
+    def render(self, context):
+        return [OptionProxy(option, context) for option in self]
+
+    def __iter__(self):
+        return self.options.__iter__()
+
+class Option(object):
+    def __init__(self, label, url, available=None):
+        self.label = label
+        self.url = url
+        self.available = available if not None else lambda user: True
 
 registry = {}
 

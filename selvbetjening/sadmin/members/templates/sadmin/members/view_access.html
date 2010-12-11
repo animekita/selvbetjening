@@ -1,18 +1,5 @@
 {% extends "sadmin/members/base.html" %}
-{% load uni_form_tags sadmin_menu %}
-
-{% block navigation %}
-{{ block.super }}
-
-<nav class="secondary-nav">
-  <ul>{% get_menu member as member_nav %}
-    {% for item in member_nav %}
-      <li><a href="{{item.url}}">{{item.label}}</a></li>
-    {% endfor %}
-  </ul>
-</nav>
-
-{% endblock %}
+{% load uni_form_tags %}
 
 {% block content %}
 

@@ -1,28 +1,157 @@
 from django.conf.urls.defaults import patterns, url, include
 from django.template import RequestContext
+from django.contrib import admin
+from django.shortcuts import render_to_response
+from django.views.decorators.cache import never_cache
+from django.contrib.auth import logout as do_logout
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib.auth import views as auth_views
+from selvbetjening.portal.profile.forms import LoginForm
+from django.utils.functional import update_wrapper
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.shortcuts import get_object_or_404
 
+from selvbetjening.core import ObjectWrapper
 import nav
-import urls
-
-class SAdmin(object):
-    def __init__(self):
-        self._urls = []
-
-    def register_urls(self, module, url_pattern):
-        self._urls.append((module, url_pattern))
-
-    @property
-    def urls(self):
-        url_patterns = patterns('selvbetjening.sadmin.base.views',
-            *[(r'^%s/' % module, include(url_pattern)) for module, url_pattern in self._urls]
-        )
-
-        url_patterns = url_patterns + urls.url_patterns
-
-        return (url_patterns, 'sadmin', 'sadmin')
-
-site = SAdmin()
 
 class SAdminContext(RequestContext):
     def __init__(self, *args, **kwargs):
         super(SAdminContext, self).__init__(*args, **kwargs)
+
+class SAdminSite(admin.AdminSite):
+    def __init__(self):
+        super(SAdminSite, self).__init__()
+
+        self.app_name = 'sadmin'
+        self.name = 'sadmin'
+
+    def register(self, mount, modeladmin):
+        self._registry[mount] = modeladmin()
+
+    def unregister(self, *args, **kwargs):
+        raise NotImplemented
+
+    def get_urls(self):
+        """
+        Modified version of get_urls from admin, removed
+        unused views and added custom sadmin views
+        """
+        from django.conf.urls.defaults import patterns, url, include
+
+        def wrap(view, cacheable=False):
+            def wrapper(*args, **kwargs):
+                return self.admin_view(view, cacheable)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+
+        urlpatterns = patterns('',
+            url(r'^$',
+                wrap(self.index),
+                name='dashboard'),
+            url(r'^logout/$',
+                wrap(self.logout),
+                name='logout'),
+            url(r'^login/$',
+                wrap(self.login),
+                name='login'),
+            url(r'^password_change/$',
+                wrap(self.password_change, cacheable=True),
+                name='password_change'),
+            url(r'^password_change/done/$',
+                wrap(self.password_change_done, cacheable=True),
+                name='password_change_done'),
+            url(r'^jsi18n/$',
+                wrap(self.i18n_javascript, cacheable=True),
+                name='jsi18n'),
+        )
+
+        urlpatterns += patterns('selvbetjening.sadmin.base.views',
+            *[(r'^%s/' % mount, include(self._registry[mount].urls)) for mount in self._registry]
+            )
+
+        return urlpatterns
+
+    @never_cache
+    def index(self, request, extra_context=None):
+        return render_to_response('sadmin/base/dashboard.html',
+                                  context_instance=SAdminContext(request))
+
+    @never_cache
+    def logout(self, request):
+        do_logout(request)
+
+        messages.success(request, _(u'User sucessfully logged out'))
+
+        return HttpResponseRedirect(reverse('sadmin:login'))
+
+    @never_cache
+    def login(self, request):
+        wrapped_request = ObjectWrapper(request)
+
+        if request.REQUEST.get(REDIRECT_FIELD_NAME, None) is None:
+            wrapped_request.REQUEST = request.GET.copy()
+            wrapped_request.REQUEST[REDIRECT_FIELD_NAME] = reverse('sadmin:dashboard')
+
+        return auth_views.login(wrapped_request,
+                                template_name='sadmin/base/login.html',
+                                authentication_form=LoginForm)
+
+site = SAdminSite()
+
+class SModelAdmin(admin.ModelAdmin):
+    add_form_template = None
+    change_form_template = 'sadmin/base/change_form.html'
+    change_list_template = 'sadmin/base/change_list.html'
+    delete_confirmation_template = None
+    delete_selected_confirmation_template = None
+    object_history_template = None
+
+    def __init__(self):
+        super(SModelAdmin, self).__init__(self.Meta.model, site)
+
+    def _wrap_view(self, view):
+        def wrapper(*args, **kwargs):
+            return self.admin_site.admin_view(view)(*args, **kwargs)
+        return update_wrapper(wrapper, view)
+
+    def get_urls(self):
+        from django.conf.urls.defaults import patterns, url
+        info = self.Meta.app_name, self.Meta.name
+
+        urlpatterns = patterns('',
+            url(r'^$',
+                self._wrap_view(self.changelist_view),
+                name='%s_%s_changelist' % info),
+            url(r'^add/$',
+                self._wrap_view(self.add_view),
+                name='%s_%s_add' % info),
+            url(r'^(.+)/delete/$',
+                self._wrap_view(self.delete_view),
+                name='%s_%s_delete' % info),
+            url(r'^(.+)/$',
+                self._wrap_view(self.change_view),
+                name='%s_%s_change' % info),
+        )
+
+        return urlpatterns
+
+class SBoundModelAdmin(SModelAdmin):
+
+    def _wrap_view(self, view):
+        parent_wrapper = super(SBoundModelAdmin, self)._wrap_view(view)
+
+        def wrapper(request, *args, **kwargs):
+            bind_pk = kwargs.pop('bind_pk')
+            bound_object = get_object_or_404(self.Meta.bound_model, pk=bind_pk)
+
+            wrapped_request = ObjectWrapper(request)
+            wrapped_request.bound_object = bound_object
+
+            return parent_wrapper(wrapped_request, *args, **kwargs)
+
+        return update_wrapper(wrapper, parent_wrapper)
+
+
+

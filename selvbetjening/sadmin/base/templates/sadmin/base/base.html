@@ -4,7 +4,7 @@
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %} class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
 
@@ -24,6 +24,10 @@
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/base.css?v=1">
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/uni-form.css?v=1">
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/style.css?v=1">
+  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/django-admin-limited.css?v=1">
+  {% load adminmedia %}
+
+  {% block extrastyle %}{% endblock %}
 
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="{{MEDIA_URL}}sadmin/css/handheld.css?v=1">  -->
@@ -31,11 +35,17 @@
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="{{MEDIA_URL}}sadmin/js/modernizr-1.5.min.js"></script>
 
-  {% block extraheader %}{% endblock %}
+  {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" />{% endif %}
+
+  <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
+
+  {% block extrahead %}{% endblock %}
+
+  {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 
 </head>
 
-<body>
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
 {% block body %}{% endblock %}
 </body>
 </html>
