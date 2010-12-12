@@ -8,14 +8,80 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Deleting field 'EventConditions.event'
-        db.delete_column('mailcenter_eventconditions', 'event_id')
+        # Adding model 'AttendConditions'
+        db.create_table('mailcenter_attendconditions', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('specification', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['mailcenter.EmailSpecification'], unique=True)),
+            ('event', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.Event'], null=True, blank=True)),
+            ('attends_selection_comparator', self.gf('django.db.models.fields.CharField')(default='someof', max_length=12)),
+            ('attends_status', self.gf('selvbetjening.core.models.ListField')(default='waiting', blank=True)),
+        ))
+        db.send_create_signal('mailcenter', ['AttendConditions'])
+
+        # Adding M2M table for field attends_selection_argument on 'AttendConditions'
+        db.create_table('mailcenter_attendconditions_attends_selection_argument', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('attendconditions', models.ForeignKey(orm['mailcenter.attendconditions'], null=False)),
+            ('option', models.ForeignKey(orm['events.option'], null=False))
+        ))
+        db.create_unique('mailcenter_attendconditions_attends_selection_argument', ['attendconditions_id', 'option_id'])
+
+        # Adding model 'UserConditions'
+        db.create_table('mailcenter_userconditions', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('specification', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['mailcenter.EmailSpecification'], unique=True)),
+            ('user_age_comparator', self.gf('django.db.models.fields.CharField')(default='<', max_length='1')),
+            ('user_age_argument', self.gf('django.db.models.fields.IntegerField')(default=None, null=True, blank=True)),
+        ))
+        db.send_create_signal('mailcenter', ['UserConditions'])
+
+        # Adding model 'BoundAttendConditions'
+        db.create_table('mailcenter_boundattendconditions', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('specification', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['mailcenter.EmailSpecification'], unique=True)),
+            ('event', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.Event'], null=True, blank=True)),
+            ('attends_selection_comparator', self.gf('django.db.models.fields.CharField')(default='someof', max_length=12)),
+            ('attends_status', self.gf('selvbetjening.core.models.ListField')(default='waiting', blank=True)),
+        ))
+        db.send_create_signal('mailcenter', ['BoundAttendConditions'])
+
+        # Adding M2M table for field attends_selection_argument on 'BoundAttendConditions'
+        db.create_table('mailcenter_boundattendconditions_attends_selection_argument', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('boundattendconditions', models.ForeignKey(orm['mailcenter.boundattendconditions'], null=False)),
+            ('option', models.ForeignKey(orm['events.option'], null=False))
+        ))
+        db.create_unique('mailcenter_boundattendconditions_attends_selection_argument', ['boundattendconditions_id', 'option_id'])
+
+        # Adding field 'EmailSpecification.event'
+        db.add_column('mailcenter_emailspecification', 'event', self.gf('django.db.models.fields.CharField')(default='', max_length=64, blank=True), keep_default=False)
+
+        # Adding field 'EmailSpecification.source_enabled'
+        db.add_column('mailcenter_emailspecification', 'source_enabled', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Adding field 'EventConditions.event'
-        db.add_column('mailcenter_eventconditions', 'event', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.Event'], null=True, blank=True), keep_default=False)
+        # Deleting model 'AttendConditions'
+        db.delete_table('mailcenter_attendconditions')
+
+        # Removing M2M table for field attends_selection_argument on 'AttendConditions'
+        db.delete_table('mailcenter_attendconditions_attends_selection_argument')
+
+        # Deleting model 'UserConditions'
+        db.delete_table('mailcenter_userconditions')
+
+        # Deleting model 'BoundAttendConditions'
+        db.delete_table('mailcenter_boundattendconditions')
+
+        # Removing M2M table for field attends_selection_argument on 'BoundAttendConditions'
+        db.delete_table('mailcenter_boundattendconditions_attends_selection_argument')
+
+        # Deleting field 'EmailSpecification.event'
+        db.delete_column('mailcenter_emailspecification', 'event')
+
+        # Deleting field 'EmailSpecification.source_enabled'
+        db.delete_column('mailcenter_emailspecification', 'source_enabled')
 
 
     models = {
@@ -61,9 +127,6 @@ class Migration(SchemaMigration):
             'custom_signup_message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'custom_status_page': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'email_body': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'email_on_signup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'email_subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'enddate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'maximum_attendees': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -101,10 +164,19 @@ class Migration(SchemaMigration):
         },
         'mailcenter.attendconditions': {
             'Meta': {'object_name': 'AttendConditions'},
-            'attends_event': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['events.Event']", 'null': 'True', 'blank': 'True'}),
             'attends_selection_argument': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['events.Option']", 'symmetrical': 'False', 'blank': 'True'}),
             'attends_selection_comparator': ('django.db.models.fields.CharField', [], {'default': "'someof'", 'max_length': '12'}),
             'attends_status': ('selvbetjening.core.models.ListField', [], {'default': "'waiting'", 'blank': 'True'}),
+            'event': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['events.Event']", 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'specification': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['mailcenter.EmailSpecification']", 'unique': 'True'})
+        },
+        'mailcenter.boundattendconditions': {
+            'Meta': {'object_name': 'BoundAttendConditions'},
+            'attends_selection_argument': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['events.Option']", 'symmetrical': 'False', 'blank': 'True'}),
+            'attends_selection_comparator': ('django.db.models.fields.CharField', [], {'default': "'someof'", 'max_length': '12'}),
+            'attends_status': ('selvbetjening.core.models.ListField', [], {'default': "'waiting'", 'blank': 'True'}),
+            'event': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['events.Event']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'specification': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['mailcenter.EmailSpecification']", 'unique': 'True'})
         },
@@ -117,14 +189,6 @@ class Migration(SchemaMigration):
             'recipients': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.User']", 'symmetrical': 'False'}),
             'source_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '128'})
-        },
-        'mailcenter.eventconditions': {
-            'Meta': {'object_name': 'EventConditions'},
-            'attends_selection_argument': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['events.Option']", 'symmetrical': 'False', 'blank': 'True'}),
-            'attends_selection_comparator': ('django.db.models.fields.CharField', [], {'default': "'someof'", 'max_length': '12'}),
-            'attends_status': ('selvbetjening.core.models.ListField', [], {'default': "'waiting'", 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'specification': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['mailcenter.EmailSpecification']", 'unique': 'True'})
         },
         'mailcenter.userconditions': {
             'Meta': {'object_name': 'UserConditions'},

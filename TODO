@@ -10,21 +10,22 @@ Bugfix
 Til svscon før 1. januar
 ========================
 
-- Finpuds admin indtil jeg er tilfreds
-  - Emails og tilføj e-mails til event
-  - Pluggable id nummer system
+  Arrangementer
+    - Tilmeldte (checkin/out, billing)
+    - Rapport
+    - Registrer betaling
+    - Henvisning til e-mails
 
-Senere
+  Emails (liste, edit, send)
 
-- Tilføj giro kort
+- Pluggable id nummer system (læs de der giro kort)
 - Revidering af tilmelding interface og finpudsning af indstillinger, sprog mm
-- Opsætning på server
+- Opsætning på server + ssl
 
 Til svscon efter 1. januar
 ==========================
 
 - Checkin af folk
-- Registrer betaling interface
 - CPR checkin
 
 Email system
@@ -39,6 +40,11 @@ Refactor
 
 - Fjern dependencies
 - Lav byggesystem
+
+Niceness
+========
+
+- Få autosøgning ind igen
 
 Stuff for Kita
 ==============

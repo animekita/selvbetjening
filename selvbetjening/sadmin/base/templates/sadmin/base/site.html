@@ -20,8 +20,14 @@
 
     <nav class="primary-nav"><div class="center">
         <ul>
-        {% for navigation in navigation_collection %}
-          <li>{{navigation.label|lower}}{% include "sadmin/base/parts/menu.html" %}</li>
+        {% for option_group in main_menu %}
+          <li>{{option_group.label|lower}}
+            <ul>
+              {% for option in option_group %}
+                <li><a href="{{option.url}}">{{option.label|lower}}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
         {% endfor %}
         </ul>
     </div></nav>

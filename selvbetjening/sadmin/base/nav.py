@@ -36,7 +36,7 @@ class Navigation(object):
     def register(self, option):
         self.options.append(option)
 
-    def render(self, context):
+    def render(self, **context):
         return [OptionProxy(option, context) for option in self]
 
     def __iter__(self):

@@ -19,82 +19,7 @@ from selvbetjening.sadmin.base.decorators import sadmin_access_required
 
 from forms import CheckinForm, AttendeeForm
 
-@permission_required('events.change_event')
-def view_statistics(request, event_pk):
-    event = get_object_or_404(Event, pk=event_pk)
-    statistics = {}
 
-    # attendees
-    attendees_count = event.attendees.count()
-
-    def attendee_statistics(state, identifier):
-        attendees = event.attendees.filter(state=state)
-        count = attendees.count()
-
-        new = 0
-        for attendee in attendees:
-            if attendee.is_new():
-                new += 1
-
-        statistics[identifier + '_count'] = count
-        statistics[identifier + '_new'] = new
-
-        return new
-
-    new_count = attendee_statistics(AttendState.waiting, 'waiting')
-    new_count += attendee_statistics(AttendState.accepted, 'accepted')
-    new_count += attendee_statistics(AttendState.attended, 'attended')
-
-    # invoices
-    statistics['invoice_payment_total'] = 0
-    statistics['invoice_paid'] = 0
-
-    statistics['invoices_in_balance'] = 0
-    statistics['invoices_unpaid'] = 0
-    statistics['invoices_partial'] = 0
-    statistics['invoices_overpaid'] = 0
-    statistics['invoices_count'] = 0
-
-    for invoice in Invoice.objects.filter(attend__in=event.attendees):
-        statistics['invoices_count'] += 1
-
-        if invoice.in_balance():
-            statistics['invoices_in_balance'] += 1
-
-        if invoice.is_unpaid():
-            statistics['invoices_unpaid'] += 1
-
-        if invoice.is_overpaid():
-            statistics['invoices_overpaid'] += 1
-
-        if invoice.is_partial():
-            statistics['invoices_partial'] += 1
-
-        statistics['invoice_payment_total'] += invoice.total_price
-        statistics['invoice_paid'] += invoice.paid
-
-    # tilvalg
-
-    optiongroups = []
-    for optiongroup in event.optiongroup_set.all():
-        options = []
-        for option in optiongroup.option_set.all():
-            count = option.selections.count()
-            waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
-            accepted = option.selections.filter(attendee__state=AttendState.accepted).count()
-            attended = option.selections.filter(attendee__state=AttendState.attended).count()
-            options.append((option, count, waiting, accepted, attended))
-
-        optiongroups.append((optiongroup, options))
-
-    statistics.update({'original' : event,
-                       'attendees_count' : attendees_count,
-                       'new_count' : new_count,
-                       'optiongroups' : optiongroups,})
-
-    return render_to_response('sadmin/events/event/statistics.html',
-                              statistics,
-                              context_instance=SAdminContext(request))
 
 #@sadmin_access_required
 #@permission_required('events.change_event')
@@ -118,70 +43,70 @@ def view_statistics(request, event_pk):
                           #event_id,
                           #template_name='sadmin/events/ajax/attendee_search.html')
 
-#@sadmin_access_required
-#@permission_required('events.change_attend')
-#def view_attendee(request,
-                  #event_id,
-                  #attendee_id,
-                  #template_name='sadmin/events/event/attendee.html'):
+@sadmin_access_required
+@permission_required('events.change_attend')
+def view_attendee(request,
+                  event_id,
+                  attendee_id,
+                  template_name='sadmin/events/event/attendee.html'):
 
-    #attendee = get_object_or_404(Attend, event=event_id, pk=attendee_id)
+    attendee = get_object_or_404(Attend, event=event_id, pk=attendee_id)
 
-    ## status
+    # status
 
-    #if request.method == 'POST' and request.POST.get('submit_attendee', False):
-        #attendee_form = AttendeeForm(request.POST, instance=attendee)
+    if request.method == 'POST' and request.POST.get('submit_attendee', False):
+        attendee_form = AttendeeForm(request.POST, instance=attendee)
 
-        #if attendee_form.is_valid():
-            #attendee_form.save()
+        if attendee_form.is_valid():
+            attendee_form.save()
 
-        #messages.success(request, u'%s status changed' % attendee.user)
+        messages.success(request, u'%s status changed' % attendee.user)
 
-    #else:
-        #attendee_form = AttendeeForm(instance=attendee)
+    else:
+        attendee_form = AttendeeForm(instance=attendee)
 
-    ## billing
+    # billing
 
-    #def create_payment():
-        #return Payment(revision=attendee.invoice.latest_revision,
-                       #amount=attendee.invoice.unpaid,
-                       #note=_('Paid at %(event)s') % {'event' : attendee.event.title})
+    def create_payment():
+        return Payment(revision=attendee.invoice.latest_revision,
+                       amount=attendee.invoice.unpaid,
+                       note=_('Paid at %(event)s') % {'event' : attendee.event.title})
 
-    #if request.method == 'POST' and request.POST.get('submit_payment', False):
-        #form = PaymentForm(request.POST, instance=create_payment())
+    if request.method == 'POST' and request.POST.get('submit_payment', False):
+        form = PaymentForm(request.POST, instance=create_payment())
 
-        #if form.is_valid():
-            #form.save()
-            #form = PaymentForm(instance=create_payment())
+        if form.is_valid():
+            form.save()
+            form = PaymentForm(instance=create_payment())
 
-        #messages.success(request, _(u'Payment registered for %s') % attendee.user)
+        messages.success(request, _(u'Payment registered for %s') % attendee.user)
 
-    #else:
-        #form = PaymentForm(instance=create_payment())
+    else:
+        form = PaymentForm(instance=create_payment())
 
-    ## change selections
+    # change selections
 
-    #change_selection_handler = change_selection_processors.get_handler(request, attendee)
+    change_selection_handler = change_selection_processors.get_handler(request, attendee)
 
-    #if request.method == 'POST' and request.POST.get('submit_option', False):
-        #option_forms = OptionForms(attendee.event, request.POST, attendee=attendee)
+    if request.method == 'POST' and request.POST.get('submit_option', False):
+        option_forms = OptionForms(attendee.event, request.POST, attendee=attendee)
 
-        #if change_selection_handler.is_valid() and option_forms.is_valid():
-            #change_selection_handler.save()
-            #option_forms.save()
+        if change_selection_handler.is_valid() and option_forms.is_valid():
+            change_selection_handler.save()
+            option_forms.save()
 
-            #messages.success(request, _(u'Selections changed'))
+            messages.success(request, _(u'Selections changed'))
 
-    #else:
-        #option_forms = OptionForms(attendee.event, attendee=attendee)
+    else:
+        option_forms = OptionForms(attendee.event, attendee=attendee)
 
-    #checkin_parts = change_selection_handler.view()
+    checkin_parts = change_selection_handler.view()
 
-    #return render_to_response(template_name,
-                              #{'event': attendee.event,
-                               #'attendee': attendee,
-                               #'attendee_form': attendee_form,
-                               #'option_forms' : option_forms,
-                               #'paymentform' : form,
-                               #'checkin_parts' : checkin_parts},
-                              #context_instance=SAdminContext(request))
+    return render_to_response(template_name,
+                              {'event': attendee.event,
+                               'attendee': attendee,
+                               'attendee_form': attendee_form,
+                               'option_forms' : option_forms,
+                               'paymentform' : form,
+                               'checkin_parts' : checkin_parts},
+                              context_instance=SAdminContext(request))

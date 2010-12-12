@@ -1,6 +1,8 @@
 from selvbetjening.sadmin.base.sadmin import site
 
-import urls
+from admins.user import UserAdmin
+from admins.group import GroupAdmin
 import nav
 
-#site.register_urls('members', urls.url_patterns)
+site.register('members', UserAdmin)
+site.register('groups', GroupAdmin)

@@ -1,3 +1,6 @@
+from selvbetjening.sadmin.base.sadmin import site
 
-import admin
+from admins.event import EventAdmin
 import nav
+
+site.register('events', EventAdmin)

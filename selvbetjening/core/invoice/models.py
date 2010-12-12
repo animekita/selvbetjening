@@ -166,7 +166,7 @@ class Line(models.Model):
         return self.description
 
 class Payment(models.Model):
-    revision = models.ForeignKey(InvoiceRevision)
+    invoice = models.ForeignKey(Invoice)
     created_date = models.DateTimeField(auto_now_add=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')

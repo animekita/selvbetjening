@@ -90,7 +90,7 @@ nav.secondary-nav ul li { font-size: 1.2em; }
 
 /** Submenus **/
 nav.primary-nav li ul { display: none; font-size: 0.6em; position: absolute; margin: 8px 0 0 -2em;
-                        padding: 0; background-color: #000000; }
+                        padding: 0; background-color: #000000; z-index: 999; }
 nav.primary-nav li ul li { float: none; }
 
 nav.primary-nav li:hover ul, nav.primary-nav li ul:hover { display: block; }
@@ -106,38 +106,63 @@ table tr td { font-size: 1.5em; }
 table tr th h3 { font-size: 1.5em; color: #000000; font-style: normal; }
 
 /* Forms */
-.uniForm { width: 650px; padding: 1em;}
 
-form input[type="text"], .uniForm .textInput, .uniForm textarea {
-  font-size: 24px;
-  font-family: "Myriad Pro", "Trebuchet MS", sans-serif;
+form input[type="text"], form textarea, form select {
+  font-size: 1.6em;
   padding: 6px 5px 6px 10px;
-  text-shadow: 1px 1px 1px #fff;
-  width: 600px;
-  outline: none;
 
   -moz-box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
   -webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
   box-shadow: inset 0 1px 3px rgba(0,0,0,.24);
 }
 
-.uniForm textarea {
-   font-size: 1.4em;
+form textarea {
+  font-size: 1.4em;
 }
+
+input[type="checkbox"] {
+  margin-bottom: 6px;
+  margin-right: 0.5em;
+}
+
+input[type="submit"] {
+  font-size: 1.5em;
+  height: 2em;
+  padding: 0.25em 0.25em 0.25em 0.25em;
+}
+
+/*
+div.submit-row {
+  font-family: "DeliciousSmallCapsRegular";
+  background-color: #000000;
+  background-image: none;
+}
+
+div.submit-row input {
+ font-family: "DeliciousSmallCapsRegular";
+}
+*/
+
+p.deletelink-box a {
+  font-size: 1.5em;
+  height: 2em;
+  padding: 0.25em 0.25em 0.25em 0.25em;
+}
+
+/*.uniForm { width: 650px; padding: 1em;}
 
 .uniForm .buttonHolder { margin: 1em 0 2em 0; padding:1em;	text-align:right; background-color: #729fcf; }
 .uniForm .buttonHolder input { font-size: 24px; }
 
 .uniForm div.checkbox label { display: inline; }
-.uniForm input.checkboxinput { margin-bottom: 3px; margin-right: 0.5em; }
 
-.uniForm select { padding:5px 3px; }
+form legend { font-size: 2em; padding: 1em 0 0.5em 0; }
+form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
 
-.uniForm legend { font-size: 2em; padding: 1em 0 0.5em 0; }
-.uniForm label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
 .uniForm .multiField label { display: inline; }
 
 .uniForm .formRow .ctrlHolder { float: left; }
+*/
 
 /** Search field **/
 #searchbox {
@@ -173,7 +198,7 @@ form input[type="text"], .uniForm .textInput, .uniForm textarea {
 
 /** Messages **/
 ul.messages { margin: 0 3em 0.5em 3em; list-style: none; }
-ul li.success, ul li.warning {
+ul li.success, ul li.warning, ul li.info {
   padding: 1em;
   font-size: 1.2em;
 
@@ -192,7 +217,7 @@ ul li.success, ul li.warning {
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius:5px;
 
-    -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius:5px;
 
   background: -webkit-gradient(linear, left top, left bottom, from(#c5fa92), to(#ACE07A));

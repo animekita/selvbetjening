@@ -18,8 +18,23 @@ from selvbetjening.core import ObjectWrapper
 import nav
 
 class SAdminContext(RequestContext):
-    def __init__(self, *args, **kwargs):
-        super(SAdminContext, self).__init__(*args, **kwargs)
+    """
+    Global context manipulation for all SAdmin views.
+
+    All SAdmin views should use this context, or include the
+    dictionary created by the static process method.
+    """
+
+    def __init__(self, request, dict=None, *args, **kwargs):
+        dict = SAdminContext.process(request, dict)
+        super(SAdminContext, self).__init__(request, dict, *args, **kwargs)
+
+    @staticmethod
+    def process(request, dict=None):
+        dict = dict or {}
+        dict['main_menu'] = nav.registry['main'].render()
+
+        return dict
 
 class SAdminSite(admin.AdminSite):
     def __init__(self):
@@ -110,48 +125,75 @@ class SModelAdmin(admin.ModelAdmin):
 
     def __init__(self):
         super(SModelAdmin, self).__init__(self.Meta.model, site)
+        self._url_info = self.Meta.app_name, self.Meta.name
 
     def _wrap_view(self, view):
-        def wrapper(*args, **kwargs):
-            return self.admin_site.admin_view(view)(*args, **kwargs)
+        def wrapper(request, *args, **kwargs):
+            return self.admin_site.admin_view(view)(request, *args, **kwargs)
         return update_wrapper(wrapper, view)
+
+    def _wrap_oldadmin_view(self, view):
+        def wrapper(request, *args, **kwargs):
+            extra_context = kwargs.pop('extra_context', {})
+            extra_context = SAdminContext.process(extra_context)
+
+            return view(request, *args, extra_context=extra_context, **kwargs)
+
+        return self._wrap_view(update_wrapper(wrapper, view))
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
-        info = self.Meta.app_name, self.Meta.name
 
-        urlpatterns = patterns('',
-            url(r'^$',
-                self._wrap_view(self.changelist_view),
-                name='%s_%s_changelist' % info),
-            url(r'^add/$',
-                self._wrap_view(self.add_view),
-                name='%s_%s_add' % info),
-            url(r'^(.+)/delete/$',
-                self._wrap_view(self.delete_view),
-                name='%s_%s_delete' % info),
-            url(r'^(.+)/$',
-                self._wrap_view(self.change_view),
-                name='%s_%s_change' % info),
-        )
+        default_views = getattr(self.Meta, 'default_views',
+                                ('list', 'add', 'delete', 'change'))
+
+        urlpatterns = patterns('')
+
+        if 'list' in default_views:
+            urlpatterns += patterns('',
+                url(r'^$',
+                self._wrap_oldadmin_view(self.changelist_view),
+                name='%s_%s_changelist' % self._url_info)
+                )
+
+        if 'add' in default_views:
+            urlpatterns += patterns('',
+                url(r'^add/$',
+                self._wrap_oldadmin_view(self.add_view),
+                name='%s_%s_add' % self._url_info)
+                )
+
+        if 'delete' in default_views:
+            urlpatterns += patterns('',
+                url(r'^(.+)/delete/$',
+                self._wrap_oldadmin_view(self.delete_view),
+                name='%s_%s_delete' % self._url_info)
+                )
+
+        if 'change' in default_views:
+            urlpatterns += patterns('',
+                url(r'^(.+)/$',
+                self._wrap_oldadmin_view(self.change_view),
+                name='%s_%s_change' % self._url_info)
+                )
 
         return urlpatterns
 
 class SBoundModelAdmin(SModelAdmin):
 
     def _wrap_view(self, view):
-        parent_wrapper = super(SBoundModelAdmin, self)._wrap_view(view)
-
         def wrapper(request, *args, **kwargs):
-            bind_pk = kwargs.pop('bind_pk')
+            bind_pk = kwargs.pop(getattr(self.Meta, 'bind_key', 'bind_pk'))
             bound_object = get_object_or_404(self.Meta.bound_model, pk=bind_pk)
 
             wrapped_request = ObjectWrapper(request)
             wrapped_request.bound_object = bound_object
 
-            return parent_wrapper(wrapped_request, *args, **kwargs)
+            return view(wrapped_request, *args, **kwargs)
 
-        return update_wrapper(wrapper, parent_wrapper)
+        return super(SBoundModelAdmin, self)._wrap_view(update_wrapper(wrapper, view))
+
+
 
 
 

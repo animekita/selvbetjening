@@ -1,6 +1,7 @@
-from django.contrib.contenttypes.generic import GenericTabularInline
+from django.contrib.contenttypes.generic import GenericStackedInline
 
 from models import Translation
 
-class TranslationInline(GenericTabularInline):
+class TranslationInline(GenericStackedInline):
     model = Translation
+    extra = 0
