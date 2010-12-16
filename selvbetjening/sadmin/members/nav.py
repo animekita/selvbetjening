@@ -11,19 +11,38 @@ members_menu.register(nav.Option(_(u'Browse Members'), 'sadmin:members_user_chan
     lambda user: user.has_perm('auth.change_user'))
 )
 
-members_menu.register(nav.Option(_(u'Create Member'), 'sadmin:members_user_add',
-    lambda user: user.has_perm('auth.create_user'))
-)
-
-members_menu.register(nav.Option(_(u'Statistics'), 'sadmin:members_user_statistics',
-    lambda user: user.has_perm('auth.create_user'))
-)
-
 members_menu.register(nav.Option(_(u'Browse Groups'), 'sadmin:members_group_changelist',
     lambda user: user.has_perm('auth.change_user'))
 )
 
-members_menu.register(nav.Option(_(u'Create Group'), 'sadmin:members_group_add',
+# browse members menu
+browse_members_menu = nav.Navigation()
+
+browse_members_menu.register(nav.Option(_(u'Browse Members'),
+    'sadmin:members_user_changelist',
+    lambda user: user.has_perm('auth.change_user'))
+)
+
+browse_members_menu.register(nav.Option(_(u'Create Member'),
+    'sadmin:members_user_add',
+    lambda user: user.has_perm('auth.create_user'))
+)
+
+browse_members_menu.register(nav.Option(_(u'Statistics'),
+    'sadmin:members_user_statistics',
+    lambda user: user.has_perm('auth.create_user'))
+)
+
+# browse group menu
+browse_group_menu = nav.Navigation()
+
+browse_group_menu.register(nav.Option(_(u'Browse Groups'),
+    'sadmin:members_group_changelist',
+    lambda user: user.has_perm('auth.change_user'))
+)
+
+browse_group_menu.register(nav.Option(_(u'Create Group'),
+    'sadmin:members_group_add',
     lambda user: user.has_perm('auth.create_user'))
 )
 

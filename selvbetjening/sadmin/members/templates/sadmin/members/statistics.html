@@ -1,15 +1,5 @@
-{% extends "admin/base_site.html" %}
-
-{% load i18n admin_modify adminmedia %}
-
-{% block breadcrumbs %}{% if not is_popup %}
-<div class="breadcrumbs">
-     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../../../">Auth</a> &rsaquo;
-     <a href="../../">User</a> &rsaquo;
-     Statistik
-</div>
-{% endif %}{% endblock %}
+{% extends "sadmin/base/site.html" %}
+{% load i18n %}
 
 {% block extrahead %}{{block.super}}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
@@ -129,8 +119,7 @@ var chart2 = new Highcharts.Chart({
 {% endblock %}
 
 {% block content_title %}
-
-<h1>Bruger statistik</h1>
+<h2>{% trans "Member Statistics" %}</h2>
 {% endblock %}
 
 {% block content %}

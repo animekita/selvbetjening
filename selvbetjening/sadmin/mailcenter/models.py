@@ -1,6 +1,6 @@
 from selvbetjening.sadmin.base.sadmin import site
 
-import urls
+from admins.emailspecification import EmailSpecificationAdmin
 import nav
 
-#site.register_urls('mailcenter', urls.url_patterns)
+site.register('mailcenter', EmailSpecificationAdmin)

@@ -116,7 +116,7 @@ class SAdminSite(admin.AdminSite):
 site = SAdminSite()
 
 class SModelAdmin(admin.ModelAdmin):
-    add_form_template = None
+    add_form_template = 'sadmin/base/add_form.html'
     change_form_template = 'sadmin/base/change_form.html'
     change_list_template = 'sadmin/base/change_list.html'
     delete_confirmation_template = None
@@ -178,6 +178,15 @@ class SModelAdmin(admin.ModelAdmin):
                 )
 
         return urlpatterns
+
+    def get_fieldsets(self, request, obj=None):
+        """
+        Adds add_fieldsets as an alternative to the normal fieldsets for the add form
+        """
+        if obj is None:
+            return self.add_fieldsets
+        else:
+            return super(SModelAdmin, self).get_fieldsets(request, obj)
 
 class SBoundModelAdmin(SModelAdmin):
 

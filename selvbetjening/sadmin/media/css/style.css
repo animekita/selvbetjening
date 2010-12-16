@@ -165,9 +165,19 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
 */
 
 /** Search field **/
-#searchbox {
+#changelist #toolbar {
+  background: #a40000 !important;
+  color: #ffffff;
+}
+
+#changelist #toolbar .small, #changelist #toolbar .small a {
+  color: #ffffff;
+  padding: 0 5px 0 5px;
+}
+
+#changelist-search #searchbox {
   float: left;
-  margin: 3px 0px;
+  margin: 3px 0px 0px 5px;
   border: 1px solid #fff;
 
   background: #fafafa;
@@ -179,9 +189,9 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
   -box-shadow: 1px 1px 3px #555;
 }
 
-#searchsubmit {
+#changelist-search #searchsubmit {
   background: #f2f2f2 url(../images/search.png) no-repeat center center;
-  height: 43px;
+  height: 45px;
   width: 50px;
   float: left;
   border: none;
@@ -195,6 +205,20 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
 }
 
 #searchsubmit:hover { background-color:#ffffff; }
+
+#searchbox-container {
+  overflow: auto;
+}
+
+#changelist-search #searchbox-container input[type="text"] {
+  font-size: 2em;
+  padding: 6px 5px 6px 10px;
+  width: 940px;
+}
+
+div.filtered #changelist-search #searchbox-container input[type="text"] {
+  width: 780px;
+}
 
 /** Messages **/
 ul.messages { margin: 0 3em 0.5em 3em; list-style: none; }
