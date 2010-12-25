@@ -1,11 +1,13 @@
 from datetime import date
 
 from django.utils.translation import ugettext as _
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Min, Max
 from django.contrib.admin import StackedInline
-from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.utils.html import escape
 
 from selvbetjening.core.members.shortcuts import get_or_create_profile
 from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, to_age
@@ -69,6 +71,9 @@ class UserAdmin(SModelAdmin):
             url(r'^statistics/',
                 self._wrap_view(self.user_statistics),
                 name='%s_%s_statistics' % self._url_info),
+            url(r'^(\d+)/password/$',
+                self._wrap_view(self.user_change_password),
+                name='%s_%s_change_password'),
             ) + urlpattern
 
         return urlpattern
@@ -90,6 +95,45 @@ class UserAdmin(SModelAdmin):
         extra_context['menu'] = nav.member_menu.render(username=object_id)
         return super(UserAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
+    def user_change_password(self, request, username):
+        """
+        This function have been lifted from the real UserAdmin
+        class, with slight modifications.
+        """
+        user = get_object_or_404(User, pk=username)
+        if request.method == 'POST':
+            form = AdminPasswordChangeForm(user, request.POST)
+            if form.is_valid():
+                new_user = form.save()
+                msg = ugettext('Password changed successfully.')
+                messages.success(request, msg)
+                return HttpResponseRedirect('..')
+        else:
+            form = AdminPasswordChangeForm(user)
+
+        fieldsets = [(None, {'fields': form.base_fields.keys()})]
+        adminForm = admin.helpers.AdminForm(form, fieldsets, {})
+
+        menu = nav.member_menu.render(username=username)
+        
+        return render_to_response('admin/auth/user/change_password.html', {
+            'menu': menu,
+            'title': _('Change password: %s') % escape(user.username),
+            'adminForm': adminForm,
+            'form': form,
+            'is_popup': '_popup' in request.REQUEST,
+            'add': True,
+            'change': False,
+            'has_delete_permission': False,
+            'has_change_permission': True,
+            'has_absolute_url': False,
+            'opts': self.model._meta,
+            'original': user,
+            'save_as': False,
+            'show_save': True,
+            'root_path': self.admin_site.root_path,
+        }, context_instance=SAdminContext(request))
+    
     def user_age_chart(self, min_age=5, max_age=80):
         cur_year = date.today().year
 

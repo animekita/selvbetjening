@@ -224,3 +224,53 @@ a.deletelink:link, a.deletelink:visited {
 a.deletelink:hover {
     color: #993333;
 }
+
+/* MESSAGES & ERRORS */
+
+.errornote {
+  display: block;
+  color: #FFFFFF;
+  padding: 1em;
+  font-size: 1.2em;
+
+  background-color: #ef2929;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ef2929), to(#CC0000));
+  background: -moz-linear-gradient(top, #ef2929, #CC0000);
+}
+
+ul.errorlist {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.errorlist li {
+  font-size: 12px !important;
+  display: block;
+  padding: 4px 5px 4px 4px;
+  margin: 0 0 3px 0;
+  border: 1px solid red;
+  color: white;
+  background-color: #ef2929;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ef2929), to(#CC0000));
+  background: -moz-linear-gradient(top, #ef2929, #CC0000);
+}
+
+td ul.errorlist {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+td ul.errorlist li {
+    margin: 0 !important;
+}
+
+.errors {
+    background: #ffc;
+}
+
+.errors input, .errors select {
+    border: 1px solid red;
+}
+
+
+

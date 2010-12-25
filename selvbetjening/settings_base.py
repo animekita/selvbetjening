@@ -50,7 +50,6 @@ MIDDLEWARE_CLASSES = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
-    'selvbetjening.context_processors.admin_navigation',
 
     'django.core.context_processors.media',
     'django.core.context_processors.auth',
@@ -84,7 +83,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.messages',
 
-    'selvbetjening.core.selvadmin',
     'selvbetjening.core.database',
 
     'selvbetjening.core.events',

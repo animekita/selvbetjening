@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 from selvbetjening.sadmin.base import nav
 
-# members menu
+# main menu
 main_menu = nav.Navigation(_('Members'))
 nav.registry['main'].register(main_menu)
 
@@ -47,6 +47,11 @@ members_menu.register(nav.Option(_(u'Statistics'),
 member_menu = nav.Navigation()
 
 member_menu.register(nav.Option(_(u'Personal Information'),
-    lambda ctx: reverse('sadmin:members_view', kwargs={'username': ctx['username']}),
+    lambda ctx: reverse('sadmin:members_user_change', args=[ctx['username']]),
+    lambda user: user.has_perm('auth.change_user'))
+)
+
+member_menu.register(nav.Option(_(u'Change Password'),
+    lambda ctx: reverse('sadmin:members_user_change_password', kwargs={'username': ctx['username']}),
     lambda user: user.has_perm('auth.change_user'))
 )
