@@ -15,11 +15,15 @@ events_menu.register(nav.Option(_(u'Create Event'), 'sadmin:events_event_add',
     lambda user: user.has_perm('events.add_event'))
 )
 
+events_menu.register(nav.Option(_(u'Register Payment'), 'sadmin:events_event_register_payment',
+    lambda user: user.has_perm('events.add_event'))
+)
+
 # event menu
 event_menu = nav.Navigation()
 
-event_menu.register(nav.Option(_(u'Attendees'),
-    lambda ctx: reverse('sadmin:events_attendee_changelist',
+event_menu.register(nav.Option(_(u'Event'),
+    lambda ctx: reverse('sadmin:events_event_change',
                         args=[ctx['event_pk']]),
     lambda user: user.has_perm('events.change_event'))
 )
@@ -30,17 +34,23 @@ event_menu.register(nav.Option(_(u'Statistics'),
     lambda user: user.has_perm('events.change_event'))
 )
 
-event_menu.register(nav.Option(_(u'Settings'),
-    lambda ctx: reverse('sadmin:events_event_change',
+event_menu.register(nav.Option(_(u'Financial Report'),
+    lambda ctx: reverse('sadmin:events_event_financial',
+                        kwargs={'event_pk': ctx['event_pk']}),
+    lambda user: user.has_perm('events.change_event'))
+)
+
+event_menu.register(nav.Option(_(u'Attendees'),
+    lambda ctx: reverse('sadmin:events_attendee_changelist',
                         args=[ctx['event_pk']]),
     lambda user: user.has_perm('events.change_event'))
 )
 
-event_menu.register(nav.Option(_(u'Add attendee'),
-    lambda ctx: reverse('sadmin:events_nonattendee_changelist',
-                        args=[ctx['event_pk']]),
-    lambda user: user.has_perm('events.change_event'))
-)
+#event_menu.register(nav.Option(_(u'Add attendee'),
+    #lambda ctx: reverse('sadmin:events_nonattendee_changelist',
+                        #args=[ctx['event_pk']]),
+    #lambda user: user.has_perm('events.change_event'))
+#)
 
 event_menu.register(nav.Option(_(u'Option groups'),
     lambda ctx: reverse('sadmin:events_optiongroup_changelist',
@@ -48,11 +58,11 @@ event_menu.register(nav.Option(_(u'Option groups'),
     lambda user: user.has_perm('events.change_event'))
 )
 
-event_menu.register(nav.Option(_(u'Add option group'),
-    lambda ctx: reverse('sadmin:events_optiongroup_add',
-                        args=[ctx['event_pk']]),
-    lambda user: user.has_perm('events.change_event'))
-)
+#event_menu.register(nav.Option(_(u'Add option group'),
+    #lambda ctx: reverse('sadmin:events_optiongroup_add',
+                        #args=[ctx['event_pk']]),
+    #lambda user: user.has_perm('events.change_event'))
+#)
 
 # attendee menu
 attendee_menu = nav.Navigation()
@@ -63,7 +73,7 @@ attendee_menu.register(nav.Option(_(u'< To Event'),
     lambda user: user.has_perm('events.change_event'))
 )
 
-attendee_menu.register(nav.Option(_(u'Registration'),
+attendee_menu.register(nav.Option(_(u'Attendee'),
     lambda ctx: reverse('sadmin:events_attendee_change',
                         args=[ctx['event_pk'], ctx['attendee_pk']]),
     lambda user: user.has_perm('events.change_event'))
@@ -77,6 +87,12 @@ attendee_menu.register(nav.Option(_(u'Selections'),
 
 attendee_menu.register(nav.Option(_(u'Invoice'),
     lambda ctx: reverse('sadmin:events_invoice_change',
+                        args=[ctx['event_pk'], ctx['attendee_pk']]),
+    lambda user: user.has_perm('events.change_event'))
+)
+
+attendee_menu.register(nav.Option(_(u'PKs'),
+    lambda ctx: reverse('sadmin:events_attendee_show_pks',
                         args=[ctx['event_pk'], ctx['attendee_pk']]),
     lambda user: user.has_perm('events.change_event'))
 )

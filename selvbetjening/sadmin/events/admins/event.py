@@ -1,15 +1,19 @@
 from django.utils.translation import ugettext as _
 from django.db.models import Count
 from django.shortcuts import render_to_response, get_object_or_404
+from django.contrib.admin.helpers import AdminForm
 
 from selvbetjening.core.translation.admin import TranslationInline
 from selvbetjening.core.events.models import Event, AttendState, AttendState
-from selvbetjening.core.invoice.models import Invoice
+from selvbetjening.core.invoice.models import Invoice, Payment
+
+from selvbetjening.sadmin.base import admin_formize
+from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
 
 from selvbetjening.sadmin.events import nav
 from selvbetjening.sadmin.events.admins.attendee import AttendeeAdmin
 from selvbetjening.sadmin.events.admins.optiongroup import OptionGroupAdmin
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
+from selvbetjening.sadmin.events.forms import InvoiceFormattingForm, RegisterPaymentForm
 
 class EventAdmin(SModelAdmin):
     class Meta:
@@ -61,9 +65,15 @@ class EventAdmin(SModelAdmin):
         urlpatterns = super(EventAdmin, self).get_urls()
 
         urlpatterns = patterns('',
+            url(r'^register-payment/$',
+                self._wrap_view(self.register_payment_view),
+                name='%s_%s_register_payment' % self._url_info),
             url(r'^(?P<event_pk>[0-9]+)/statistics/$',
                 self._wrap_view(self.statistics_view),
                 name='%s_%s_statistic' % self._url_info),
+            url(r'^(?P<event_pk>[0-9]+)/financial/$',
+                self._wrap_view(self.financial_report_view),
+                name='%s_%s_financial' % self._url_info),            
             (r'^(?P<bind_pk>[0-9]+)/attendees/', include(AttendeeAdmin().urls)),
             (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(OptionGroupAdmin().urls)),
         ) + urlpatterns
@@ -75,6 +85,36 @@ class EventAdmin(SModelAdmin):
         extra_context['menu'] = nav.event_menu.render(event_pk=object_id)
         return super(EventAdmin, self).change_view(request, object_id, extra_context)
 
+    def register_payment_view(self, request):
+        
+        found_attendee = None
+        payment = None
+        multiple_attendees = None
+        
+        if request.method == 'POST':
+            form = RegisterPaymentForm(request.POST)
+            
+            if form.is_valid():
+                if len(form.attendees) == 1:
+                    handler, found_attendee = form.attendees[0]
+                    payment = Payment.objects.create(invoice=found_attendee.invoice,
+                                                     amount=form.cleaned_data['payment'],
+                                                     signee=request.user)
+                else:
+                    multiple_attendees = form.attendees
+                    
+        else:
+            form = RegisterPaymentForm()
+            
+        adminform = admin_formize(form)
+        
+        return render_to_response('sadmin/events/register_payment.html',
+                                  {'adminform': adminform,
+                                   'found_attendee': found_attendee,
+                                   'payment': payment,
+                                   'multiple_attendees': multiple_attendees},
+                                  context_instance=SAdminContext(request))
+    
     def statistics_view(self, request, event_pk):
         event = get_object_or_404(Event, pk=event_pk)
         statistics = {}
@@ -150,4 +190,30 @@ class EventAdmin(SModelAdmin):
 
         return render_to_response('sadmin/events/event/statistics.html',
                                   statistics,
+                                  context_instance=SAdminContext(request))
+
+    def financial_report_view(self, request, event_pk):
+        event = get_object_or_404(Event, pk=event_pk)   
+        invoice_queryset = Invoice.objects.filter(attend__event=event)
+        
+        if request.method == 'POST' or request.GET.has_key('event'):
+            formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
+            formattingform.is_valid()
+        else:
+            formattingform = InvoiceFormattingForm(invoices=invoice_queryset)
+            
+        line_groups, total = formattingform.format()
+    
+        adminformattingform = AdminForm(formattingform,
+                                        [(_('Formatting'), {'fields': formattingform.base_fields.keys()})],
+                                        {})
+    
+        menu = nav.event_menu.render(event_pk=event_pk)
+        
+        return render_to_response('sadmin/events/event/financial.html',
+                                  {'invoices' : invoice_queryset,
+                                   'line_groups' : line_groups,
+                                   'total' : total,
+                                   'adminformattingform' : adminformattingform,
+                                   'menu' : menu},
                                   context_instance=SAdminContext(request))

@@ -12,11 +12,6 @@ mailcenter_menu.register(nav.Option(_(u'Browse E-mails'),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
-mailcenter_menu.register(nav.Option(_(u'Create E-mail Draft'),
-    'sadmin:mailcenter_emailspecification_add',
-    lambda user: user.has_perm('mailcenter.add_emailspecification'))
-)
-
 mailcenter_menu.register(nav.Option(_(u'Outgoing e-mails'), 'sadmin:mailcenter_outgoing_list',
     lambda user: user.has_perm('mailcenter.add_emailspecification'))
 )
@@ -35,16 +30,21 @@ emails_menu.register(nav.Option(_(u'Outgoing e-mails'),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
+emails_menu.register(nav.Option(_(u'Create E-mail Draft'),
+    'sadmin:mailcenter_emailspecification_add',
+    lambda user: user.has_perm('mailcenter.add_emailspecification'))
+)
+
 # email menu
 email_menu = nav.Navigation()
 
-email_menu.register(nav.Option(_(u'Update'),
+email_menu.register(nav.Option(_(u'Email'),
     lambda ctx: reverse('sadmin:mailcenter_emailspecification_change', args=[ctx['email_pk']]),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
-email_menu.register(nav.Option(_(u'Preview'),
-    lambda ctx: reverse('sadmin:mailcenter_emailspecification_preview', kwargs={'email_pk': ctx['email_pk']}),
+email_menu.register(nav.Option(_(u'Filters'),
+    lambda ctx: reverse('sadmin:mailcenter_emailspecification_change_filter', kwargs={'email_pk': ctx['email_pk']}),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
@@ -53,7 +53,7 @@ email_menu.register(nav.Option(_(u'Send'),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
-email_menu.register(nav.Option(_(u'Filters'),
-    lambda ctx: reverse('sadmin:mailcenter_emailspecification_change_filter', kwargs={'email_pk': ctx['email_pk']}),
+email_menu.register(nav.Option(_(u'Mass E-email'),
+    lambda ctx: reverse('sadmin:mailcenter_emailspecification_masssend', kwargs={'email_pk': ctx['email_pk']}),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )

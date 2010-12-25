@@ -10,15 +10,13 @@ from selvbetjening.core.mailcenter.models import EmailSpecification,\
 from selvbetjening.portal.eventregistration.forms import AcceptForm
 from selvbetjening.core.events.models import Event, Option, AttendState, Attend
 
-class SendPreviewEmailForm(forms.Form):
+class SendEmailForm(forms.Form):
     username = forms.CharField()
 
-    layout = Layout(InlineFieldset(_(u'Send Preview E-mail'), 'username'))
-    submit = Submit('submit_send_preview', _(u'Send Preview E-mail'))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.add_input(submit)
+    fieldsets = [(None, {
+        'fields': ('username',)
+        }),
+    ]
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -32,14 +30,10 @@ class SendPreviewEmailForm(forms.Form):
         return username
 
 class SendNewsletterForm(AcceptForm):
-    def __init__(self, *args, **kwargs):
-        super(SendNewsletterForm, self).__init__(*args, **kwargs)
-
-        layout = Layout(InlineFieldset(_(u'Confirm Send Newsletter'), 'confirm'))
-        submit = Submit('submit_confirm_send_newsletter', _(u'Confirm Send Newsletter'))
-
-        self.helper.add_layout(layout)
-        self.helper.add_input(submit)
+    fieldsets = [(None, {
+        'fields': ('confirm',)
+        }),
+    ]
 
     def label(self):
         return _(u'Yes, send the newsletter to all users.')
@@ -119,12 +113,10 @@ class UserConditionForm(BaseConditionForm):
         model = UserConditions
         exclude = ['specification',]
 
-    layout = Layout(InlineFieldset(_('User'),
-                                   Row('user_age_comparator', 'user_age_argument')))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
+    fieldsets = [(_('User'), {
+        'fields': (('user_age_comparator', 'user_age_argument'),),
+        }),
+    ]
 
 class AttendeeConditionForm(BaseConditionForm):
     class Meta:
@@ -133,13 +125,12 @@ class AttendeeConditionForm(BaseConditionForm):
 
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
-    layout = Layout(InlineFieldset(_('Attends'), 'event',
-                                   Row('attends_selection_comparator', 'attends_selection_argument'),
-                                   'attends_status'))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
+    fieldsets = [(_('Attends'), {
+        'fields': ('event', 
+                   ('attends_selection_comparator', 'attends_selection_argument'),
+                   'attends_status'),
+        })
+    ]
 
 class BoundAttendConditionForm(BaseConditionForm):
     class Meta:
@@ -148,14 +139,13 @@ class BoundAttendConditionForm(BaseConditionForm):
 
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
-    layout = Layout(InlineFieldset(_('Event'), 'event',
-                                   Row('attends_selection_comparator', 'attends_selection_argument'),
-                                   'attends_status'))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
-
+    fieldsets = [(_('Event'), {
+        'fields': ('event', 
+                   ('attends_selection_comparator', 'attends_selection_argument'),
+                   'attends_status'),
+        })
+    ]
+    
 class ConditionFormRegistry(object):
     def __init__(self):
         self._condition_forms = {}

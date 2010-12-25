@@ -101,10 +101,6 @@ class InvoiceRevision(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     @property
-    def global_id(self):
-        return u'%s.%s.%s' % (self.id, self.invoice.id, self.invoice.user.id)
-
-    @property
     def total_price(self):
         total = 0
         for line in self.line_set.all():

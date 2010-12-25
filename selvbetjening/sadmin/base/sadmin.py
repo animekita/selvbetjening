@@ -119,6 +119,7 @@ class SModelAdmin(admin.ModelAdmin):
     add_form_template = 'sadmin/base/add_form.html'
     change_form_template = 'sadmin/base/change_form.html'
     change_list_template = 'sadmin/base/change_list.html'
+    change_list_ajax_template = 'sadmin/base/change_list_ajax.html'
     delete_confirmation_template = None
     delete_selected_confirmation_template = None
     object_history_template = None
@@ -141,6 +142,9 @@ class SModelAdmin(admin.ModelAdmin):
 
         return self._wrap_view(update_wrapper(wrapper, view))
 
+    def _get_extra_url_args(self, request):
+        return []
+    
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
@@ -152,29 +156,32 @@ class SModelAdmin(admin.ModelAdmin):
         if 'list' in default_views:
             urlpatterns += patterns('',
                 url(r'^$',
-                self._wrap_oldadmin_view(self.changelist_view),
-                name='%s_%s_changelist' % self._url_info)
+                    self._wrap_oldadmin_view(self.changelist_view),
+                    name='%s_%s_changelist' % self._url_info),
+                url(r'^ajax/search/$',
+                    self._wrap_oldadmin_view(self.changelist_ajax_view),
+                    name='%s_%s_changelist_ajax' % self._url_info)
                 )
 
         if 'add' in default_views:
             urlpatterns += patterns('',
                 url(r'^add/$',
-                self._wrap_oldadmin_view(self.add_view),
-                name='%s_%s_add' % self._url_info)
+                    self._wrap_oldadmin_view(self.add_view),
+                    name='%s_%s_add' % self._url_info)
                 )
 
         if 'delete' in default_views:
             urlpatterns += patterns('',
                 url(r'^(.+)/delete/$',
-                self._wrap_oldadmin_view(self.delete_view),
-                name='%s_%s_delete' % self._url_info)
+                    self._wrap_oldadmin_view(self.delete_view),
+                    name='%s_%s_delete' % self._url_info)
                 )
 
         if 'change' in default_views:
             urlpatterns += patterns('',
                 url(r'^(.+)/$',
-                self._wrap_oldadmin_view(self.change_view),
-                name='%s_%s_change' % self._url_info)
+                    self._wrap_oldadmin_view(self.change_view),
+                    name='%s_%s_change' % self._url_info)
                 )
 
         return urlpatterns
@@ -183,11 +190,26 @@ class SModelAdmin(admin.ModelAdmin):
         """
         Adds add_fieldsets as an alternative to the normal fieldsets for the add form
         """
-        if obj is None:
+        if obj is None and hasattr(self, 'add_fieldsets'):
             return self.add_fieldsets
         else:
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
+    def changelist_view(self, request, extra_context):
+        extra_context = extra_context or {}
+        extra_context['search_url'] = reverse('sadmin:%s_%s_changelist_ajax' % self._url_info, args=self._get_extra_url_args(request)) + '?q='
+        
+        return super(SModelAdmin, self).changelist_view(request, extra_context)
+        
+    def changelist_ajax_view(self, request, extra_context=None):
+        response = self.changelist_view(request, extra_context)
+
+        start = response.content.rfind('<form')
+        stop = response.content.rfind('</form>') + 7
+        response.content = response.content[start:stop]
+        
+        return response
+        
 class SBoundModelAdmin(SModelAdmin):
 
     def _wrap_view(self, view):
@@ -202,7 +224,8 @@ class SBoundModelAdmin(SModelAdmin):
 
         return super(SBoundModelAdmin, self)._wrap_view(update_wrapper(wrapper, view))
 
-
+    def _get_extra_url_args(self, request):
+        return [request.bound_object.pk,]
 
 
 

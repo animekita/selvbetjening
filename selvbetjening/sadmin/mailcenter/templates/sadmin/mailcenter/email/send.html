@@ -1,16 +1,26 @@
-{% extends "sadmin/mailcenter/email/base.html" %}
-{% load uni_form_tags %}
+{% extends "sadmin/base/extendedsite.html" %}
+{% load i18n %}
+
+{% block content_title %}
+    <h2>Send e-email</h2>
+{% endblock %}
 
 {% block content %}
 
-<ul class="messages">
-    <li class="warning">WARNING: Be aware that you are about to send a newsletter to {{recipients|length}} users. Please ensure that the e-mail is correct and all filters are applied correctly.</li>
-</ul>
+<div class="block">
+    <p>Send the e-mail to a specific user ignoring any filters defined for the e-mail.</p>
+</div>
+    
+<form method="POST" action="">{% csrf_token %}
 
-<p>Currently this e-mail will be sent to {{recipients|length}} receipients. Configure the <a href="{% url sadmin:mailcenter_emailspecification_change_filter email_pk=email.pk %}">e-mail filter</a> to change who will receive this e-mail.</p>
+    {% for fieldset in form %}
+        {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
+    
+    <div class="submit-row" >
+        <input type="submit" value="{% trans "Send e-mail" %}" 
+        class="default" name="do_send_email" />
+    </div>
 
-{% with form.helper as helper %}
-    {% uni_form form helper %}
-{% endwith %}
-
+</form>
 {% endblock %}

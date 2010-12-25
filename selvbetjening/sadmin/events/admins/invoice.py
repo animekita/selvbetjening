@@ -8,11 +8,11 @@ from django.contrib.admin import StackedInline, TabularInline
 from selvbetjening.core.events.models import Invoice, Attend
 from selvbetjening.core.invoice.models import InvoiceRevision, Payment
 
-from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
-from selvbetjening.sadmin.base.sadmin import SAdminContext
+from selvbetjening.sadmin.base import admin_formize
+from selvbetjening.sadmin.base.sadmin import SAdminContext, SBoundModelAdmin
 from selvbetjening.sadmin.events import nav
 
-class InlinePaymentAdmin(StackedInline):
+class InlinePaymentAdmin(StackedInline):  
     model = Payment
     extra = 0
     can_delete = False
@@ -43,13 +43,13 @@ class InvoiceAdmin(SBoundModelAdmin):
         name = 'invoice'
         model = Invoice
         bound_model = Attend
-        bind_key = 'bind_invoice_pk'
+        bind_key = 'bind_attendee_pk'
         default_views = ()
 
     readonly_fields = ('name', total, paid)
     exclude = ('user',)
     inlines = [InlinePaymentAdmin, InlineInvoiceRevisionAdmin,]
-
+    
     fieldsets = (
         (None, {
             'fields': ('name', (total, paid)),

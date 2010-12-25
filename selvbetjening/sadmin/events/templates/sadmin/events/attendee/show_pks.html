@@ -1,0 +1,24 @@
+{% extends "sadmin/events/base.html" %}
+{% load adminmedia i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
+{% block content_title %}
+<h2>{% trans "Payment Keys" %}</h2>
+{% endblock %}
+
+{% block content %}
+
+<form>
+<fieldset class="module aligned">
+
+{% for pk in pks %}
+<div class="form-row">
+    <div><label>{{pk.1.0}}:</label><p>{{pk.1.1}}</p></div>
+</div>
+{% endfor %}
+
+</fieldset>
+</form>
+
+{% endblock %}

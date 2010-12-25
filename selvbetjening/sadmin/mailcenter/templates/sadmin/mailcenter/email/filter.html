@@ -1,21 +1,23 @@
-{% extends "sadmin/mailcenter/email/base.html" %}
-{% load uni_form_tags %}
+{% extends "sadmin/base/extendedsite.html" %}
+{% load i18n %}
+
+{% block content_title %}
+    <h2>Change Filters</h2>
+{% endblock %}
 
 {% block content %}
 
-<form method="POST" action="" class="uniForm">
+<form method="POST" action="">{% csrf_token %}
 
 {% for form in forms %}
-
-    {% with form.helper as helper %}
-        {% uni_form form helper %}
-    {% endwith %}
-
+    {% for fieldset in form %}
+        {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
 {% endfor %}
 
-<div class="buttonHolder">
-  <input type="submit" name="submit_update_conditions" value="Gem filter"
-    class="submit submitButton" />
+<div class="submit-row" >
+    <input type="submit" value="{% trans "Save" %}" 
+    class="default" name="do_save" />
 </div>
 
 </form>

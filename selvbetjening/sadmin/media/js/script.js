@@ -4,7 +4,6 @@
 
 function init_livesearch(searchbox, resultsArea, searchUrl) {
     var typeDelay = 200;
-
     searchbox.keyup(function () {
         if (this.value != this.lastValue) {
             var query = this.value;

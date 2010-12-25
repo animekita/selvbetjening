@@ -1,0 +1,31 @@
+{% extends "sadmin/base/extendedsite.html" %}
+{% load i18n %}
+
+{% block content_title %}
+    <h2>Send mass e-email</h2>
+{% endblock %}
+
+{% block content %}
+
+<ul class="messages">
+    <li class="warning">WARNING: Be aware that you are about to send a newsletter to {{recipients|length}} users. Please ensure that the e-mail is correct and all filters are applied correctly.</li>
+</ul>
+
+<div class="block">
+    <p>Currently this e-mail will be sent to {{recipients|length}} receipients. Configure the <a href="{% url sadmin:mailcenter_emailspecification_change_filter email_pk=email.pk %}">e-mail filter</a> to change who will receive this e-mail.</p>
+</div>
+
+<form method="POST" action="">{% csrf_token %}
+
+    {% for fieldset in form %}
+        {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
+    
+    <div class="submit-row" >
+        <input type="submit" value="{% trans "Send mass e-mail" %}" 
+        class="default" name="do_register_payment" />
+    </div>
+
+</form>
+
+{% endblock %}

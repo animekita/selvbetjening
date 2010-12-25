@@ -53,7 +53,11 @@ class EmailSpecification(models.Model):
 
         for condition in ALL_CONDITIONS:
             if condition.accepts(parameters):
-                instance, created = condition.objects.get_or_create(specification=self)
+                try:
+                    instance = condition.objects.get(specification=self)
+                except condition.DoesNotExist:
+                    instance = condition.objects.create(specification_id=1)
+                    
                 conditions.append(instance)
 
         return conditions

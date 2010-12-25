@@ -1,0 +1,7 @@
+{% include "admin/edit_inline/stacked.html" %}
+
+{% for fieldset in payment_form %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+
+<input type="submit" name="pay" value="Pay" />

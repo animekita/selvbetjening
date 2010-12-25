@@ -1,3 +1,12 @@
 {% extends "admin/change_list.html" %}
 
 {% block object-tools %}{% endblock %}
+
+{% block extrahead %}
+{{block.super}}
+<script type="text/javascript">
+$( function() {
+  init_livesearch($('#searchbox'), $('#changelist-form'), '{{search_url}}');
+});
+</script>
+{% endblock %}

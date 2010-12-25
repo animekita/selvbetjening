@@ -318,11 +318,11 @@ def update_invoice_with_attend_handler(sender, **kwargs):
 populate_invoice.connect(update_invoice_with_attend_handler)
 
 def update_state_on_payment(sender, **kwargs):
-    instance = kwargs['instance']
+    payment = kwargs['instance']
     created = kwargs['created']
 
     if created == True:
-        attends = Attend.objects.filter(invoice=instance.revision.invoice)
+        attends = Attend.objects.filter(invoice=payment.invoice)
         attends = attends.filter(event__move_to_accepted_policy=AttendeeAcceptPolicy.on_payment)
         attends = attends.filter(state=AttendState.waiting)
 
@@ -344,6 +344,57 @@ post_save.connect(attends_event_handler, sender=Attend)
 
 source_registry.register('attends_event_signal', _(u'User registered for event'),
                          [Attend], attends_event_signal)
+
+request_attendee_pks_signal = Signal(providing_args=['attendee'])
+
+def get_basic_pk(attendee):
+    return str(attendee.invoice.pk)
+
+def basic_pks_handler(sender, **kwargs):
+    attendee = kwargs['attendee']
+    
+    return ('Invoice ID', 'iid:%s' % get_basic_pk(attendee))
+
+request_attendee_pks_signal.connect(basic_pks_handler)
+
+def legacy_attendee_pks_handler(sender, **kwargs):
+    attendee = kwargs['attendee']
+    key = 'legacy:%s.%s.%s' % (attendee.invoice.latest_revision.pk,
+                               attendee.invoice.pk,
+                               attendee.user.pk)
+    
+    return ('Legacy ID', key)
+
+request_attendee_pks_signal.connect(legacy_attendee_pks_handler)
+
+find_attendee_signal = Signal(providing_args=['pk'])
+
+def basic_find_attendee_handler(sender, **kwargs):
+    try:
+        pk = int(kwargs['pk'])
+        return ('Invoice ID', Attend.objects.get(pk=pk))
+    
+    except:
+        return None
+    
+find_attendee_signal.connect(basic_find_attendee_handler)
+
+def legacy_find_attendee_handler(sender, **kwargs):
+    pk=kwargs['pk']
+    
+    try:
+        revision_pk, invoice_pk, user_pk = pk.split('.')
+    
+        attendee = Attend.objects.get(user__pk=user_pk,
+                                      invoice__pk=invoice_pk,
+                                      invoice__revision_set__pk=revision_pk)
+    
+        return ('Legacy', attendee)
+    
+    except:
+        return None
+
+find_attendee_signal.connect(legacy_find_attendee_handler)
 
 class AttendStateChange(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)

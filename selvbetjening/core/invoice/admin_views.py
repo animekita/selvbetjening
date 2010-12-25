@@ -32,57 +32,6 @@ def invoice_select_workflow(request,
                               {'workflows': workflows},
                               context_instance=RequestContext(request))
 
-def invoice_pay(request,
-                workflow_id,
-                model_admin,
-                payment_form=InvoicePaymentForm,
-                template_name='admin/invoice/invoice/workflow.html'):
-
-    if not model_admin.has_change_permission(request, None):
-        raise PermissionDenied
-
-    workflow = get_object_or_404(InvoicePaymentWorkflow, pk=workflow_id)
-
-    changed_attendee = None
-    changed_payment = None
-
-    if request.method == 'POST':
-        form = payment_form(request.POST)
-
-        if form.is_valid():
-            attendee = Attend.objects.get(invoice=form.invoice)
-            payment = Payment.objects.create(revision=form.invoice.latest_revision,
-                                             amount=form.payment,
-                                             signee=request.user)
-
-            subject = workflow.notification_email_subject
-            content = {'invoice_rev' : attendee.invoice.latest_revision,
-                       'attendee' : attendee,
-                       'payment': payment}
-
-            message_body = get_template_from_string(workflow.notification_email).render(Context(content))
-
-            send_mail(subject, message_body, settings.DEFAULT_FROM_EMAIL, [attendee.user.email,])
-
-            changed_attendee = attendee
-            changed_payment = payment
-
-            form = payment_form()
-
-    else:
-        form = payment_form()
-
-    adminform = AdminForm(form,
-                          [(None, {'fields': form.base_fields.keys()})],
-                          {}
-                          )
-
-    return render_to_response(template_name, {'form': form,
-                                              'adminform' : adminform,
-                                              'changed_attendee' : changed_attendee,
-                                              'changed_payment' : changed_payment},
-                              context_instance=RequestContext(request))
-
 def invoice_report(request,
                    model_admin,
                    template_name='admin/invoice/invoice/report.html'):

@@ -1,4 +1,8 @@
 def form_collection_builder(form_classes):
+    """
+    Takes a list of form classes, returning a FormCollection
+    with combined is_valid and save methods.
+    """
 
     class FormCollection(object):
         def __init__(self, *args, **kwargs):

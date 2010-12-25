@@ -1,50 +1,36 @@
 {% extends "sadmin/events/base.html" %}
-{% load uni_form_tags %}
+{% load adminmedia %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
 
 {% block content_title %}
-<h1>Tilmelding til {{ event.title }}</h1>
 <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} ({{ attendee.user.username}})</h2>
-{% endblock %}
-
-{% block navigation %}
-    <nav class="secondary-nav">
-     <ul>
-       <li><a href="#status">Status</a></li>
-       <li><a href="#billing">Betalinger</a></li>
-       <li><a href="#selections">Tilvalg</a></li>
-     </ul>
-    </nav>
 {% endblock %}
 
 {% block content %}
 
-<h3 id="status">Status</h3>
+<form method="POST" action="">
 
-<form method="POST" action="" class="uniForm">
+<fieldset class="module aligned">
 
-<table>
-<tr>
-    <td>Tilmelding</td>
-    <td>{{attendee_form.state}}</td>
-</tr>
-<tr>
-    <td>Betaling</td>
+<div class="form-row">
+    <div><label>Status:</label><p>{{attendee_form.state}}</p></div>
+</div>
+
+<div class="form-row">
+    <div><label>Betalt:</label>
     {% if attendee.invoice.in_balance %}
-        <td>Betalt</td>
+    <p>Betalt</p>
     {% else %}{% if attendee.invoice.is_paid %}
-        <td>Betalt for meget</td>
+    <p>Betalt for meget</p>
     {% else %}
-        <td>Mangler betaling</td>
-    {% endif %}
-{% endif %}
-</tr>
-</table>
+    <p>Mangler betaling</p>
+    {% endif %}{% endif %}
+    </div>
+</div>
 
-{% with attendee_form.helper as helper %}
-     {% uni_form attendee_form helper %}
-{% endwith %}
+</fieldset>
 
-</form>
 
 <h3 id="billing">Betalinger</h3>
 
@@ -63,17 +49,6 @@
         <td><b>Total</b></td>
         <td><b>{{attendee.invoice.total_price}},-</b></td>
     </tr>
-
-    <tr>
-        <th colspan="2">Betalinger</th>
-    </tr>
-
-    {% for payment in attendee.invoice.payment_set.all %}
-    <tr>
-        <td>{{payment.note}} ({{payment.created_date}} by {{payment.signee}})</td>
-        <td>{{payment.amount}},-</td>
-    </tr>
-    {% endfor %}
 
     <tr>
         <td><b>Total betalt</b></td>
@@ -97,26 +72,5 @@
 
 </table>
 
-{% with paymentform.helper as helper %}
-     {% uni_form paymentform helper %}
-{% endwith %}
-
-<h3 id="selections">Tilvalg</h3>
-
-<form method="POST" action="" class="uniForm">
-
-{% for option_form in option_forms %}
-    {% with option_form.helper as helper %}
-         {% uni_form option_form helper %}
-    {% endwith %}
-{% endfor %}
-
-{{ checkin_parts|safe }}
-
-<div class="buttonHolder">
-    <input type="submit" name="submit_option" value="Gem tilvalg" class="submit submitButton" id="submit-id-submit_option" />
-</div>
-
-</form>
-
+ 
 {% endblock %}
