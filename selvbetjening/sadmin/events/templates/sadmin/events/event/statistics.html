@@ -1,9 +1,11 @@
-{% extends "sadmin/events/event/base.html" %}
+{% extends "sadmin/base/extendedsite.html" %}
 {% load i18n %}
 
 {% block content_title %}<h2>{% trans "Statistics" %}</h2>{% endblock %}
 
 {% block content %}
+
+<div class="block">
 
 <h3>Tilmeldinger</h3>
 
@@ -31,6 +33,9 @@
     </tr>
 </table>
 
+</div>
+<div class="block">
+
 <h3>Betalinger</h3>
 
 <p>Der er for {{invoice_payment_total}},- invoices hvoraf der er indbetalt {{invoice_paid}},-.</p>
@@ -53,6 +58,9 @@
         <td>{{invoices_count}}</td>
     </tr>
 </table>
+
+</div>
+<div class="block">
 
 <h3>Tilvalg</h3>
 
@@ -84,4 +92,6 @@
      {% endfor %}
    </table>
 
+</div>
+   
 {% endblock %}

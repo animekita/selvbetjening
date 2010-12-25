@@ -11,7 +11,7 @@ from selvbetjening.sadmin.base import admin_formize
 from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
 
 from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry
-from selvbetjening.sadmin.mailcenter.admins.message import MailerAdmin
+from selvbetjening.sadmin.mailcenter.admins.outgoing import OutgoingAdmin
 from selvbetjening.sadmin.mailcenter import nav
 
 class EmailSpecificationAdmin(SModelAdmin):
@@ -57,7 +57,7 @@ class EmailSpecificationAdmin(SModelAdmin):
             url(r'^(?P<email_pk>[0-9]+)/mass-send/$',
                 self._wrap_view(self.masssend_view),
                 name='%s_%s_masssend' % self._url_info),
-            (r'^outgoing/', include(MailerAdmin().urls)),
+            (r'^outgoing/', include(OutgoingAdmin().urls)),
         ) + urlpatterns
 
         return urlpatterns
@@ -70,6 +70,7 @@ class EmailSpecificationAdmin(SModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.emails_menu.render()
+        extra_context['title'] = _(u'Browse E-mail Specifications')
         return super(EmailSpecificationAdmin, self).changelist_view(request, extra_context)
 
     def change_view(self, request, object_id, extra_context=None):
@@ -105,11 +106,13 @@ class EmailSpecificationAdmin(SModelAdmin):
 
     def masssend_view(self, request, email_pk):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
+        menu = nav.email_menu.render(email_pk=email.pk)
 
         if len(email.event) > 0:
             # can't send newsletter when bound to event
             return render_to_response('sadmin/mailcenter/email/email-bound.html',
-                                      {'email': email,},
+                                      {'email': email,
+                                       'menu': menu},
                                       context_instance=SAdminContext(request))
 
         recipients = User.objects.filter(userprofile__send_me_email=True)
@@ -125,8 +128,6 @@ class EmailSpecificationAdmin(SModelAdmin):
 
         else:
             form = SendNewsletterForm()
-
-        menu = nav.email_menu.render(email_pk=email.pk)
 
         return render_to_response('sadmin/mailcenter/email/massemail.html',
                                   {'form': admin_formize(form),

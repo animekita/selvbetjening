@@ -1,7 +1,6 @@
-from django.utils.translation import ugettext as _
 from django.contrib.admin import TabularInline
 
-from selvbetjening.core.events.models import Option, OptionGroup, Event, Attend, AttendState, SubOption, Selection
+from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Selection
 from selvbetjening.core.translation.admin import TranslationInline
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin

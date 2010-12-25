@@ -3,10 +3,9 @@
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-from selvbetjening.core.events.models import Event, AttendState, Attend, AttendState
+from selvbetjening.core.events.models import Event
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
-from selvbetjening.sadmin.base.sadmin import SAdminContext
 from selvbetjening.sadmin.events import nav
 
 def add_to_event_action(self, request, queryset):

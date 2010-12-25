@@ -34,7 +34,7 @@ class UserAdmin(SModelAdmin):
         name = 'user'
         model = User
 
-    list_display = ('username', 'first_name', 'last_name', 'email', 'display_age')
+    list_display = ('username', 'first_name', 'last_name', 'display_age')
     search_fields = ('id', 'username', 'first_name', 'last_name', 'email')
     readonly_fields = ('last_login', 'date_joined')
 
@@ -75,13 +75,13 @@ class UserAdmin(SModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.browse_members_menu.render()
+        extra_context['menu'] = nav.members_menu.render()
         extra_context['title'] = _(u'Browse Members')
         return super(UserAdmin, self).changelist_view(request, extra_context)
 
     def add_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.browse_members_menu.render()
+        extra_context['menu'] = nav.members_menu.render()
         extra_context['title'] = _(u'Create Member')
         return super(UserAdmin, self).add_view(request, extra_context=extra_context)
 
@@ -175,10 +175,6 @@ class UserAdmin(SModelAdmin):
         join_data = self.user_join_chart()
         age_data = self.user_age_chart()
 
-        if join_data is None and age_data is None:
-            return render_to_response('sadmin/members/no_statistics.html',
-                                      context_instance=SAdminContext(request))
-
         if join_data is None:
             join_data = {}
 
@@ -187,7 +183,7 @@ class UserAdmin(SModelAdmin):
 
         age_data.update(join_data)
 
-        age_data['menu'] = nav.browse_members_menu.render()
+        age_data['menu'] = nav.members_menu.render()
 
         return render_to_response('sadmin/members/statistics.html',
                                   age_data,

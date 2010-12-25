@@ -1,9 +1,5 @@
-{% extends "sadmin/events/event/base.html" %}
+{% extends "sadmin/base/extendedsite.html" %}
 {% load i18n adminmedia i18n %}
-
-{% block extrastyle %}
-<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
-{% endblock %}
 
 {% block content_title %}<h2>{% trans "Financial Report" %}</h2>{% endblock %}
 

@@ -43,6 +43,11 @@ class OptionGroupAdmin(SBoundModelAdmin):
 
         return urlpattern
 
+    def add_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
+        return super(OptionGroupAdmin, self).add_view(request, extra_context=extra_context)
+    
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)

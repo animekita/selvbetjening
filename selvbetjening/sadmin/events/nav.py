@@ -3,19 +3,34 @@ from django.core.urlresolvers import reverse
 
 from selvbetjening.sadmin.base import nav
 
-# events submenu
-events_menu = nav.Navigation(_('Events'))
-nav.registry['main'].register(events_menu)
+# main menu
+main_menu = nav.Navigation(_('Events'))
+nav.registry['main'].register(main_menu)
 
-events_menu.register(nav.Option(_(u'Browse Events'), 'sadmin:events_event_changelist',
+main_menu.register(nav.Option(_(u'Browse Events'), 'sadmin:events_event_changelist',
     lambda user: user.has_perm('events.change_event'))
 )
 
-events_menu.register(nav.Option(_(u'Create Event'), 'sadmin:events_event_add',
+main_menu.register(nav.Option(_(u'Register Payment'), 'sadmin:events_event_register_payment',
     lambda user: user.has_perm('events.add_event'))
 )
 
-events_menu.register(nav.Option(_(u'Register Payment'), 'sadmin:events_event_register_payment',
+# events menu
+
+events_menu = nav.Navigation()
+
+events_menu.register(nav.Option(_(u'Browse Events'),
+    'sadmin:events_event_changelist',
+    lambda user: user.has_perm('events.change_event'))
+)
+
+events_menu.register(nav.Option(_(u'Create Event'), 
+    'sadmin:events_event_add',
+    lambda user: user.has_perm('events.add_event')),
+)
+
+events_menu.register(nav.Option(_(u'Register Payment'), 
+    'sadmin:events_event_register_payment',
     lambda user: user.has_perm('events.add_event'))
 )
 
@@ -46,11 +61,11 @@ event_menu.register(nav.Option(_(u'Attendees'),
     lambda user: user.has_perm('events.change_event'))
 )
 
-#event_menu.register(nav.Option(_(u'Add attendee'),
-    #lambda ctx: reverse('sadmin:events_nonattendee_changelist',
-                        #args=[ctx['event_pk']]),
-    #lambda user: user.has_perm('events.change_event'))
-#)
+event_menu.register(nav.Option(_(u'Add attendee'),
+    lambda ctx: reverse('sadmin:events_nonattendee_changelist',
+                        args=[ctx['event_pk']]),
+    lambda user: user.has_perm('events.change_event'))
+)
 
 event_menu.register(nav.Option(_(u'Option groups'),
     lambda ctx: reverse('sadmin:events_optiongroup_changelist',
@@ -58,11 +73,11 @@ event_menu.register(nav.Option(_(u'Option groups'),
     lambda user: user.has_perm('events.change_event'))
 )
 
-#event_menu.register(nav.Option(_(u'Add option group'),
-    #lambda ctx: reverse('sadmin:events_optiongroup_add',
-                        #args=[ctx['event_pk']]),
-    #lambda user: user.has_perm('events.change_event'))
-#)
+event_menu.register(nav.Option(_(u'Add option group'),
+    lambda ctx: reverse('sadmin:events_optiongroup_add',
+                        args=[ctx['event_pk']]),
+    lambda user: user.has_perm('events.change_event'))
+)
 
 # attendee menu
 attendee_menu = nav.Navigation()

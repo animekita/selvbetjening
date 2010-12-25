@@ -12,7 +12,8 @@ mailcenter_menu.register(nav.Option(_(u'Browse E-mails'),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 
-mailcenter_menu.register(nav.Option(_(u'Outgoing e-mails'), 'sadmin:mailcenter_outgoing_list',
+mailcenter_menu.register(nav.Option(_(u'Outgoing e-mails'), 
+    'sadmin:mailcenter_outgoing_changelist',
     lambda user: user.has_perm('mailcenter.add_emailspecification'))
 )
 
@@ -26,7 +27,7 @@ emails_menu.register(nav.Option(_(u'Browse e-mails'),
 )
 
 emails_menu.register(nav.Option(_(u'Outgoing e-mails'),
-    lambda ctx: reverse('sadmin:mailcenter_message_changelist'),
+    lambda ctx: reverse('sadmin:mailcenter_outgoing_changelist'),
     lambda user: user.has_perm('mailcenter.change_emailspecification'))
 )
 

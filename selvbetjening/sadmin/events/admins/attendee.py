@@ -1,7 +1,6 @@
 # -- encoding: utf-8 --
 
 from django.utils.translation import ugettext as _
-from django.contrib.admin.util import unquote
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib import messages
 
@@ -93,7 +92,7 @@ class AttendeeAdmin(SBoundModelAdmin):
             event_pk=request.bound_object.pk,
             attendee_pk=attendee_pk)
         
-        return render_to_response('sadmin/events/event/attendee.html',
+        return render_to_response('sadmin/events/attendee/change.html',
                                   {'menu': menu,
                                    'attendee': attendee,
                                    'payment_form': payment_form,

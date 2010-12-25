@@ -2,13 +2,11 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, Row
+from selvbetjening.core.events.models import AttendState
+from selvbetjening.core.mailcenter.models import UserConditions, \
+     AttendConditions, BoundAttendConditions
 
-from selvbetjening.viewbase.forms.helpers import InlineFieldset
-from selvbetjening.core.mailcenter.models import EmailSpecification,\
-     UserConditions, AttendConditions, BoundAttendConditions
 from selvbetjening.portal.eventregistration.forms import AcceptForm
-from selvbetjening.core.events.models import Event, Option, AttendState, Attend
 
 class SendEmailForm(forms.Form):
     username = forms.CharField()
@@ -40,56 +38,6 @@ class SendNewsletterForm(AcceptForm):
 
     def error(self):
         return _(u'You must confirm you actually want to send this e-mail to all users.')
-
-class CreateEmailForm(forms.ModelForm):
-    class Meta:
-        model = EmailSpecification
-        fields = ('subject',)
-
-    layout = Layout(InlineFieldset(None, 'subject',))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
-
-class EmailTemplateForm(forms.ModelForm):
-    class Meta:
-        model = EmailSpecification
-        fields = ('subject', 'body')
-
-    def __init__(self, *args, **kwargs):
-        super(EmailTemplateForm, self).__init__(*args, **kwargs)
-
-        help_text = unicode(_(u'Accepts HTML formatted text. E-mails are sent in both HTML and plain text formats. Furthermore, the following variables are made available')) + '<br/>'
-        help_text_user = '<br/>user.(username|first_name|last_name|email|get_age)'
-        help_text_attendee = '<br/>attendee.event(title)'
-
-        instance = kwargs.pop('instance', None)
-        if instance is not None:
-            for parameter in instance.required_parameters:
-                if parameter is User:
-                    help_text += help_text_user
-                if parameter is Attend:
-                    help_text += help_text_attendee
-
-        self.fields['body'].help_text = help_text
-
-    layout = Layout(InlineFieldset(None, 'subject', 'body'))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
-
-class EmailSourceForm(forms.ModelForm):
-    class Meta:
-        model = EmailSpecification
-        fields = ('source_enabled', 'event',)
-
-    layout = Layout(InlineFieldset(_(u'Bind to Event'), 'source_enabled', 'event'))
-
-    helper = FormHelper()
-    helper.add_layout(layout)
-    helper.form_tag = False
 
 class BaseConditionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

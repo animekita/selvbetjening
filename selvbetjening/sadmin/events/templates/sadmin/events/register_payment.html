@@ -1,7 +1,5 @@
-{% extends "sadmin/events/base.html" %}
+{% extends "sadmin/base/extendedsite.html" %}
 {% load adminmedia i18n %}
-
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
 
 {% block content_title %}
 <h2>{% trans "Register Payment" %}</h2>

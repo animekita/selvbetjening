@@ -1,6 +1,17 @@
 {% extends "sadmin/base/base.html" %}
 {% load uni_form_tags %}
 
+{% block extrastyle %}{{block.super}}
+<style type="text/css">
+.uniForm { width: 650px; padding: 1em;}
+
+.uniForm .buttonHolder { margin: 1em 0 2em 0; padding:1em;	text-align:right; background-color: #729fcf; }
+.uniForm .buttonHolder input { font-size: 24px; }
+
+form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="center">
 

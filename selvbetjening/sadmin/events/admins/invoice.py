@@ -1,15 +1,11 @@
 # -- encoding: utf-8 --
 
-from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
-from django.contrib.admin.options import InlineModelAdmin
-from django.contrib.admin import StackedInline, TabularInline
+from django.contrib.admin import StackedInline
 
 from selvbetjening.core.events.models import Invoice, Attend
 from selvbetjening.core.invoice.models import InvoiceRevision, Payment
 
-from selvbetjening.sadmin.base import admin_formize
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SBoundModelAdmin
+from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.events import nav
 
 class InlinePaymentAdmin(StackedInline):  

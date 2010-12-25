@@ -80,13 +80,23 @@ class EventAdmin(SModelAdmin):
 
         return urlpatterns
 
+    def add_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['menu'] = nav.events_menu.render()
+        return super(EventAdmin, self).add_view(request, extra_context=extra_context)
+    
     def change_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.event_menu.render(event_pk=object_id)
         return super(EventAdmin, self).change_view(request, object_id, extra_context)
 
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['menu'] = nav.events_menu.render()
+        extra_context['title'] = _(u'Browse Events')
+        return super(EventAdmin, self).changelist_view(request, extra_context)
+    
     def register_payment_view(self, request):
-        
         found_attendee = None
         payment = None
         multiple_attendees = None
@@ -107,12 +117,14 @@ class EventAdmin(SModelAdmin):
             form = RegisterPaymentForm()
             
         adminform = admin_formize(form)
+        menu = nav.events_menu.render()
         
         return render_to_response('sadmin/events/register_payment.html',
                                   {'adminform': adminform,
                                    'found_attendee': found_attendee,
                                    'payment': payment,
-                                   'multiple_attendees': multiple_attendees},
+                                   'multiple_attendees': multiple_attendees,
+                                   'menu': menu},
                                   context_instance=SAdminContext(request))
     
     def statistics_view(self, request, event_pk):

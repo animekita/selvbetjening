@@ -114,7 +114,7 @@ table tr th h3 { font-size: 1.5em; color: #000000; font-style: normal; }
 
 /* Forms */
 
-form input[type="text"], form textarea, form select {
+form input[type="text"], form input[type="password"], form textarea, form select {
   font-size: 1.6em;
   padding: 6px 5px 6px 10px;
 
@@ -155,21 +155,6 @@ p.deletelink-box a {
   height: 2em;
   padding: 0.25em 0.25em 0.25em 0.25em;
 }
-
-/*.uniForm { width: 650px; padding: 1em;}
-
-.uniForm .buttonHolder { margin: 1em 0 2em 0; padding:1em;	text-align:right; background-color: #729fcf; }
-.uniForm .buttonHolder input { font-size: 24px; }
-
-.uniForm div.checkbox label { display: inline; }
-
-form legend { font-size: 2em; padding: 1em 0 0.5em 0; }
-form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
-
-.uniForm .multiField label { display: inline; }
-
-.uniForm .formRow .ctrlHolder { float: left; }
-*/
 
 /** Search field **/
 #changelist #toolbar {

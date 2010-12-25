@@ -1,7 +1,5 @@
-{% extends "sadmin/events/base.html" %}
+{% extends "sadmin/base/extendedsite.html" %}
 {% load adminmedia %}
-
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
 
 {% block content_title %}
 <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} ({{ attendee.user.username}})</h2>
@@ -31,6 +29,7 @@
 
 </fieldset>
 
+<div class="block">
 
 <h3 id="billing">Betalinger</h3>
 
@@ -72,5 +71,5 @@
 
 </table>
 
- 
+</div> 
 {% endblock %}

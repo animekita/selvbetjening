@@ -4,45 +4,42 @@ from django.core.urlresolvers import reverse
 from selvbetjening.sadmin.base import nav
 
 # members menu
-members_menu = nav.Navigation(_('Members'))
-nav.registry['main'].register(members_menu)
+main_menu = nav.Navigation(_('Members'))
+nav.registry['main'].register(main_menu)
 
-members_menu.register(nav.Option(_(u'Browse Members'), 'sadmin:members_user_changelist',
+main_menu.register(nav.Option(_(u'Browse Members'), 'sadmin:members_user_changelist',
     lambda user: user.has_perm('auth.change_user'))
 )
 
-members_menu.register(nav.Option(_(u'Browse Groups'), 'sadmin:members_group_changelist',
+main_menu.register(nav.Option(_(u'Browse Groups'), 'sadmin:members_group_changelist',
     lambda user: user.has_perm('auth.change_user'))
 )
 
 # browse members menu
-browse_members_menu = nav.Navigation()
+members_menu = nav.Navigation()
 
-browse_members_menu.register(nav.Option(_(u'Browse Members'),
+members_menu.register(nav.Option(_(u'Browse Members'),
     'sadmin:members_user_changelist',
     lambda user: user.has_perm('auth.change_user'))
 )
 
-browse_members_menu.register(nav.Option(_(u'Create Member'),
+members_menu.register(nav.Option(_(u'Create Member'),
     'sadmin:members_user_add',
     lambda user: user.has_perm('auth.create_user'))
 )
 
-browse_members_menu.register(nav.Option(_(u'Statistics'),
-    'sadmin:members_user_statistics',
-    lambda user: user.has_perm('auth.create_user'))
-)
-
-# browse group menu
-browse_group_menu = nav.Navigation()
-
-browse_group_menu.register(nav.Option(_(u'Browse Groups'),
+members_menu.register(nav.Option(_(u'Browse Groups'),
     'sadmin:members_group_changelist',
     lambda user: user.has_perm('auth.change_user'))
 )
 
-browse_group_menu.register(nav.Option(_(u'Create Group'),
+members_menu.register(nav.Option(_(u'Create Group'),
     'sadmin:members_group_add',
+    lambda user: user.has_perm('auth.create_user'))
+)
+
+members_menu.register(nav.Option(_(u'Statistics'),
+    'sadmin:members_user_statistics',
     lambda user: user.has_perm('auth.create_user'))
 )
 

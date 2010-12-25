@@ -7,7 +7,7 @@ from uni_form.helpers import FormHelper, Submit
 
 from selvbetjening.viewbase.forms.helpers import InlineFieldset
 
-from selvbetjening.core.events.models import Event, AttendState, Attend, find_attendee_signal
+from selvbetjening.core.events.models import AttendState, Attend, find_attendee_signal
 from selvbetjening.core.invoice.models import Payment
 
 class InvoiceFormattingForm(forms.Form):

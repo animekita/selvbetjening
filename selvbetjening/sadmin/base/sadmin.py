@@ -1,20 +1,19 @@
-from django.conf.urls.defaults import patterns, url, include
 from django.template import RequestContext
-from django.contrib import admin
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.cache import never_cache
-from django.contrib.auth import logout as do_logout
-from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import views as auth_views
-from selvbetjening.portal.profile.forms import LoginForm
 from django.utils.functional import update_wrapper
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import views as auth_views
+from django.contrib import admin
+from django.contrib.auth import logout as do_logout
+from django.contrib import messages
 
+from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.core import ObjectWrapper
+
 import nav
 
 class SAdminContext(RequestContext):

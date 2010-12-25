@@ -1,4 +1,4 @@
-{% extends "sadmin/base/site.html" %}
+{% extends "sadmin/base/extendedsite.html" %}
 {% load i18n %}
 
 {% block extrahead %}{{block.super}}
@@ -124,12 +124,24 @@ var chart2 = new Highcharts.Chart({
 
 {% block content %}
 
-{{age_span}}
+<div class="block">
 
-<div id="agechart" style="width:800px; height: 400px;"></div>
+{% if age_data and join_data1 %}
 
-Overstående graf viser alle personer hvis alder er mellem {{min}} og {{max}} år. Kun personer i intervallet {{min_limit}}-{{max_limit}} år er taget med. Gennemsnitsalderen er {{avg|floatformat}} år.
+   {{age_span}}
+   
+   <div id="agechart" style="width:800px; height: 400px;"></div>
+   
+   Overstående graf viser alle personer hvis alder er mellem {{min}} og {{max}} år. Kun personer i intervallet {{min_limit}}-{{max_limit}} år er taget med. Gennemsnitsalderen er {{avg|floatformat}} år.
+   
+   <div id="joinchart" style="width:800px; height: 400px;"></div>
 
-<div id="joinchart" style="width:800px; height: 400px;"></div>
+{% else %}
+
+<p>No user data.</p>
+
+{% endif %}
+   
+</div>
 
 {% endblock %}
