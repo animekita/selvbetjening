@@ -64,7 +64,7 @@ class BaseProfileForm(forms.Form):
         super(BaseProfileForm, self).__init__(*args, **kwargs)
         
         # defer database interactrion such that database initialisation works
-        self.fields['country'].choices = COUNTRY_CHOICES
+        self.fields['country'].choices = self.COUNTRY_CHOICES
 
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
