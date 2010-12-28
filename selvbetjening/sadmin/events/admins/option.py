@@ -1,8 +1,8 @@
 from django.contrib.admin import TabularInline, StackedInline
 
 from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Selection
-from selvbetjening.core.translation.admin import TranslationInline
 
+from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.events import nav
 
