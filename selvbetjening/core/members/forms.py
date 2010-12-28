@@ -40,9 +40,18 @@ class UsernameField(forms.CharField):
 
         super(UsernameField, self).__init__(*args, **kwargs)
 
+class LazyCountryChoices(object):
+    """
+    Defer database interaction such that database initialisation works.
+    """
+    def __iter__(self):
+        if not hasattr(self, 'cache'):
+            self.cache = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
+        return iter(self.cache)
+        
 class BaseProfileForm(forms.Form):
-    COUNTRY_CHOICES = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
-
+    COUNTRY_CHOICES = LazyCountryChoices()
+    
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
 
@@ -53,6 +62,9 @@ class BaseProfileForm(forms.Form):
             kwargs['initial'] = initial
 
         super(BaseProfileForm, self).__init__(*args, **kwargs)
+        
+        # defer database interactrion such that database initialisation works
+        self.fields['country'].choices = COUNTRY_CHOICES
 
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
@@ -81,7 +93,6 @@ class BaseProfileForm(forms.Form):
                            required=False)
 
     country = forms.ChoiceField(label=_(u'Country'),
-                                choices=COUNTRY_CHOICES,
                                 required=False, initial='DK',)
 
     phonenumber = forms.RegexField(label=_(u'Phonenumber'), required=False,
