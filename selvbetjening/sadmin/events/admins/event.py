@@ -3,7 +3,6 @@ from django.db.models import Count
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.helpers import AdminForm
 
-from selvbetjening.core.translation.admin import TranslationInline
 from selvbetjening.core.events.models import Event, AttendState, Attend,\
      payment_registered_source
 from selvbetjening.core.invoice.models import Invoice, Payment
@@ -11,6 +10,7 @@ from selvbetjening.core.mailcenter.sources import Source
 
 from selvbetjening.sadmin.base import admin_formize
 from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
+from selvbetjening.sadmin.base.admin import TranslationInline
 
 from selvbetjening.sadmin.events import nav
 from selvbetjening.sadmin.events.admins.attendee import AttendeeAdmin
