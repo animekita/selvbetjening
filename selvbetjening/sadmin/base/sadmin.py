@@ -68,7 +68,7 @@ class SAdminSite(admin.AdminSite):
                 wrap(self.logout),
                 name='logout'),
             url(r'^login/$',
-                wrap(self.login),
+                self.login,
                 name='login'),
             url(r'^jsi18n/$',
                 wrap(self.i18n_javascript, cacheable=True),
