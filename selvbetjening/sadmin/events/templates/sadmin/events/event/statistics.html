@@ -77,10 +77,10 @@
      {% for optiongroup, options in optiongroups %}
      {% for option, count, waiting, accepted, attended in options %}
      <tr>
-       <td><a href="/admin/events/optiongroup/{{ optiongroup.id }}/">
+       <td><a href="{% url sadmin:events_optiongroup_change optiongroup.event.pk optiongroup.pk %}">
          {% if forloop.first %}{{ optiongroup.name }}{% endif %}
        </a></td>
-       <td><a href="/admin/events/option/{{ option.id }}/">
+       <td><a href="{% url sadmin:events_option_change optiongroup.event.pk optiongroup.pk option.pk %}">
          {{ option.name }}
        </a></td>
        <td>{{waiting}}</td>

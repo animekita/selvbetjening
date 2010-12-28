@@ -106,43 +106,17 @@ class InvoiceFormattingForm(forms.Form):
             total['total'] += line_group.total
 
         return sorted([line_groups[id] for id in line_groups], key=lambda i: i.name), total
-
-class CheckinForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-
-        attendee = kwargs.pop('attendee')
-        helper = FormHelper()
-        helper.add_layout(InlineFieldset(None))
-        helper.form_tag = True
-        helper.use_csrf_protection = True
-
-        if attendee.state == AttendState.attended:
-            checkout = Submit(_('Checkout'), _('Checkout'))
-            helper.add_input(checkout)
-        else:
-            checkin_and_pay = Submit(_('Checkin and Pay'), _('Checkin and Pay'))
-            checkin = Submit(_('Checkin only'), _('Checkin only'))
-            helper.add_input(checkin_and_pay)
-            helper.add_input(checkin)
-
-        self.helper = helper
-
-        super(CheckinForm, self).__init__(*args, **kwargs)
         
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
+        fields = ('amount', 'note')
         
     fieldsets = [
         (None, {
             'fields': (('amount', 'note'),)
         })
     ]
-    
-class AttendeeForm(forms.ModelForm):
-    class Meta:
-        model = Attend
-        fields = ('state',)
         
 class RegisterPaymentForm(forms.Form):
     payment_key = forms.CharField(max_length=255)

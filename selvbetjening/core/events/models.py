@@ -10,7 +10,7 @@ from django.core.cache import cache
 
 from selvbetjening.core.invoice.models import Invoice, Payment
 from selvbetjening.core.invoice.signals import populate_invoice
-from selvbetjening.core.mailcenter.sources import registry as source_registry
+from selvbetjening.core.mailcenter.sources import Source
 
 import processors
 
@@ -332,18 +332,7 @@ def update_state_on_payment(sender, **kwargs):
 
 post_save.connect(update_state_on_payment, sender=Payment)
 
-attends_event_signal = Signal(providing_args=['user', 'attendee'])
-
-def attends_event_handler(sender, **kwargs):
-    instance = kwargs.pop('instance')
-    created = kwargs.pop('created')
-
-    attends_event_signal.send(instance.event, user=instance.user, attendee=instance)
-
-post_save.connect(attends_event_handler, sender=Attend)
-
-source_registry.register('attends_event_signal', _(u'User registered for event'),
-                         [Attend], attends_event_signal)
+# payment keys
 
 request_attendee_pks_signal = Signal(providing_args=['attendee'])
 
@@ -579,3 +568,13 @@ def update_invoice_handler(sender, **kwargs):
 
 post_delete.connect(update_invoice_handler, sender=Selection)
 post_save.connect(update_invoice_handler, sender=Selection)
+
+# email sources
+
+attendes_event_source = Source('attends_event_signal', 
+                               _(u'User registers for event'), 
+                               [Attend])
+
+payment_registered_source = Source('payment_registered', 
+                                   _(u'Payment registered'),
+                                   [Attend, Payment])

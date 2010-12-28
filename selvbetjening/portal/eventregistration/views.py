@@ -6,12 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import Context, Template, RequestContext
-from django.template.loader import get_template_from_string
 from django.utils.translation import ugettext as _
 
 from selvbetjening.core.logger import logger
 from selvbetjening.core.invoice.decorators import disable_invoice_updates
-from selvbetjening.core.events.models import Event, Attend
+from selvbetjening.core.events.models import Event, Attend, attendes_event_source
 from selvbetjening.core.events import decorators as eventdecorators
 
 from forms import SignupForm, SignoffForm, OptionForms
@@ -85,6 +84,8 @@ def signup(request, event,
             handler.save(attendee)
 
             attendee.invoice.update(force=True)
+            
+            attendes_event_source.trigger(request.user, attendee=attendee)
 
             return HttpResponseRedirect(
                 reverse(success_page, kwargs={'event_id' : event.pk}) + '?signup=1')

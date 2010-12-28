@@ -1,4 +1,4 @@
-from django.contrib.admin import TabularInline
+from django.contrib.admin import TabularInline, StackedInline
 
 from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Selection
 from selvbetjening.core.translation.admin import TranslationInline
@@ -6,11 +6,13 @@ from selvbetjening.core.translation.admin import TranslationInline
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.events import nav
 
-class SubOptionInline(TabularInline):
+class SubOptionInline(StackedInline):
     model = SubOption
+    extra = 0
 
 class SelectionInline(TabularInline):
     model = Selection
+    extra = 0
 
     raw_id_fields = ('attendee',)
 
@@ -41,6 +43,9 @@ class OptionAdmin(SBoundModelAdmin):
     def queryset(self, request):
         qs = super(OptionAdmin, self).queryset(request)
         return qs.filter(group=request.bound_object)
+
+    def _get_extra_url_args(self, request):
+        return [request.bound_object.event.pk, request.bound_object.pk,]    
 
     def change_view(self, request, object_id, extra_context=None, **kwargs):
         return super(OptionAdmin, self).change_view(request, object_id, extra_context)

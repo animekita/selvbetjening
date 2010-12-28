@@ -1,5 +1,5 @@
 {% extends "sadmin/base/extendedsite.html" %}
-{% load adminmedia %}
+{% load i18n %}
 
 {% block content_title %}
 <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} ({{ attendee.user.username}})</h2>
@@ -7,69 +7,129 @@
 
 {% block content %}
 
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
-<fieldset class="module aligned">
+<h3>{% trans "Status" %}</h3>
 
-<div class="form-row">
-    <div><label>Status:</label><p>{{attendee_form.state}}</p></div>
-</div>
-
-<div class="form-row">
-    <div><label>Betalt:</label>
-    {% if attendee.invoice.in_balance %}
-    <p>Betalt</p>
-    {% else %}{% if attendee.invoice.is_paid %}
-    <p>Betalt for meget</p>
+    <fieldset class="module aligned">
+    
+    {% ifequal attendee.state "waiting" %}
+    <div class="form-row error-row">
+    {% else %}{% ifequal attendee.state "accepted" %}    
+    <div class="form-row warning-row">
     {% else %}
-    <p>Mangler betaling</p>
-    {% endif %}{% endif %}
+    <div class="form-row success-row">
+    {% endifequal %}{% endifequal %}
+        <div><label>Status:</label><p>{{attendee.state}}</p></div>
     </div>
-</div>
+    
+    {% if attendee.invoice.in_balance %}
+    <div class="form-row success-row">
+    {% else %}{% if attendee.invoice.is_paid %}
+    <div class="form-row warning-row">
+    {% else %}
+    <div class="form-row error-row">
+    {% endif %}{% endif %}
+        <div><label>Betalt:</label>
+        {% if attendee.invoice.in_balance %}
+        <p>Betalt</p>
+        {% else %}{% if attendee.invoice.is_paid %}
+        <p>Betalt for meget ({{attendee.invoice.overpaid}},-)</p>
+        {% else %}
+        <p>Mangler betaling ({{attendee.invoice.unpaid}},-)</p>
+        {% endif %}{% endif %}
+        </div>
+    </div>
+    
+    {{ checkin_rendered|safe }}
+    
+    </fieldset>
 
-</fieldset>
+    {% ifequal attendee.state "waiting" %}
 
-<div class="block">
+    <div class="submit-row" >
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Move to accepted list" %}" class="default" name="do_accept" />
+    </div>   
+    
+    {% else %}{% ifequal attendee.state "accepted" %}
+    
+    <div class="submit-row" >
+        {% if not attendee.invoice.is_paid %}
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Betal og Checkin" %}" class="default" name="do_checkin_and_pay" />
+        {% endif %}
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Checkin uden betaling" %}" class="default" name="do_checkin" />
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Flyt til ventelisten" %}" name="do_unaccept" />
+    </div>
+    
+    {% else %}
+    
+    <div class="submit-row" >
+        {% if not attendee.invoice.is_paid %}
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Pay" %}" class="default" name="do_pay" />
+        {% endif %}
+        <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Checkout" %}" name="do_checkout" />
+    </div>    
+    
+    {% endifequal %}{% endifequal %} 
+    
+    <br/><br/>
+    
+<h3>{% trans "Invoice" %}</h3>
 
-<h3 id="billing">Betalinger</h3>
-
-<table>
-    <tr>
-        <th colspan="2">Kvittering</th>
-    </tr>
-
+    {% if attendee.invoice.in_balance %}
+    <fieldset class="module aligned " style="border-color: green; border-width: 4px;">
+    {% else %}
+        {% if attendee.invoice.is_paid %}
+        <fieldset class="module aligned " style="border-color: yellow; border-width: 4px;">
+        {% else %}
+        <fieldset class="module aligned " style="border-color: red; border-width: 4px;">
+        {% endif %}
+    {% endif %}
+    
+    <div class="form-row type"><div>
+        <h4>{% trans "Items" %}</h4>
+    </div></div>
+    
     {% for line in attendee.invoice.line_set.all %}
-    <tr>
-        <td>{{line.description}}</td><td>{{line.price}},-</td>
-    </tr>
+    <div class="form-row type"><div>
+        {{line.description}} - {{line.price}},-
+    </div></div>
     {% endfor %}
+    
+    <div class="form-row type"><div>
+        <h4>{% trans "Summary" %}</h4>
+    </div></div>
+    
+    <div class="form-row type"><div>
+        Total: {{attendee.invoice.total_price}},- &nbsp; &nbsp; &nbsp; Heraf betalt: {{attendee.invoice.paid}},-
+    </div></div>
+    
+    <div class="form-row type"><div>
+        {% if attendee.invoice.in_balance %}
+        <b>Denne invoice er betalt</b>
+        {% endif %}
+        
+        {% if not attendee.invoice.is_paid %}
+        <b>Total til betaling: {{attendee.invoice.unpaid}},-</b>
+        {% endif %}
+        
+        {% if attendee.invoice.is_overpaid %}
+        <b>Total til udbetaling: {{attendee.invoice.overpaid}},-</b>
+        {% endif %}
+    </div></div>
+    
+    </fieldset>
 
-    <tr>
-        <td><b>Total</b></td>
-        <td><b>{{attendee.invoice.total_price}},-</b></td>
-    </tr>
+</form>
+<form method="POST" action="">{% csrf_token %}
 
-    <tr>
-        <td><b>Total betalt</b></td>
-        <td><b>{{attendee.invoice.paid}},-</b></td>
-    </tr>
+{% for fieldset in form %}
+      {% include "admin/includes/fieldset.html" %}
+{% endfor %}    
+   
+<div class="submit-row" >
+    <input type="submit" value="{% trans "Register payment" %}" class="default" name="do_single_payment" />
+</div>
+</form>
 
-
-    {% if not attendee.invoice.is_paid %}
-    <tr>
-        <td><b>Mangler betaling</b></td>
-        <td><b>{{attendee.invoice.unpaid}},-</b></td>
-    </tr>
-    {% endif %}
-
-    {% if attendee.invoice.is_overpaid %}
-    <tr>
-        <td><b>Total til udbetaling</b></td>
-        <td><b>{{attendee.invoice.overpaid}},-</b></td>
-    </tr>
-    {% endif %}
-
-</table>
-
-</div> 
 {% endblock %}

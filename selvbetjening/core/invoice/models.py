@@ -168,6 +168,8 @@ class Payment(models.Model):
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')
     note = models.CharField(max_length=256, blank=True)
 
+    
+    
 class InvoicePaymentWorkflow(models.Model):
     name = models.CharField(name=_('Workflow name'), max_length=255)
 

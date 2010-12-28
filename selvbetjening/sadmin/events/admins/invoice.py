@@ -66,7 +66,8 @@ class InvoiceAdmin(SBoundModelAdmin):
     def change_view(self, request, extra_context=None, **kwargs):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.attendee_menu.render(event_pk=request.bound_object.event.pk,
-                                                         attendee_pk=request.bound_object.pk)
+                                                         attendee_pk=request.bound_object.pk,
+                                                         user_pk=request.bound_object.user.pk)
 
         object_id = str(request.bound_object.invoice.pk)
         return super(InvoiceAdmin, self).change_view(request, object_id, extra_context)

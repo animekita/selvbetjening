@@ -130,8 +130,9 @@ class SModelAdmin(admin.ModelAdmin):
         def wrapper(request, *args, **kwargs):
             extra_context = kwargs.pop('extra_context', {})
             extra_context = SAdminContext.process(extra_context)
-
-            return view(request, *args, extra_context=extra_context, **kwargs)
+            kwargs['extra_context'] = extra_context
+            
+            return view(request, *args, **kwargs)
 
         return self._wrap_view(update_wrapper(wrapper, view))
 

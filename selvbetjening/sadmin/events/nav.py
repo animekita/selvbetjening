@@ -112,6 +112,12 @@ attendee_menu.register(nav.Option(_(u'PKs'),
     lambda user: user.has_perm('events.change_event'))
 )
 
+attendee_menu.register(nav.Option(_(u'User Profile'),
+    lambda ctx: reverse('sadmin:members_user_change',
+                        args=[ctx['user_pk']]),
+    lambda user: user.has_perm('auth.change_user'))
+)
+
 # option group menu
 optiongroup_menu = nav.Navigation()
 

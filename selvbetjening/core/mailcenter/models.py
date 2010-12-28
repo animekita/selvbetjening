@@ -16,7 +16,7 @@ import sources
 class EmailSpecification(models.Model):
     # source
     event = models.CharField(max_length=64, default='', blank=True,
-                             choices=sources.registry.get_choices())
+                             choices=sources.registry)
 
     source_enabled = models.BooleanField(default=False)
 
@@ -31,16 +31,13 @@ class EmailSpecification(models.Model):
     date_created = models.DateField(editable=False, auto_now_add=True)
     recipients = models.ManyToManyField(User, editable=False)
 
-    def is_valid(self):
-        return False
-
     @property
     def required_parameters(self):
         parameters = sources.default_parameters
 
         try:
             source = sources.registry.get(self.event)
-            parameters = source['parameters']
+            parameters = source.parameters
         except KeyError:
             pass
 
@@ -56,7 +53,7 @@ class EmailSpecification(models.Model):
                 try:
                     instance = condition.objects.get(specification=self)
                 except condition.DoesNotExist:
-                    instance = condition.objects.create(specification_id=1)
+                    instance = condition.objects.create(specification_id=self.pk)
                     
                 conditions.append(instance)
 
@@ -107,7 +104,7 @@ class UserConditions(models.Model):
 
     specification = models.OneToOneField(EmailSpecification)
 
-    user_age_comparator = models.CharField(max_length='1', default='<',
+    user_age_comparator = models.CharField(max_length='1', blank=True,
                                            choices=[(key, AGE_COMPARATOR_CHOICES[key][0])
                                                     for key
                                                     in AGE_COMPARATOR_CHOICES])
@@ -119,7 +116,7 @@ class UserConditions(models.Model):
         return User in parameters
 
     def passes(self, user, **kwargs):
-        if self.user_age_argument is None:
+        if self.user_age_argument is None or self.user_age_comparator == '':
             return True
 
         name, comparator = self.AGE_COMPARATOR_CHOICES[self.user_age_comparator]
@@ -130,19 +127,19 @@ class GenericAttendeeConditions(models.Model):
     class Meta:
         abstract = True
 
-    ATTEND_STATUS_CHOICES = AttendState.get_choices()
+    ATTEND_STATE_CHOICES = AttendState.get_choices()
 
     specification = models.OneToOneField(EmailSpecification)
 
     event = models.ForeignKey(Event, blank=True, null=True, default=None)
 
-    attends_selection_comparator = models.CharField(max_length=12, default='someof',
+    attends_selection_comparator = models.CharField(max_length=12, blank=True,
                                                     choices=(('someof', 'Selected some of'),
                                                              ('allof', 'Selected all of')),)
     attends_selection_argument = models.ManyToManyField(Option, blank=True)
 
-    attends_status = ListField(choices=ATTEND_STATUS_CHOICES, blank=True,
-                               default=ATTEND_STATUS_CHOICES[0][0])
+    attends_state = ListField(choices=ATTEND_STATE_CHOICES, blank=True,
+                              default=ATTEND_STATE_CHOICES[0][0], null=True)
 
     def passes(self, user, attendee=None):
         if self.event is None:
@@ -157,10 +154,10 @@ class GenericAttendeeConditions(models.Model):
         if not attendee.event == self.event:
             return False
 
-        desired_selections = self.attends_selection_argument.objects.all()
+        desired_selections = self.attends_selection_argument.all()
 
-        if len(selections) > 0:
-            actual_selections = attendee.selections.objects.all()
+        if len(desired_selections) > 0:
+            actual_selections = attendee.selections.all()
             hits = 0
 
             for desired_selection in desired_selections:
@@ -175,8 +172,8 @@ class GenericAttendeeConditions(models.Model):
                 if not hits == len(desired_selections):
                     return False
 
-        if len(self.attends_status) > 0:
-            if not attendee.status in self.attends_status:
+        if len(self.attends_state) > 0:
+            if not attendee.state in self.attends_state:
                 return False
 
         return True
@@ -212,10 +209,12 @@ ALL_CONDITIONS = [UserConditions, AttendConditions, BoundAttendConditions]
 def source_triggered_handler(sender, **kwargs):
     source_key = kwargs.pop('source_key')
     user = kwargs.pop('user')
+    kwargs = kwargs.pop('kwargs')
 
-    specifications = EmailSpecification.objects.filter(event=source_key)
-
+    specifications = EmailSpecification.objects.filter(event=source_key, 
+                                                       source_enabled=True)
+    
     for specification in specifications:
-        specification.send_email(user, **arguments)
+        specification.send_email(user, **kwargs)
 
 sources.source_triggered.connect(source_triggered_handler)

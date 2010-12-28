@@ -9,40 +9,24 @@ Bugfix
 
 Til svscon før 1. januar
 ========================
-
-  Arrangementer
-    - Tilmeldte (checkin/out, billing)
-    - Rapport
-    - Registrer betaling
-    - Henvisning til e-mails (Karina knappen)
-
-- Pluggable id nummer system (læs de der giro kort)
-- Revidering af tilmelding interface og finpudsning af indstillinger, sprog mm
+  
 - Opsætning på server + ssl
+- Indsættelse af alle indstillinger og emails
+- Dansk engelsk oversættelser
 
-Til svscon efter 1. januar
-==========================
+- Sikkerhed review
 
-- Checkin af folk
+Til svscon
+==========
+
+- Checkin af folk og billing
 - CPR checkin
-
-Email system
-============
-
-- Lav links fra event til e-mail oprettelse
-- Test det igennem
-- Permissions
 
 Refactor
 ========
 
 - Fjern dependencies
 - Lav byggesystem
-
-Niceness
-========
-
-- Få autosøgning ind igen
 
 Stuff for Kita
 ==============
@@ -55,6 +39,9 @@ Achivements
 Admin:
   - Permissions, lav admin brugbar af andre end mig
 
+- Tilføj kort over folk
+  
+  
 6.0.0 Todo
 ==========
 
