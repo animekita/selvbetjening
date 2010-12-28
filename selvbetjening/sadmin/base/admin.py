@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.generic import GenericTabularInline
 
-from models import Translation
+from selvbetjening.core.translation.models import Translation
 
 class TranslationInline(GenericTabularInline):
     model = Translation
