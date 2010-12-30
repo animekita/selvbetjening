@@ -38,7 +38,7 @@ class OptionAdmin(SBoundModelAdmin):
     )
 
     raw_id_fields = ('group',)
-    inlines = [SubOptionInline, SelectionInline, TranslationInline]
+    inlines = [SubOptionInline, TranslationInline] # SelectionInline
 
     def queryset(self, request):
         qs = super(OptionAdmin, self).queryset(request)
@@ -58,7 +58,7 @@ class OptionAdmin(SBoundModelAdmin):
         return super(OptionAdmin, self).changelist_view(request, extra_context)
 
     def add_view(self, request, extra_context=None, **kwargs):
-        return super(OptionAdmin, self).add_view(request, extra_context)
+        return super(OptionAdmin, self).add_view(request, extra_context=extra_context)
 
     def delete_view(self, request, object_id, extra_context=None, **kwargs):
         return super(OptionAdmin, self).delete_view(request, object_id, extra_context)

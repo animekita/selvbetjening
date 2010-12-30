@@ -12,9 +12,10 @@ Til svscon før 1. januar
 
 - SSL
 - Indsættelse af alle indstillinger og emails
+  - Emails
+    - Confirmation, opsætning af parametre
+    - Dato for early access
 - Dansk engelsk oversættelser
-
-- Sikkerhed review
 
 Til svscon
 ==========
@@ -39,9 +40,6 @@ Achivements
 Admin:
   - Permissions, lav admin brugbar af andre end mig
 
-- Tilføj kort over folk
-  
-  
 6.0.0 Todo
 ==========
 

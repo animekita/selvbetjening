@@ -10,7 +10,7 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.html import escape
 
 from selvbetjening.core.members.shortcuts import get_or_create_profile
-from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, to_age
+from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, UserLocation, to_age
 
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext
 
@@ -71,6 +71,9 @@ class UserAdmin(SModelAdmin):
             url(r'^statistics/',
                 self._wrap_view(self.user_statistics),
                 name='%s_%s_statistics' % self._url_info),
+            url(r'^map/',
+                self._wrap_view(self.map_view),
+                name='%s_%s_map' % self._url_info),
             url(r'^(\d+)/password/$',
                 self._wrap_view(self.user_change_password),
                 name='%s_%s_change_password'),
@@ -231,4 +234,19 @@ class UserAdmin(SModelAdmin):
 
         return render_to_response('sadmin/members/statistics.html',
                                   age_data,
+                                  context_instance=SAdminContext(request))
+
+    def map_view(self, request):
+        
+        locations = UserLocation.objects.exclude(lat=None, lng=None).exclude(expired=True).select_related()
+        expired = UserLocation.objects.filter(expired=True).count()
+        invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
+        
+        menu = nav.members_menu.render()
+        
+        return render_to_response('sadmin/members/map.html',
+                                  {'menu': menu,
+                                   'locations': locations,
+                                   'expired': expired,
+                                   'invalid': invalid},
                                   context_instance=SAdminContext(request))

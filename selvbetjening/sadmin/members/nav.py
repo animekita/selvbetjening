@@ -43,6 +43,11 @@ members_menu.register(nav.Option(_(u'Statistics'),
     lambda user: user.has_perm('auth.create_user'))
 )
 
+members_menu.register(nav.Option(_(u'Map'),
+    'sadmin:members_user_map',
+    lambda user: user.has_perm('auth.change_user'))
+)
+
 # member menu
 member_menu = nav.Navigation()
 
