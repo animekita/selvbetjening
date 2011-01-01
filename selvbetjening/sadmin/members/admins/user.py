@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.html import escape
+from django.contrib import messages
 
 from selvbetjening.core.members.shortcuts import get_or_create_profile
 from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, UserLocation, to_age
