@@ -108,7 +108,7 @@ class UserAdmin(SModelAdmin):
             form = AdminPasswordChangeForm(user, request.POST)
             if form.is_valid():
                 new_user = form.save()
-                msg = ugettext('Password changed successfully.')
+                msg = _('Password changed successfully.')
                 messages.success(request, msg)
                 return HttpResponseRedirect('..')
         else:

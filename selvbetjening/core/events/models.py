@@ -336,21 +336,18 @@ post_save.connect(update_state_on_payment, sender=Payment)
 
 request_attendee_pks_signal = Signal(providing_args=['attendee'])
 
-def get_basic_pk(attendee):
-    return str(attendee.invoice.pk)
-
 def basic_pks_handler(sender, **kwargs):
     attendee = kwargs['attendee']
     
-    return ('Invoice ID', 'iid:%s' % get_basic_pk(attendee))
+    return ('Invoice ID', str(attendee.invoice.pk))
 
 request_attendee_pks_signal.connect(basic_pks_handler)
 
 def legacy_attendee_pks_handler(sender, **kwargs):
     attendee = kwargs['attendee']
-    key = 'legacy:%s.%s.%s' % (attendee.invoice.latest_revision.pk,
-                               attendee.invoice.pk,
-                               attendee.user.pk)
+    key = '%s.%s.%s' % (attendee.invoice.latest_revision.pk,
+                        attendee.invoice.pk,
+                        attendee.user.pk)
     
     return ('Legacy ID', key)
 
