@@ -83,24 +83,24 @@ class UserProfile(models.Model):
         except:
             pass
 
-        super(UserProfile, self).save(*args, **kwargs)        
-        
+        super(UserProfile, self).save(*args, **kwargs)
+
 class UserLocation(models.Model):
     user = models.OneToOneField(User, related_name='location')
     lat = models.FloatField(blank=True, null=True, default=None)
     lng = models.FloatField(blank=True, null=True, default=None)
     expired = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now=True)
-    
+
 def profile_saved(sender, **kwargs):
     profile = kwargs['instance']
-    
+
     try:
-        location = UserLocation.get(user=profile.user)
+        location = UserLocation.objects.get(user=profile.user)
         location.expired = True
         location.save()
-        
+
     except UserLocation.DoesNotExist:
         UserLocation.objects.create(user=profile.user, expired=True)
-        
+
 post_save.connect(profile_saved, sender=UserProfile)
