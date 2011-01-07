@@ -48,10 +48,10 @@ class LazyCountryChoices(object):
         if not hasattr(self, 'cache'):
             self.cache = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
         return iter(self.cache)
-        
+
 class BaseProfileForm(forms.Form):
     COUNTRY_CHOICES = LazyCountryChoices()
-    
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
 
@@ -62,7 +62,7 @@ class BaseProfileForm(forms.Form):
             kwargs['initial'] = initial
 
         super(BaseProfileForm, self).__init__(*args, **kwargs)
-        
+
         # defer database interactrion such that database initialisation works
         self.fields['country'].choices = self.COUNTRY_CHOICES
 
@@ -79,7 +79,7 @@ class BaseProfileForm(forms.Form):
     email = forms.EmailField(max_length=75, label=_(u'E-mail'))
 
     dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(
-        years=range(1910, 2010)), label=_(u'Date of birth'))
+        years=range(1910, 2011)), label=_(u'Date of birth'))
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
