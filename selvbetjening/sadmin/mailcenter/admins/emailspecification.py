@@ -66,7 +66,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.emails_menu.render()
         return super(EmailSpecificationAdmin, self).add_view(request, extra_context=extra_context)
-    
+
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.emails_menu.render()
@@ -140,7 +140,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
 
         if request.method == 'POST':
-            form = SendPreviewEmailForm(request.POST)
+            form = SendEmailForm(request.POST)
 
             if form.is_valid():
                 user = form.cleaned_data['user']
