@@ -54,7 +54,7 @@ class EmailSpecification(models.Model):
                     instance = condition.objects.get(specification=self)
                 except condition.DoesNotExist:
                     instance = condition.objects.create(specification_id=self.pk)
-                    
+
                 conditions.append(instance)
 
         return conditions
@@ -172,7 +172,7 @@ class GenericAttendeeConditions(models.Model):
                 if not hits == len(desired_selections):
                     return False
 
-        if len(self.attends_state) > 0:
+        if self.attends_state is not None and len(self.attends_state) > 0:
             if not attendee.state in self.attends_state:
                 return False
 
@@ -211,9 +211,9 @@ def source_triggered_handler(sender, **kwargs):
     user = kwargs.pop('user')
     kwargs = kwargs.pop('kwargs')
 
-    specifications = EmailSpecification.objects.filter(event=source_key, 
+    specifications = EmailSpecification.objects.filter(event=source_key,
                                                        source_enabled=True)
-    
+
     for specification in specifications:
         specification.send_email(user, **kwargs)
 
