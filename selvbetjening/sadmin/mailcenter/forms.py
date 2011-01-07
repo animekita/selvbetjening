@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.db.models import ManyToOneRel
+from django.core.urlresolvers import reverse
 
 from selvbetjening.core.events.models import AttendState
 from selvbetjening.core.mailcenter.models import UserConditions, \
@@ -8,8 +10,15 @@ from selvbetjening.core.mailcenter.models import UserConditions, \
 
 from selvbetjening.portal.eventregistration.forms import AcceptForm
 
+from selvbetjening.sadmin.base.widgets import SAdminForeignKeyRawIdWidget
+
 class SendEmailForm(forms.Form):
-    username = forms.CharField()
+    def __init__(self, *args, **kwargs):
+        super(SendEmailForm, self).__init__(*args, **kwargs)
+
+        self.fields['username'] = forms.CharField(
+            widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username'),
+                                               url=reverse('sadmin:members_user_changelist')))
 
     fieldsets = [(None, {
         'fields': ('username',)
@@ -74,7 +83,7 @@ class AttendeeConditionForm(BaseConditionForm):
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
     fieldsets = [(_('Attends'), {
-        'fields': ('event', 
+        'fields': ('event',
                    ('attends_selection_comparator', 'attends_selection_argument'),
                    'attends_status'),
         })
@@ -88,12 +97,12 @@ class BoundAttendConditionForm(BaseConditionForm):
     attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
     fieldsets = [(_('Event'), {
-        'fields': ('event', 
+        'fields': ('event',
                    ('attends_selection_comparator', 'attends_selection_argument'),
                    'attends_status'),
         })
     ]
-    
+
 class ConditionFormRegistry(object):
     def __init__(self):
         self._condition_forms = {}

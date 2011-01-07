@@ -1,4 +1,4 @@
-{% extends "sadmin/base/extendedsite.html" %}
+{% extends "sadmin/base/genericform.html" %}
 {% load i18n %}
 
 {% block content_title %}
@@ -10,17 +10,19 @@
 <div class="block">
     <p>Send the e-mail to a specific user ignoring any filters defined for the e-mail.</p>
 </div>
-    
+
 <form method="POST" action="">{% csrf_token %}
 
     {% for fieldset in form %}
         {% include "admin/includes/fieldset.html" %}
     {% endfor %}
-    
+
     <div class="submit-row" >
-        <input type="submit" value="{% trans "Send e-mail" %}" 
+        <input type="submit" value="{% trans "Send e-mail" %}"
         class="default" name="do_send_email" />
     </div>
+
+    {{media}}
 
 </form>
 {% endblock %}

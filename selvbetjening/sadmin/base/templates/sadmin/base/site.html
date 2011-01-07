@@ -40,6 +40,8 @@
     {% block content_title %}{% if title %}<h2>{{ title }}</h2>{% endif %}{% endblock %}
     </header>
 
+    {% if not is_popup %}
+
     {% block navigation %}
     {% if menu %}
       <nav class="secondary-nav">
@@ -51,6 +53,8 @@
       </nav>
     {% endif %}
     {% endblock %}
+
+    {% endif %}
 
     <div id="main">
 

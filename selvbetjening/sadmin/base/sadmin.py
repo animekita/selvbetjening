@@ -10,6 +10,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib import admin
 from django.contrib.auth import logout as do_logout
 from django.contrib import messages
+from django.template import mark_safe
 
 from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.core import ObjectWrapper
@@ -131,14 +132,14 @@ class SModelAdmin(admin.ModelAdmin):
             extra_context = kwargs.pop('extra_context', {})
             extra_context = SAdminContext.process(extra_context)
             kwargs['extra_context'] = extra_context
-            
+
             return view(request, *args, **kwargs)
 
         return self._wrap_view(update_wrapper(wrapper, view))
 
     def _get_extra_url_args(self, request):
         return []
-    
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
@@ -190,20 +191,34 @@ class SModelAdmin(admin.ModelAdmin):
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
     def changelist_view(self, request, extra_context):
+
+        search_url = reverse('sadmin:%s_%s_changelist_ajax' % \
+                             self._url_info, args=self._get_extra_url_args(request))
+
+        extra_params = request.GET.copy()
+        extra_params.pop('q', None)
+
+        search_url = search_url + '?' + extra_params.urlencode()
+
+        if len(extra_params) > 0:
+            search_url = search_url + '&q='
+        else:
+            search_url = search_url + 'q='
+
         extra_context = extra_context or {}
-        extra_context['search_url'] = reverse('sadmin:%s_%s_changelist_ajax' % self._url_info, args=self._get_extra_url_args(request)) + '?q='
-        
+        extra_context['search_url'] = mark_safe(search_url)
+
         return super(SModelAdmin, self).changelist_view(request, extra_context)
-        
+
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)
 
         start = response.content.rfind('<form')
         stop = response.content.rfind('</form>') + 7
         response.content = response.content[start:stop]
-        
+
         return response
-        
+
 class SBoundModelAdmin(SModelAdmin):
 
     def _wrap_view(self, view):
