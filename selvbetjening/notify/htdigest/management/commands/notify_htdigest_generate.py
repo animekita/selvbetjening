@@ -2,18 +2,21 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import Group, User
 
-from selvbetjening.notify.htdigest.models import CompatiblePassword, HTDigestFile
+from selvbetjening.notify.htdigest.models import CompatiblePassword, HTDigestFile, filter_username
 
 class Command(BaseCommand):
     help = 'Generate htdigest files'
 
     def handle(self, *args, **options):
+        if ':' in settings.NOTIFY_HTDIGEST_REALM:
+            raise ValueError('Illegal escape character in NOTIFY_HTDIGEST_REALM setting')
+
         for htdigestfile in HTDigestFile.objects.all():
 
             users = User.objects.filter(groups__in=htdigestfile.groups.all()) \
                                 .exclude(htdigest_passwd=None)
 
-            lines = ['%s:%s:%s' % (user.username,
+            lines = ['%s:%s:%s' % (filter_username(user.username),
                                    settings.NOTIFY_HTDIGEST_REALM,
                                    user.htdigest_passwd.password)
                      for user in users]

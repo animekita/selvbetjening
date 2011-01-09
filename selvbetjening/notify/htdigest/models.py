@@ -15,14 +15,23 @@ class CompatiblePassword(models.Model):
     user = models.OneToOneField(User, related_name='htdigest_passwd')
     password = models.CharField(max_length=255)
 
+def filter_username(username):
+    """
+    Usernames starting with @ are incompatible with the authz file format which
+    is used with the htdigest files for access control. Replace the @ with an !
+    which is normally not allowed for usernames, thus avoiding naming clashes.
+    """
+
+    if username[0] == '@':
+        return username.replace('@', '!', 1)
+    else:
+        return username
+
 def user_password_changed_or_set(sender, **kwargs):
     user = kwargs['instance']
     clear_text_password = kwargs['clear_text_password']
 
-    if ':' in user.username or ':' in settings.NOTIFY_HTDIGEST_REALM:
-        raise ValueError('Illegal escape character in NOTIFY_HTDIGEST_REALM setting or username')
-
-    password = hashlib.md5('%s:%s:%s' % (user.username,
+    password = hashlib.md5('%s:%s:%s' % (filter_username(user.username),
                                          settings.NOTIFY_HTDIGEST_REALM,
                                          clear_text_password)
                            ).hexdigest()
