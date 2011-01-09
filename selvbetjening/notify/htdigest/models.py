@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 
-from selvbetjening.core.members.signals import user_changed_password, user_created
+from selvbetjening.data.members.signals import user_changed_password, user_created
 
 class HTDigestFile(models.Model):
     file_path = models.CharField(max_length=255)
