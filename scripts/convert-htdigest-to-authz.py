@@ -8,6 +8,8 @@ if __name__ == '__main__':
 	for line in fp:
 		username, realm, passwd = line.split(':')
 		usernames.append(username)
+		
+	fp.close()
 			
 	content = \
 """
@@ -19,4 +21,6 @@ if __name__ == '__main__':
 @!users = rw
 """ % ','.join(usernames)
 
-	print content
+	fp = open(sys.argv[2], 'w')
+	fp.write(content)
+	fp.close()
