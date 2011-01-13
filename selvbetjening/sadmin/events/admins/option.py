@@ -38,14 +38,14 @@ class OptionAdmin(SBoundModelAdmin):
     )
 
     raw_id_fields = ('group',)
-    inlines = [SubOptionInline, TranslationInline] # SelectionInline
+    inlines = [SubOptionInline, TranslationInline, SelectionInline]
 
     def queryset(self, request):
         qs = super(OptionAdmin, self).queryset(request)
         return qs.filter(group=request.bound_object)
 
     def _get_extra_url_args(self, request):
-        return [request.bound_object.event.pk, request.bound_object.pk,]    
+        return [request.bound_object.event.pk, request.bound_object.pk,]
 
     def change_view(self, request, object_id, extra_context=None, **kwargs):
         return super(OptionAdmin, self).change_view(request, object_id, extra_context)
@@ -61,7 +61,7 @@ class OptionAdmin(SBoundModelAdmin):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.optiongroup_menu.render(event_pk=request.bound_object.event.pk,
                                                             optiongroup_pk=request.bound_object.pk)
-        
+
         return super(OptionAdmin, self).add_view(request, extra_context=extra_context)
 
     def delete_view(self, request, object_id, extra_context=None, **kwargs):

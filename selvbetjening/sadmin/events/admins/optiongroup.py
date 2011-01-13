@@ -4,6 +4,7 @@ from selvbetjening.core.events.models import OptionGroup, Event
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 
+from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.events.admins.option import OptionAdmin
 from selvbetjening.sadmin.events import nav
 
@@ -28,6 +29,8 @@ class OptionGroupAdmin(SBoundModelAdmin):
             'fields' : ('order', 'public_statistic',),
             }),)
 
+    inlines = [TranslationInline,]
+
     def queryset(self, request):
         qs = super(OptionGroupAdmin, self).queryset(request)
         return qs.filter(event=request.bound_object)
@@ -47,7 +50,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
         return super(OptionGroupAdmin, self).add_view(request, extra_context=extra_context)
-    
+
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
