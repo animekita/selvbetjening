@@ -63,7 +63,11 @@ class BaseConditionForm(forms.ModelForm):
         instance = super(BaseConditionForm, self).save(commit=False)
         instance.specification = self.specification
 
-        return instance.save()
+        instance.save()
+
+        self.save_m2m()
+
+        return instance
 
 class UserConditionForm(BaseConditionForm):
     class Meta:
@@ -80,12 +84,12 @@ class AttendeeConditionForm(BaseConditionForm):
         model = AttendConditions
         exclude = ['specification',]
 
-    attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
+    attends_state = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
     fieldsets = [(_('Attends'), {
         'fields': ('event',
                    ('attends_selection_comparator', 'attends_selection_argument'),
-                   'attends_status'),
+                   'attends_state'),
         })
     ]
 
@@ -94,12 +98,12 @@ class BoundAttendConditionForm(BaseConditionForm):
         model = BoundAttendConditions
         exclude = ['specification']
 
-    attends_status = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
+    attends_state = forms.MultipleChoiceField(choices=AttendState.get_choices(), required=False)
 
     fieldsets = [(_('Event'), {
         'fields': ('event',
                    ('attends_selection_comparator', 'attends_selection_argument'),
-                   'attends_status'),
+                   'attends_state'),
         })
     ]
 
