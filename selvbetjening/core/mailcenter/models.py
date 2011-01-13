@@ -151,17 +151,19 @@ class GenericAttendeeConditions(models.Model):
         except Attend.DoesNotExist:
             return False
 
-        if not attendee.event == self.event:
+        # event check
+        if attendee.event != self.event:
             return False
 
-        desired_selections = self.attends_selection_argument.all()
+        # selections check
+        desired_options = [option.pk for option in self.attends_selection_argument.all()]
 
-        if len(desired_selections) > 0:
+        if len(desired_options) > 0:
             actual_selections = attendee.selections.all()
             hits = 0
 
-            for desired_selection in desired_selections:
-                if desired_selection in actual_selections:
+            for actual_selection in actual_selections:
+                if actual_selection.option.pk in desired_options:
                     hits += 1
 
             if self.attends_selection_comparator == 'someof':
@@ -169,7 +171,7 @@ class GenericAttendeeConditions(models.Model):
                     return False
 
             if self.attends_selection_comparator == 'allof':
-                if not hits == len(desired_selections):
+                if hits != len(desired_options):
                     return False
 
         if self.attends_state is not None and len(self.attends_state) > 0:
