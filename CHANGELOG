@@ -1,6 +1,7 @@
 5.0.0
  * Added new Selvbetjening Admin (SAdmin) interface, replacing the old admin interface
  * Improved mailcenter to support both mass e-mail and event triggered e-mails
+ * Added integration with Vanilla forum 2
  * Refactoring of architecture
 
 4.1.0

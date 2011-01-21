@@ -13,7 +13,7 @@
 {% endif %}
 
 {% if user %}
-  <user id="{{user.username}}">
+  <user id="{{user.pk}}">
     <username>{{user.username}}</username>
     <first_name>{{user.first_name}}</first_name>
     <last_name>{{user.last_name}}</last_name>

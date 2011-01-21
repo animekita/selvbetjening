@@ -114,7 +114,7 @@ def info(request, service, auth_token,
 def _filter_groups(user, service):
     try:
         service = models.Service.objects.get(pk=service)
-        groups = user.groups.filter(service=service)
+        groups = user.groups.filter(service__id=service.pk)
     except models.Service.DoesNotExist:
         groups = user.groups.all()
 
