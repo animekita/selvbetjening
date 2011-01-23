@@ -1,5 +1,5 @@
 <?php
-require_once("config.inc.php");
+require_once('sso_api.config.inc.php');
 
 // General technical exceptions (for production, only concentrate on the first)
 class AuthenticationServerException extends Exception { }
@@ -16,11 +16,15 @@ class AuthUnknownException extends Exception { }
 // Info exceptions
 class InfoNoAuthenticatedUserException extends Exception { }
 
-
 class SelvbetjeningIntegrationSSO {
+	private $service_id;
+
+	public function __construct($service_id) {
+		$this->service_id = $service_id;
+	}
 
     public function authenticate($username, $password) {
-        $url = SELV_API_URL . "authenticate/" . SELV_SERVICE_ID . "/";
+        $url = SELV_API_URL . "authenticate/" . $this->service_id. "/";
         $response = $this->call($url, array("username" => $username, "password" => $password));
 
         try {
@@ -31,7 +35,6 @@ class SelvbetjeningIntegrationSSO {
                 $_COOKIE[SELV_AUTH_TOKEN_KEY] = $xml->session->auth_token; // save value if we need it before browser refresh
 
                 return $this->user_xml_to_array($xml->user);
-
             }
 
             $error_code = (string) $xml->error_code;
@@ -59,7 +62,7 @@ class SelvbetjeningIntegrationSSO {
             return false;
         }
 
-        $url = SELV_API_URL . "validate/" . SELV_SERVICE_ID . "/" . $auth_token . "/";
+        $url = SELV_API_URL . "validate/" . $this->service_id . "/" . $auth_token . "/";
         $response = $this->call($url);
 
         if (strrpos($response, "accepted") === false) {
@@ -76,7 +79,7 @@ class SelvbetjeningIntegrationSSO {
             throw new InfoNoAuthenticatedUserException();
         }
 
-        $url = SELV_API_URL . "info/" . SELV_SERVICE_ID . "/" . $auth_token . "/";
+        $url = SELV_API_URL . "info/" . $this->service_id . "/" . $auth_token . "/";
         $response = $this->call($url);
 
         try {
@@ -96,6 +99,11 @@ class SelvbetjeningIntegrationSSO {
                 throw new ErrorParsingResponseException();
             }
         }
+    }
+
+    public function get_auth_token() {
+        $auth_token = isset($_COOKIE[SELV_AUTH_TOKEN_KEY]) ? $_COOKIE[SELV_AUTH_TOKEN_KEY] : false;
+        return $auth_token != "" ? $auth_token : false;
     }
 
     protected function call($url, $post_data=False) {
@@ -124,11 +132,6 @@ class SelvbetjeningIntegrationSSO {
         return $response;
     }
 
-    protected function get_auth_token() {
-        $auth_token = isset($_COOKIE[SELV_AUTH_TOKEN_KEY]) ? $_COOKIE[SELV_AUTH_TOKEN_KEY] : false;
-        return $auth_token != "" ? $auth_token : false;
-    }
-
     protected function user_xml_to_array($user_xml_part) {
         $groups = array();
 
@@ -140,12 +143,12 @@ class SelvbetjeningIntegrationSSO {
         }
 
 
-        return array("username" => (string) $user_xml_part->username,
+        return array("id" => (int) $user_xml_part['id'],
+        			 "username" => (string) $user_xml_part->username,
                      "last_name" => (string) $user_xml_part->last_name,
                      "first_name" => (string) $user_xml_part->first_name,
                      "email" => (string) $user_xml_part->email,
                      "date_joined" => (string) $user_xml_part->date_joined,
                      "groups" => $groups);
     }
-
 }
