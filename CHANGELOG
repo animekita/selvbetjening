@@ -3,6 +3,7 @@
  * Improved mailcenter to support both mass e-mail and event triggered e-mails
  * Added integration with Vanilla forum 2
  * Refactoring of architecture
+ * Removed a number of bundled dependencies from contrib in favour of a pip requirements file
 
 4.1.0
  * Added price to suboptions

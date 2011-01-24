@@ -8,13 +8,13 @@ if __name__ == '__main__':
 	for line in fp:
 		username, realm, passwd = line.split(':')
 		usernames.append(username)
-		
+
 	fp.close()
-			
+
 	content = \
 """
 [groups]
-@!users = %s
+!users = %s
 
 [/]
 * = r
