@@ -40,16 +40,25 @@ class Command(BaseCommand):
         elif not do_sync:
             print 'UNSYNCED! Please sync immediately'
         else:
+            ignored_users = []
             for unsynced_user in unsynced_users:
-                remote_user = RemoteUser.objects.using(database_id)\
-                                                .get(username=unsynced_user.username)
+                try:
+                    remote_user = RemoteUser.objects.using(database_id)\
+                                                    .get(username=unsynced_user.username)
 
-                RemoteUserAssociation.objects.using(database_id)\
-                                             .create(selv_user_id=unsynced_user.pk,
-                                                     remote_user_id=remote_user.id)
-                print '.',
+                    RemoteUserAssociation.objects.using(database_id)\
+                                                 .create(selv_user_id=unsynced_user.pk,
+                                                         remote_user_id=remote_user.id)
+
+                    print '.',
+                except RemoteUser.DoesNotExist:
+                    ignored_users.append(unsynced_user)
+
+            for user in ignored_users:
+                print 'Skipping %s due to missing user account' % user.username
 
             print ' Synced!'
+
 
         print 'Group Sync Status'
         print '<not implemented>'
