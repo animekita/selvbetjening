@@ -2,7 +2,7 @@ Django==1.2.1
 
 South==0.7.2
 django-debug-toolbar==0.8.3
-sorl-thumbnail
+sorl-thumbnail==3.2.5
 django-tinymce==1.5
 
 https://github.com/sema/django-uni-form/tarball/master#egg=django-uni-form
