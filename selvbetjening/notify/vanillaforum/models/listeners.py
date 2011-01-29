@@ -27,7 +27,7 @@ class UserChangedListener(BaseListener):
     def _update_user(self, user):
         try:
             association = RemoteUserAssociation.objects.using(self._database_id)\
-                                                       .get(remote_user_id=user.pk)
+                                                       .get(selv_user_id=user.pk)
             remote_user = RemoteUser.objects.using(self._database_id)\
                                             .get(id=association.remote_user_id)
 

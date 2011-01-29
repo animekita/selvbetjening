@@ -9,6 +9,7 @@ class RemoteUser(models.Model):
     email = models.CharField(max_length=200, db_column='Email')
 
     registration_date = models.DateTimeField(auto_now_add=True, db_column='DateInserted')
+    first_visit_date = models.DateTimeField(default=None, db_column='DateFirstVisit')
 
     class Meta:
         db_table = 'GDN_User'
