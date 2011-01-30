@@ -7,4 +7,4 @@ django-tinymce==1.5
 
 https://github.com/sema/django-uni-form/tarball/master#egg=django-uni-form
 
--e git://github.com/jtauber/django-mailer.git#egg=django-mailer
+-e git://github.com/jtauber/django-mailer.git@cea79940d477246ebace#egg=django-mailer
