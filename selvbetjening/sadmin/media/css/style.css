@@ -97,15 +97,15 @@ nav.primary-nav li:hover ul, nav.primary-nav li ul:hover { display: block; }
 
 /** General **/
 #main { width: 100%; background-color: #eeeeec; }
-.block { 
+.block {
   background-color: #FFFFFF;
-  border-color: #CCCCCC; 
-  border-width: 1px; 
-  border-style: solid; 
-  padding: 1em; 
-  overflow: auto; 
+  border-color: #CCCCCC;
+  border-width: 1px;
+  border-style: solid;
+  padding: 1em;
+  overflow: auto;
   margin-bottom: 0.4em; }
-  
+
 .success-row label, .warning-row label, .error-row label { color: #000000; }
 .success-row { background-color: #c5fa92; }
 .warning-row { background-color: #fce94f; }
@@ -209,7 +209,7 @@ p.deletelink-box a {
 #searchsubmit:hover { background-color:#ffffff; }
 
 #searchbox-container {
-  overflow: auto;
+  overflow: hidden;
 }
 
 #changelist-search #searchbox-container input[type="text"] {

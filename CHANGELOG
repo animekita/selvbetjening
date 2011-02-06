@@ -1,5 +1,6 @@
 5.1.0
  * Various usability improvements
+ * Improved support for non-google chrome browsers
 
 5.0.0
  * Added new Selvbetjening Admin (SAdmin) interface, replacing the old admin interface
