@@ -1,3 +1,6 @@
+5.1.0
+ * Various usability improvements
+
 5.0.0
  * Added new Selvbetjening Admin (SAdmin) interface, replacing the old admin interface
  * Improved mailcenter to support both mass e-mail and event triggered e-mails

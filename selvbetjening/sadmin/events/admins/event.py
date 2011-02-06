@@ -75,7 +75,7 @@ class EventAdmin(SModelAdmin):
                 name='%s_%s_statistic' % self._url_info),
             url(r'^(?P<event_pk>[0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
-                name='%s_%s_financial' % self._url_info),            
+                name='%s_%s_financial' % self._url_info),
             (r'^(?P<bind_pk>[0-9]+)/attendees/', include(AttendeeAdmin().urls)),
             (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(OptionGroupAdmin().urls)),
         ) + urlpatterns
@@ -86,7 +86,7 @@ class EventAdmin(SModelAdmin):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.events_menu.render()
         return super(EventAdmin, self).add_view(request, extra_context=extra_context)
-    
+
     def change_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
         extra_context['menu'] = nav.event_menu.render(event_pk=object_id)
@@ -97,35 +97,37 @@ class EventAdmin(SModelAdmin):
         extra_context['menu'] = nav.events_menu.render()
         extra_context['title'] = _(u'Browse Events')
         return super(EventAdmin, self).changelist_view(request, extra_context)
-    
+
     def register_payment_view(self, request):
         found_attendee = None
         payment = None
         multiple_attendees = None
-        
+
         if request.method == 'POST':
             form = RegisterPaymentForm(request.POST)
-            
+
             if form.is_valid():
                 if len(form.attendees) == 1:
                     handler, found_attendee = form.attendees[0]
                     payment = Payment.objects.create(invoice=found_attendee.invoice,
                                                      amount=form.cleaned_data['payment'],
                                                      signee=request.user)
-                    
+
                     payment_registered_source.trigger(found_attendee.user,
                                                       attendee=found_attendee,
                                                       payment=payment)
-                    
+
+                    form = RegisterPaymentForm()
+
                 else:
                     multiple_attendees = form.attendees
-                    
+
         else:
             form = RegisterPaymentForm()
-            
+
         adminform = admin_formize(form)
         menu = nav.events_menu.render()
-        
+
         return render_to_response('sadmin/events/register_payment.html',
                                   {'adminform': adminform,
                                    'found_attendee': found_attendee,
@@ -133,7 +135,7 @@ class EventAdmin(SModelAdmin):
                                    'multiple_attendees': multiple_attendees,
                                    'menu': menu},
                                   context_instance=SAdminContext(request))
-    
+
     def statistics_view(self, request, event_pk):
         event = get_object_or_404(Event, pk=event_pk)
         statistics = {}
@@ -212,23 +214,23 @@ class EventAdmin(SModelAdmin):
                                   context_instance=SAdminContext(request))
 
     def financial_report_view(self, request, event_pk):
-        event = get_object_or_404(Event, pk=event_pk)   
+        event = get_object_or_404(Event, pk=event_pk)
         invoice_queryset = Invoice.objects.filter(attend__event=event)
-        
+
         if request.method == 'POST' or request.GET.has_key('event'):
             formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
             formattingform.is_valid()
         else:
             formattingform = InvoiceFormattingForm(invoices=invoice_queryset)
-            
+
         line_groups, total = formattingform.format()
-    
+
         adminformattingform = AdminForm(formattingform,
                                         [(_('Formatting'), {'fields': formattingform.base_fields.keys()})],
                                         {})
-    
+
         menu = nav.event_menu.render(event_pk=event_pk)
-        
+
         return render_to_response('sadmin/events/event/financial.html',
                                   {'invoices' : invoice_queryset,
                                    'line_groups' : line_groups,
