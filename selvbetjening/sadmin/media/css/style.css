@@ -52,7 +52,7 @@ header.login-header {
   -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius:5px;
   -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius:5px;
 }
-header.login-header h1 { background: url("../images/slogo.png") no-repeat; background-size: 60px;
+header.login-header h1 { background: url("../images/slogo-big.png") no-repeat; background-size: 60px;
                        height: 60px; text-indent: 65px; font-size: 2.4em; padding-top: 12px; float: left;
 					   font-family: "DejaVuSansCondensedBold"; }
 header.login-header h2 { float: left; font-size: 1.2em; padding-top: 6px; }
