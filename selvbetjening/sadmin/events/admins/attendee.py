@@ -26,15 +26,42 @@ class AttendeeAdmin(SBoundModelAdmin):
         name = 'attendee'
         model = Attend
         bound_model = Event
-        default_views = ('list', 'delete')  
-        
-    def in_balance(attend):
-        return attend.invoice.in_balance()
-    in_balance.boolean = True
+        default_views = ('list', 'delete')
+
+    def in_balance(attendee):
+        if attendee.invoice.in_balance():
+            return '<span class="attr success">%s</span>' % _('Betalt')
+        elif attendee.invoice.is_overpaid():
+            return '<span class="attr warning">%s</span>' % _('Overpaid')
+        elif attendee.invoice.is_partial():
+            return '<span class="attr warning">%s</span>' % _('Underpaid')
+        return '<span class="attr error">%s</span>' % _('Unpaid')
+    in_balance.short_description = _('Payment')
+    in_balance.allow_tags = True
+
+    def status(attendee):
+        status_map = {AttendState.attended : 'success',
+                      AttendState.waiting : 'error',
+                      AttendState.accepted : 'warning',}
+
+        return '<span class="attr %s">%s</span>' % (status_map[attendee.state],
+                                                    attendee.get_state_display())
+    status.allow_tags = True
+
+
+    #def attendee_actions(attend):
+        #if attend.state == AttendState.attended:
+            #return ''
+        #else:
+            #return '<b><a href="">check-in</a></b>'
+
+    #attendee_actions.allow_tags = True
+    #attendee_actions.short_description = ''
 
     list_filter = ('state',)
     list_per_page = 50
-    list_display = ('user', 'user_first_name', 'user_last_name', 'state', in_balance)
+    list_display = ('user', 'user_first_name', 'user_last_name', status,
+                    in_balance)
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
@@ -69,81 +96,81 @@ class AttendeeAdmin(SBoundModelAdmin):
         extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
 
         return super(AttendeeAdmin, self).changelist_view(request, extra_context)
-    
+
     def change_view(self, request, attendee_pk):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
-        
+
         if request.method == 'POST' and not request.POST.has_key('do_single_payment'):
             if request.POST.has_key('do_accept'):
                 attendee.state = AttendState.accepted
                 attendee.save()
-                
+
                 messages.success(request, _(u'Attendee moved to the accepted list'))
-            
+
             elif request.POST.has_key('do_unaccept'):
                 attendee.state = AttendState.waiting
                 attendee.save()
-                
+
                 messages.success(request, _(u'Attendee moved back to the waiting list'))
-                
+
             elif request.POST.has_key('do_checkin'):
                 attendee.state = AttendState.attended
                 attendee.save()
-                
+
                 messages.success(request, _(u'Attendee checked-in'))
-                
+
             elif request.POST.has_key('do_checkout'):
                 attendee.state = AttendState.accepted
                 attendee.save()
-                
+
                 messages.success(request, _(u'Attendee checked-out'))
-                
+
             elif request.POST.has_key('do_checkin_and_pay'):
                 attendee.state = AttendState.attended
                 attendee.save()
-                
+
                 Payment.objects.create(invoice=attendee.invoice,
                                        amount=attendee.invoice.unpaid,
                                        signee=request.user)
-                
+
                 messages.success(request, _(u'Attendee checked-in and paied for'))
-                
+
             elif request.POST.has_key('do_pay'):
                 Payment.objects.create(invoice=attendee.invoice,
                                        amount=attendee.invoice.unpaid,
                                        signee=request.user)
-                
+
                 messages.success(request, _(u'Attendee paied for'))
-                
+
             form = PaymentForm()
-            
+
         elif request.method == 'POST' and request.POST.has_key('do_single_payment'):
             form = PaymentForm(request.POST)
             form.invoice = attendee.invoice
-            
+
             if form.is_valid():
                 payment = form.save(commit=False)
                 payment.invoice = attendee.invoice
                 payment.signee = request.user
                 payment.save()
-                
+
                 messages.success(request, _(u'Payment registered'))
-                
+
                 form = PaymentForm()
         else:
             form = PaymentForm()
-                
+
         menu = nav.attendee_menu.render(
             event_pk=request.bound_object.pk,
             attendee_pk=attendee_pk,
             user_pk=attendee.user.pk)
-        
+
         return render_to_response('sadmin/events/attendee/change.html',
                                   {'menu': menu,
                                    'attendee': attendee,
                                    'form': admin_formize(form)},
-                                  context_instance=SAdminContext(request))    
-    
+                                  context_instance=SAdminContext(request))
+
     def selections_view(self, request, attendee_id):
         attendee = get_object_or_404(Attend, event=request.bound_object, pk=attendee_id)
 
@@ -176,13 +203,13 @@ class AttendeeAdmin(SBoundModelAdmin):
 
     def show_pks_view(self, request, attendee_pk):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
-        
+
         pks = request_attendee_pks_signal.send(self, attendee=attendee)
-        
+
         menu = nav.attendee_menu.render(event_pk=request.bound_object.pk,
                                         attendee_pk=attendee_pk,
                                         user_pk=attendee.user.pk)
-        
+
         return render_to_response('sadmin/events/attendee/show_pks.html',
                                   {'menu': menu,
                                    'attendee': attendee,

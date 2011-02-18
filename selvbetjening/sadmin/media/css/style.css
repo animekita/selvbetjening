@@ -106,10 +106,12 @@ nav.primary-nav li:hover ul, nav.primary-nav li ul:hover { display: block; }
   overflow: auto;
   margin-bottom: 0.4em; }
 
-.success-row label, .warning-row label, .error-row label { color: #000000; }
-.success-row { background-color: #c5fa92; }
-.warning-row { background-color: #fce94f; }
-.error-row { background-color: #FF9595; }
+.success-row label, .warning-row label, .error-row label
+.success span, .warning span, .error span { color: #000000; }
+
+.success-row, .success { background-color: #c5fa92; }
+.warning-row, .warning { background-color: #fce94f; }
+.error-row, .error { background-color: #FF9595; }
 
 /** Tables **/
 table tr td, table tr th { padding: 0.5em; text-align: left; }
@@ -117,6 +119,8 @@ table tr th { font-size: 1.2em; color: #555753; font-style: italic; }
 table tr td { font-size: 1.5em; }
 table tr th h3 { font-size: 1.5em; color: #000000; font-style: normal; }
 table td a { font-size: 0.8em; }
+
+table td span.attr { font-size: 0.8em; }
 
 /* Forms */
 

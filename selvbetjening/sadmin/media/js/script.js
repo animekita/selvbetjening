@@ -28,22 +28,12 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
     });
 };
 
+$(function(){
+    // apply the "success, failure and warning" class tocells containing a span
+    // with the equivalent classes. Ugly hack to allow admin generated values to
+    // change the display of the parent container
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $("td span.success").parent().addClass("success");
+    $("td span.warning").parent().addClass("warning");
+    $("td span.error").parent().addClass("error");
+});
