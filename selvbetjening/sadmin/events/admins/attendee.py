@@ -49,19 +49,21 @@ class AttendeeAdmin(SBoundModelAdmin):
     status.allow_tags = True
 
 
-    #def attendee_actions(attend):
-        #if attend.state == AttendState.attended:
-            #return ''
-        #else:
-            #return '<b><a href="">check-in</a></b>'
+    def attendee_actions(attendee):
+        if attendee.state == AttendState.attended:
+            return ''
+        else:
+            return '<b><a href="%s">check-in</a></b>' % reverse('sadmin:events_attendee_change',
+                                                                kwargs={'bind_pk': attendee.event.pk,
+                                                                        'attendee_pk' : attendee.pk})
 
-    #attendee_actions.allow_tags = True
-    #attendee_actions.short_description = ''
+    attendee_actions.allow_tags = True
+    attendee_actions.short_description = ''
 
     list_filter = ('state',)
     list_per_page = 50
     list_display = ('user', 'user_first_name', 'user_last_name', status,
-                    in_balance)
+                    in_balance, attendee_actions)
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
