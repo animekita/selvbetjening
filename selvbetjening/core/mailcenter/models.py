@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.template import Template, Context
+from django.utils.translation import ugettext as _
 
 from mailer import send_html_mail
 
@@ -30,6 +31,11 @@ class EmailSpecification(models.Model):
     # meta
     date_created = models.DateField(editable=False, auto_now_add=True)
     recipients = models.ManyToManyField(User, editable=False)
+
+    # recipients
+    send_to_user = models.BooleanField(default=True)
+    other_recipients = models.CharField(blank=True, max_length=255,
+                                        help_text=_('Comma separated list of recipient e-mails'))
 
     @property
     def required_parameters(self):
@@ -82,8 +88,16 @@ class EmailSpecification(models.Model):
     def _send_email(self, user, **kwargs):
         body_plain, body_html = self._compile_body(user=user, **kwargs)
 
+        recipients = []
+
+        if self.other_recipients.strip() != '':
+            recipients = self.other_recipients.split(',')
+
+        if self.send_to_user:
+            recipients.append(user.email)
+
         send_html_mail(self.subject, body_plain, body_html,
-                  settings.DEFAULT_FROM_EMAIL, (user.email,))
+                  settings.DEFAULT_FROM_EMAIL, recipients)
 
     def _compile_body(self, user, **kwargs):
         context = Context(kwargs)

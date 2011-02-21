@@ -27,6 +27,9 @@ class EmailSpecificationAdmin(SModelAdmin):
         (None, {
             'fields': ('subject', 'body'),
             }),
+        (_(u'Recipient'), {
+            'fields': ('send_to_user', 'other_recipients')
+            }),
         (_(u'Source'), {
             'fields': (('source_enabled', 'event'),),
             'description': _(u"""
