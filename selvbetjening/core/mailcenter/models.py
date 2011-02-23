@@ -86,7 +86,7 @@ class EmailSpecification(models.Model):
         return email_counter
 
     def _send_email(self, user, **kwargs):
-        body_plain, body_html = self._compile_body(user=user, **kwargs)
+        subject, body_plain, body_html = self._compile_content(user=user, **kwargs)
 
         recipients = []
 
@@ -96,17 +96,19 @@ class EmailSpecification(models.Model):
         if self.send_to_user:
             recipients.append(user.email)
 
-        send_html_mail(self.subject, body_plain, body_html,
+        send_html_mail(subject, body_plain, body_html,
                   settings.DEFAULT_FROM_EMAIL, recipients)
 
-    def _compile_body(self, user, **kwargs):
+    def _compile_content(self, user, **kwargs):
         context = Context(kwargs)
         context.update({'user': user})
 
         body_plain = Template(re.sub(r'<[^>]*?>', '', self.body)).render(context)
         body_html = Template(self.body).render(context)
 
-        return (body_plain, body_html)
+        subject = Template(self.subject).render(context)
+
+        return (subject, body_plain, body_html)
 
     def __unicode__(self):
         return self.subject

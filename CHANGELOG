@@ -2,6 +2,10 @@
  * Various usability improvements
  * Improved support for non-google chrome browsers
 
+Mailcenter:
+ * Added option to send e-mails to other recipients than the target user
+ * Added support for variables in e-mail subjects
+
 5.0.0
  * Added new Selvbetjening Admin (SAdmin) interface, replacing the old admin interface
  * Improved mailcenter to support both mass e-mail and event triggered e-mails
