@@ -1,4 +1,5 @@
 {% extends "sadmin/base/base.html" %}
+{% load navtreehelpers %}
 
 {% block body %}
     {% if not is_popup %}
@@ -19,15 +20,10 @@
     </div></header>
 
     <nav class="primary-nav"><div class="center">
+        {% get_navigation_pages main_menu current_page as pages %}
         <ul>
-        {% for option_group in main_menu %}
-          <li>{{option_group.label|lower}}
-            <ul>
-              {% for option in option_group %}
-                <li><a href="{{option.url}}">{{option.label|lower}}</a></li>
-              {% endfor %}
-            </ul>
-          </li>
+        {% for page in pages %}
+          <li{% if page.in_path %} class="current"{% endif %}><a href="{{ page.url }}">{{ page.title|lower }}</a></li>
         {% endfor %}
         </ul>
     </div></nav>
@@ -36,6 +32,32 @@
     <div class="center">
 
     <header class="page-header">
+    {% if current_page %}
+      <nav class="breadcrumbs">
+      {% get_breadcrumbs current_page as breadcrumbs %}
+        <ul>
+          {% for page in breadcrumbs %}
+          {% if not forloop.last %}
+            <li><a href="{{ page.url }}">{{ page.title }}</a> &raquo;</li>
+          {% else %}
+            <li>{{ page.title }}</li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+
+    {% if action_menu %}
+    {% get_navigation_pages action_menu current_page as pages %}
+    <nav class="action-nav">
+      <ul>
+      {% for page in pages %}
+        <li{% if page.in_path %} class="current"{% endif %}><a href="{{ page.url }}">{{ page.title|lower }}</a></li>
+      {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+
     {% block pretitle %}{% endblock %}
     {% block content_title %}{% if title %}<h2>{{ title }}</h2>{% endif %}{% endblock %}
     </header>
@@ -44,13 +66,16 @@
 
     {% block navigation %}
     {% if menu %}
+      {% get_navigation_pages menu current_page as pages %}
+
       <nav class="secondary-nav">
       <ul>
-        {% for item in menu %}
-          <li><a href="{{item.url}}">{{item.label|lower}}</a></li>
+        {% for page in pages %}
+          <li{% if page.current_page %} class="current"{% endif %}><a href="{{page.url}}">{{page.title|lower}}</a></li>
         {% endfor %}
       </ul>
       </nav>
+
     {% endif %}
     {% endblock %}
 
@@ -67,7 +92,6 @@
     {% endif %}
 
     {% block content %}
-    {% block object-tools %}{% endblock %}
     {{ content }}
     {% endblock %}
     </div>

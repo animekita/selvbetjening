@@ -8,7 +8,8 @@ from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from selvbetjening.sadmin.base import admin_formize
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
+from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin, main_menu
+from selvbetjening.sadmin.base.nav import SPage, ObjectSPage, LeafSPage
 
 from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry
 from selvbetjening.sadmin.mailcenter.admins.outgoing import OutgoingAdmin
@@ -18,6 +19,7 @@ class EmailSpecificationAdmin(SModelAdmin):
     class Meta:
         app_name = 'mailcenter'
         name = 'emailspecification'
+        display_name = 'Emails'
         model = EmailSpecification
 
     list_display = ('subject',)
@@ -45,19 +47,45 @@ class EmailSpecificationAdmin(SModelAdmin):
             }),
     )
 
+    def _init_navigation(self):
+        super(EmailSpecificationAdmin, self)._init_navigation()
+
+        main_menu.register(self.page_root)
+
+        self.page_filter = LeafSPage(_(u'Filters'),
+                                     'sadmin:mailcenter_emailspecification_change_filter',
+                                     parent=self.page_change,
+                                     permission=lambda user: user.has_perm('mailcenter.change_emailspecification'))
+
+        self.page_send = LeafSPage(_(u'Send'),
+                                   'sadmin:mailcenter_emailspecification_send',
+                                   parent=self.page_change,
+                                   permission=lambda user: user.has_perm('mailcenter.change_emailspecification'))
+
+        self.page_mass_email = LeafSPage(_(u'Mass E-email'),
+                                         'sadmin:mailcenter_emailspecification_masssend',
+                                         parent=self.page_change,
+                                         permission=lambda user: user.has_perm('mailcenter.change_emailspecification'))
+
+
+        self.object_menu.register(self.page_change)
+        self.object_menu.register(self.page_filter)
+        self.object_menu.register(self.page_send)
+        self.object_menu.register(self.page_mass_email)
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
         urlpatterns = super(EmailSpecificationAdmin, self).get_urls()
 
         urlpatterns = patterns('',
-            url(r'^(?P<email_pk>[0-9]+)/filter/$',
+            url(r'^([0-9]+)/filter/$',
                 self._wrap_view(self.filter_view),
                 name='%s_%s_change_filter' % self._url_info),
-            url(r'^(?P<email_pk>[0-9]+)/send/$',
+            url(r'^([0-9]+)/send/$',
                 self._wrap_view(self.send_view),
                 name='%s_%s_send' % self._url_info),
-            url(r'^(?P<email_pk>[0-9]+)/mass-send/$',
+            url(r'^([0-9]+)/mass-send/$',
                 self._wrap_view(self.masssend_view),
                 name='%s_%s_masssend' % self._url_info),
             (r'^outgoing/', include(OutgoingAdmin().urls)),
@@ -65,21 +93,10 @@ class EmailSpecificationAdmin(SModelAdmin):
 
         return urlpatterns
 
-    def add_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.emails_menu.render()
-        return super(EmailSpecificationAdmin, self).add_view(request, extra_context=extra_context)
-
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.emails_menu.render()
         extra_context['title'] = _(u'Browse E-mail Specifications')
         return super(EmailSpecificationAdmin, self).changelist_view(request, extra_context)
-
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.email_menu.render(email_pk=object_id)
-        return super(EmailSpecificationAdmin, self).change_view(request, object_id, extra_context)
 
     def filter_view(self, request, email_pk):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
@@ -98,24 +115,25 @@ class EmailSpecificationAdmin(SModelAdmin):
         else:
             forms = ConditionForms(email_specification=email)
 
-        menu = nav.email_menu.render(email_pk=email.pk)
-
         return render_to_response('sadmin/mailcenter/email/filter.html',
                                   {'email': email,
+                                   'original': email, # compatibility
                                    'forms': [admin_formize(form) for form in forms],
-                                   'menu': menu},
+                                   'menu': self.object_menu,
+                                   'current_page': self.page_filter},
                                   context_instance=SAdminContext(request))
 
 
     def masssend_view(self, request, email_pk):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
-        menu = nav.email_menu.render(email_pk=email.pk)
 
         if len(email.event) > 0:
             # can't send newsletter when bound to event
             return render_to_response('sadmin/mailcenter/email/email-bound.html',
                                       {'email': email,
-                                       'menu': menu},
+                                       'original': email, # compatibility
+                                       'menu': self.object_menu,
+                                       'current_page': self.page_mass_email},
                                       context_instance=SAdminContext(request))
 
         recipients = User.objects.filter(userprofile__send_me_email=True)
@@ -135,8 +153,10 @@ class EmailSpecificationAdmin(SModelAdmin):
         return render_to_response('sadmin/mailcenter/email/massemail.html',
                                   {'form': admin_formize(form),
                                    'email': email,
+                                   'original': email, # compatibility
                                    'recipients': recipients,
-                                   'menu': menu},
+                                   'menu': self.object_menu,
+                                   'current_page': self.page_mass_email},
                                   context_instance=SAdminContext(request))
 
     def send_view(self, request, email_pk):
@@ -156,10 +176,10 @@ class EmailSpecificationAdmin(SModelAdmin):
         else:
             form = SendEmailForm()
 
-        menu = nav.email_menu.render(email_pk=email.pk)
-
         return render_to_response('sadmin/mailcenter/email/send.html',
                                   {'form': admin_formize(form),
                                    'email': email,
-                                   'menu': menu},
+                                   'original': email, # compatibility
+                                   'menu': self.object_menu,
+                                   'current_page': self.page_send},
                                   context_instance=SAdminContext(request))

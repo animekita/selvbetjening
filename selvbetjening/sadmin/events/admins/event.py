@@ -21,6 +21,7 @@ class EventAdmin(SModelAdmin):
     class Meta:
         app_name = 'events'
         name = 'event'
+        display_name = 'Events'
         model = Event
 
     def attendees_count(event):
@@ -64,6 +65,12 @@ class EventAdmin(SModelAdmin):
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
+        attendee_admin = AttendeeAdmin()
+        attendee_admin.page_root.parent = self.page_change
+
+        option_group_admin = OptionGroupAdmin()
+        option_group_admin.page_root.parent = self.page_root
+
         urlpatterns = super(EventAdmin, self).get_urls()
 
         urlpatterns = patterns('',
@@ -76,8 +83,8 @@ class EventAdmin(SModelAdmin):
             url(r'^(?P<event_pk>[0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
                 name='%s_%s_financial' % self._url_info),
-            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(AttendeeAdmin().urls)),
-            (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(OptionGroupAdmin().urls)),
+            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(attendee_admin.urls)),
+            (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(option_group_admin.urls)),
         ) + urlpatterns
 
         return urlpatterns

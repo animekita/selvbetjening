@@ -24,9 +24,10 @@ class AttendeeAdmin(SBoundModelAdmin):
     class Meta:
         app_name = 'events'
         name = 'attendee'
+        display_name = 'attendees'
         model = Attend
         bound_model = Event
-        default_views = ('list', 'delete')
+        default_views = ('list', 'delete', 'change')
 
     def in_balance(attendee):
         if attendee.invoice.in_balance():
@@ -76,9 +77,6 @@ class AttendeeAdmin(SBoundModelAdmin):
             url(r'^(.+)/selections/',
                 self._wrap_view(self.selections_view),
                 name='%s_%s_selections' % self._url_info),
-            url(r'^(?P<attendee_pk>[0-9]+)/$',
-                self._wrap_view(self.change_view),
-                name='%s_%s_change' % self._url_info),
             url(r'^(?P<attendee_pk>[0-9]+)/pks/$',
                 self._wrap_view(self.show_pks_view),
                 name='%s_%s_show_pks' % self._url_info),
@@ -93,13 +91,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         return qs.filter(event=request.bound_object)
 
-    def changelist_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
-
-        return super(AttendeeAdmin, self).changelist_view(request, extra_context)
-
-    def change_view(self, request, attendee_pk):
+    def change_view(self, request, attendee_pk, extra_context=None):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
 
         if request.method == 'POST' and not request.POST.has_key('do_single_payment'):
@@ -162,15 +154,16 @@ class AttendeeAdmin(SBoundModelAdmin):
         else:
             form = PaymentForm()
 
-        menu = nav.attendee_menu.render(
-            event_pk=request.bound_object.pk,
-            attendee_pk=attendee_pk,
-            user_pk=attendee.user.pk)
+        context = {'menu': self.object_menu,
+                   'current_page': self.page_change,
+                   'attendee': attendee,
+                   'original': attendee,
+                   'form': admin_formize(form)}
+
+        context.update(extra_context or {})
 
         return render_to_response('sadmin/events/attendee/change.html',
-                                  {'menu': menu,
-                                   'attendee': attendee,
-                                   'form': admin_formize(form)},
+                                  context,
                                   context_instance=SAdminContext(request))
 
     def selections_view(self, request, attendee_id):
@@ -192,12 +185,8 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         checkin_parts = change_selection_handler.view()
 
-        menu = nav.attendee_menu.render(event_pk=request.bound_object.pk,
-                                        attendee_pk=attendee_id,
-                                        user_pk=attendee.user.pk)
-
         return render_to_response('sadmin/events/attendee/selections.html',
-                                  {'menu': menu,
+                                  {'menu': self.object_menu,
                                    'attendee': attendee,
                                    'option_forms' : option_forms,
                                    'checkin_parts' : checkin_parts},
@@ -208,12 +197,8 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         pks = request_attendee_pks_signal.send(self, attendee=attendee)
 
-        menu = nav.attendee_menu.render(event_pk=request.bound_object.pk,
-                                        attendee_pk=attendee_pk,
-                                        user_pk=attendee.user.pk)
-
         return render_to_response('sadmin/events/attendee/show_pks.html',
-                                  {'menu': menu,
+                                  {'menu': self.object_menu,
                                    'attendee': attendee,
                                    'pks': pks},
                                   context_instance=SAdminContext(request))

@@ -1,23 +1,21 @@
-Bugfix
-======
+Admin
+=====
 
-- Achivements
-  - Ret fejl ved sletning af event
-
-- Oprydning
-  - Fjern checkin handler fra checkin
+- Bedre navigation
+  - Ret delete siden, obj i stedet for original
+  - Tilføj events igen
+  - Få styr på edit og tilbagelinks
+  - Tilføj kita admins
 
 Til svscon
 ==========
 
 - Checkin af folk og billing
+  - Revidering af betaling og kvittering interface
+  - Oprydning i menu
+  - Begrænset check-in side (check-in url)
+
 - CPR checkin
-
-Refactor
-========
-
-- Fjern dependencies
-- Lav byggesystem
 
 Stuff for Kita
 ==============
@@ -27,10 +25,16 @@ Achivements
   - Tilføj mere informative beskrivelser
   - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
 
-Admin:
-  - Permissions, lav admin brugbar af andre end mig
+Bugfix
+======
 
-6.0.0 Todo
+- Achivements
+  - Ret fejl ved sletning af event
+
+- Oprydning
+  - Fjern checkin handler fra checkin
+
+5.1.0 Todo
 ==========
 
 Bedre håndtering af e-mails:
@@ -44,19 +48,10 @@ Andet:
 - Dynamiske formularer (så vi kan lave mere spændende input)
 - Offline strategi
 
-Noget helt andet
-================
-
-Forum
------
-
-- Undersøg forum krav igen
-- Kan vi bruge vanilla igen eller skal der noget nyt til?
-- Lav test installation / upgrade
-- Convert design til det nye forum
+Spændende ideer
+===============
 
 http://github.com/justquick/django-activity-stream
-http://nedbatchelder.com/blog/201008/django_superuser_login_trapdoor.html
 http://github.com/eldarion/brabeion Badges
 http://celeryproject.org/ Query system
 http://www.rabbitmq.com/ Query system

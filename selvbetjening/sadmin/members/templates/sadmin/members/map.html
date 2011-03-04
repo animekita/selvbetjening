@@ -12,20 +12,20 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    
+
     {% for location in locations %}
     new google.maps.Marker({
-      position: new google.maps.LatLng({{location.lat}}, {{location.lng}}), 
-      map: map, 
+      position: new google.maps.LatLng({{location.lat}}, {{location.lng}}),
+      map: map,
       title:"{{location.user.first_name}} {{location.user.last_name}}"
     });
     {% endfor %}
   }
-  
+
   $(document).ready(function() {
     initialize();
   });
-  
+
 </script>
 {% endblock %}
 

@@ -5,4 +5,3 @@ from admins.group import GroupAdmin
 import nav
 
 site.register('members', UserAdmin)
-site.register('groups', GroupAdmin)

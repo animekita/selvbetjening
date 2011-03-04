@@ -14,9 +14,13 @@ from django.http import HttpResponseRedirect
 from selvbetjening.core.members.shortcuts import get_or_create_profile
 from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, UserLocation, to_age
 
-from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext
+from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext, main_menu
+from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
 from selvbetjening.sadmin.members import nav
+from selvbetjening.sadmin.members.admins.group import GroupAdmin
+
+from navtree.navigation import Navigation
 
 class UserProfileInline(StackedInline):
     model = UserProfile
@@ -34,8 +38,9 @@ class UserCommunicationInline(StackedInline):
 
 class UserAdmin(SModelAdmin):
     class Meta:
-        app_name = 'members'
+        app_name = 'auth'
         name = 'user'
+        display_name = _('Users')
         model = User
 
     list_display = ('username', 'first_name', 'last_name', 'display_age')
@@ -64,10 +69,40 @@ class UserAdmin(SModelAdmin):
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
     )
 
+    def _init_navigation(self):
+        super(UserAdmin, self)._init_navigation()
+
+        main_menu.register(self.page_root)
+
+        self.page_statistics = SPage(_('Statistics'),
+                                     'sadmin:%s_%s_statistics' % self._url_info,
+                                     parent=self.page_root,
+                                     permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+
+        self.page_map = SPage(_('Map'),
+                              'sadmin:%s_%s_map' % self._url_info,
+                              parent=self.page_root,
+                              permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+
+        self.page_change_password = LeafSPage(_('Change Password'),
+                                              'sadmin:%s_%s_change_password' % self._url_info,
+                                              parent=self.page_change,
+                                              permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+
+        self.sadmin_menu.register(self.page_statistics)
+        self.sadmin_menu.register(self.page_map)
+
+        self.object_menu.register(self.page_change)
+        self.object_menu.register(self.page_change_password)
+
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls.defaults import patterns, url, include
 
         urlpattern = super(UserAdmin, self).get_urls()
+
+        group_admin = GroupAdmin()
+        group_admin.page_root.parent = self.page_root
+        self.sadmin_menu.register(group_admin.page_root)
 
         urlpattern = patterns('',
             url(r'^statistics/',
@@ -78,27 +113,21 @@ class UserAdmin(SModelAdmin):
                 name='%s_%s_map' % self._url_info),
             url(r'^(\d+)/password/$',
                 self._wrap_view(self.user_change_password),
-                name='%s_%s_change_password'),
+                name='%s_%s_change_password' % self._url_info),
+            (r'^groups/', include(group_admin.urls)),
             ) + urlpattern
 
         return urlpattern
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.members_menu.render()
         extra_context['title'] = _(u'Browse Members')
         return super(UserAdmin, self).changelist_view(request, extra_context)
 
     def add_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.members_menu.render()
         extra_context['title'] = _(u'Create Member')
         return super(UserAdmin, self).add_view(request, extra_context=extra_context)
-
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.member_menu.render(username=object_id)
-        return super(UserAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
     def user_change_password(self, request, username):
         """
@@ -119,10 +148,7 @@ class UserAdmin(SModelAdmin):
         fieldsets = [(None, {'fields': form.base_fields.keys()})]
         adminForm = admin.helpers.AdminForm(form, fieldsets, {})
 
-        menu = nav.member_menu.render(username=username)
-        
         return render_to_response('admin/auth/user/change_password.html', {
-            'menu': menu,
             'title': _('Change password: %s') % escape(user.username),
             'adminForm': adminForm,
             'form': form,
@@ -137,8 +163,10 @@ class UserAdmin(SModelAdmin):
             'save_as': False,
             'show_save': True,
             'root_path': self.admin_site.root_path,
+            'menu': self.object_menu,
+            'current_page': self.page_change_password,
         }, context_instance=SAdminContext(request))
-    
+
     def user_age_chart(self, min_age=5, max_age=80):
         cur_year = date.today().year
 
@@ -232,22 +260,22 @@ class UserAdmin(SModelAdmin):
 
         age_data.update(join_data)
 
-        age_data['menu'] = nav.members_menu.render()
+        age_data['menu'] = self.sadmin_menu
+        age_data['current_page'] = self.page_statistics
 
         return render_to_response('sadmin/members/statistics.html',
                                   age_data,
                                   context_instance=SAdminContext(request))
 
     def map_view(self, request):
-        
+
         locations = UserLocation.objects.exclude(lat=None, lng=None).exclude(expired=True).select_related()
         expired = UserLocation.objects.filter(expired=True).count()
         invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
-        
-        menu = nav.members_menu.render()
-        
+
         return render_to_response('sadmin/members/map.html',
-                                  {'menu': menu,
+                                  {'menu': self.sadmin_menu,
+                                   'current_page': self.page_map,
                                    'locations': locations,
                                    'expired': expired,
                                    'invalid': invalid},

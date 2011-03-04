@@ -75,25 +75,33 @@ nav.authentication-nav ul li a { color: #ffffff; text-decoration: none; font-wei
 nav.authentication-nav ul li:hover { background-color: #a40000; }
 nav.authentication-nav ul li a:hover, nav ul li a:active, nav ul li a:visited { color: #ffffff; }
 
-/* Primary and Secondary nav */
+/* Primary, Secondary and Action nav */
 nav.primary-nav { margin-bottom: 1em; background-color: #a40000; }
 nav.secondary-nav { margin-bottom: 1em; background-color: #000000; }
+nav.action-nav { background-color: #a40000; }
 
-nav.primary-nav ul li, nav.secondary-nav ul li { float: left; padding: 0.5em 1.5em 0.5em;
-                                                 color: #ffffff; text-decoration: none;
-												 font-weight: bold; font-style: normal; }
+nav.primary-nav ul li, nav.secondary-nav ul li, nav.action-nav ul li {
+  float: left; padding: 0.5em 1.5em 0.5em;
+  color: #ffffff; text-decoration: none;
+  font-weight: bold; font-style: normal;
+}
 
-nav.primary-nav ul li a, nav.secondary-nav ul li a { color: #ffffff; }
+nav.primary-nav ul li a, nav.secondary-nav ul li a, nav.action-nav ul li a { color: #ffffff; }
 
 nav.primary-nav ul li { font-size: 1.4em; }
-nav.secondary-nav ul li { font-size: 1.2em; }
+nav.secondary-nav ul li, nav.action-nav ul li { font-size: 1.2em; }
 
-/** Submenus **/
-nav.primary-nav li ul { display: none; font-size: 0.6em; position: absolute; margin: 8px 0 0 -2em;
-                        padding: 0; background-color: #000000; z-index: 999; }
-nav.primary-nav li ul li { float: none; }
+nav.action-nav { float: right; }
+nav.action-nav ul { margin-left: 0; }
 
-nav.primary-nav li:hover ul, nav.primary-nav li ul:hover { display: block; }
+nav.primary-nav ul li.current { background-color: #6C0000; }
+nav.secondary-nav ul li.current { background-color: #a40000; }
+
+/** Breadcrumbs **/
+nav.breadcrumbs ul { margin: 0 0 1em 0; }
+nav.breadcrumbs ul li { display: inline; font-size: 1.4em; }
+nav.breadcrumbs ul li a { font-style: normal; color: #a40000; }
+nav.breadcrumbs ul li a:hover { text-decoration: underline; }
 
 /** General **/
 #main { width: 100%; background-color: #eeeeec; }

@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'crumbs',
     'debug_toolbar',
+    'navtree',
 
     'django.contrib.sites',
     'django.contrib.auth',

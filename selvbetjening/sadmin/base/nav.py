@@ -1,53 +1,62 @@
 from django.core.urlresolvers import reverse
 
-class OptionProxy(object):
-    """
-    Wraps an option while containing data and methods which is request specific.
-    """
+from navtree.navigation import Page
 
-    def __init__(self, option, context):
-        self.option = option
-        self.context = context
+class SPage(Page):
+    def __init__(self, title, url, parent=None, context_args=None, permission=None):
+        super(SPage, self).__init__(title, url, parent=parent, name=url, permission=permission)
 
-    @property
-    def available(self):
-        return self.option.available(self.context['user'])
+        self.context_args = context_args
 
-    @property
-    def url(self):
-        if callable(self.option.url):
-            return self.option.url(self.context)
+class BoundSPage(SPage):
+    def get_url(self, context):
+        bound_object = context.get('bound_object')
+
+        return reverse(self._url, args=[bound_object.pk])
+
+class LeafSPage(SPage):
+    def get_url(self, context):
+        original = context.get('original')
+
+        return reverse(self._url, args=[original.pk])
+
+class BoundLeafSPage(SPage):
+    def get_url(self, context):
+        bound_object = context.get('bound_object')
+        original = context.get('original')
+
+        return reverse(self._url, args=[bound_object.pk, original.pk])
+
+class ObjectSPage(SPage):
+    def __init__(self, url, parent=None, permission=None):
+        super(ObjectSPage, self).__init__('', url, parent=parent, permission=permission)
+
+    def get_title(self, context):
+        bound_object = context.get('bound_object', None)
+        original = context.get('original', None)
+
+        if bound_object:
+            return unicode(bound_object)
         else:
-            return reverse(self.option.url)
+            return unicode(original)
 
-    @property
-    def label(self):
-        return self.option.label
+    def get_url(self, context):
+        bound_object = context.get('bound_object', None)
+        original = context.get('original', None)
 
-    def __iter__(self):
-        elements = [OptionProxy(element, self.context) for element in self.option]
-        return elements.__iter__()
+        if bound_object:
+            return reverse(self._url, args=[bound_object.pk])
+        else:
+            return reverse(self._url, args=[original.pk])
 
-class Navigation(object):
-    def __init__(self, label=None):
-        self.label = label
-        self.options = []
+class BoundObjectSPage(ObjectSPage):
+    def get_title(self, context):
+        original = context.get('original')
 
-    def register(self, option):
-        self.options.append(option)
+        return unicode(original)
 
-    def render(self, **context):
-        return [OptionProxy(option, context) for option in self]
+    def get_url(self, context):
+        bound_object = context.get('bound_object')
+        original = context.get('original')
 
-    def __iter__(self):
-        return self.options.__iter__()
-
-class Option(object):
-    def __init__(self, label, url, available=None):
-        self.label = label
-        self.url = url
-        self.available = available if not None else lambda user: True
-
-registry = {}
-
-registry['main'] = Navigation() # default sadmin navigation
+        return reverse(self._url, args=[bound_object.pk, original.pk])

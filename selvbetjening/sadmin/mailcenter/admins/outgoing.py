@@ -18,6 +18,5 @@ class OutgoingAdmin(SModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.emails_menu.render()
         extra_context['title'] = _(u'Outgoing E-mails')
         return super(OutgoingAdmin, self).changelist_view(request, extra_context)
