@@ -1,6 +1,5 @@
 from django.utils.translation import ugettext as _
 
-from selvbetjening.sadmin.mailcenter import nav
 from selvbetjening.sadmin.base.sadmin import SModelAdmin
 
 from mailer.models import Message
@@ -10,7 +9,7 @@ class OutgoingAdmin(SModelAdmin):
         app_name = 'mailcenter'
         name = 'outgoing'
         model = Message
-        default_views = ('list', 'change')
+        default_views = ('list', 'change',)
 
     list_display = ('to_address', 'subject',)
     search_fields = ('subject', 'to_address')

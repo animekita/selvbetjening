@@ -6,7 +6,6 @@ from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.events.admins.option import OptionAdmin
-from selvbetjening.sadmin.events import nav
 
 class OptionGroupAdmin(SBoundModelAdmin):
     class Meta:
@@ -14,6 +13,8 @@ class OptionGroupAdmin(SBoundModelAdmin):
         name = 'optiongroup'
         model = OptionGroup
         bound_model = Event
+        display_name = _(u'Option Group')
+        display_name_plural = _(u'Option Groups')
 
     list_display = ('name',)
 
@@ -34,32 +35,25 @@ class OptionGroupAdmin(SBoundModelAdmin):
     def queryset(self, request):
         qs = super(OptionGroupAdmin, self).queryset(request)
         return qs.filter(event=request.bound_object)
-
+    
+    def _init_navigation(self):
+        super(OptionGroupAdmin, self)._init_navigation()
+        
+        self.object_menu.register(self.page_change, self.Meta.display_name)
+    
     def get_urls(self):
         from django.conf.urls.defaults import patterns, include
 
+        option_admin = OptionAdmin()
+        option_admin.page_root.parent = self.page_change
+        option_admin.sadmin_menu = self.object_menu
+        
+        self.object_menu.register(option_admin.page_root)
+        
         urlpattern = super(OptionGroupAdmin, self).get_urls()
 
         urlpattern = patterns('',
-            (r'^(?P<bind_optiongroup_pk>.+)/options/', include(OptionAdmin().urls)),
+            (r'^(?P<bind_bind_pk>.+)/options/', include(option_admin.urls)),
         ) + urlpattern
 
         return urlpattern
-
-    def add_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
-        return super(OptionGroupAdmin, self).add_view(request, extra_context=extra_context)
-
-    def changelist_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
-
-        return super(OptionGroupAdmin, self).changelist_view(request, extra_context)
-
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.optiongroup_menu.render(event_pk=request.bound_object.pk,
-                                                            optiongroup_pk=object_id)
-
-        return super(OptionGroupAdmin, self).change_view(request, object_id, extra_context)

@@ -17,7 +17,6 @@ from selvbetjening.core.members.models import UserProfile, UserWebsite, UserComm
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext, main_menu
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
-from selvbetjening.sadmin.members import nav
 from selvbetjening.sadmin.members.admins.group import GroupAdmin
 
 from navtree.navigation import Navigation
@@ -40,7 +39,8 @@ class UserAdmin(SModelAdmin):
     class Meta:
         app_name = 'auth'
         name = 'user'
-        display_name = _('Users')
+        display_name_plural = _('Users')
+        display_name = _('User')
         model = User
 
     list_display = ('username', 'first_name', 'last_name', 'display_age')
@@ -102,6 +102,7 @@ class UserAdmin(SModelAdmin):
 
         group_admin = GroupAdmin()
         group_admin.page_root.parent = self.page_root
+        group_admin.sadmin_menu = self.sadmin_menu
         self.sadmin_menu.register(group_admin.page_root)
 
         urlpattern = patterns('',

@@ -13,6 +13,7 @@ from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.forms import form_collection_builder
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext
+from selvbetjening.sadmin.base.nav import BoundLeafSPage
 from selvbetjening.sadmin.base import admin_formize
 
 from selvbetjening.sadmin.events import nav
@@ -24,11 +25,17 @@ class AttendeeAdmin(SBoundModelAdmin):
     class Meta:
         app_name = 'events'
         name = 'attendee'
-        display_name = 'attendees'
+        display_name = 'Attendee'
+        display_name_plural = 'Attendees'
         model = Attend
         bound_model = Event
         default_views = ('list', 'delete', 'change')
 
+    def name(attendee):
+        user = attendee.user
+        return u'%s %s' % (user.first_name, user.last_name)
+    name.short_description = _('Name')
+        
     def in_balance(attendee):
         if attendee.invoice.in_balance():
             return '<span class="attr success">%s</span>' % _('Betalt')
@@ -55,32 +62,45 @@ class AttendeeAdmin(SBoundModelAdmin):
             return ''
         else:
             return '<b><a href="%s">check-in</a></b>' % reverse('sadmin:events_attendee_change',
-                                                                kwargs={'bind_pk': attendee.event.pk,
-                                                                        'attendee_pk' : attendee.pk})
+                                                                args=[attendee.event.pk,
+                                                                      attendee.pk])
 
     attendee_actions.allow_tags = True
     attendee_actions.short_description = ''
 
     list_filter = ('state',)
     list_per_page = 50
-    list_display = ('user', 'user_first_name', 'user_last_name', status,
-                    in_balance, attendee_actions)
+    list_display = ('user', name, status, in_balance, attendee_actions)
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
+    def _init_navigation(self):
+        super(AttendeeAdmin, self)._init_navigation()
+        
+        self.page_payment_keys = BoundLeafSPage(_(u'Payment Keys'),
+                                                'sadmin:%s_%s_payment_keys' % self._url_info,
+                                                parent=self.page_change)
+        
+        self.page_selections = BoundLeafSPage(_(u'Selections'),
+                                              'sadmin:%s_%s_selections' % self._url_info,
+                                              parent=self.page_change)
+        
+        self.object_menu.register(self.page_change, title=self.Meta.display_name)
+        self.object_menu.register(self.page_payment_keys)
+        self.object_menu.register(self.page_selections)
+    
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
-
+        
         urlpatterns = super(AttendeeAdmin, self).get_urls()
 
         urlpatterns = patterns('',
-            url(r'^(.+)/selections/',
+            url(r'^([0-9]+)/selections/',
                 self._wrap_view(self.selections_view),
                 name='%s_%s_selections' % self._url_info),
-            url(r'^(?P<attendee_pk>[0-9]+)/pks/$',
-                self._wrap_view(self.show_pks_view),
-                name='%s_%s_show_pks' % self._url_info),
-            (r'^(?P<bind_attendee_pk>.+)/invoice/', include(InvoiceAdmin().urls)),
+            url(r'^([0-9]+)/pks/$',
+                self._wrap_view(self.payment_keys_view),
+                name='%s_%s_payment_keys' % self._url_info),
             (r'^new/', include(NonAttendeeAdmin().urls)),
             ) + urlpatterns
 
@@ -155,6 +175,7 @@ class AttendeeAdmin(SBoundModelAdmin):
             form = PaymentForm()
 
         context = {'menu': self.object_menu,
+                   'action_menu': self.object_action_menu,
                    'current_page': self.page_change,
                    'attendee': attendee,
                    'original': attendee,
@@ -166,7 +187,7 @@ class AttendeeAdmin(SBoundModelAdmin):
                                   context,
                                   context_instance=SAdminContext(request))
 
-    def selections_view(self, request, attendee_id):
+    def selections_view(self, request, attendee_id, extra_context=None):
         attendee = get_object_or_404(Attend, event=request.bound_object, pk=attendee_id)
 
         change_selection_handler = change_selection_processors.get_handler(request, attendee)
@@ -184,21 +205,31 @@ class AttendeeAdmin(SBoundModelAdmin):
             option_forms = OptionForms(attendee.event, attendee=attendee)
 
         checkin_parts = change_selection_handler.view()
+        
+        context = {'menu': self.object_menu,
+                   'current_page': self.page_selections,
+                   'original': attendee,
+                   'option_forms' : option_forms,
+                   'checkin_parts' : checkin_parts}
+        
+        context.update(extra_context or {})
 
         return render_to_response('sadmin/events/attendee/selections.html',
-                                  {'menu': self.object_menu,
-                                   'attendee': attendee,
-                                   'option_forms' : option_forms,
-                                   'checkin_parts' : checkin_parts},
+                                  context,
                                   context_instance=SAdminContext(request))
 
-    def show_pks_view(self, request, attendee_pk):
+    def payment_keys_view(self, request, attendee_pk, extra_context=None):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
 
         pks = request_attendee_pks_signal.send(self, attendee=attendee)
-
+        
+        context = {'menu': self.object_menu,
+                   'current_page' : self.page_payment_keys,
+                   'original': attendee,
+                   'pks': pks}
+        
+        context.update(extra_context or {})
+        
         return render_to_response('sadmin/events/attendee/show_pks.html',
-                                  {'menu': self.object_menu,
-                                   'attendee': attendee,
-                                   'pks': pks},
+                                  context,
                                   context_instance=SAdminContext(request))

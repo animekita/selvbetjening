@@ -2,13 +2,13 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import Group
 
 from selvbetjening.sadmin.base.sadmin import SModelAdmin
-from selvbetjening.sadmin.members import nav
 
 class GroupAdmin(SModelAdmin):
     class Meta:
         app_name = 'members'
         name = 'group'
-        display_name = _('Groups')
+        display_name_plural = _('Groups')
+        display_name = _('Group')
         model = Group
 
     search_fields = ('name',)

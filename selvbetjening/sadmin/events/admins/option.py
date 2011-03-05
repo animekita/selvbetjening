@@ -1,4 +1,5 @@
 from django.contrib.admin import TabularInline, StackedInline
+from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Selection
 
@@ -22,7 +23,10 @@ class OptionAdmin(SBoundModelAdmin):
         name = 'option'
         model = Option
         bound_model = OptionGroup
-        bind_key = 'bind_optiongroup_pk'
+        bind_key = 'bind_bind_pk'
+        
+        display_name = _(u'Option')
+        display_name_plural = _(u'Options')
 
     def attendees_count(option):
         return option.selections.count()
@@ -51,17 +55,9 @@ class OptionAdmin(SBoundModelAdmin):
         return super(OptionAdmin, self).change_view(request, object_id, extra_context)
 
     def changelist_view(self, request, extra_context=None, **kwargs):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.optiongroup_menu.render(event_pk=request.bound_object.event.pk,
-                                                            optiongroup_pk=request.bound_object.pk)
-
         return super(OptionAdmin, self).changelist_view(request, extra_context)
 
     def add_view(self, request, extra_context=None, **kwargs):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.optiongroup_menu.render(event_pk=request.bound_object.event.pk,
-                                                            optiongroup_pk=request.bound_object.pk)
-
         return super(OptionAdmin, self).add_view(request, extra_context=extra_context)
 
     def delete_view(self, request, object_id, extra_context=None, **kwargs):

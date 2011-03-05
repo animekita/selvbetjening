@@ -288,7 +288,7 @@ class Attend(models.Model):
         super(Attend, self).delete()
 
     def __unicode__(self):
-        return u'%s attending %s' % (self.user, self.event)
+        return u'%s' % self.user
 
 def delete_event_attendees_cache(sender, **kwargs):
     instance = kwargs['instance']
@@ -441,7 +441,7 @@ class OptionGroup(models.Model):
         return self.maximum_attendees > 0 and self.accepted_attendees.count() >= self.maximum_attendees
 
     def __unicode__(self):
-        return u'%s: %s' % (self.event.title, self.name)
+        return u'%s' % self.name
 
 pre_delete.connect(delete_caches_on_event_change, sender=OptionGroup)
 post_save.connect(delete_caches_on_event_change, sender=OptionGroup)

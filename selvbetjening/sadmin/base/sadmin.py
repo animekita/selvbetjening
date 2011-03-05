@@ -49,7 +49,7 @@ class SAdminSite(admin.AdminSite):
         self.name = 'sadmin'
 
         self.page_root = SPage('Dashboard',
-                                    'sadmin:dashboard')
+                               'sadmin:dashboard')
 
     def register(self, mount, modeladmin):
         self._registry[mount] = modeladmin()
@@ -126,6 +126,10 @@ class SModelAdmin(admin.ModelAdmin):
     delete_confirmation_template = None
     delete_selected_confirmation_template = None
     object_history_template = None
+    
+    _pages_spage = SPage
+    _pages_leafspage = LeafSPage
+    _pages_objectspage = ObjectSPage
 
     def __init__(self):
         super(SModelAdmin, self).__init__(self.Meta.model, site)
@@ -143,28 +147,32 @@ class SModelAdmin(admin.ModelAdmin):
         self.object_action_menu = Navigation()
 
         if 'list' in default_views:
-            self.page_root = SPage(getattr(self.Meta, 'display_name', self.Meta.name),
-                                         'sadmin:%s_%s_changelist' % self._url_info,
-                                         permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+            self.page_root = self._pages_spage(
+                getattr(self.Meta, 'display_name_plural', self.Meta.name),
+                'sadmin:%s_%s_changelist' % self._url_info,
+                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
             self.sadmin_menu.register(self.page_root)
 
         if 'add' in default_views:
-            self.page_add = SPage(_('Create'),
-                                  'sadmin:%s_%s_add' % self._url_info,
-                                  parent=self.page_root,
-                                  permission=lambda user: user.has_perm('%s.add_%s' % self._url_info))
+            self.page_add = self._pages_spage(
+                _('Create'),
+                'sadmin:%s_%s_add' % self._url_info,
+                parent=self.page_root,
+                permission=lambda user: user.has_perm('%s.add_%s' % self._url_info))
             self.sadmin_action_menu.register(self.page_add)
 
         if 'change' in default_views:
-            self.page_change = ObjectSPage('sadmin:%s_%s_change' % self._url_info,
-                                           parent=self.page_root,
-                                           permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+            self.page_change = self._pages_objectspage(
+                'sadmin:%s_%s_change' % self._url_info,
+                parent=self.page_root,
+                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
 
         if 'delete' in default_views:
-            self.page_delete = LeafSPage(_('Delete'),
-                                         'sadmin:%s_%s_delete' % self._url_info,
-                                         parent=self.page_change,
-                                         permission=lambda user: user.has_perm('%s.delete_%s' % self._url_info))
+            self.page_delete = self._pages_leafspage(
+                _('Delete'),
+                'sadmin:%s_%s_delete' % self._url_info,
+                parent=self.page_change,
+                permission=lambda user: user.has_perm('%s.delete_%s' % self._url_info))
             self.object_action_menu.register(self.page_delete)
 
     def _wrap_view(self, view):
@@ -256,6 +264,7 @@ class SModelAdmin(admin.ModelAdmin):
         extra_context['current_page'] = self.page_delete
         extra_context['menu'] = self.object_menu
         extra_context['action_menu'] = self.object_action_menu
+        extra_context['title'] = _(u'Delete %s') % self.Meta.display_name
 
         return super(SModelAdmin, self).delete_view(request, object_id, extra_context=extra_context)
 
@@ -275,8 +284,9 @@ class SModelAdmin(admin.ModelAdmin):
 
         extra_context = extra_context or {}
         extra_context['search_url'] = mark_safe(search_url)
-        extra_context['create_url'] = reverse('sadmin:%s_%s_add' % self._url_info)
-
+        
+        extra_context['title'] = _(u'Browse %s') % self.Meta.display_name_plural
+        
         extra_context['current_page'] = self.page_root
         extra_context['menu'] = self.sadmin_menu
         extra_context['action_menu'] = self.sadmin_action_menu
@@ -294,20 +304,9 @@ class SModelAdmin(admin.ModelAdmin):
 
 class SBoundModelAdmin(SModelAdmin):
 
-    def _setup_urls(self):
-        self.page_root = BoundSPage(getattr(self.Meta, 'display_name', self.Meta.name),
-                                    'sadmin:%s_%s_changelist' % self._url_info)
-
-        self.page_add = BoundSPage(_('Create'),
-                                   'sadmin:%s_%s_add' % self._url_info,
-                                   parent=self.page_root)
-
-        self.page_change = BoundObjectSPage('sadmin:%s_%s_change' % self._url_info,
-                                            parent=self.page_root)
-
-        self.page_delete = BoundLeafSPage(_('Delete'),
-                                          'sadmin:%s_%s_delete' % self._url_info,
-                                          parent=self.page_change)
+    _pages_spage = BoundSPage
+    _pages_leafspage = BoundLeafSPage
+    _pages_objectspage = BoundObjectSPage
 
     def _wrap_view(self, view):
         def wrapper(request, *args, **kwargs):
@@ -316,17 +315,16 @@ class SBoundModelAdmin(SModelAdmin):
 
             wrapped_request = ObjectWrapper(request)
             wrapped_request.bound_object = bound_object
-
+            
             extra_context = kwargs.get('extra_context', {})
             extra_context['bound_object'] = bound_object
             kwargs['extra_context'] = extra_context
 
             return view(wrapped_request, *args, **kwargs)
 
-        return super(SBoundModelAdmin, self)._wrap_view(update_wrapper(wrapper, view))
+        wrapped_view = update_wrapper(wrapper, view)
+        return super(SBoundModelAdmin, self)._wrap_view(wrapped_view)
 
     def _get_extra_url_args(self, request):
         return [request.bound_object.pk,]
-
-
 

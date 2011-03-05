@@ -9,10 +9,10 @@ from selvbetjening.core.invoice.models import Invoice, Payment
 from selvbetjening.core.mailcenter.sources import Source
 
 from selvbetjening.sadmin.base import admin_formize
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin
+from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin, main_menu
 from selvbetjening.sadmin.base.admin import TranslationInline
+from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
-from selvbetjening.sadmin.events import nav
 from selvbetjening.sadmin.events.admins.attendee import AttendeeAdmin
 from selvbetjening.sadmin.events.admins.optiongroup import OptionGroupAdmin
 from selvbetjening.sadmin.events.forms import InvoiceFormattingForm, RegisterPaymentForm
@@ -21,7 +21,8 @@ class EventAdmin(SModelAdmin):
     class Meta:
         app_name = 'events'
         name = 'event'
-        display_name = 'Events'
+        display_name = 'Event'
+        display_name_plural = 'Events'
         model = Event
 
     def attendees_count(event):
@@ -62,14 +63,42 @@ class EventAdmin(SModelAdmin):
 
         return qs.distinct().annotate(Count('attend'))
 
+    def _init_navigation(self):
+        super(EventAdmin, self)._init_navigation()
+
+        main_menu.register(self.page_root)
+        
+        self.page_register_payment = SPage(_(u'Register Payment'),
+                                           'sadmin:%s_%s_register_payment' % self._url_info,
+                                           parent=self.page_root)
+        
+        self.sadmin_menu.register(self.page_register_payment)
+        
+        self.page_statistics = LeafSPage(_(u'Statistics'),
+                                         'sadmin:%s_%s_statistics' % self._url_info,
+                                         parent=self.page_change)
+        
+        self.page_financials = LeafSPage(_(u'Financials'),
+                                         'sadmin:%s_%s_financials' % self._url_info,
+                                         parent=self.page_change)
+        
+        self.object_menu.register(self.page_change, title=self.Meta.display_name)
+        self.object_menu.register(self.page_statistics)
+        self.object_menu.register(self.page_financials)
+    
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
         attendee_admin = AttendeeAdmin()
         attendee_admin.page_root.parent = self.page_change
+        attendee_admin.sadmin_menu = self.object_menu
+        self.object_menu.register(attendee_admin.page_root)
 
         option_group_admin = OptionGroupAdmin()
-        option_group_admin.page_root.parent = self.page_root
+        option_group_admin.page_root.parent = self.page_change
+        option_group_admin.sadmin_menu = self.object_menu
+        
+        self.object_menu.register(option_group_admin.page_root)
 
         urlpatterns = super(EventAdmin, self).get_urls()
 
@@ -77,33 +106,17 @@ class EventAdmin(SModelAdmin):
             url(r'^register-payment/$',
                 self._wrap_view(self.register_payment_view),
                 name='%s_%s_register_payment' % self._url_info),
-            url(r'^(?P<event_pk>[0-9]+)/statistics/$',
+            url(r'^([0-9]+)/statistics/$',
                 self._wrap_view(self.statistics_view),
-                name='%s_%s_statistic' % self._url_info),
-            url(r'^(?P<event_pk>[0-9]+)/financial/$',
+                name='%s_%s_statistics' % self._url_info),
+            url(r'^([0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
-                name='%s_%s_financial' % self._url_info),
+                name='%s_%s_financials' % self._url_info),
             (r'^(?P<bind_pk>[0-9]+)/attendees/', include(attendee_admin.urls)),
             (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(option_group_admin.urls)),
         ) + urlpatterns
 
         return urlpatterns
-
-    def add_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.events_menu.render()
-        return super(EventAdmin, self).add_view(request, extra_context=extra_context)
-
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.event_menu.render(event_pk=object_id)
-        return super(EventAdmin, self).change_view(request, object_id, extra_context)
-
-    def changelist_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = nav.events_menu.render()
-        extra_context['title'] = _(u'Browse Events')
-        return super(EventAdmin, self).changelist_view(request, extra_context)
 
     def register_payment_view(self, request):
         found_attendee = None
@@ -133,14 +146,14 @@ class EventAdmin(SModelAdmin):
             form = RegisterPaymentForm()
 
         adminform = admin_formize(form)
-        menu = nav.events_menu.render()
 
         return render_to_response('sadmin/events/register_payment.html',
                                   {'adminform': adminform,
                                    'found_attendee': found_attendee,
                                    'payment': payment,
                                    'multiple_attendees': multiple_attendees,
-                                   'menu': menu},
+                                   'current_page': self.page_register_payment,
+                                   'menu': self.sadmin_menu},
                                   context_instance=SAdminContext(request))
 
     def statistics_view(self, request, event_pk):
@@ -210,7 +223,8 @@ class EventAdmin(SModelAdmin):
 
             optiongroups.append((optiongroup, options))
 
-        statistics.update({'menu': nav.event_menu.render(event_pk=event.pk),
+        statistics.update({'menu': self.object_menu,
+                           'current_page': self.page_statistics,
                            'original' : event,
                            'attendees_count' : attendees_count,
                            'new_count' : new_count,
@@ -236,12 +250,12 @@ class EventAdmin(SModelAdmin):
                                         [(_('Formatting'), {'fields': formattingform.base_fields.keys()})],
                                         {})
 
-        menu = nav.event_menu.render(event_pk=event_pk)
-
         return render_to_response('sadmin/events/event/financial.html',
                                   {'invoices' : invoice_queryset,
                                    'line_groups' : line_groups,
                                    'total' : total,
                                    'adminformattingform' : adminformattingform,
-                                   'menu' : menu},
+                                   'original' : event,
+                                   'menu' : self.object_menu,
+                                   'current_page' : self.page_financials },
                                   context_instance=SAdminContext(request))

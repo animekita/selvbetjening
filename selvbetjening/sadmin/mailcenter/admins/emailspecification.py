@@ -13,14 +13,15 @@ from selvbetjening.sadmin.base.nav import SPage, ObjectSPage, LeafSPage
 
 from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry
 from selvbetjening.sadmin.mailcenter.admins.outgoing import OutgoingAdmin
-from selvbetjening.sadmin.mailcenter import nav
 
 class EmailSpecificationAdmin(SModelAdmin):
     class Meta:
         app_name = 'mailcenter'
         name = 'emailspecification'
-        display_name = 'Emails'
         model = EmailSpecification
+        
+        display_name_plural = 'E-mails'
+        display_name = 'E-mail'
 
     list_display = ('subject',)
     search_fields = ('subject', 'body')
@@ -68,7 +69,7 @@ class EmailSpecificationAdmin(SModelAdmin):
                                          permission=lambda user: user.has_perm('mailcenter.change_emailspecification'))
 
 
-        self.object_menu.register(self.page_change)
+        self.object_menu.register(self.page_change, title=_('E-mail'))
         self.object_menu.register(self.page_filter)
         self.object_menu.register(self.page_send)
         self.object_menu.register(self.page_mass_email)
@@ -76,6 +77,12 @@ class EmailSpecificationAdmin(SModelAdmin):
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
+        outgoing_admin = OutgoingAdmin()
+        outgoing_admin.page_root.parent = self.page_root
+        outgoing_admin.sadmin_menu = self.sadmin_menu
+        self.sadmin_menu.register(outgoing_admin.page_root)
+
+        
         urlpatterns = super(EmailSpecificationAdmin, self).get_urls()
 
         urlpatterns = patterns('',
@@ -88,14 +95,19 @@ class EmailSpecificationAdmin(SModelAdmin):
             url(r'^([0-9]+)/mass-send/$',
                 self._wrap_view(self.masssend_view),
                 name='%s_%s_masssend' % self._url_info),
-            (r'^outgoing/', include(OutgoingAdmin().urls)),
+            (r'^outgoing/', include(outgoing_admin.urls)),
         ) + urlpatterns
 
         return urlpatterns
 
+    def change_view(self, request, object_id, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['title'] = _(u'Change E-mail')
+        return super(EmailSpecificationAdmin, self).change_view(request, object_id, extra_context=extra_context)
+    
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['title'] = _(u'Browse E-mail Specifications')
+        extra_context['title'] = _(u'Browse E-mails')
         return super(EmailSpecificationAdmin, self).changelist_view(request, extra_context)
 
     def filter_view(self, request, email_pk):
