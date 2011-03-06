@@ -2,6 +2,8 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from selvbetjening.core.mailcenter.models import EmailSpecification
 from selvbetjening.core.forms import form_collection_builder
@@ -148,16 +150,21 @@ class EmailSpecificationAdmin(SModelAdmin):
                                        'current_page': self.page_mass_email},
                                       context_instance=SAdminContext(request))
 
-        recipients = User.objects.filter(userprofile__send_me_email=True)
+        recipients = User.objects.filter(userprofile__send_me_email=True).\
+                   exclude(username__in=email.recipients.values_list('username', flat=True))
 
+        recipients = filter(email.passes_conditions, recipients)
+        
         if request.method == 'POST':
             form = SendNewsletterForm(request.POST)
 
             if  form.is_valid():
                 email.send_email(recipients)
+                email.recipients.add(*recipients)
                 messages.success(request, _(u'Newsletter sucessfully sent to %s receipients') % len(recipients))
 
-                form = SendNewsletterForm()
+                return HttpResponseRedirect(
+                    reverse('sadmin:%s_%s_masssend' % self._url_info, args=[email.pk]))
 
         else:
             form = SendNewsletterForm()
