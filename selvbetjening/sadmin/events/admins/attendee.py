@@ -95,6 +95,13 @@ class AttendeeAdmin(SBoundModelAdmin):
         
         urlpatterns = super(AttendeeAdmin, self).get_urls()
 
+        non_attendee_admin = NonAttendeeAdmin()
+        non_attendee_admin.page_root.parent = self.page_root
+        non_attendee_admin.sadmin_menu = self.sadmin_menu
+        non_attendee_admin.sadmin_action_menu = self.sadmin_action_menu
+        self.sadmin_action_menu.register(non_attendee_admin.page_root, 
+                                         title=_('Add Attendee'))
+        
         urlpatterns = patterns('',
             url(r'^([0-9]+)/selections/',
                 self._wrap_view(self.selections_view),
@@ -102,7 +109,7 @@ class AttendeeAdmin(SBoundModelAdmin):
             url(r'^([0-9]+)/pks/$',
                 self._wrap_view(self.payment_keys_view),
                 name='%s_%s_payment_keys' % self._url_info),
-            (r'^new/', include(NonAttendeeAdmin().urls)),
+            (r'^new/', include(non_attendee_admin.urls)),
             ) + urlpatterns
 
         return urlpatterns

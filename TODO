@@ -1,18 +1,9 @@
-Admin
-=====
-
-- Bedre navigation
-  - Ret delete siden, obj i stedet for original
-  - Tilføj events igen
-  - Få styr på edit og tilbagelinks
-  - Tilføj kita admins
-
 Til svscon
 ==========
 
 - Checkin af folk og billing
+  - Bedre check-in (modular)
   - Revidering af betaling og kvittering interface
-  - Oprydning i menu
   - Begrænset check-in side (check-in url)
 
 - CPR checkin

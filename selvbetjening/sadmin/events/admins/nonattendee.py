@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from selvbetjening.core.events.models import Event
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
-from selvbetjening.sadmin.events import nav
 
 def add_to_event_action(self, request, queryset):
     for user in queryset:
@@ -20,6 +19,9 @@ class NonAttendeeAdmin(SBoundModelAdmin):
         model = User
         bound_model = Event
         default_views = ('list',)
+        
+        display_name = _('Add Attendee')
+        display_name_plural = _('Add Attendees')
 
     list_display_links = ('',)
     list_per_page = 50
@@ -33,6 +35,5 @@ class NonAttendeeAdmin(SBoundModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = nav.event_menu.render(event_pk=request.bound_object.pk)
-        extra_context['title'] = _(u'Add attendee')
+        extra_context['title'] = _(u'Add Attendees')
         return super(NonAttendeeAdmin, self).changelist_view(request, extra_context)

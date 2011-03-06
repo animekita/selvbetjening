@@ -289,7 +289,8 @@ class SModelAdmin(admin.ModelAdmin):
         extra_context = extra_context or {}
         extra_context['search_url'] = mark_safe(search_url)
         
-        extra_context['title'] = _(u'Browse %s') % self.Meta.display_name_plural
+        extra_context['title'] = extra_context.get('title',
+                                _(u'Browse %s') % self.Meta.display_name_plural)
         
         extra_context['current_page'] = self.page_root
         extra_context['menu'] = self.sadmin_menu

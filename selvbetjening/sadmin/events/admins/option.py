@@ -36,7 +36,7 @@ class OptionAdmin(SBoundModelAdmin):
     list_display = ('name', attendees_count, 'freeze_time')
 
     fieldsets = (
-        (None, {'fields': ('group', 'name', 'description', 'price')}),
+        (None, {'fields': ('name', 'description', 'price')}),
         ('Conditions', {
             'fields': ('freeze_time', 'maximum_attendees', 'order'),
             'classes' : ('collapse',)
@@ -64,3 +64,11 @@ class OptionAdmin(SBoundModelAdmin):
 
     def delete_view(self, request, object_id, extra_context=None, **kwargs):
         return super(OptionAdmin, self).delete_view(request, object_id, extra_context)
+
+    def save_form(self, request, form, change):
+        instance = form.save(commit=False)
+        
+        if not change:
+            instance.group = request.bound_object
+            
+        return instance

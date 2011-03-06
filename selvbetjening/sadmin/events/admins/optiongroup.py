@@ -20,7 +20,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields' : ('event', 'name', 'description'),
+            'fields' : ('name', 'description'),
             }),
         (_('Conditions'), {
             'fields' : ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
@@ -57,3 +57,13 @@ class OptionGroupAdmin(SBoundModelAdmin):
         ) + urlpattern
 
         return urlpattern
+
+    def save_form(self, request, form, change):
+        instance = form.save(commit=False)
+        
+        if not change:
+            instance.event = request.bound_object
+            
+        return instance
+        
+        
