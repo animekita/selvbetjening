@@ -1,6 +1,11 @@
 5.1.0
  * Various usability improvements
  * Improved support for non-google chrome browsers
+ * Improved SAdmin navigation
+   * Breadcrumbs
+   * Indication of the current page
+   * Removed dropdown menus
+   * Moved create menu items reducing clutter
 
 Mailcenter:
  * Added option to send e-mails to other recipients than the target user

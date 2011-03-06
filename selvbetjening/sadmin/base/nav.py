@@ -2,80 +2,74 @@ from django.core.urlresolvers import reverse
 
 from navtree.navigation import Page
 
+"""
+Each SAdmin instance consists of a number of pages related to each other
+in a directed acylic graph with a single root page as origin. Multiple
+SAdmin instances can be bound together by connecting their graphs.
+
+The route between a given page and the origin of a graph represents
+the page's current navigation path. This path can be translated
+into an URL such as:
+
+/page1/object1/page2.1/object2/page2.2/
+
+In this case, page1 and object1 belong to one SAdmin instance, and 
+page2.1, object2 and page.2.2 belong to another SAdmin instance.
+
+In order to render this path, references to objects referenced by
+a given page and its predecessors in the navigation path must be
+known. This is solved by constructing a navigation stack, containing
+references to all objects used in the path.
+
+Each page knows their depth and offset. The sum of these denote how
+many objects from the stack belongs to the page. The depth is 
+controlled by the order of SAdmin instances bound to each other
+(each SAdmin instance constains a single object page) and the offset
+denotes if the page is placed before of after the object page.
+
+"""
+
 class SPage(Page):
-    def __init__(self, title, url, parent=None, context_args=None, permission=None):
+    offset = 0
+    
+    def __init__(self, title, url, parent=None, context_args=None, permission=None, depth=None):
         super(SPage, self).__init__(title, url, parent=parent, name=url, permission=permission)
 
+        self.depth = depth or 0
         self.context_args = context_args
         
-    def _get_current_object(self, context):
-        current_object = context.get('bound_object', None)
+    def get_navigation_stack(self, context):
+        navigation_stack = context['navigation_stack']
         
-        if current_object is None:
-            current_object = context.get('original', None)
+        current_object = context.get('original', None) or \
+                         context.get('object', None)
+        
+        if current_object is not None:
+            navigation_stack.append(current_object)
 
-        if current_object is None:
-            current_object = context['object']
+        return navigation_stack
+    
+    def to_pk(self, navigation_stack):
+        return [obj.pk for obj in navigation_stack]
         
-        return current_object
+    def get_url(self, context):
+        navigation_stack = self.to_pk(self.get_navigation_stack(context))
+        
+        return reverse(self._url, 
+                       args=navigation_stack[:self.depth+self.offset])
 
 class LeafSPage(SPage):
-    def get_url(self, context):
-        current_object = self._get_current_object(context)
-
-        return reverse(self._url, args=[current_object.pk])
+    offset = 1
 
 class ObjectSPage(SPage):
-    def __init__(self, url, parent=None, permission=None):
-        super(ObjectSPage, self).__init__('', url, parent=parent, permission=permission)
+    offset = 1
+    
+    def __init__(self, url, parent=None, permission=None, depth=None):
+        super(ObjectSPage, self).__init__('', url, parent=parent, permission=permission, depth=depth)
 
     def get_title(self, context):
-        current_object = self._get_current_object(context)
+        navigation_stack = self.get_navigation_stack(context)
+        
+        current_object = navigation_stack[self.depth]
         
         return unicode(current_object)
-
-    def get_url(self, context):
-        current_object = self._get_current_object(context)
-
-        return reverse(self._url, args=[current_object.pk])
-
-class BoundSPage(SPage):
-    def get_url(self, context):
-        bound_object = context.get('bound_object', None)
-        
-        if bound_object is None:
-            bound_object = self._get_current_object(context)
-        
-        return reverse(self._url, kwargs={'bind_pk': bound_object.pk})
-    
-    def _get_current_object(self, context):
-        current_object = context.get('original', None)
-            
-        if current_object is None:
-            current_object = context['object']
-            
-        return current_object
-    
-class BoundLeafSPage(BoundSPage):
-    def get_url(self, context):
-        bound_object = context.get('bound_object')
-        current_object = self._get_current_object(context)
-
-        return reverse(self._url, args=[bound_object.pk, current_object.pk])
-    
-class BoundObjectSPage(BoundSPage):
-    def __init__(self, url, parent=None, permission=None):
-        super(BoundObjectSPage, self).__init__('', url, 
-                                               parent=parent, 
-                                               permission=permission)
-    
-    def get_title(self, context):
-        current_object = self._get_current_object(context)
-        
-        return unicode(current_object)
-
-    def get_url(self, context):
-        bound_object = context.get('bound_object')
-        current_object = self._get_current_object(context)
-
-        return reverse(self._url, args=[bound_object.pk, current_object.pk])

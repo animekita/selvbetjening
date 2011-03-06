@@ -18,6 +18,8 @@ class SelectionInline(TabularInline):
     raw_id_fields = ('attendee',)
 
 class OptionAdmin(SBoundModelAdmin):
+    depth = 2
+    
     class Meta:
         app_name = 'events'
         name = 'option'
@@ -48,8 +50,8 @@ class OptionAdmin(SBoundModelAdmin):
         qs = super(OptionAdmin, self).queryset(request)
         return qs.filter(group=request.bound_object)
 
-    def _get_extra_url_args(self, request):
-        return [request.bound_object.event.pk, request.bound_object.pk,]
+    def _get_navigation_stack(self, request):
+        return [request.bound_object.event, request.bound_object,]
 
     def change_view(self, request, object_id, extra_context=None, **kwargs):
         return super(OptionAdmin, self).change_view(request, object_id, extra_context)

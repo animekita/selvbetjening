@@ -17,7 +17,7 @@ from selvbetjening.core import ObjectWrapper
 
 from navtree.navigation import Navigation
 
-from nav import LeafSPage, ObjectSPage, SPage, BoundLeafSPage, BoundObjectSPage, BoundSPage
+from nav import LeafSPage, ObjectSPage, SPage
 
 main_menu = Navigation() # default sadmin navigation
 
@@ -38,6 +38,7 @@ class SAdminContext(RequestContext):
         context = context or {}
         context['main_menu'] = main_menu
         context['request'] = request
+        context['navigation_stack'] = context.get('navigation_stack', [])
 
         return context
 
@@ -119,6 +120,8 @@ class SAdminSite(admin.AdminSite):
 site = SAdminSite()
 
 class SModelAdmin(admin.ModelAdmin):
+    depth = 0
+    
     add_form_template = 'sadmin/base/add_form.html'
     change_form_template = 'sadmin/base/change_form.html'
     change_list_template = 'sadmin/base/change_list.html'
@@ -126,10 +129,6 @@ class SModelAdmin(admin.ModelAdmin):
     delete_confirmation_template = None
     delete_selected_confirmation_template = None
     object_history_template = None
-    
-    _pages_spage = SPage
-    _pages_leafspage = LeafSPage
-    _pages_objectspage = ObjectSPage
 
     def __init__(self):
         super(SModelAdmin, self).__init__(self.Meta.model, site)
@@ -147,34 +146,41 @@ class SModelAdmin(admin.ModelAdmin):
         self.object_action_menu = Navigation()
 
         if 'list' in default_views:
-            self.page_root = self._pages_spage(
+            self.page_root = SPage(
                 getattr(self.Meta, 'display_name_plural', self.Meta.name),
                 'sadmin:%s_%s_changelist' % self._url_info,
-                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info),
+                depth=self.depth)
             self.sadmin_menu.register(self.page_root)
 
         if 'add' in default_views:
-            self.page_add = self._pages_spage(
+            self.page_add = SPage(
                 _('Create'),
                 'sadmin:%s_%s_add' % self._url_info,
                 parent=self.page_root,
-                permission=lambda user: user.has_perm('%s.add_%s' % self._url_info))
+                permission=lambda user: user.has_perm('%s.add_%s' % self._url_info),
+                depth=self.depth)
             self.sadmin_action_menu.register(self.page_add)
 
         if 'change' in default_views:
-            self.page_change = self._pages_objectspage(
+            self.page_change = ObjectSPage(
                 'sadmin:%s_%s_change' % self._url_info,
                 parent=self.page_root,
-                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
+                permission=lambda user: user.has_perm('%s.change_%s' % self._url_info),
+                depth=self.depth)
 
         if 'delete' in default_views:
-            self.page_delete = self._pages_leafspage(
+            self.page_delete = LeafSPage(
                 _('Delete'),
                 'sadmin:%s_%s_delete' % self._url_info,
                 parent=self.page_change,
-                permission=lambda user: user.has_perm('%s.delete_%s' % self._url_info))
+                permission=lambda user: user.has_perm('%s.delete_%s' % self._url_info),
+                depth=self.depth)
             self.object_action_menu.register(self.page_delete)
 
+    def _get_navigation_stack(self, request):
+        return []
+            
     def _wrap_view(self, view):
         def wrapper(request, *args, **kwargs):
             return self.admin_site.admin_view(view)(request, *args, **kwargs)
@@ -189,9 +195,6 @@ class SModelAdmin(admin.ModelAdmin):
             return view(request, *args, **kwargs)
 
         return self._wrap_view(update_wrapper(wrapper, view))
-
-    def _get_extra_url_args(self, request):
-        return []
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
@@ -269,8 +272,9 @@ class SModelAdmin(admin.ModelAdmin):
         return super(SModelAdmin, self).delete_view(request, object_id, extra_context=extra_context)
 
     def changelist_view(self, request, extra_context=None):
+        args = [obj.pk for obj in self._get_navigation_stack(request)]
         search_url = reverse('sadmin:%s_%s_changelist_ajax' % \
-                             self._url_info, args=self._get_extra_url_args(request))
+                             self._url_info, args=args)
 
         extra_params = request.GET.copy()
         extra_params.pop('q', None)
@@ -303,11 +307,8 @@ class SModelAdmin(admin.ModelAdmin):
         return response
 
 class SBoundModelAdmin(SModelAdmin):
-
-    _pages_spage = BoundSPage
-    _pages_leafspage = BoundLeafSPage
-    _pages_objectspage = BoundObjectSPage
-
+    depth = 1
+    
     def _wrap_view(self, view):
         def wrapper(request, *args, **kwargs):
             bind_pk = kwargs.pop(getattr(self.Meta, 'bind_key', 'bind_pk'))
@@ -317,14 +318,14 @@ class SBoundModelAdmin(SModelAdmin):
             wrapped_request.bound_object = bound_object
             
             extra_context = kwargs.get('extra_context', {})
-            extra_context['bound_object'] = bound_object
-            kwargs['extra_context'] = extra_context
-
+            extra_context['navigation_stack'] = self._get_navigation_stack(wrapped_request)
+            kwargs['extra_context'] = extra_context           
+            
             return view(wrapped_request, *args, **kwargs)
 
         wrapped_view = update_wrapper(wrapper, view)
         return super(SBoundModelAdmin, self)._wrap_view(wrapped_view)
 
-    def _get_extra_url_args(self, request):
-        return [request.bound_object.pk,]
+    def _get_navigation_stack(self, request):
+        return [request.bound_object,]
 

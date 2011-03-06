@@ -13,12 +13,11 @@ from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.forms import form_collection_builder
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext
-from selvbetjening.sadmin.base.nav import BoundLeafSPage
+from selvbetjening.sadmin.base.nav import LeafSPage
 from selvbetjening.sadmin.base import admin_formize
 
 from selvbetjening.sadmin.events import nav
 from selvbetjening.sadmin.events.admins.nonattendee import NonAttendeeAdmin
-from selvbetjening.sadmin.events.admins.invoice import InvoiceAdmin
 from selvbetjening.sadmin.events.forms import PaymentForm
 
 class AttendeeAdmin(SBoundModelAdmin):
@@ -77,13 +76,15 @@ class AttendeeAdmin(SBoundModelAdmin):
     def _init_navigation(self):
         super(AttendeeAdmin, self)._init_navigation()
         
-        self.page_payment_keys = BoundLeafSPage(_(u'Payment Keys'),
-                                                'sadmin:%s_%s_payment_keys' % self._url_info,
-                                                parent=self.page_change)
+        self.page_payment_keys = LeafSPage(_(u'Payment Keys'),
+                                           'sadmin:%s_%s_payment_keys' % self._url_info,
+                                           parent=self.page_change,
+                                           depth=1)
         
-        self.page_selections = BoundLeafSPage(_(u'Selections'),
-                                              'sadmin:%s_%s_selections' % self._url_info,
-                                              parent=self.page_change)
+        self.page_selections = LeafSPage(_(u'Selections'),
+                                         'sadmin:%s_%s_selections' % self._url_info,
+                                         parent=self.page_change,
+                                         depth=1)
         
         self.object_menu.register(self.page_change, title=self.Meta.display_name)
         self.object_menu.register(self.page_payment_keys)
