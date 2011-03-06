@@ -8,3 +8,4 @@ django-extensions==0.6
 
 -e git://github.com/sema/django-uni-form.git#egg=django-uni-form
 -e git://github.com/jtauber/django-mailer.git@cea79940d477246ebace#egg=django-mailer
+-e git://github.com/sema/navtree.git#egg=navtree
