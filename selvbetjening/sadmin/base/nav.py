@@ -32,11 +32,10 @@ denotes if the page is placed before of after the object page.
 class SPage(Page):
     offset = 0
     
-    def __init__(self, title, url, parent=None, context_args=None, permission=None, depth=None):
-        super(SPage, self).__init__(title, url, parent=parent, name=url, permission=permission)
+    def __init__(self, title, url, parent=None, permission=None, depth=None):
+        super(SPage, self).__init__(title, url, parent=parent, permission=permission)
 
         self.depth = depth or 0
-        self.context_args = context_args
         
     def get_navigation_stack(self, context):
         navigation_stack = context['navigation_stack']
