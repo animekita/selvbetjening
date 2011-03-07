@@ -12,8 +12,8 @@ from selvbetjening.core.events.forms import OptionForms
 from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.forms import form_collection_builder
 
-from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext
-from selvbetjening.sadmin.base.nav import LeafSPage
+from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext, site
+from selvbetjening.sadmin.base.nav import LeafSPage, RemoteSPage
 from selvbetjening.sadmin.base import admin_formize
 
 from selvbetjening.sadmin.events import nav
@@ -34,7 +34,7 @@ class AttendeeAdmin(SBoundModelAdmin):
         user = attendee.user
         return u'%s %s' % (user.first_name, user.last_name)
     name.short_description = _('Name')
-        
+
     def in_balance(attendee):
         if attendee.invoice.in_balance():
             return '<span class="attr success">%s</span>' % _('Betalt')
@@ -75,33 +75,38 @@ class AttendeeAdmin(SBoundModelAdmin):
 
     def _init_navigation(self):
         super(AttendeeAdmin, self)._init_navigation()
-        
+
         self.page_payment_keys = LeafSPage(_(u'Payment Keys'),
                                            'sadmin:%s_%s_payment_keys' % self._url_info,
                                            parent=self.page_change,
-                                           depth=1)
-        
+                                           depth=self.depth)
+
         self.page_selections = LeafSPage(_(u'Selections'),
                                          'sadmin:%s_%s_selections' % self._url_info,
                                          parent=self.page_change,
-                                         depth=1)
-        
+                                         depth=self.depth)
+
         self.object_menu.register(self.page_change, title=self.Meta.display_name)
         self.object_menu.register(self.page_payment_keys)
         self.object_menu.register(self.page_selections)
-    
+
+        profile_url = lambda context, stack: reverse('sadmin:auth_user_change', args=[stack[-1].user.pk])
+        self.page_profile = RemoteSPage(_(u'User Information'), profile_url)
+
+        self.related_objects_menu.register(self.page_profile)
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
-        
+
         urlpatterns = super(AttendeeAdmin, self).get_urls()
 
         non_attendee_admin = NonAttendeeAdmin()
         non_attendee_admin.page_root.parent = self.page_root
         non_attendee_admin.sadmin_menu = self.sadmin_menu
         non_attendee_admin.sadmin_action_menu = self.sadmin_action_menu
-        self.sadmin_action_menu.register(non_attendee_admin.page_root, 
+        self.sadmin_action_menu.register(non_attendee_admin.page_root,
                                          title=_('Add Attendee'))
-        
+
         urlpatterns = patterns('',
             url(r'^([0-9]+)/selections/',
                 self._wrap_view(self.selections_view),
@@ -184,6 +189,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         context = {'menu': self.object_menu,
                    'action_menu': self.object_action_menu,
+                   'related_objects_menu': self.related_objects_menu,
                    'current_page': self.page_change,
                    'attendee': attendee,
                    'original': attendee,
@@ -213,13 +219,13 @@ class AttendeeAdmin(SBoundModelAdmin):
             option_forms = OptionForms(attendee.event, attendee=attendee)
 
         checkin_parts = change_selection_handler.view()
-        
+
         context = {'menu': self.object_menu,
                    'current_page': self.page_selections,
                    'original': attendee,
                    'option_forms' : option_forms,
                    'checkin_parts' : checkin_parts}
-        
+
         context.update(extra_context or {})
 
         return render_to_response('sadmin/events/attendee/selections.html',
@@ -230,14 +236,14 @@ class AttendeeAdmin(SBoundModelAdmin):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
 
         pks = request_attendee_pks_signal.send(self, attendee=attendee)
-        
+
         context = {'menu': self.object_menu,
                    'current_page' : self.page_payment_keys,
                    'original': attendee,
                    'pks': pks}
-        
+
         context.update(extra_context or {})
-        
+
         return render_to_response('sadmin/events/attendee/show_pks.html',
                                   context,
                                   context_instance=SAdminContext(request))

@@ -36,8 +36,8 @@ h1, h2, h3, h4, h5 { font-family: "DejaVuSansCondensed"; }
 div.center { width: 1024px; margin: 0 auto; }
 
 /** Header **/
-header.top-header { background-color: black; color: #ffffff; overflow: auto;
-                    padding: 6px 0 0 0; }
+header.top-header { background-color: #000000; color: #ffffff; overflow: auto;
+                    padding: 6px 0 0 0; min-width: 1024px; }
 header.top-header h1 { background: url("../images/slogo.png") no-repeat; background-size: 30px;
                        height: 30px; text-indent: 35px; font-size: 1.4em; padding-top: 6px; float: left;
 					   font-family: "DejaVuSansCondensedBold"; }
@@ -76,15 +76,19 @@ nav.authentication-nav ul li:hover { background-color: #a40000; }
 nav.authentication-nav ul li a:hover, nav ul li a:active, nav ul li a:visited { color: #ffffff; }
 
 /* Primary, Secondary and Action nav */
-nav.primary-nav { margin-bottom: 1em; background-color: #a40000; }
+nav.primary-nav { margin-bottom: 1em; background-color: #a40000; min-width: 1024px; }
 nav.secondary-nav { margin-bottom: 1em; background-color: #000000; }
-nav.action-nav { background-color: #a40000; }
+nav.action-nav ul li { background-color: #000000; margin-left: 1em; }
+nav.action-nav ul li.current { background-color: #a40000; }
+nav.action-nav ul li.related { background-color: #a40000; }
 
 nav.primary-nav ul li, nav.secondary-nav ul li, nav.action-nav ul li {
   float: left; padding: 0.5em 1.5em 0.5em;
   color: #ffffff; text-decoration: none;
   font-weight: bold; font-style: normal;
 }
+
+nav.primary-nav ul, nav.secondary-nav ul { margin: 0; }
 
 nav.primary-nav ul li a, nav.secondary-nav ul li a, nav.action-nav ul li a { color: #ffffff; }
 

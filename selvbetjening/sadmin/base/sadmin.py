@@ -59,6 +59,9 @@ class SAdminSite(admin.AdminSite):
     def unregister(self, *args, **kwargs):
         raise NotImplementedError
 
+    def get(self, mount):
+        return self._registry[mount]
+
     def get_urls(self):
         """
         Modified version of get_urls from admin, removed
@@ -121,7 +124,7 @@ site = SAdminSite()
 
 class SModelAdmin(admin.ModelAdmin):
     depth = 0
-    
+
     add_form_template = 'sadmin/base/add_form.html'
     change_form_template = 'sadmin/base/change_form.html'
     change_list_template = 'sadmin/base/change_list.html'
@@ -144,6 +147,7 @@ class SModelAdmin(admin.ModelAdmin):
         self.sadmin_action_menu = Navigation()
         self.object_menu = Navigation()
         self.object_action_menu = Navigation()
+        self.related_objects_menu = Navigation()
 
         if 'list' in default_views:
             self.page_root = SPage(
@@ -180,7 +184,7 @@ class SModelAdmin(admin.ModelAdmin):
 
     def _get_navigation_stack(self, request):
         return []
-            
+
     def _wrap_view(self, view):
         def wrapper(request, *args, **kwargs):
             return self.admin_site.admin_view(view)(request, *args, **kwargs)
@@ -251,6 +255,7 @@ class SModelAdmin(admin.ModelAdmin):
         extra_context['menu'] = self.object_menu
         extra_context['action_menu'] = self.object_action_menu
         extra_context['current_page'] = self.page_change
+        extra_context['related_objects_menu'] = self.related_objects_menu
 
         return super(SModelAdmin, self).change_view(request, object_id, extra_context)
 
@@ -288,10 +293,10 @@ class SModelAdmin(admin.ModelAdmin):
 
         extra_context = extra_context or {}
         extra_context['search_url'] = mark_safe(search_url)
-        
+
         extra_context['title'] = extra_context.get('title',
                                 _(u'Browse %s') % self.Meta.display_name_plural)
-        
+
         extra_context['current_page'] = self.page_root
         extra_context['menu'] = self.sadmin_menu
         extra_context['action_menu'] = self.sadmin_action_menu
@@ -309,7 +314,7 @@ class SModelAdmin(admin.ModelAdmin):
 
 class SBoundModelAdmin(SModelAdmin):
     depth = 1
-    
+
     def _wrap_view(self, view):
         def wrapper(request, *args, **kwargs):
             bind_pk = kwargs.pop(getattr(self.Meta, 'bind_key', 'bind_pk'))
@@ -317,11 +322,11 @@ class SBoundModelAdmin(SModelAdmin):
 
             wrapped_request = ObjectWrapper(request)
             wrapped_request.bound_object = bound_object
-            
+
             extra_context = kwargs.get('extra_context', {})
             extra_context['navigation_stack'] = self._get_navigation_stack(wrapped_request)
-            kwargs['extra_context'] = extra_context           
-            
+            kwargs['extra_context'] = extra_context
+
             return view(wrapped_request, *args, **kwargs)
 
         wrapped_view = update_wrapper(wrapper, view)

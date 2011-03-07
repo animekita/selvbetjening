@@ -47,13 +47,26 @@
       </nav>
     {% endif %}
 
-    {% if action_menu %}
-    {% get_navigation_pages action_menu current_page as pages %}
+    {% if action_menu or related_objects_menu %}
     <nav class="action-nav">
       <ul>
+
+    {% if related_objects_menu %}
+      {% get_navigation_pages related_objects_menu current_page as pages %}
+
+      {% for page in pages %}
+        <li class="related{% if page.in_path %} current{% endif %}"><a href="{{ page.url }}">{{ page.title|lower }}</a></li>
+      {% endfor %}
+    {% endif %}
+
+    {% if action_menu %}
+      {% get_navigation_pages action_menu current_page as pages %}
+
       {% for page in pages %}
         <li{% if page.in_path %} class="current"{% endif %}><a href="{{ page.url }}">{{ page.title|lower }}</a></li>
       {% endfor %}
+    {% endif %}
+
       </ul>
     </nav>
     {% endif %}

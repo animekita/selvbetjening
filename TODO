@@ -2,14 +2,17 @@ Til svscon
 ==========
 
 - Checkin af folk og billing
-  - Bedre check-in (modular)
-  - Revidering af betaling og kvittering interface
-  - Begrænset check-in side (check-in url)
+  - Bedre check-in (modular) - skal hurtigt kunne lave manuel check-in af folk, inklusiv oprettelse af nye tilmeldinger
+  - Revidering af betaling og kvittering interface - overblik over betalinger samt betalte, nuværende har Usability problemer
+  - Begrænset check-in side (check-in url) - check-in side uden alt for meget andet
 
 - CPR checkin
 
 Stuff for Kita
 ==============
+
+ - Overblik over medlemskab
+ - Bedre medlemskab algol
 
 Achivements
   - Opdel event achivements i flere mapper
