@@ -54,7 +54,9 @@ class SAdminSite(admin.AdminSite):
 
     def register(self, mount, modeladmin):
         self._registry[mount] = modeladmin()
-        self._registry[mount].page_root.parent = self.page_root
+
+        if self._registry[mount].page_root.parent is None:
+            self._registry[mount].page_root.parent = self.page_root
 
     def unregister(self, *args, **kwargs):
         raise NotImplementedError
@@ -156,6 +158,8 @@ class SModelAdmin(admin.ModelAdmin):
                 permission=lambda user: user.has_perm('%s.change_%s' % self._url_info),
                 depth=self.depth)
             self.sadmin_menu.register(self.page_root)
+        else:
+            self.page_root = None
 
         if 'add' in default_views:
             self.page_add = SPage(

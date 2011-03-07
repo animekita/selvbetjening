@@ -18,6 +18,7 @@ from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext, main_me
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
 from selvbetjening.sadmin.members.admins.group import GroupAdmin
+from selvbetjening.sadmin.members.admins.access import AccessAdmin
 
 from navtree.navigation import Navigation
 
@@ -59,9 +60,7 @@ class UserAdmin(SModelAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (_('Groups'), {'fields': ('groups',)}),
+        (_('Important dates'), {'fields': (('last_login', 'date_joined'),)}),
     )
 
     add_fieldsets = (
@@ -92,7 +91,7 @@ class UserAdmin(SModelAdmin):
         self.sadmin_menu.register(self.page_statistics)
         self.sadmin_menu.register(self.page_map)
 
-        self.object_menu.register(self.page_change)
+        self.object_menu.register(self.page_change, title=_(u'User'))
         self.object_menu.register(self.page_change_password)
 
     def get_urls(self):
@@ -105,6 +104,11 @@ class UserAdmin(SModelAdmin):
         group_admin.sadmin_menu = self.sadmin_menu
         self.sadmin_menu.register(group_admin.page_root)
 
+        access_admin = AccessAdmin()
+        access_admin.page_change.parent = self.page_change
+        access_admin.object_menu = self.object_menu
+        self.object_menu.register(access_admin.page_change, title=_(u'Access'))
+
         urlpattern = patterns('',
             url(r'^statistics/',
                 self._wrap_view(self.user_statistics),
@@ -115,6 +119,7 @@ class UserAdmin(SModelAdmin):
             url(r'^(\d+)/password/$',
                 self._wrap_view(self.user_change_password),
                 name='%s_%s_change_password' % self._url_info),
+            (r'^', include(access_admin.urls)),
             (r'^groups/', include(group_admin.urls)),
             ) + urlpattern
 
