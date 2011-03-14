@@ -134,6 +134,12 @@ table td a { font-size: 0.8em; }
 
 table td span.attr { font-size: 0.8em; }
 
+table.error {
+  background-color: #FFFFFF;
+  border: solid 4px #FF9595;
+  width: 1024px;
+}
+
 /* Forms */
 
 form input[type="text"], form input[type="password"], form textarea, form select {
@@ -240,7 +246,7 @@ div.filtered #changelist-search #searchbox-container input[type="text"] {
 
 /** Messages **/
 ul.messages { margin: 0 0 1em 0; list-style: none; width: 1024px; }
-ul li.success, ul li.warning, ul li.info {
+ul li.success, ul li.warning, ul li.info, ul li.error {
   padding: 1em;
   font-size: 1.2em;
 
@@ -252,4 +258,40 @@ ul li.warning {
   background-color: #fce94f;
   background: -webkit-gradient(linear, left top, left bottom, from(#fce94f), to(#edd400));
   background: -moz-linear-gradient(top, #fce94f, #edd400);
+}
+ul li.error {
+  background-color: #FF9595;
+  background: -webkit-gradient(linear, left top, left bottom, from(#FF9595), to(#FF7C7C));
+  background: -moz-linear-gradient(top, #FF9595, #FF7C7C);
+}
+
+/** Modal **/
+body.modal {
+  padding: 2em;
+}
+
+body.modal h3 {
+  margin-top: 1em;
+}
+
+body.modal input.default {
+  float: left;
+}
+
+body.modal div.action {
+  display: block;
+  height: 3em;
+}
+
+body.modal div.modal-message {
+  width: 400px;
+  margin: 200px auto;
+  background-color: #c5fa92;
+  border: solid 4px #FFFFFF;
+  padding: 3em;
+  text-align: center;
+}
+
+body.modal div.modal-message {
+  font-size: 2em;
 }

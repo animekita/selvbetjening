@@ -60,9 +60,8 @@ class AttendeeAdmin(SBoundModelAdmin):
         if attendee.state == AttendState.attended:
             return ''
         else:
-            return '<b><a href="%s">check-in</a></b>' % reverse('sadmin:events_attendee_change',
-                                                                args=[attendee.event.pk,
-                                                                      attendee.pk])
+            checkin_url = reverse('sadmin:events_attendee_checkin', args=[attendee.event.pk, attendee.pk])
+            return '<b><a class="iframe" href="%s?_popup=1&_modal=1">check-in</a></b>' % checkin_url
 
     attendee_actions.allow_tags = True
     attendee_actions.short_description = ''
@@ -114,6 +113,9 @@ class AttendeeAdmin(SBoundModelAdmin):
             url(r'^([0-9]+)/pks/$',
                 self._wrap_view(self.payment_keys_view),
                 name='%s_%s_payment_keys' % self._url_info),
+            url(r'^([0-9]+)/checkin/$',
+                self._wrap_view(self.checkin_view),
+                name='%s_%s_checkin' % self._url_info),
             (r'^new/', include(non_attendee_admin.urls)),
             ) + urlpatterns
 
@@ -193,7 +195,8 @@ class AttendeeAdmin(SBoundModelAdmin):
                    'current_page': self.page_change,
                    'attendee': attendee,
                    'original': attendee,
-                   'form': admin_formize(form)}
+                   'form': admin_formize(form),
+                   'is_popup': request.REQUEST.has_key('_popup')}
 
         context.update(extra_context or {})
 
@@ -245,5 +248,27 @@ class AttendeeAdmin(SBoundModelAdmin):
         context.update(extra_context or {})
 
         return render_to_response('sadmin/events/attendee/show_pks.html',
+                                  context,
+                                  context_instance=SAdminContext(request))
+
+    def checkin_view(self, request, attendee_pk, extra_context=None):
+        attendee = get_object_or_404(Attend, pk=attendee_pk)
+
+        if request.method == 'POST':
+            if request.POST.has_key('do_checkin'):
+                attendee.state = AttendState.attended
+                attendee.save()
+
+            elif request.POST.has_key('do_payment'):
+                Payment.objects.create(invoice=attendee.invoice,
+                                       amount=attendee.invoice.unpaid,
+                                       signee=request.user)
+
+        context = {'original': attendee,
+                   'is_popup': request.REQUEST.has_key('_popup'),
+                   'is_modal': request.REQUEST.has_key('_modal')}
+        context.update(extra_context)
+
+        return render_to_response('sadmin/events/attendee/checkin.html',
                                   context,
                                   context_instance=SAdminContext(request))

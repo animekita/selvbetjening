@@ -28,7 +28,7 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
     });
 };
 
-$(function(){
+$(document).ready(function() {
     // apply the "success, failure and warning" class tocells containing a span
     // with the equivalent classes. Ugly hack to allow admin generated values to
     // change the display of the parent container
@@ -36,4 +36,14 @@ $(function(){
     $("td span.success").parent().addClass("success");
     $("td span.warning").parent().addClass("warning");
     $("td span.error").parent().addClass("error");
+
+    $(".iframe").fancybox({
+				'width'				: '100%',
+				'height'			: '100%',
+				'scrolling'			: 'no',
+				'autoScale'			: true,
+				'transitionIn'		: 'elastic',
+				'transitionOut'		: 'elastic',
+				'type'				: 'iframe'
+			});
 });

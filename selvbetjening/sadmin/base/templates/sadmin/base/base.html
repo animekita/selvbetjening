@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/uni-form.css?v=1">
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/style.css?v=1">
   <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/django-admin-limited.css?v=1">
+  <link rel="stylesheet" href="{{MEDIA_URL}}sadmin/css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+
   {% load adminmedia %}
 
   {% block extrastyle %}{% endblock %}
@@ -32,14 +34,17 @@
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="{{MEDIA_URL}}sadmin/css/handheld.css?v=1">  -->
 
-  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="{{MEDIA_URL}}sadmin/js/modernizr-1.5.min.js"></script>
 
   {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" />{% endif %}
 
   <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
-  <script src="{{MEDIA_URL}}sadmin/js/jquery-1.4.2.min.js"></script>
+  <script src="{{MEDIA_URL}}sadmin/js/jquery-1.4.3.min.js"></script>
+  <script src="{{MEDIA_URL}}sadmin/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+  <script src="{{MEDIA_URL}}sadmin/js/fancybox/jquery.easing-1.3.pack.js"></script>
   <script src="{{MEDIA_URL}}sadmin/js/script.js"></script>
+
+  {% block scripts %}{% endblock %}
 
   {% block extrahead %}{% endblock %}
 
@@ -47,7 +52,7 @@
 
 </head>
 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+<body class="{% if is_popup %}popup {% endif %}{% if is_modal %}modal {% endif %}{% block bodyclass %}{% endblock %}">
 {% block body %}{% endblock %}
 </body>
 </html>
