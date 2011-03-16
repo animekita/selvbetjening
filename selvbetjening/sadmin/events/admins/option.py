@@ -5,7 +5,6 @@ from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Sel
 
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
-from selvbetjening.sadmin.events import nav
 
 class SubOptionInline(StackedInline):
     model = SubOption
@@ -19,14 +18,14 @@ class SelectionInline(TabularInline):
 
 class OptionAdmin(SBoundModelAdmin):
     depth = 2
-    
+
     class Meta:
         app_name = 'events'
         name = 'option'
         model = Option
         bound_model = OptionGroup
         bind_key = 'bind_bind_pk'
-        
+
         display_name = _(u'Option')
         display_name_plural = _(u'Options')
 
@@ -67,8 +66,8 @@ class OptionAdmin(SBoundModelAdmin):
 
     def save_form(self, request, form, change):
         instance = form.save(commit=False)
-        
+
         if not change:
             instance.group = request.bound_object
-            
+
         return instance

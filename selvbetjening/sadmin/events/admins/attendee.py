@@ -16,7 +16,6 @@ from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext, si
 from selvbetjening.sadmin.base.nav import LeafSPage, RemoteSPage
 from selvbetjening.sadmin.base import admin_formize
 
-from selvbetjening.sadmin.events import nav
 from selvbetjening.sadmin.events.admins.nonattendee import NonAttendeeAdmin
 from selvbetjening.sadmin.events.forms import PaymentForm
 
