@@ -16,6 +16,7 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
                 jQuery.get(searchUrl + query, function(data) {
                     if (data.length) {
                         resultsArea.html(data);
+			prepare_changelist();
                     }
                     else {
                         resultsArea.html('');
@@ -28,7 +29,7 @@ function init_livesearch(searchbox, resultsArea, searchUrl) {
     });
 };
 
-$(document).ready(function() {
+function prepare_changelist() {
     // apply the "success, failure and warning" class tocells containing a span
     // with the equivalent classes. Ugly hack to allow admin generated values to
     // change the display of the parent container
@@ -42,8 +43,10 @@ $(document).ready(function() {
 				'height'			: '100%',
 				'scrolling'			: 'no',
 				'autoScale'			: true,
-				'transitionIn'		: 'elastic',
-				'transitionOut'		: 'elastic',
+				'transitionIn'			: 'elastic',
+				'transitionOut'			: 'elastic',
 				'type'				: 'iframe'
 			});
-});
+}
+
+$(document).ready(prepare_changelist);

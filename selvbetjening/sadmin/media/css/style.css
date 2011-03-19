@@ -246,6 +246,7 @@ div.filtered #changelist-search #searchbox-container input[type="text"] {
 
 /** Messages **/
 ul.messages { margin: 0 0 1em 0; list-style: none; width: 1024px; }
+ul.messages-narrow { margin: 0 0 1em 0; list-style: none; width: 512; }
 ul li.success, ul li.warning, ul li.info, ul li.error {
   padding: 1em;
   font-size: 1.2em;
@@ -270,6 +271,11 @@ body.modal {
   padding: 2em;
 }
 
+body.modal div.action {
+  width: 512px;
+  float: left;
+}
+
 body.modal h3 {
   margin-top: 1em;
 }
@@ -278,20 +284,11 @@ body.modal input.default {
   float: left;
 }
 
-body.modal div.action {
-  display: block;
-  height: 3em;
-}
-
 body.modal div.modal-message {
-  width: 400px;
-  margin: 200px auto;
+  margin: 400px auto;
   background-color: #c5fa92;
   border: solid 4px #FFFFFF;
   padding: 3em;
   text-align: center;
-}
-
-body.modal div.modal-message {
   font-size: 2em;
 }

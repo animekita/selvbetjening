@@ -56,42 +56,43 @@
 
 </table>
 
+<div class="action">
+
 <h3>Betaling</h3>
 
-
 {% if original.invoice.in_balance %}
-    <ul class="messages"><li class="success">Denne invoice er betalt</li></ul>
+    <ul class="messages-narrow"><li class="success">Denne invoice er betalt</li></ul>
 {% endif %}
 
 {% if not original.invoice.is_paid %}
-    <ul class="messages"><li class="error">Der skal indbetales: <b>{{original.invoice.unpaid}},-</b></li></ul>
+    <ul class="messages-narrow"><li class="error">Der skal indbetales: <b>{{original.invoice.unpaid}},-</b></li></ul>
 {% endif %}
 
 {% if original.invoice.is_overpaid %}
-    <ul class="messages"><li class="warning">Der er betalt for meget, udbetal derfor: {{original.invoice.overpaid}},-</li></ul>
+    <ul class="messages-narrow"><li class="warning">Der er betalt for meget, udbetal derfor: {{original.invoice.overpaid}},-</li></ul>
 {% endif %}
 
-<div class="action">
 {% if not original.invoice.is_paid %}
   <input class="default" type="submit" value="Registrer betaling på {{original.invoice.unpaid}},-" name="do_payment" />
 {% endif %}
 </div>
 
+<div class="action">
+
 <h3>Check-in</h3>
 
 {% if original.state == "attended" %}
-    <ul class="messages"><li class="success">Deltager er registreret.</li></ul>
+    <ul class="messages-narrow"><li class="success">Deltager er registreret.</li></ul>
 {% endif %}
 
 {% if original.state == "accepted" %}
-    <ul class="messages"><li class="warning">Venter på registrering.</li></ul>
+    <ul class="messages-narrow"><li class="warning">Venter på registrering.</li></ul>
 {% endif %}
 
 {% if original.state == "waiting" %}
-    <ul class="messages"><li class="error">Venter på <b>godkendelse</b> og registrering.</li></ul>
+    <ul class="messages-narrow"><li class="error">Venter på <b>godkendelse</b> og registrering.</li></ul>
 {% endif %}
 
-<div class="action">
 {% if not original.state == "attended" %}
   <input class="default" type="submit" value="Registrer deltagelse" name="do_checkin" />
 {% endif %}
