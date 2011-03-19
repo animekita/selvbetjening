@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<form method="POST" action="" class="uniForm">
+<form method="POST" action="" class="uniForm">{% csrf_token %}
 
 {% for option_form in option_forms %}
     {% with option_form.helper as helper %}
