@@ -285,7 +285,7 @@ body.modal input.default {
 }
 
 body.modal div.modal-message {
-  margin: 400px auto;
+  margin: 100px auto;
   background-color: #c5fa92;
   border: solid 4px #FFFFFF;
   padding: 3em;
