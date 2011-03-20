@@ -22,11 +22,11 @@
     <div style="background-color: #7CA0C7; border-style: solid; border-color: #000000; border-width: 1px; padding: 1em;">
     <h3>Betaling på {{payment.amount}},- er blevet gennemført for {{found_attendee.user.get_full_name}}.</h3>
     </div>
-    
+
     {% if not found_attendee.invoice.in_balance %}
         <br/><br/>
         <div style="background-color: #fce94f; border-style: solid; border-color: #000000; border-width: 1px; padding: 1em;">
-        <h3>Denne person har enten ikke betalt det fulde beløb eller har betalt for meget. Gennemgå venligst <a href="{% url sadmin:events_invoice_change found_attendee.event.pk found_attendee.pk %}">denne persons kvittering</a> og <a href="mailto:{{found_attendee.user.email}}">kontakt personen</a>.</h3>
+        <h3>Denne person har enten ikke betalt det fulde beløb eller har betalt for meget. Gennemgå venligst <a href="{% url sadmin:events_attendee_change found_attendee.event.pk found_attendee.pk %}">denne persons kvittering</a> og <a href="mailto:{{found_attendee.user.email}}">kontakt personen</a>.</h3>
         </div>
     {% endif %}
 {% endif %}
