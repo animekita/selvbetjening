@@ -21,27 +21,6 @@ from nav import LeafSPage, ObjectSPage, SPage
 
 main_menu = Navigation() # default sadmin navigation
 
-class SAdminContext(RequestContext):
-    """
-    Global context manipulation for all SAdmin views.
-
-    All SAdmin views should use this context, or include the
-    dictionary created by the static process method.
-    """
-
-    def __init__(self, request, dict=None, *args, **kwargs):
-        dict = SAdminContext.process(request, dict)
-        super(SAdminContext, self).__init__(request, dict, *args, **kwargs)
-
-    @staticmethod
-    def process(request, context=None):
-        context = context or {}
-        context['main_menu'] = main_menu
-        context['request'] = request
-        context['navigation_stack'] = context.get('navigation_stack', [])
-
-        return context
-
 class SAdminSite(admin.AdminSite):
     def __init__(self):
         super(SAdminSite, self).__init__()
@@ -100,7 +79,7 @@ class SAdminSite(admin.AdminSite):
     @never_cache
     def index(self, request, extra_context=None):
         return render_to_response('sadmin/base/dashboard.html',
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     @never_cache
     def logout(self, request):
@@ -194,16 +173,6 @@ class SModelAdmin(admin.ModelAdmin):
             return self.admin_site.admin_view(view)(request, *args, **kwargs)
         return update_wrapper(wrapper, view)
 
-    def _wrap_oldadmin_view(self, view):
-        def wrapper(request, *args, **kwargs):
-            extra_context = kwargs.pop('extra_context', {})
-            extra_context = SAdminContext.process(request, context=extra_context)
-            kwargs['extra_context'] = extra_context
-
-            return view(request, *args, **kwargs)
-
-        return self._wrap_view(update_wrapper(wrapper, view))
-
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
@@ -215,31 +184,31 @@ class SModelAdmin(admin.ModelAdmin):
         if 'list' in default_views:
             urlpatterns += patterns('',
                 url(r'^$',
-                    self._wrap_oldadmin_view(self.changelist_view),
+                    self._wrap_view(self.changelist_view),
                     name='%s_%s_changelist' % self._url_info),
                 url(r'^ajax/search/$',
-                    self._wrap_oldadmin_view(self.changelist_ajax_view),
+                    self._wrap_view(self.changelist_ajax_view),
                     name='%s_%s_changelist_ajax' % self._url_info)
                 )
 
         if 'add' in default_views:
             urlpatterns += patterns('',
                 url(r'^add/$',
-                    self._wrap_oldadmin_view(self.add_view),
+                    self._wrap_view(self.add_view),
                     name='%s_%s_add' % self._url_info)
                 )
 
         if 'delete' in default_views:
             urlpatterns += patterns('',
                 url(r'^(.+)/delete/$',
-                    self._wrap_oldadmin_view(self.delete_view),
+                    self._wrap_view(self.delete_view),
                     name='%s_%s_delete' % self._url_info)
                 )
 
         if 'change' in default_views:
             urlpatterns += patterns('',
                 url(r'^(.+)/$',
-                    self._wrap_oldadmin_view(self.change_view),
+                    self._wrap_view(self.change_view),
                     name='%s_%s_change' % self._url_info)
                 )
 

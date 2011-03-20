@@ -20,7 +20,7 @@
     </div></header>
 
     <nav class="primary-nav"><div class="center">
-        {% get_navigation_pages main_menu current_page as pages %}
+        {% get_navigation_pages sadmin_main_menu current_page as pages %}
         <ul>
         {% for page in pages %}
           <li{% if page.in_path %} class="current"{% endif %}><a href="{{ page.url }}">{{ page.title|lower }}</a></li>

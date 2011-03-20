@@ -2,14 +2,14 @@ from django.utils.translation import ugettext as _
 from django.db.models import Count
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.helpers import AdminForm
+from django.views.defaults import RequestContext
 
-from selvbetjening.core.events.models import Event, AttendState, Attend,\
+from selvbetjening.core.events.models import Event, AttendState,\
      payment_registered_source
 from selvbetjening.core.invoice.models import Invoice, Payment
-from selvbetjening.core.mailcenter.sources import Source
 
 from selvbetjening.sadmin.base import admin_formize
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin, main_menu
+from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
@@ -67,25 +67,25 @@ class EventAdmin(SModelAdmin):
         super(EventAdmin, self)._init_navigation()
 
         main_menu.register(self.page_root)
-        
+
         self.page_register_payment = SPage(_(u'Register Payment'),
                                            'sadmin:%s_%s_register_payment' % self._url_info,
                                            parent=self.page_root)
-        
+
         self.sadmin_menu.register(self.page_register_payment)
-        
+
         self.page_statistics = LeafSPage(_(u'Statistics'),
                                          'sadmin:%s_%s_statistics' % self._url_info,
                                          parent=self.page_change)
-        
+
         self.page_financials = LeafSPage(_(u'Financials'),
                                          'sadmin:%s_%s_financials' % self._url_info,
                                          parent=self.page_change)
-        
+
         self.object_menu.register(self.page_change, title=self.Meta.display_name)
         self.object_menu.register(self.page_statistics)
         self.object_menu.register(self.page_financials)
-    
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
@@ -97,7 +97,7 @@ class EventAdmin(SModelAdmin):
         option_group_admin = OptionGroupAdmin()
         option_group_admin.page_root.parent = self.page_change
         option_group_admin.sadmin_menu = self.object_menu
-        
+
         self.object_menu.register(option_group_admin.page_root)
 
         urlpatterns = super(EventAdmin, self).get_urls()
@@ -154,7 +154,7 @@ class EventAdmin(SModelAdmin):
                                    'multiple_attendees': multiple_attendees,
                                    'current_page': self.page_register_payment,
                                    'menu': self.sadmin_menu},
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def statistics_view(self, request, event_pk):
         event = get_object_or_404(Event, pk=event_pk)
@@ -232,7 +232,7 @@ class EventAdmin(SModelAdmin):
 
         return render_to_response('sadmin/events/event/statistics.html',
                                   statistics,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def financial_report_view(self, request, event_pk):
         event = get_object_or_404(Event, pk=event_pk)
@@ -258,4 +258,4 @@ class EventAdmin(SModelAdmin):
                                    'original' : event,
                                    'menu' : self.object_menu,
                                    'current_page' : self.page_financials },
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))

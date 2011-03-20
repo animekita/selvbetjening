@@ -4,14 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views.defaults import RequestContext
 
 from selvbetjening.core.mailcenter.models import EmailSpecification
 from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from selvbetjening.sadmin.base import admin_formize
-from selvbetjening.sadmin.base.sadmin import SAdminContext, SModelAdmin, main_menu
-from selvbetjening.sadmin.base.nav import SPage, ObjectSPage, LeafSPage
+from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
+from selvbetjening.sadmin.base.nav import LeafSPage
 
 from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry
 from selvbetjening.sadmin.mailcenter.admins.outgoing import OutgoingAdmin
@@ -21,7 +22,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         app_name = 'mailcenter'
         name = 'emailspecification'
         model = EmailSpecification
-        
+
         display_name_plural = 'E-mails'
         display_name = 'E-mail'
 
@@ -84,7 +85,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         outgoing_admin.sadmin_menu = self.sadmin_menu
         self.sadmin_menu.register(outgoing_admin.page_root)
 
-        
+
         urlpatterns = super(EmailSpecificationAdmin, self).get_urls()
 
         urlpatterns = patterns('',
@@ -106,7 +107,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         extra_context = extra_context or {}
         extra_context['title'] = _(u'Change E-mail')
         return super(EmailSpecificationAdmin, self).change_view(request, object_id, extra_context=extra_context)
-    
+
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['title'] = _(u'Browse E-mails')
@@ -135,7 +136,7 @@ class EmailSpecificationAdmin(SModelAdmin):
                                    'forms': [admin_formize(form) for form in forms],
                                    'menu': self.object_menu,
                                    'current_page': self.page_filter},
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
 
     def masssend_view(self, request, email_pk):
@@ -148,13 +149,13 @@ class EmailSpecificationAdmin(SModelAdmin):
                                        'original': email, # compatibility
                                        'menu': self.object_menu,
                                        'current_page': self.page_mass_email},
-                                      context_instance=SAdminContext(request))
+                                      context_instance=RequestContext(request))
 
         recipients = User.objects.filter(userprofile__send_me_email=True).\
                    exclude(username__in=email.recipients.values_list('username', flat=True))
 
         recipients = filter(email.passes_conditions, recipients)
-        
+
         if request.method == 'POST':
             form = SendNewsletterForm(request.POST)
 
@@ -176,7 +177,7 @@ class EmailSpecificationAdmin(SModelAdmin):
                                    'recipients': recipients,
                                    'menu': self.object_menu,
                                    'current_page': self.page_mass_email},
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def send_view(self, request, email_pk):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
@@ -201,4 +202,4 @@ class EmailSpecificationAdmin(SModelAdmin):
                                    'original': email, # compatibility
                                    'menu': self.object_menu,
                                    'current_page': self.page_send},
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))

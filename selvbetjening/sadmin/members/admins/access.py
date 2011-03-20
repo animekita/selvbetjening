@@ -32,7 +32,7 @@ class AccessAdmin(SModelAdmin):
 
         urlpatterns = patterns('',
                                url(r'^(\d+)/access/$',
-                                   self._wrap_oldadmin_view(self.change_view),
+                                   self._wrap_view(self.change_view),
                                    name='%s_%s_change' % self._url_info)
                                )
 

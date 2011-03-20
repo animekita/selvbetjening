@@ -10,17 +10,16 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.html import escape
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.views.defaults import RequestContext
 
 from selvbetjening.core.members.shortcuts import get_or_create_profile
 from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, UserLocation, to_age
 
-from selvbetjening.sadmin.base.sadmin import SModelAdmin, SAdminContext, main_menu
+from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
 from selvbetjening.sadmin.members.admins.group import GroupAdmin
 from selvbetjening.sadmin.members.admins.access import AccessAdmin
-
-from navtree.navigation import Navigation
 
 class UserProfileInline(StackedInline):
     model = UserProfile
@@ -171,7 +170,7 @@ class UserAdmin(SModelAdmin):
             'root_path': self.admin_site.root_path,
             'menu': self.object_menu,
             'current_page': self.page_change_password,
-        }, context_instance=SAdminContext(request))
+        }, context_instance=RequestContext(request))
 
     def user_age_chart(self, min_age=5, max_age=80):
         cur_year = date.today().year
@@ -271,7 +270,7 @@ class UserAdmin(SModelAdmin):
 
         return render_to_response('sadmin/members/statistics.html',
                                   age_data,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def map_view(self, request):
 
@@ -285,4 +284,4 @@ class UserAdmin(SModelAdmin):
                                    'locations': locations,
                                    'expired': expired,
                                    'invalid': invalid},
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))

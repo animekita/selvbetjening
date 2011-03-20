@@ -38,7 +38,7 @@ class SPage(Page):
         self.depth = depth or 0
 
     def get_navigation_stack(self, context):
-        navigation_stack = context['navigation_stack']
+        navigation_stack = context.get('navigation_stack', [])
 
         current_object = context.get('original', None) or \
                          context.get('object', None)

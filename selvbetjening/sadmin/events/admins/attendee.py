@@ -4,15 +4,15 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.views.defaults import RequestContext
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, \
      request_attendee_pks_signal
-from selvbetjening.core.events.processor_handlers import change_selection_processors, checkin_processors
+from selvbetjening.core.events.processor_handlers import change_selection_processors
 from selvbetjening.core.events.forms import OptionForms
 from selvbetjening.core.invoice.models import Payment
-from selvbetjening.core.forms import form_collection_builder
 
-from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin, SAdminContext, site
+from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.base.nav import LeafSPage, RemoteSPage
 from selvbetjening.sadmin.base import admin_formize
 
@@ -201,7 +201,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         return render_to_response('sadmin/events/attendee/change.html',
                                   context,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def selections_view(self, request, attendee_id, extra_context=None):
         attendee = get_object_or_404(Attend, event=request.bound_object, pk=attendee_id)
@@ -232,7 +232,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         return render_to_response('sadmin/events/attendee/selections.html',
                                   context,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def payment_keys_view(self, request, attendee_pk, extra_context=None):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
@@ -248,7 +248,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         return render_to_response('sadmin/events/attendee/show_pks.html',
                                   context,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
 
     def checkin_view(self, request, attendee_pk, extra_context=None):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
@@ -270,4 +270,4 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         return render_to_response('sadmin/events/attendee/checkin.html',
                                   context,
-                                  context_instance=SAdminContext(request))
+                                  context_instance=RequestContext(request))
