@@ -57,9 +57,9 @@ def generate_week_axis(start_date, end_date):
         current = start_date + timedelta(days=week*7)
 
         if last_month == current.month:
-            axis.append('%s k' % current.strftime('%W'))
+            axis.append('%s' % current.strftime('%W'))
         else:
-            axis.append('%s - %s k' % (current.strftime('%B'), current.strftime('%W')))
+            axis.append('%s - %s' % (current.strftime('%B'), current.strftime('%W')))
             last_month = current.month
 
     return axis
