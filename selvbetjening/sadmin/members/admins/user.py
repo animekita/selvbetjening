@@ -15,6 +15,7 @@ from django.views.defaults import RequestContext
 from selvbetjening.core.members.shortcuts import get_or_create_profile
 from selvbetjening.core.members.models import UserProfile, UserWebsite, UserCommunication, UserLocation, to_age
 
+from selvbetjening.sadmin.base import graph
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
@@ -218,15 +219,12 @@ class UserAdmin(SModelAdmin):
         join_stats = users.aggregate(max=Max('date_joined'),
                                      min=Min('date_joined'))
 
-        def diff_in_months(ref_date, date):
-            return (date.year - ref_date.year) * 12 + (date.month - ref_date.month)
-
-        max_in_months = diff_in_months(join_stats['min'], join_stats['max'])
+        max_in_months = graph.diff_in_months(join_stats['min'], join_stats['max'])
 
         join_span = [0] * (max_in_months + 1)
 
         for user in users:
-            join_month = diff_in_months(join_stats['min'], user.date_joined)
+            join_month = graph.diff_in_months(join_stats['min'], user.date_joined)
 
             join_span[join_month] += 1
 
@@ -236,18 +234,7 @@ class UserAdmin(SModelAdmin):
             acc = acc + item
             join_span_acc.append(acc)
 
-        labels = []
-        for x in range(0, max_in_months + 1):
-            new_month = (join_stats['min'].month + x) % 12
-
-            if new_month == 0:
-                new_month = 1
-
-            month = date(year=join_stats['min'].year + (join_stats['min'].month + x) / 12,
-                         month=new_month,
-                         day=1)
-
-            labels.append(month.strftime("%B %Y"))
+        labels = graph.generate_month_axis(join_stats['min'], join_stats['max'])
 
         return {'join_labels': labels,
                 'join_data1': join_span,

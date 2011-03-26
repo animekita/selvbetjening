@@ -204,12 +204,10 @@ class Attend(models.Model):
                              choices=AttendState.get_choices(),
                              default=AttendState.waiting)
 
-    # changes on shift from accepted to waiting vice versa
-    # this is used to order the attendee lists for either accepted
-    # or waiting. The django api can not query the attend_history
-    # effective so we need this derived variable. In addition it
-    # is only updated when changing from accpeted to waiting in order
-    # to prevent attendees changing place when being checked in.
+    # Updates when state changes to and from "waiting".
+    # This is used when ordering the accepted and waiting attendee
+    # lists. The django API can't query the attend_history
+    # effectively so this is used as an alternative.
     # Please find a fix to this mess!
     change_timestamp = models.DateTimeField(null=True, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True, null=True)

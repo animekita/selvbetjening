@@ -6,10 +6,10 @@ from django.views.defaults import RequestContext
 from django.core.urlresolvers import reverse
 
 from selvbetjening.core.events.models import Event, AttendState,\
-     payment_registered_source
+     payment_registered_source, Attend
 from selvbetjening.core.invoice.models import Invoice, Payment
 
-from selvbetjening.sadmin.base import admin_formize
+from selvbetjening.sadmin.base import admin_formize, graph
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
@@ -183,6 +183,41 @@ class EventAdmin(SModelAdmin):
         new_count = attendee_statistics(AttendState.waiting, 'waiting')
         new_count += attendee_statistics(AttendState.accepted, 'accepted')
         new_count += attendee_statistics(AttendState.attended, 'attended')
+
+        # attendees graph
+
+        attendees = event.attendees.all()
+
+        if attendees.count() > 0:
+
+            first = attendees.order_by('registration_date')[0].registration_date
+            last = attendees.order_by('-registration_date')[0].registration_date
+
+            try:
+                last_changed = attendees.exclude(state=AttendState.waiting).order_by('-change_timestamp')[0].change_timestamp
+
+                if last_changed > last:
+                    last = last_changed
+            except Attend.DoesNotExist:
+                pass
+
+            axis = graph.generate_week_axis(first, last)
+            registration_data = [0 for i in axis]
+            accepted_data = [0 for i in axis]
+
+            for attendee in attendees:
+                week = graph.diff_in_weeks(first, attendee.registration_date)
+                registration_data[week] += 1
+
+                if attendee.state != AttendState.waiting:
+                    week = graph.diff_in_weeks(first, attendee.change_timestamp)
+                    accepted_data[week] += 1
+
+            statistics['registrations_data'] = graph.insert_prefix(registration_data)
+            statistics['registrations_data_acc'] = graph.accumulate(registration_data)
+            statistics['accepted_data'] = graph.insert_prefix(accepted_data)
+            statistics['accepted_data_acc'] = graph.accumulate(accepted_data)
+            statistics['registrations_axis'] = graph.insert_prefix(axis, axis=True)
 
         # invoices
         statistics['invoice_payment_total'] = 0

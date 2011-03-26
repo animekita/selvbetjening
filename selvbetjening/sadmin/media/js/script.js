@@ -53,15 +53,17 @@ function prepare_changelist() {
     $("td span.warning").parent().addClass("warning");
     $("td span.error").parent().addClass("error");
 
-    $(".iframe").fancybox({
-			    'width'				: '100%',
-			    'height'				: '100%',
-			    'scrolling'				: 'no',
-			    'autoScale'				: true,
-			    'transitionIn'			: 'elastic',
-			    'transitionOut'			: 'elastic',
-			    'type'				: 'iframe'
-			});
+	if ($(".iframe").fancybox) {
+		$(".iframe").fancybox({
+					'width'				: '100%',
+					'height'				: '100%',
+					'scrolling'				: 'no',
+					'autoScale'				: true,
+					'transitionIn'			: 'elastic',
+					'transitionOut'			: 'elastic',
+					'type'				: 'iframe'
+				});
+	}
 
 }
 
