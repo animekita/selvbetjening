@@ -3,6 +3,7 @@ from django.db.models import Count
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.helpers import AdminForm
 from django.views.defaults import RequestContext
+from django.core.urlresolvers import reverse
 
 from selvbetjening.core.events.models import Event, AttendState,\
      payment_registered_source
@@ -26,9 +27,11 @@ class EventAdmin(SModelAdmin):
         model = Event
 
     def attendees_count(event):
-        return event.attendees.count()
+        return '<a href="%s">%s</a>' % (reverse('sadmin:events_attendee_changelist', args=[event.pk]),
+                                        event.attendees.count())
     attendees_count.short_description = 'Attendees'
     attendees_count.admin_order_field = 'attend__count'
+    attendees_count.allow_tags = True
 
     list_display = ('title', attendees_count, 'startdate',)
     list_filter = ('registration_open',)
