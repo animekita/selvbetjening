@@ -1,6 +1,8 @@
 {% extends "sadmin/base/base.html" %}
 {% load uni_form_tags %}
 
+{% block bodyclass %}login{% endblock %}
+
 {% block extrastyle %}{{block.super}}
 <style type="text/css">
 .uniForm { width: 650px; padding: 1em;}
@@ -13,9 +15,9 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
 {% endblock %}
 
 {% block body %}
-<div class="center">
+<div class="center login">
 
-    <header class="login-header">
+    <header>
         <h1>Selvbetjening</h1>
         <h2>v{{ VERSION }}</h2>
     </header>
@@ -28,13 +30,12 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
         </ul>
     {% endif %}
 
-    <div class="login-box">
+    {% with form.helper as helper %}
+        {% uni_form form helper %}
+    {% endwith %}
 
-        {% with form.helper as helper %}
-            {% uni_form form helper %}
-        {% endwith %}
-
-    </div>
 </div>
+
+<p class="copyright">Background image &copy; <a href="http://www.sxc.hu/profile/blary54">Brian Lary</a></p>
 
 {% endblock %}

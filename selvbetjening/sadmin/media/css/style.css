@@ -44,21 +44,54 @@ header.top-header h1 { background: url("../images/slogo.png") no-repeat; backgro
 header.top-header h2 { float: left; font-size: 1em; }
 header.top-header nav { float: right; margin: 0px; }
 
-/** Login header **/
-header.login-header {
+/** Login **/
+body.login { background-image: url("../images/login-bg.jpg"); background-size: 100%; }
+
+div.login header {
   background-color: black; color: #ffffff; overflow: auto; padding: 12px 0 0 1em; margin: 2em 0 1em 0;
-  -moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px;
-  -moz-border-radius-topright: 5px; -webkit-border-top-right-radius:5px;
-  -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius:5px;
-  -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius:5px;
+
+  border-radius-topleft:10px; -moz-border-radius-topleft: 10px; -webkit-border-top-left-radius: 10px;
+  border-radius-topright: 10px; -moz-border-radius-topright: 10px; -webkit-border-top-right-radius: 10px;
 }
-header.login-header h1 { background: url("../images/slogo-big.png") no-repeat; background-size: 60px;
+div.login header h1 { background: url("../images/slogo-big.png") no-repeat; background-size: 60px;
                        height: 60px; text-indent: 65px; font-size: 2.4em; padding-top: 12px; float: left;
 					   font-family: "DejaVuSansCondensedBold"; }
-header.login-header h2 { float: left; font-size: 1.2em; padding-top: 6px; }
+div.login header h2 { float: left; font-size: 1.2em; padding-top: 6px; }
 
-/** Login box **/
-div.login-box { width: 700px; margin: 0 auto; overflow: auto; }
+div.login {
+  margin-top: 3em; margin-bottom: 3em;
+  color: #ffffff;
+  width: 600px; background-color: rgba(0, 0, 0, 0.6);
+  border-radius-topleft: 10px; -moz-border-radius-topleft: 10px; -webkit-border-top-left-radius: 10px;
+  border-radius-topright: 10px; -moz-border-radius-topright: 10px; -webkit-border-top-right-radius: 10px;
+  border-radius-bottomright: 10px; -moz-border-radius-bottomright: 10px; -webkit-border-bottom-right-radius: 10px;
+  border-radius-bottomleft: 10px; -moz-border-radius-bottomleft: 10px; -webkit-border-bottom-left-radius: 10px;
+}
+
+div.login ul.messages { width: 600px; color: #000000; }
+div.login div.ctrlHolder { border-width: 0; float: left; }
+div.login div.ctrlHolder input { width: 255px; }
+
+div.login div.buttonHolder { width: 550px; background-color: rgba(0, 0, 0, 0); }
+div.login div.buttonHolder input { font-size: 1.4em; }
+
+p.copyright {
+  text-align: center;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 300px;
+  padding: 0.4em;
+
+  border-radius: 10px;
+  position: absolute;
+
+  bottom: 1em;
+  left: 2em;
+}
+
+p.copyright a {
+  color: #ffffff;
+}
 
 /** Page header **/
 header.page-header h1 { margin: 1em 0 0.2em 0; }

@@ -7,7 +7,7 @@ var search_url = null;
 function init_livesearch(searchUrl) {
     var typeDelay = 200;
     search_url = searchUrl;
-    
+
     $('#searchbox').keyup(function () {
         if (this.value != this.lastValue) {
             var query = this.value;
@@ -27,7 +27,7 @@ function init_livesearch(searchUrl) {
 
 function do_search(url) {
     last_search = search_url + url;
-    
+
     jQuery.get(last_search, function(data) {
                     if (data.length) {
                         $('#changelist-form').html(data);
@@ -62,6 +62,7 @@ function prepare_changelist() {
 			    'transitionOut'			: 'elastic',
 			    'type'				: 'iframe'
 			});
+
 }
 
 $(document).ready(prepare_changelist);
