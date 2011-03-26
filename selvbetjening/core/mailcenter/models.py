@@ -163,7 +163,7 @@ class GenericAttendeeConditions(models.Model):
 
         try:
             if attendee is None:
-                attendee = self.event.attendees.objects.get(user=user)
+                attendee = self.event.attendees.get(user=user)
         except Attend.DoesNotExist:
             return False
 
