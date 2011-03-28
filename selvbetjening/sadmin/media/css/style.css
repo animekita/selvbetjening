@@ -45,7 +45,14 @@ header.top-header h2 { float: left; font-size: 1em; }
 header.top-header nav { float: right; margin: 0px; }
 
 /** Login **/
-body.login { background-image: url("../images/login-bg.jpg"); background-size: 100%; }
+
+body.login {
+        background: url(../images/login-bg.jpg) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
 
 div.login header {
   background-color: black; color: #ffffff; overflow: auto; padding: 12px 0 0 1em; margin: 2em 0 1em 0;
