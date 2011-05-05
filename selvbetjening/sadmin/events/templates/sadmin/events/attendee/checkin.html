@@ -19,8 +19,15 @@
   <script>
   $(document).ready(function() {
     parent.do_search("");
-    window.setInterval(function() {parent.$.fancybox.close();}, 3000);
 
+    window.setInterval(function() {
+      if (/msie/i.test(navigator.userAgent) && !/opera/i.test(navigator.userAgent)) {
+        // ei detected
+        parent.location.reload(true);
+      } else {
+        parent.$.fancybox.close();
+      }
+    }, 3000);
   });
   </script>
 
