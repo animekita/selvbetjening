@@ -2,6 +2,7 @@
 
 */
 var last_search = null;
+var current_search_obj = null;
 var search_url = null;
 
 function init_livesearch(searchUrl) {
@@ -17,7 +18,11 @@ function init_livesearch(searchUrl) {
             }
 
             this.requestTimer = setTimeout(function() {
-		do_search(query);
+			    if (current_search_obj != null && current_search_obj.abort) {
+				    current_search_obj.abort();
+				}
+				do_search(query);
+
             }, typeDelay);
 
             this.lastValue = query;
@@ -28,15 +33,14 @@ function init_livesearch(searchUrl) {
 function do_search(url) {
     last_search = search_url + url;
 
-    jQuery.get(last_search, function(data) {
-                    if (data.length) {
-                        $('#changelist-form').html(data);
-			prepare_changelist();
-                    }
-                    else {
-			last_search = null;
-                        $('#changelist-form').html('');
-                    }
+    current_search_obj = jQuery.get(last_search, function(data) {
+        if (data.length) {
+            $('#changelist-form').html(data);
+            prepare_changelist();
+        } else {
+            last_search = null;
+			$('#changelist-form').html('');
+        }
     });
 }
 
