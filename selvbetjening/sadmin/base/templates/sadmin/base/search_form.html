@@ -3,7 +3,6 @@
 {% if cl.search_fields %}
 
 <div id="toolbar"><form id="changelist-search" action="" method="get">
-
 <div id="searchbox-container">
 <input type="text" id="searchbox" name="{{ search_var }}" autofocus="autofocus" autocomplete="off" placeholder="" required="required" value="{{ cl.query }}" /> <input type="submit" value="" id="searchsubmit" />
 </div>
@@ -15,6 +14,9 @@
 {% for pair in cl.params.items %}
     {% ifnotequal pair.0 search_var %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endifnotequal %}
 {% endfor %}
+{% if cl.to_field %}
+    <input type="hidden" name="t" value="{{cl.to_field}}"/>
+{% endif %}
 
 </div>
 </form></div>

@@ -16,6 +16,7 @@ from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 
 from selvbetjening.sadmin.events.admins.attendee import AttendeeAdmin
 from selvbetjening.sadmin.events.admins.optiongroup import OptionGroupAdmin
+from selvbetjening.sadmin.events.admins.group import GroupAdmin
 from selvbetjening.sadmin.events.forms import InvoiceFormattingForm, RegisterPaymentForm
 
 class EventAdmin(SModelAdmin):
@@ -41,7 +42,7 @@ class EventAdmin(SModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields' : ('title', 'description', 'startdate', 'enddate', 'registration_open'),
+            'fields' : ('title', 'description', 'group', 'startdate', 'enddate', 'registration_open'),
             }),
         (_('Conditions'), {
             'fields' : ('maximum_attendees', 'move_to_accepted_policy', ),
@@ -100,8 +101,12 @@ class EventAdmin(SModelAdmin):
         option_group_admin = OptionGroupAdmin()
         option_group_admin.page_root.parent = self.page_change
         option_group_admin.sadmin_menu = self.object_menu
-
         self.object_menu.register(option_group_admin.page_root)
+
+        group_admin = GroupAdmin()
+        group_admin.page_root.parent = self.page_root
+        group_admin.sadmin_menu = self.sadmin_menu
+        self.sadmin_menu.register(group_admin.page_root)
 
         urlpatterns = super(EventAdmin, self).get_urls()
 
@@ -109,6 +114,7 @@ class EventAdmin(SModelAdmin):
             url(r'^register-payment/$',
                 self._wrap_view(self.register_payment_view),
                 name='%s_%s_register_payment' % self._url_info),
+            (r'^groups/', include(group_admin.urls)),
             url(r'^([0-9]+)/statistics/$',
                 self._wrap_view(self.statistics_view),
                 name='%s_%s_statistics' % self._url_info),

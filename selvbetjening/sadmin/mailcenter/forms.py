@@ -17,8 +17,7 @@ class SendEmailForm(forms.Form):
         super(SendEmailForm, self).__init__(*args, **kwargs)
 
         self.fields['username'] = forms.CharField(
-            widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username'),
-                                               url=reverse('sadmin:auth_user_changelist')))
+            widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username')))
 
     fieldsets = [(None, {
         'fields': ('username',)

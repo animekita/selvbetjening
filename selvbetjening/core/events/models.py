@@ -39,11 +39,19 @@ class AttendeeAcceptPolicy(object):
             ('always', _(u'Always move to accepted list'))
         )
 
+class Group(models.Model):
+    name = models.CharField(_(u'name'), max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
 class Event(models.Model):
     _CACHED_OPTIONGROUPS_ID = 'event-%d-optiongroups'
     _CACHED_ATTENDEES_ID = 'event-%d-attendees'
     _CACHED_ACCEPTED_ATTENDEES_ID = 'event-%d-accepted-attendees'
     _CACHED_WAITING_ATTENDEES_ID = 'event-%d-waiting-attendees'
+
+    group = models.ForeignKey(Group, blank=True, null=True)
 
     title = models.CharField(_(u'title'), max_length=255)
     description = models.TextField(_(u'description'), blank=True)

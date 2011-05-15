@@ -30,7 +30,7 @@ class UserPrivacy(models.Model):
         privacy.public_town = True
         privacy.public_contact = True
         privacy.public_websites = True
-        privacy.public_achivements = True
+        privacy.public_achievements = True
         privacy.public_join_date = True
 
         return privacy

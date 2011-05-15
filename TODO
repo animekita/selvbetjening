@@ -1,43 +1,22 @@
-Til svscon
-==========
-
-- Checkin af folk og billing
-  - Bedre check-in (modular) - skal hurtigt kunne lave manuel check-in af folk, inklusiv oprettelse af nye tilmeldinger
-  - Revidering af betaling og kvittering interface - overblik over betalinger samt betalte, nuværende har Usability problemer
-  - Begrænset check-in side (check-in url) - check-in side uden alt for meget andet
-
-- CPR checkin
-
-Stuff for Kita
-==============
+TODO 7.0
+========
 
  - Bedre medlemskab algol
+ - Problemer med check-in interface har problemer i gamle browsere
+ - E-mail TODO
+ - Revidering af betaling og kvittering interface - overblik over betalinger samt betalte, nuværende har Usability problemer
+ - Update to Django 1.3
 
-Achivements
-  - Opdel event achivements i flere mapper
-  - Tilføj mere informative beskrivelser
-  - Tilføj datoer (eller order) til achivements (så events kommer i rigtig rækkefølge)
-
-Bugfix
+E-mail
 ======
 
-- Achivements
-  - Ret fejl ved sletning af event
-
-- Oprydning
-  - Fjern checkin handler fra checkin
-
-5.1.0 Todo
-==========
-
-Bedre håndtering af e-mails:
-  - Bedre e-mail udseende
-  + Kontrol mht. hvornår e-mails skal sendes
-    + F.eks. påmindelse omkring tilmelding
-  - Opdeling af nyhedsbrev i to typer
+  - Kontrol mht. hvornår e-mails skal sendes
+    - F.eks. påmindelse omkring tilmelding #5
   - Tilføj afmeld link i bunden af nyhedsbrevet
+  - Mangler bruger specifik indhold i e-mails sent direkte
 
-Andet:
+Andet
+=====
 - Dynamiske formularer (så vi kan lave mere spændende input)
 - Offline strategi
 
@@ -45,7 +24,6 @@ Spændende ideer
 ===============
 
 http://github.com/justquick/django-activity-stream
-http://github.com/eldarion/brabeion Badges
 http://celeryproject.org/ Query system
 http://www.rabbitmq.com/ Query system
 http://github.com/agiliq/Django-Socialauth OAuth support and multisite support

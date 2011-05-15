@@ -18,6 +18,7 @@ from selvbetjening.core import ObjectWrapper
 from navtree.navigation import Navigation
 
 from nav import LeafSPage, ObjectSPage, SPage
+from widgets import SAdminForeignKeyRawIdWidget, register_object_search_page
 
 main_menu = Navigation() # default sadmin navigation
 
@@ -137,6 +138,10 @@ class SModelAdmin(admin.ModelAdmin):
                 permission=lambda user: user.has_perm('%s.change_%s' % self._url_info),
                 depth=self.depth)
             self.sadmin_menu.register(self.page_root)
+
+            register_object_search_page(self.Meta.app_name,
+                                        self.Meta.name,
+                                        'sadmin:%s_%s_changelist' % self._url_info)
         else:
             self.page_root = None
 
@@ -285,6 +290,18 @@ class SModelAdmin(admin.ModelAdmin):
 
         return response
 
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        """ Overwrites the standard ForeignKeyRawIdWidget for all raw id fields """
+
+        db = kwargs.get('using')
+        if db_field.name in self.raw_id_fields:
+            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, using=db)
+
+            return db_field.formfield(**kwargs)
+
+        return super(SModelAdmin, self).formfield_for_foreignkey(db_field, request=request, **kwargs)
+
+
 class SBoundModelAdmin(SModelAdmin):
     depth = 1
 
@@ -307,4 +324,16 @@ class SBoundModelAdmin(SModelAdmin):
 
     def _get_navigation_stack(self, request):
         return [request.bound_object,]
+
+class STabularInline(admin.TabularInline):
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        """ Overwrites the standard ForeignKeyRawIdWidget for all raw id fields """
+
+        db = kwargs.get('using')
+        if db_field.name in self.raw_id_fields:
+            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, using=db)
+
+            return db_field.formfield(**kwargs)
+
+        return super(STabularInline, self).formfield_for_foreignkey(db_field, request=request, **kwargs)
 

@@ -1,4 +1,6 @@
 # debug
+import sys
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 STATIC_DEBUG = DEBUG
@@ -8,6 +10,16 @@ DATABASE_ENGINE = 'mysql' # mysql, sqlite3
 DATABASE_NAME = 'kita_selv'
 DATABASE_USER = 'root'
 DATABASE_PASSWORD = ''
+
+DATABASES = {
+            'default': {
+                'NAME': 'dbname',
+                'ENGINE': 'django.db.backends.sqlite3' if 'test' in sys.argv else 'django.db.backends.mysql',
+                'USER': 'dbuser',
+                'PASSWORD': 'dbpassword',
+                'OPTIONS': {} if 'test' in sys.argv else {'init_command': 'SET storage_engine=INNODB'},
+                },
+            }
 
 # Site url (no trailing slash)
 SITE_URL = 'http://'

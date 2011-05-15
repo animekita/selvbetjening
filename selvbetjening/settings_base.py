@@ -8,7 +8,7 @@ SELV_DIRNAME = os.path.abspath(os.path.dirname(__file__))
 from selvbetjening import contrib
 contrib.add_contrib_to_python_path()
 
-VERSION = '6.1.0'
+VERSION = '6.2.0'
 
 # debugging
 DEBUG = False
@@ -28,10 +28,6 @@ LANGUAGE_CODE = 'da-dk'
 
 LOGIN_REDIRECT_URL = '/profil/'
 LOGIN_URL = '/profil/login/'
-
-DATABASE_OPTIONS = {
-   'init_command': 'SET storage_engine=INNODB',
-}
 
 # base template loaders, middleware and context processors
 TEMPLATE_LOADERS = (

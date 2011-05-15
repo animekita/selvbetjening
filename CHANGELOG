@@ -1,3 +1,7 @@
+6.2.0
+ * Added categories for events
+ * Various bugfixes
+
 6.1.0
  * New login screen
  * New link directly from the event list to attendee list
