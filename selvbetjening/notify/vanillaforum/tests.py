@@ -10,7 +10,8 @@ class VanillaBaseTestCase(BaseNotifyTestCase):
     _active_test_file = __file__
 
     def register_notify(self, database_id):
-        registry.register(database_id, {'database_id' : database_id})
+        registry.register(database_id, {'database_id' : database_id,
+                                        'default_role_id' : 3})
 
     def unregister_notify(self, database_id):
         registry.unregister(database_id)

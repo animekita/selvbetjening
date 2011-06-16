@@ -55,3 +55,9 @@ NOTIFY_PROFTPD['example'] = {'database_id' : 'DATABASE_ID',
                              'username_format' : '%s@domain.tld'}
 """
 NOTIFY_PROFTPD = []
+
+"""
+NOTIFY_VANILLAFORUM['example'] = {'database_id' : 'DATABASE_ID',
+                                  'default_role_id' : 'default_ROLE_ID'}
+"""
+NOTIFY_VANILLAFORUM = []

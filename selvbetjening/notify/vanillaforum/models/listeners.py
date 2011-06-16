@@ -2,7 +2,7 @@ from django.core.mail import mail_admins
 
 from selvbetjening.notify import BaseListener
 
-from remote import RemoteUser, RemoteUserAssociation
+from remote import RemoteUser, RemoteUserRole, RemoteUserAssociation
 
 class UserChangedListener(BaseListener):
 
@@ -19,6 +19,10 @@ class UserChangedListener(BaseListener):
         remote_user = RemoteUser.objects.using(self._database_id)\
                                         .create(username=user.username,
                                                 email=user.email)
+
+        RemoteUserRole.objects.using(self._database_id)\
+                              .create(user_id=remote_user.id,
+                                      role_id=self._config['default_role_id'])
 
         RemoteUserAssociation.objects.using(self._database_id)\
                                      .create(selv_user_id=user.id,

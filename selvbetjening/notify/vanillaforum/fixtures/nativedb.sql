@@ -43,3 +43,10 @@ CREATE TABLE `GDN_UserAuthentication` (
   `UserID` int(11) NOT NULL,
   PRIMARY KEY (`ForeignUserKey`, `ProviderKey`)
 );
+
+DROP TABLE IF EXISTS `GDN_UserRole`;
+CREATE TABLE `GDN_UserRole` (
+  `UserID` int(11) NOT NULL,
+  `RoleID` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`RoleID`)
+);
