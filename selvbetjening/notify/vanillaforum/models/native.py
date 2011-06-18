@@ -1,7 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from sorl.thumbnail.fields import ThumbnailField
+
+class GroupRemoteRole(models.Model):
+
+    database_id = models.CharField(max_length=100)
+    group = models.ForeignKey(Group)
+    remote_role_id = models.IntegerField()
+
+    class Meta:
+        app_label = 'vanillaforum'
+        unique_together = (('group', 'remote_role_id', 'database_id'),)
 
 class Settings(models.Model):
 

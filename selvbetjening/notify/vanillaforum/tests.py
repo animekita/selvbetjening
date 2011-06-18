@@ -4,7 +4,8 @@ from django.core.management.base import CommandError
 from selvbetjening.core.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase
 
-from models import RemoteUser, RemoteUserAssociation, registry, Settings
+from models import RemoteUser, RemoteUserAssociation, RemoteRole, \
+     RemoteUserRole, GroupRemoteRole, registry, Settings
 from management.commands import notify_vanillaforum_sync
 
 class VanillaBaseTestCase(BaseNotifyTestCase):
@@ -147,7 +148,51 @@ class VanillaUserTestCase(VanillaBaseTestCase):
 
         self.check_databases(action)
 
+    def test_groups(self):
+
+        user = Database.new_user()
+        group = Group.objects.create(name='test group')
+
+        def action(database_id):
+            remote_role = RemoteRole.objects.using(database_id)\
+                                            .create(name='test role')
+
+            GroupRemoteRole.objects.create(database_id=database_id,
+                                           group=group,
+                                           remote_role_id=remote_role.id)
+
+        self.check_databases(action)
+
+        group.user_set.add(user)
+
+        def action(database_id):
+            self.assertEqual(1, RemoteUserRole.objects.using(database_id).all().count())
+
+        self.check_databases(action)
+
+
+
     def test_do_sync(self):
+        user = Database.new_user()
+        group = Group.objects.create(name='test group')
+
+        def action(database_id):
+            remote_role = RemoteRole.objects.using(database_id)\
+                                            .create(name='test role')
+
+            GroupRemoteRole.objects.create(database_id=database_id,
+                                           group=group,
+                                           remote_role_id=remote_role.id)
+
+        self.check_databases(action)
+
+        group.user_set.add(user)
+
         cmd = notify_vanillaforum_sync.Command()
         cmd.handle('sync')
+
+        def action(database_id):
+            self.assertEqual(1, RemoteUserRole.objects.using(database_id).all().count())
+
+        self.check_databases(action)
 

@@ -1,3 +1,10 @@
+6.2.1 - dev
+
+Vanilla Forum Integration:
+ * Added support for default user roles
+ * Added support for avatars and forum settings
+ * Added support for synchronisation of user roles
+
 6.2.0
  * Added categories for events
  * Various bugfixes

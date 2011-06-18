@@ -6,6 +6,13 @@ TODO 7.0
  - E-mail TODO
  - Revidering af betaling og kvittering interface - overblik over betalinger samt betalte, nuværende har Usability problemer
  - Update to Django 1.3
+ - Achievements
+
+Achievements
+============
+
+  - Tilføj dato range for positions
+  - Ændre medlemsnummer så det passer med forum (det rigtige) nummer
 
 E-mail
 ======

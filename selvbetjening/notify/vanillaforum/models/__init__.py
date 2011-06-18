@@ -1,15 +1,16 @@
 from django.conf import settings
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.contrib.auth.models import User
 
 from selvbetjening.core.database.dbrouter import DatabaseRouter
 from selvbetjening.notify import BaseNotifyRegistry
 
-from remote import RemoteUserAssociation, RemoteUser
+from remote import RemoteUserAssociation, RemoteUser, RemoteRole, RemoteUserRole
 from listeners import UserChangedListener, UserDeletedListener, \
-     SettingsChangedListener, register_new_user, update_user_settings
+     SettingsChangedListener, GroupMembersChangedListener, register_new_user,\
+     update_user_settings
 
-from native import Settings
+from native import Settings, GroupRemoteRole
 
 class VanillaForumRegistry(BaseNotifyRegistry):
     def __init__(self):
@@ -23,7 +24,10 @@ class VanillaForumRegistry(BaseNotifyRegistry):
                           User),
                          (post_save,
                           SettingsChangedListener,
-                          Settings),]
+                          Settings),
+                         (m2m_changed,
+                          GroupMembersChangedListener,
+                          User.groups.through)]
 
 registry = VanillaForumRegistry()
 

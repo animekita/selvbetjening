@@ -50,3 +50,13 @@ CREATE TABLE `GDN_UserRole` (
   `RoleID` int(11) NOT NULL,
   PRIMARY KEY (`UserID`,`RoleID`)
 );
+
+DROP TABLE IF EXISTS `GDN_Role`;
+CREATE TABLE `GDN_Role` (
+  `RoleID` INTEGER PRIMARY KEY ASC AUTOINCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `Description` varchar(500) NULL,
+  `Sort` int(11) NULL,
+  `Deletable` tinyint(4) NOT NULL DEFAULT 1,
+  `CanSession` tinyint(4) NOT NULL DEFAULT 1
+);

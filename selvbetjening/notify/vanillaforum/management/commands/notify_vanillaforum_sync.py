@@ -3,8 +3,9 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.db.models import F
 
-from selvbetjening.notify.vanillaforum.models import RemoteUserAssociation, RemoteUser,\
-     Settings, register_new_user, update_user_settings
+from selvbetjening.notify.vanillaforum.models import RemoteUserAssociation,\
+     RemoteUser, RemoteUserRole, GroupRemoteRole, Settings, register_new_user,\
+     update_user_settings
 
 class Command(BaseCommand):
     help = 'Synchronise vanilla forum with selvbetjening'
@@ -115,3 +116,31 @@ class Command(BaseCommand):
 
             for user in skipped_users:
                 print 'Skipping %s due to missing association' % user.username
+
+        print 'Group Sync Status'
+
+        if not do_sync:
+            print 'UNKNOWN STATUS'
+        else:
+            group_rels = GroupRemoteRole.objects.filter(database_id=database_id)
+
+            for group_rel in group_rels:
+                RemoteUserRole.objects\
+                              .using(database_id)\
+                              .filter(role_id=group_rel.remote_role_id)\
+                              .delete()
+
+                for user in User.objects.filter(groups=group_rel.group):
+                    remote_user_rel = RemoteUserAssociation.objects\
+                                                           .using(database_id)\
+                                                           .get(selv_user_id=user.pk)
+
+                    RemoteUserRole.objects\
+                                  .using(database_id)\
+                                  .create(role_id=group_rel.remote_role_id,
+                                          user_id=remote_user_rel.remote_user_id)
+
+
+
+
+

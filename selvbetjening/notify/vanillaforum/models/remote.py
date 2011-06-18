@@ -19,6 +19,22 @@ class RemoteUser(models.Model):
         managed = False
         app_label = 'vanillaforum'
 
+class RemoteRole(models.Model):
+
+    id = models.AutoField(primary_key=True, unique=True, db_column='RoleID')
+
+    name = models.CharField(max_length=100, db_column='Name')
+    description = models.CharField(max_length=500, blank=True, db_column='Description')
+
+    sort = models.IntegerField(blank=True, db_column='Sort')
+    deletable = models.BooleanField(default=True, db_column='Deletable')
+    can_session = models.BooleanField(default=True, db_column='CanSession')
+
+    class Meta:
+        db_table = 'GDN_Role'
+        managed = False
+        app_label = 'vanillaforum'
+
 class RemoteUserRole(models.Model):
 
     user_id = models.IntegerField(db_column='UserID')
