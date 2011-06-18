@@ -1,0 +1,30 @@
+{% extends "profile/profile.html" %}
+{% load uni_form_tags %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% include "form_includes.html" %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Opdater dit forum billede' 'vanillaforum_editpicture' %}
+{% endblock %}
+
+{% block contenthead %}Opdater dit forum billede{% endblock %}
+
+{% block content %}
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+{% if settings.picture %}
+<h2>Dit nuværende billede</h2>
+<div id="profile-image">
+    <img src="{{MEDIA_URL}}{{settings.picture}}">
+</div>
+{% endif %}
+
+{% endblock %}

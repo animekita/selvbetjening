@@ -8,6 +8,9 @@ class RemoteUser(models.Model):
     password = models.CharField(max_length=50, db_column='Password')
     email = models.CharField(max_length=200, db_column='Email')
 
+    photo_url = models.CharField(max_length=255, blank=True, db_column='Photo')
+    preferences = models.TextField(blank=True, null=True, default=None, db_column='Preferences')
+
     registration_date = models.DateTimeField(auto_now_add=True, db_column='DateInserted')
     first_visit_date = models.DateTimeField(default=None, db_column='DateFirstVisit')
 

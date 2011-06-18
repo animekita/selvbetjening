@@ -20,6 +20,9 @@ urlpatterns = patterns('',
     (r'^api/',
      include('selvbetjening.api.sso.urls')),
 
+    (r'^notify/vanillaforum/',
+     include('selvbetjening.notify.vanillaforum.urls')),
+
     # Admin urls
     (r'^admin/', include(admin.site.urls)),
 )

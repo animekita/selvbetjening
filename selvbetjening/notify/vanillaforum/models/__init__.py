@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 from selvbetjening.core.database.dbrouter import DatabaseRouter
 from selvbetjening.notify import BaseNotifyRegistry
 
-from listeners import UserChangedListener, UserDeletedListener
 from remote import RemoteUserAssociation, RemoteUser
+from listeners import UserChangedListener, UserDeletedListener, \
+     SettingsChangedListener, register_new_user, update_user_settings
+
+from native import Settings
 
 class VanillaForumRegistry(BaseNotifyRegistry):
     def __init__(self):
@@ -17,7 +20,10 @@ class VanillaForumRegistry(BaseNotifyRegistry):
                           User),
                          (post_delete,
                           UserDeletedListener,
-                          User)]
+                          User),
+                         (post_save,
+                          SettingsChangedListener,
+                          Settings),]
 
 registry = VanillaForumRegistry()
 

@@ -1,0 +1,23 @@
+{% extends "profile/profile.html" %}
+{% load uni_form_tags %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% include "form_includes.html" %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% load breadcrumb_tags %}
+    {% add_crumb 'Opdater dine forum notifikationer' 'vanillaforum_editnotifications' %}
+{% endblock %}
+
+{% block contenthead %}Opdater dine forum notifikationer{% endblock %}
+
+{% block content %}
+
+{% with form.helper as helper %}
+    {% uni_form form helper %}
+{% endwith %}
+
+{% endblock %}

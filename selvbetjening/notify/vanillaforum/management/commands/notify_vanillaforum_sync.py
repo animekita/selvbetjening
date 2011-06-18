@@ -1,12 +1,10 @@
-import hashlib
-import random
-
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.db.models import F
 
-from selvbetjening.notify.vanillaforum.models import RemoteUserAssociation, RemoteUser
+from selvbetjening.notify.vanillaforum.models import RemoteUserAssociation, RemoteUser,\
+     Settings, register_new_user, update_user_settings
 
 class Command(BaseCommand):
     help = 'Synchronise vanilla forum with selvbetjening'
@@ -17,33 +15,31 @@ class Command(BaseCommand):
             config = settings.NOTIFY_VANILLAFORUM[instance_id]
 
             do_sync = (len(args) == 1 and args[0] == 'sync')
-            self.sync(config['database_id'], do_sync)
+            self.sync(config['database_id'], config['default_role_id'], do_sync)
 
-    def sync(self, database_id, do_sync):
+    def sync(self, database_id, default_role_id, do_sync):
         print 'Status for database %s' % database_id
         print ''
 
-        print 'User Sync Status'
+        print 'User Sync Status (Missing forum users)'
+
         synced_users = RemoteUser.objects.using(database_id).values_list('username', flat=True)
         unsynced_users = User.objects.exclude(username__in=list(synced_users))
 
         if unsynced_users.count() == 0:
             print 'OK'
+
         elif not do_sync:
             print 'UNSYNCED! Please sync immediately'
+
         else:
             for user in unsynced_users:
-                random_pass = hashlib.sha1(str(random.randint(0, 99999999))).hexdigest()
-
-                RemoteUser.objects.using(database_id)\
-                                  .create(username=user.username,
-                                          password=random_pass,
-                                          email=user.email)
-
+                register_new_user(database_id, default_role_id, user)
                 print 'User %s created in vanilla' % user.username
 
 
-        print 'Remote User Association Sync Status'
+        print 'Remote User Association Sync Status (Missing user associations)'
+
         synced_user_ids = RemoteUserAssociation.objects.using(database_id)\
                                                        .all()\
                                                        .values_list('selv_user_id', flat=True)
@@ -65,6 +61,9 @@ class Command(BaseCommand):
                                                  .create(selv_user_id=unsynced_user.pk,
                                                          remote_user_id=remote_user.id)
 
+                    user_settings, created = Settings.objects.get_or_create(user=user)
+                    update_user_settings(database_id, user_settings)
+
                     print '.',
                 except RemoteUser.DoesNotExist:
                     ignored_users.append(unsynced_user)
@@ -74,11 +73,7 @@ class Command(BaseCommand):
 
             print ' Synced!'
 
-
-        print 'Group Sync Status'
-        print '<not implemented>'
-
-        print 'Date Sync Status'
+        print 'Registration Date Sync Status'
 
         users_high_registration_date = RemoteUser.objects.using(database_id)\
                                                  .filter(first_visit_date__lt=F('registration_date'))

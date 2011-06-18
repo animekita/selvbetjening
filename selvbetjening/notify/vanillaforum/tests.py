@@ -4,7 +4,8 @@ from django.core.management.base import CommandError
 from selvbetjening.core.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase
 
-from models import RemoteUser, RemoteUserAssociation, registry
+from models import RemoteUser, RemoteUserAssociation, registry, Settings
+from management.commands import notify_vanillaforum_sync
 
 class VanillaBaseTestCase(BaseNotifyTestCase):
     _active_test_file = __file__
@@ -94,3 +95,59 @@ class VanillaUserTestCase(VanillaBaseTestCase):
                                        .count())
 
         self.check_databases(action)
+
+
+    def test_change_picture(self):
+        """
+        Change forum picture
+        """
+
+        user = Database.new_user()
+
+        def action(database_id):
+            remote_user = RemoteUser.objects.using(database_id).all()[0]
+            self.assertEqual('', remote_user.photo_url)
+
+        self.check_databases(action)
+
+        import os
+        CURRENTDIR = os.path.abspath(os.path.dirname(__file__))
+
+        user_settings, created = Settings.objects.get_or_create(user=user)
+        user_settings.picture = os.path.join(CURRENTDIR, 'test.png')
+        user_settings.save()
+
+        def action(database_id):
+            remote_user = RemoteUser.objects.using(database_id).all()[0]
+            self.assertNotEqual('', remote_user.photo_url)
+
+        self.check_databases(action)
+
+    def test_change_preferences(self):
+        """
+        Change user preferences
+        """
+
+        user = Database.new_user()
+
+        def action(database_id):
+            remote_user = RemoteUser.objects.using(database_id).all()[0]
+            self.assertNotEqual(None, remote_user.preferences)
+            self.assertFalse('NewDiscussion' in remote_user.preferences)
+
+        self.check_databases(action)
+
+        user_settings = Settings.objects.get(user=user)
+        user_settings.notify_new_discussion_email = True
+        user_settings.save()
+
+        def action(database_id):
+            remote_user = RemoteUser.objects.using(database_id).all()[0]
+            self.assertTrue('NewDiscussion' in remote_user.preferences)
+
+        self.check_databases(action)
+
+    def test_do_sync(self):
+        cmd = notify_vanillaforum_sync.Command()
+        cmd.handle('sync')
+
