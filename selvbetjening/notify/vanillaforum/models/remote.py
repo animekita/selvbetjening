@@ -37,14 +37,13 @@ class RemoteRole(models.Model):
 
 class RemoteUserRole(models.Model):
 
-    user_id = models.IntegerField(db_column='UserID')
-    role_id = models.IntegerField(db_column='RoleID')
+    user_id = models.IntegerField(primary_key=True, db_column='UserID')
+    role_id = models.IntegerField(primary_key=True, db_column='RoleID')
 
     class Meta:
         db_table = 'GDN_UserRole'
         managed = False
         app_label = 'vanillaforum'
-        unique_together = (('user_id', 'role_id'),)
 
 class RemoteUserAssociationManager(models.Manager):
 

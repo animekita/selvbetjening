@@ -140,6 +140,8 @@ class Command(BaseCommand):
                                   .create(role_id=group_rel.remote_role_id,
                                           user_id=remote_user_rel.remote_user_id)
 
+            print 'Synced!'
+
 
 
 
