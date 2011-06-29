@@ -11,17 +11,20 @@ class SettingsForm(forms.ModelForm):
 
     class Meta:
         model = Settings
-        exclude = ('user', 'picture')
+        exclude = ('user', 'picture', 'notify_mentioned_in_titles_popup',
+                   'notify_mentioned_in_titles_email',
+                   'notify_mentioned_in_comments_popup',
+                   'notify_mentioned_in_comments_email')
 
 
     notify_comment_discussions_popup = forms.BooleanField(required=False, label='Popup')
     notify_comment_discussions_email = forms.BooleanField(required=False, label='E-mail')
 
-    notify_mentioned_in_titles_popup = forms.BooleanField(required=False, label='Popup')
-    notify_mentioned_in_titles_email = forms.BooleanField(required=False, label='E-mail')
+    #notify_mentioned_in_titles_popup = forms.BooleanField(required=False, label='Popup')
+    #notify_mentioned_in_titles_email = forms.BooleanField(required=False, label='E-mail')
 
-    notify_mentioned_in_comments_popup = forms.BooleanField(required=False, label='Popup')
-    notify_mentioned_in_comments_email = forms.BooleanField(required=False, label='E-mail')
+    #notify_mentioned_in_comments_popup = forms.BooleanField(required=False, label='Popup')
+    #notify_mentioned_in_comments_email = forms.BooleanField(required=False, label='E-mail')
 
     notify_comment_bookmarked_popup = forms.BooleanField(required=False, label='Popup')
     notify_comment_bookmarked_email = forms.BooleanField(required=False, label='E-mail')
@@ -39,13 +42,13 @@ class SettingsForm(forms.ModelForm):
                        Row('notify_comment_discussions_popup',
                            'notify_comment_discussions_email')),
 
-        InlineFieldset(_(u'Notify me when people mention me in discussion titles'),
-                       Row('notify_mentioned_in_titles_popup',
-                           'notify_mentioned_in_titles_email')),
+        #InlineFieldset(_(u'Notify me when people mention me in discussion titles'),
+                       #Row('notify_mentioned_in_titles_popup',
+                           #'notify_mentioned_in_titles_email')),
 
-        InlineFieldset(_(u'Notify me when people mention me in comments'),
-                       Row('notify_mentioned_in_comments_popup',
-                           'notify_mentioned_in_comments_email')),
+        #InlineFieldset(_(u'Notify me when people mention me in comments'),
+                       #Row('notify_mentioned_in_comments_popup',
+                           #'notify_mentioned_in_comments_email')),
 
         InlineFieldset(_(u'Notify me when people comment on my bookmarked discussions'),
                        Row('notify_comment_bookmarked_popup',
