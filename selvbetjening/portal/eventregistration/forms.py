@@ -3,6 +3,7 @@
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext_lazy, ugettext_lazy
 from django import forms
+from django.utils.safestring import mark_safe
 
 from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
 

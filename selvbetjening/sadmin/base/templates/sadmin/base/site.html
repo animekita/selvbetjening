@@ -6,7 +6,7 @@
     <header class="top-header"><div class="center">
 
     {% block branding %}
-      <h1>Selvbetjening</h1>
+      <a href="{% url sadmin:dashboard %}"><h1>Selvbetjening</h1></a>
       <h2>v{{ VERSION }}</h2>
     {% endblock %}
 
@@ -29,23 +29,27 @@
     </div></nav>
     {% endif %}
 
+    {% if not is_popup %}
+    {% block navigation %}{% if menu %}
+    
+      {% get_navigation_pages menu current_page as pages %}
+
+      <div class="center">
+      <nav class="secondary-nav">
+      <ul>
+        {% for page in pages %}
+          <li{% if page.current_page %} class="current"{% endif %}><a href="{{page.url}}">{{page.title|lower}}</a></li>
+        {% endfor %}
+      </ul>
+      </nav>
+      </div>
+
+    {% endif %}{% endblock %}
+    {% endif %}
+    
     <div class="center">
 
     <header class="page-header">
-    {% if current_page and not is_popup %}
-      <nav class="breadcrumbs">
-      {% get_breadcrumbs current_page as breadcrumbs %}
-        <ul>
-          {% for page in breadcrumbs %}
-          {% if not forloop.last %}
-            <li><a href="{{ page.url }}">{{ page.title }}</a> &raquo;</li>
-          {% else %}
-            <li>{{ page.title }}</li>
-          {% endif %}
-          {% endfor %}
-        </ul>
-      </nav>
-    {% endif %}
 
     {% if not is_popup %}
     {% if action_menu or related_objects_menu %}
@@ -75,15 +79,28 @@
 
     {% block pretitle %}{% endblock %}
     {% block content_title %}{% if title %}<h2>{{ title }}</h2>{% endif %}{% endblock %}
-    </header>
+    
+    {% if current_page and not is_popup %}
+        <nav class="breadcrumbs">
+        {% get_breadcrumbs current_page as breadcrumbs %}
+          <ul>
+            {% for page in breadcrumbs %}
+            {% if not forloop.last %}
+              <li><a href="{{ page.url }}">{{ page.title }}</a> &raquo;</li>
+            {% else %}
+              <li>{{ page.title }}</li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </nav>
+    {% endif %}
 
     {% if not is_popup %}
+    {% block tabbed_menu %}{% if tabbed_menu %}
+    
+      {% get_navigation_pages tabbed_menu current_page as pages %}
 
-    {% block navigation %}
-    {% if menu %}
-      {% get_navigation_pages menu current_page as pages %}
-
-      <nav class="secondary-nav">
+      <nav class="tabbed-nav">
       <ul>
         {% for page in pages %}
           <li{% if page.current_page %} class="current"{% endif %}><a href="{{page.url}}">{{page.title|lower}}</a></li>
@@ -91,10 +108,10 @@
       </ul>
       </nav>
 
-    {% endif %}
-    {% endblock %}
-
-    {% endif %}
+    {% endif %}{% endblock %}
+    {% endif %}    
+    
+    </header>
 
     <div id="main">
 

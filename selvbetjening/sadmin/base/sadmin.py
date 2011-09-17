@@ -10,7 +10,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib import admin
 from django.contrib.auth import logout as do_logout
 from django.contrib import messages
-from django.template import mark_safe
+from django.utils.safestring import mark_safe
 
 from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.core import ObjectWrapper
@@ -230,7 +230,8 @@ class SModelAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['menu'] = self.object_menu
+        extra_context['menu'] = self.sadmin_menu
+        extra_context['tabbed_menu'] = self.object_menu
         extra_context['action_menu'] = self.object_action_menu
         extra_context['current_page'] = self.page_change
         extra_context['related_objects_menu'] = self.related_objects_menu
@@ -248,7 +249,8 @@ class SModelAdmin(admin.ModelAdmin):
     def delete_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
         extra_context['current_page'] = self.page_delete
-        extra_context['menu'] = self.object_menu
+        extra_context['menu'] = self.sadmin_menu
+        extra_context['tabbed_menu'] = self.object_menu
         extra_context['action_menu'] = self.object_action_menu
         extra_context['title'] = _(u'Delete %s') % self.Meta.display_name
 

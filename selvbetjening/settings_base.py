@@ -2,13 +2,14 @@
 # per. instance settings.py file.
 
 # pre setup
+import selvbetjening
 import os
 SELV_DIRNAME = os.path.abspath(os.path.dirname(__file__))
 
 from selvbetjening import contrib
 contrib.add_contrib_to_python_path()
 
-VERSION = '6.2.0'
+VERSION = selvbetjening.__version__
 
 # debugging
 DEBUG = False
@@ -23,7 +24,7 @@ SITE_ID = 1
 
 USE_I18N = True
 
-TIME_ZONE = 'Denmark/Copenhagen'
+TIME_ZONE = 'Europe/Copenhagen'
 LANGUAGE_CODE = 'da-dk'
 
 LOGIN_REDIRECT_URL = '/profil/'

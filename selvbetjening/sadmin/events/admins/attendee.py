@@ -36,7 +36,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
     def in_balance(attendee):
         if attendee.invoice.in_balance():
-            return '<span class="attr success">%s</span>' % _('Betalt')
+            return '<span class="attr success">%s</span>' % _('Paid')
         elif attendee.invoice.is_overpaid():
             return '<span class="attr warning">%s</span>' % _('Overpaid')
         elif attendee.invoice.is_partial():

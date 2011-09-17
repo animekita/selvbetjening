@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-27 20:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: forms.py:33
+msgid "User not found"
+msgstr "Bruger ikke fundet"
+
+#: forms.py:45
+msgid "Yes, send the newsletter to all users."
+msgstr "Ja, send nyhedsbrevet til alle brugere."
+
+#: forms.py:48
+msgid "You must confirm you actually want to send this e-mail to all users."
+msgstr "Bekræft venligst at du vil sende denne e-mail til alle valgte brugere."
+
+#: forms.py:76
+msgid "User"
+msgstr "Bruger"
+
+#: forms.py:88
+msgid "Attends"
+msgstr "Tilmeldt"
+
+#: forms.py:102
+msgid "Event"
+msgstr "Event"
+
+#: admins/emailspecification.py:36
+msgid "Recipient"
+msgstr "Modtager"
+
+#: admins/emailspecification.py:39
+msgid "Source"
+msgstr "Kilde"
+
+#: admins/emailspecification.py:41
+msgid ""
+"\n"
+"            <p>You can bind an e-mail to an event in Selvbetjening, sending "
+"the bound e-mail\n"
+"            each time the event is triggered. The recipient of this e-mail "
+"is the user for\n"
+"            which the event concerns.</p>\n"
+"\n"
+"            <p>E.g. the <i>\"user registered for event\"</i> event is "
+"triggered when a user registers\n"
+"            for the event, and a bound e-mail would be send to that given "
+"user.</p>\n"
+"\n"
+"            <p>Depending on the bound event, additional parameters are made "
+"available for the e-mail template. A user parameter, representing the "
+"receiver, is always present. Furthermore, bound e-mails can't be send as "
+"mass e-mail.</p>\n"
+"            "
+msgstr ""
+
+#: admins/emailspecification.py:59
+msgid "Filters"
+msgstr "Filtre"
+
+#: admins/emailspecification.py:64
+msgid "Send"
+msgstr "Send"
+
+#: admins/emailspecification.py:69
+msgid "Mass E-email"
+msgstr "Nyhedsbrev"
+
+#: admins/emailspecification.py:75
+msgid "E-mail"
+msgstr "E-mail"
+
+#: admins/emailspecification.py:108
+msgid "Change E-mail"
+msgstr "Ændre e-mail"
+
+#: admins/emailspecification.py:113
+msgid "Browse E-mails"
+msgstr "Læs e-mails"
+
+#: admins/emailspecification.py:128
+msgid "Filter successfully updated"
+msgstr "Filter opdateret"
+
+#: admins/emailspecification.py:165
+#, python-format
+msgid "Newsletter sucessfully sent to %s receipients"
+msgstr "Nyhedsbrev sendt til %s personer"
+
+#: admins/emailspecification.py:192
+#, python-format
+msgid "E-mail successfully sent to %s"
+msgstr "E-mail sendt til %s"
+
+#: admins/outgoing.py:14
+msgid "Outgoing E-mail"
+msgstr "Udgående e-mail"
+
+#: admins/outgoing.py:15 admins/outgoing.py:23
+msgid "Outgoing E-mails"
+msgstr "Udgående e-mails"
+
+#: templates/sadmin/mailcenter/email/filter.html:19
+msgid "Save"
+msgstr "Gem"
+
+#: templates/sadmin/mailcenter/email/massemail.html:25
+msgid "Send mass e-mail"
+msgstr "Send nyhedsbrev"
+
+#: templates/sadmin/mailcenter/email/send.html:21
+msgid "Send e-mail"
+msgstr "Send e-mail"

@@ -106,6 +106,8 @@ class UserAdmin(SModelAdmin):
 
         access_admin = AccessAdmin()
         access_admin.page_change.parent = self.page_change
+        access_admin.sadmin_menu = self.sadmin_menu
+        access_admin.object_action_menu = self.object_action_menu
         access_admin.object_menu = self.object_menu
         self.object_menu.register(access_admin.page_change, title=_(u'Access'))
 
@@ -169,7 +171,9 @@ class UserAdmin(SModelAdmin):
             'save_as': False,
             'show_save': True,
             'root_path': self.admin_site.root_path,
-            'menu': self.object_menu,
+            'menu': self.sadmin_menu,
+            'tabbed_menu': self.object_menu,
+            'action_menu': self.object_action_menu,
             'current_page': self.page_change_password,
         }, context_instance=RequestContext(request))
 
