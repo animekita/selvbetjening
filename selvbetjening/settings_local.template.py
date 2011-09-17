@@ -24,14 +24,25 @@ DATABASES = {
 # Site url (no trailing slash)
 SITE_URL = 'http://'
 
-# Absolute path to the directory that holds media (with trailing slash).
-MEDIA_ROOT = '/static/'
+# Absolute path to the directory that holds media - uploaded files
+# USE TRAILING SLASH
+MEDIA_ROOT = '/path/to/media/'
 
-# URL that handles the media served from MEDIA_ROOT (with trailing slash)
-MEDIA_URL = 'http://static/'
+# URL that handles the media served from MEDIA_ROOT
+# USE TRAILING SLASH
+MEDIA_URL = 'http://media/'
 
-# URL prefix for admin media (with trailing slash).
-ADMIN_MEDIA_PREFIX = '/media/'
+# Absolute path to the directory that holds static files - javascript, css etc.
+# USE TRAILING SLASH
+STATIC_ROOT = '/path/to/static/files/'
+
+# URL that handles the static files served from STATIC_ROOT
+# USE TRAILING SLASH
+STATIC_URL = 'http://static/'
+
+# URL prefix for admin media
+# USE TRAILING SLASH
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 # session settings
 SESSION_COOKIE_NAME = 'kita_auth_token'

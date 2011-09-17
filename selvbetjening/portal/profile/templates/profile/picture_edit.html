@@ -26,7 +26,7 @@
     {% if user.get_profile.picture %}
     <img src="{{MEDIA_URL}}{{user.get_profile.picture}}">
     {% else %}
-    <img src="{{MEDIA_URL}}/no_account_picture.jpg">
+    <img src="{{STATIC_URL}}no_account_picture.jpg">
     {% endif %}
 </div>
 

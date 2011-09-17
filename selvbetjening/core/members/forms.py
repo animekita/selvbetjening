@@ -266,7 +266,7 @@ class ProfileForm(BaseProfileForm):
             websites.append(Row(name_field, url_field))
 
         link_text = _(u'Add website')
-        add_url = '%sgraphics/icons/add.png' % settings.MEDIA_URL
+        add_url = '%sgraphics/icons/add.png' % settings.STATIC_URL
 
 
         template_field_name = self.WEBSITE_NAME_FIELDNAME % 'new[ELEMENT_ID]'

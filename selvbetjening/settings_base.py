@@ -51,6 +51,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
 
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
@@ -83,6 +84,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
 
     'selvbetjening.core.database',
 

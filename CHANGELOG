@@ -7,6 +7,10 @@ Dependencies
  * Updaged django-debug-toolbar to 0.8.5
  * Updated django-tinymce to 1.5.1a2
 
+Refactoring
+
+ * Now using django.contrib.staticfiles - update MEDIA_ROOT et.al. accordingly
+
 6.3.0
 
 Vanilla Forum Integration:
