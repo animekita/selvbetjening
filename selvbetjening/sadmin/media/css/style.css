@@ -23,12 +23,12 @@
 	font-style: normal;
 }
 
-body { 
-  font-family: "DejaVuSansCondensed",sans-serif; 
-  padding: 0 0 0 0; 
-  background-color: red; 
+body {
+  font-family: "DejaVuSansCondensed",sans-serif;
+  padding: 0 0 0 0;
+  background-color: red;
   color: #000000;
-  
+
   background-image: url(../images/bg.png);
   background-repeat: repeat-all;
 }
@@ -92,6 +92,11 @@ div.login div.ctrlHolder input { width: 255px; }
 div.login div.buttonHolder { width: 550px; background-color: rgba(0, 0, 0, 0); }
 div.login div.buttonHolder input { font-size: 1.4em; }
 
+div.login #errorMsg { width: 530px; }
+div.login #errorMsg h3 { display: none; }
+div.login #errorMsg ol { list-style: none; margin: 0;  }
+div.login #errorMsg li { margin-left: 0; color: #000000; background-color: #FFDFDF; font-size: 1em; }
+
 p.copyright {
   text-align: center;
   color: #ffffff;
@@ -128,10 +133,10 @@ nav.authentication-nav ul li:hover { background-color: #a40000; }
 nav.authentication-nav ul li a:hover, nav ul li a:active, nav ul li a:visited { color: #ffffff; }
 
 /* Primary, Secondary and Action nav */
-nav.primary-nav { 
-  margin-bottom: 0; 
-  background-color: #a40000; 
-  min-width: 1024px; 
+nav.primary-nav {
+  margin-bottom: 0;
+  background-color: #a40000;
+  min-width: 1024px;
 }
 
 nav.secondary-nav {
@@ -166,9 +171,9 @@ nav.primary-nav ul li.current { background-color: #510101; }
 nav.secondary-nav ul li.current a { border-color: #A40000; border-style: solid; border-width: 0 0 3px 0; }
 nav.tabbed-nav ul li.current a { border-color: #A40000; border-style: solid; border-width: 0 0 3px 0; }
 
-nav.action-nav ul li { 
-  background-color: #000000; 
-  margin-left: 1em; 
+nav.action-nav ul li {
+  background-color: #000000;
+  margin-left: 1em;
   border-radius-topright: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-right-radius: 5px;
   border-radius-bottomright: 5px; -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px;
   border-radius-bottomleft: 5px; -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px;
