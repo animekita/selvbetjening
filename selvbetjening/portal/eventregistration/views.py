@@ -84,7 +84,7 @@ def signup(request, event,
             handler.save(attendee)
 
             attendee.invoice.update(force=True)
-            
+
             attendes_event_source.trigger(request.user, attendee=attendee)
 
             return HttpResponseRedirect(
@@ -147,6 +147,7 @@ def signoff(request, event,
 def change_options(request, event,
                    form=OptionForms,
                    success_page='eventregistration_status',
+                   omit_event_id_on_success=False,
                    template_name='eventregistration/change_options.html'):
 
     attendee = Attend.objects.get(user=request.user, event=event)
@@ -170,7 +171,7 @@ def change_options(request, event,
                        request=request, event=attendee.event)
 
             return HttpResponseRedirect(
-                reverse(success_page, kwargs={'event_id':event.id}))
+                reverse(success_page, kwargs={'event_id':event.id} if not omit_event_id_on_success else {}))
 
     else:
         form = OptionForms(event, attendee=attendee)

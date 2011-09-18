@@ -79,7 +79,7 @@ class BaseProfileForm(forms.Form):
     email = forms.EmailField(max_length=75, label=_(u'E-mail'))
 
     dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(
-        years=range(1910, 2011)), label=_(u'Date of birth'))
+        years=range(1910, 2012)), label=_(u'Date of birth'))
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),

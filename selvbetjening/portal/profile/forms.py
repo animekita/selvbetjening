@@ -3,9 +3,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import PasswordChangeForm
 from django import forms
 
-from uni_form.helpers import FormHelper, Submit, Fieldset, Layout, HTML
+from uni_form.helpers import FormHelper, Submit, Layout, HTML
 
-from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import InlineFieldset, Fieldset
 from selvbetjening.core.members.forms import UsernameField, validate_username
 
 from processor_handlers import extended_privacy_processors
@@ -14,7 +14,7 @@ from models import UserPrivacy
 class LoginForm(AuthenticationForm):
     helper = FormHelper()
 
-    layout = Layout(InlineFieldset(None, 'username', 'password'))
+    layout = Layout(Fieldset(None, 'username', 'password'))
     submit = Submit('submit_login', _('Sign in'))
 
     helper.add_layout(layout)
