@@ -69,12 +69,13 @@ class OptionGroupForm(forms.Form):
         if display_params is None:
             display_params = {}
 
-        if len(suboptions) > 0:
-            display_params['children'] = (self._get_sub_id(option),)
+        #if len(suboptions) > 0:
+        #    display_params['children'] = (self._get_sub_id(option),)
 
         self.fields[self._get_id(option)] = forms.BooleanField(label=option.name,
                                                                required=False,
-                                                               help_text=option.description)
+                                                               help_text=option.description,
+                                                               widget=forms.CheckboxInput(attrs=display_params))
 
         if len(suboptions) > 0:
             choices = [(suboption.id, suboption.name) for suboption in suboptions]
