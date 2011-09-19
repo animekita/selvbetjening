@@ -7,54 +7,55 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-23 18:55+0200\n"
+"POT-Creation-Date: 2011-09-19 23:36+0200\n"
 "PO-Revision-Date: 2009-08-09 21:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:46
+#: forms.py:50
 msgid "Accept terms"
 msgstr "Accepter betingelser"
 
-#: forms.py:52
+#: forms.py:56
 msgid "I have read and accept the above described terms"
 msgstr "Jeg har læst og accepteret overstående betingelser"
 
-#: forms.py:55
+#: forms.py:59
 msgid "You must accept to participate in the event"
 msgstr "Du skal acceptere dette for at deltage i arrangementet"
 
-#: forms.py:63
+#: forms.py:67
 msgid "Sign off"
 msgstr "Afmeld"
 
-#: forms.py:68
+#: forms.py:72
 msgid "Yes, remove me from the event"
 msgstr "Ja, fjern mig fra dette arrangement"
 
-#: forms.py:71
+#: forms.py:75
 msgid "You must accept to remove your participation in the event"
 msgstr "Du skal acceptere dette for at afmelde dig arrangementet"
 
-#: forms.py:95
+#: forms.py:100
 msgid "The maximum number of attendees have been reached"
 msgstr "Det maksimale antal deltagere er opnået"
 
-#: forms.py:98
+#: forms.py:103
 msgid "This option can not be selected anymore"
 msgstr "Denne valgmulighed kan ikke vælges længere"
 
-#: forms.py:119
+#: forms.py:124
 #, python-format
 msgid "You need to select one option from the group %(group)s"
 msgid_plural "You need to select %(count)d options from the group %(group)s"
 msgstr[0] "Du skal vælge mindst en valgmulighed fra gruppen %(group)s"
 msgstr[1] "Du skal vælge mindst %(count)d valgmuligheder fra gruppen %(group)s"
 
-#: forms.py:131
+#: forms.py:136
 #, python-format
 msgid "You can not select more than one option from the group %(group)s"
 msgid_plural ""
@@ -63,10 +64,13 @@ msgstr[0] "Du kan ikke vælge mere end en valgmulighed fra gruppen %(group)s"
 msgstr[1] ""
 "Du kan ikke vælge mere end %(count)d valgmuligheder fra gruppen %(group)s"
 
-#: views.py:89
-msgid "You are now signed up to the event."
-msgstr "Du er nu blevet tilmeldt dette arrangement."
-
-#: views.py:129
+#: views.py:132
 msgid "You are now removed from the event."
 msgstr "Du er nu blevet fjernet dette arrangement."
+
+#: templates/eventregistration/change_options.html:26
+msgid "Change"
+msgstr "Ændre"
+
+#~ msgid "You are now signed up to the event."
+#~ msgstr "Du er nu blevet tilmeldt dette arrangement."

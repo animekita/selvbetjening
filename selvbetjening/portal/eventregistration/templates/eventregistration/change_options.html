@@ -1,5 +1,5 @@
 {% extends "events/base_event.html" %}
-{% load uni_form_tags %}
+{% load uni_form_tags i18n %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -23,7 +23,7 @@
 {{ signup_render|safe }}
 
 <div class="buttonHolder">
-	<input type="submit" name="Ændre" value="Ændre" />
+	<input type="submit" name="Ændre" value="{% trans "Change" %}" />
 </div>
 
 </form>

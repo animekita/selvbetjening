@@ -35,7 +35,7 @@ class UsernameField(forms.CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 30
         kwargs['widget'] = forms.TextInput()
-        kwargs['label'] = _(u"username")
+        kwargs['label'] = _(u"Username")
         kwargs['help_text'] = _(u"Your username can only contain the characters a-z, underscore and numbers.")
 
         super(UsernameField, self).__init__(*args, **kwargs)
@@ -360,20 +360,20 @@ class RegistrationForm(BaseProfileForm):
 
     username = UsernameField()
     password1 = forms.CharField(widget=forms.PasswordInput(),
-                                label=_(u"password"))
+                                label=_(u"Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(),
-                                label=_(u"verify password"))
+                                label=_(u"Verify password"))
 
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow the storage of my personal information on this site."))
 
-    layout = Layout(InlineFieldset(_(u"personal information"),
+    layout = Layout(InlineFieldset(_(u"Personal Information"),
                              'first_name', 'last_name', 'dateofbirth', 'sex', 'phonenumber', 'email', 'send_me_email'),
-                    InlineFieldset(_(u"address"),
+                    InlineFieldset(_(u"Address"),
                              'street', 'postalcode', 'city', 'country'),
-                    InlineFieldset(_(u"user"),
+                    InlineFieldset(_(u"User"),
                              'username', 'password1', 'password2'),
-                    InlineFieldset(_(u"data management terms"),
+                    InlineFieldset(_(u"Data management terms"),
                              'tos'))
 
     helper = FormHelper()
