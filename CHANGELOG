@@ -11,6 +11,10 @@ Refactoring
 
  * Now using django.contrib.staticfiles - update MEDIA_ROOT et.al. accordingly
 
+Options and option groups
+
+ * Now selections in an option group can be locked for all accepted attendees
+
 6.3.0
 
 Vanilla Forum Integration:

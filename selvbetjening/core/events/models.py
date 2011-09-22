@@ -410,6 +410,7 @@ class OptionGroup(models.Model):
     order = models.IntegerField(_('Order'), default=0)
 
     public_statistic = models.BooleanField(default=False)
+    lock_selections_on_acceptance = models.BooleanField(default=False)
 
     class Translation:
         fields = ('name', 'description')

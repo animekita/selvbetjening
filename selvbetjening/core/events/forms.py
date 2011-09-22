@@ -9,6 +9,8 @@ from selvbetjening.viewbase.forms.helpers import InlineFieldset
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.models import Payment
 
+from models import AttendState
+
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
         self.optiongroup = translate_model(optiongroup)
@@ -37,7 +39,10 @@ class OptionGroupForm(forms.Form):
 
             selected = option in selected_options
 
-            disabled = option.max_attendees_reached() and not selected
+            disabled = self.attendee is not None and \
+                self.optiongroup.lock_selections_on_acceptance == True and \
+                self.attendee.state != AttendState.waiting
+            disabled = disabled or (option.max_attendees_reached() and not selected)
             disabled = disabled or option.is_frozen()
 
             suboptions = option.suboptions

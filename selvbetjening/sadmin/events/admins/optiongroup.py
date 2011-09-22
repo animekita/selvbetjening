@@ -27,7 +27,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
             'classes' : ('collapse', ),
             }),
         (_('Other'), {
-            'fields' : ('order', 'public_statistic',),
+            'fields' : ('order', 'public_statistic', 'lock_selections_on_acceptance'),
             }),)
 
     inlines = [TranslationInline,]
