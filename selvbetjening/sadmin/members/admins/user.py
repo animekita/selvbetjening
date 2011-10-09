@@ -135,7 +135,18 @@ class UserAdmin(SModelAdmin):
     def add_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['title'] = _(u'Create Member')
-        return super(UserAdmin, self).add_view(request, extra_context=extra_context)
+        
+        # fix problem with creating users with profiles directly
+        inlines = self.inline_instances
+        self.inline_instances = [] 
+        # fix end
+        
+        result = super(UserAdmin, self).add_view(request, extra_context=extra_context)
+        
+        # restore from fix
+        self.inline_instances = inlines
+        
+        return result
 
     def user_change_password(self, request, username):
         """
