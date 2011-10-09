@@ -19,5 +19,13 @@ class Fieldset(helpers.Fieldset):
 
 class InlineFieldset(Fieldset):
     def __init__(self, *args, **kwargs):
+        ext_class = kwargs.get('ext_class', None)
+        
+        if ext_class is None:
+            ext_class = 'inlineLabels'
+        else:
+            ext_class += ' inlineLabels'
+            
+        kwargs['ext_class'] = ext_class
+        
         super(InlineFieldset, self).__init__(*args, **kwargs)
-        self.css = 'inlineLabels'

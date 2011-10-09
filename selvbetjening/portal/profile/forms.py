@@ -20,6 +20,19 @@ class LoginForm(AuthenticationForm):
     helper.add_layout(layout)
     helper.add_input(submit)
     helper.use_csrf_protection = True
+    
+    def clean(self):
+        """
+        Overwrite clean in order to provide an more clean error message
+        """
+        
+        try:
+            return super(LoginForm, self).clean()
+        except forms.ValidationError, ex:
+            if self.user_cache is None:
+                ex = forms.ValidationError(_(u"Please enter a correct username and password."))
+            
+            raise ex
 
 class ChangePasswordForm(PasswordChangeForm):
     helper = FormHelper()

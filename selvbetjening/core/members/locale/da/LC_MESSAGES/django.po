@@ -5,6 +5,7 @@
 # , fuzzy
 #
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"

@@ -6,7 +6,14 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    no_dry_run = True
+    
     def forwards(self, orm):
+
+        should_not_be_none = orm['members.userprofile'].objects.filter(sex=None)
+        for item in should_not_be_none:
+            item.sex = ''
+            item.save()
 
         # Changing field 'UserProfile.picture'
         db.alter_column('members_userprofile', 'picture', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True))

@@ -99,7 +99,7 @@ class OptionGroupForm(forms.Form):
             self.attendee = attendee
 
         for option, suboptions in self.save_options:
-            if self.cleaned_data.get(self._get_id(option), False):
+            if self.is_selected(option.pk):
                 suboption_id = self.cleaned_data.get(self._get_sub_id(option), None)
 
                 if suboption_id:
@@ -111,6 +111,13 @@ class OptionGroupForm(forms.Form):
             else:
                 self.attendee.deselect_option(option)
 
+    def is_selected(self, option_pk):
+        return self.cleaned_data.get(self._get_id_pk(option_pk), False)
+    
+    @staticmethod
+    def _get_id_pk(option_pk):
+        return 'option_' + str(option_pk)
+    
     @staticmethod
     def _get_id(option):
         return 'option_' + str(option.pk)
@@ -144,6 +151,13 @@ class OptionForms(object):
     def save(self, attendee=None):
         for form in self.forms:
             form.save(attendee=attendee)
+            
+    def is_selected(self, option_pk):
+        for form in self.forms:
+            if form.is_selected(option_pk):
+                return True
+            
+        return False
 
     def __iter__(self):
         for form in self.forms:
