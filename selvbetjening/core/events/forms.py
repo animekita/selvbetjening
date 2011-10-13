@@ -32,12 +32,12 @@ class OptionGroupForm(forms.Form):
 
         super(OptionGroupForm, self).__init__(*args, **kwargs)
 
-        selected_options = [selection.option for selection in selections]
+        self.selected_option_pks = [selection.option.pk for selection in selections]
 
         for option in optiongroup.options:
             translate_model(option)
 
-            selected = option in selected_options
+            selected = option.pk in self.selected_option_pks
 
             disabled = self.attendee is not None and \
                 self.optiongroup.lock_selections_on_acceptance == True and \
@@ -99,7 +99,7 @@ class OptionGroupForm(forms.Form):
             self.attendee = attendee
 
         for option, suboptions in self.save_options:
-            if self.is_selected(option.pk):
+            if self.cleaned_data.get(self._get_id_pk(option.pk), False):
                 suboption_id = self.cleaned_data.get(self._get_sub_id(option), None)
 
                 if suboption_id:
@@ -112,7 +112,10 @@ class OptionGroupForm(forms.Form):
                 self.attendee.deselect_option(option)
 
     def is_selected(self, option_pk):
-        return self.cleaned_data.get(self._get_id_pk(option_pk), False)
+        if option_pk in [option.pk for option in self.save_options]:
+            return self.cleaned_data.get(self._get_id_pk(option_pk), False)
+        else:
+            return option_pk in self.selected_option_pks
     
     @staticmethod
     def _get_id_pk(option_pk):
