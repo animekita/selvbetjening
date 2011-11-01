@@ -112,7 +112,7 @@ class OptionGroupForm(forms.Form):
                 self.attendee.deselect_option(option)
 
     def is_selected(self, option_pk):
-        if option_pk in [option.pk for option in self.save_options]:
+        if option_pk in [option.pk for option, suboptions in self.save_options]:
             return self.cleaned_data.get(self._get_id_pk(option_pk), False)
         else:
             return option_pk in self.selected_option_pks
