@@ -11,6 +11,7 @@ from django.contrib import admin
 from django.contrib.auth import logout as do_logout
 from django.contrib import messages
 from django.utils.safestring import mark_safe
+from django.utils.datastructures import SortedDict
 
 from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.core import ObjectWrapper
@@ -31,15 +32,22 @@ class SAdminSite(admin.AdminSite):
 
         self.page_root = SPage('Dashboard',
                                'sadmin:dashboard')
+        
+        self._is_initialised = False
+        self._registry = SortedDict()
 
     def register(self, mount, modeladmin):
-        self._registry[mount] = modeladmin()
-
-        if self._registry[mount].page_root.parent is None:
-            self._registry[mount].page_root.parent = self.page_root
+        self._registry[mount] = modeladmin
 
     def unregister(self, *args, **kwargs):
         raise NotImplementedError
+
+    def _initialise_admins(self):
+        for mount in self._registry:
+            self._registry[mount] = self._registry[mount]()
+            
+            if self._registry[mount].page_root.parent is None:
+                self._registry[mount].page_root.parent = self.page_root
 
     def get(self, mount):
         return self._registry[mount]
@@ -49,6 +57,10 @@ class SAdminSite(admin.AdminSite):
         Modified version of get_urls from admin, removed
         unused views and added custom sadmin views
         """
+        if not self._is_initialised:
+            self._is_initialised = True
+            self._initialise_admins()
+        
         from django.conf.urls.defaults import patterns, url, include
 
         def wrap(view, cacheable=False):
@@ -125,11 +137,24 @@ class SModelAdmin(admin.ModelAdmin):
         default_views = getattr(self.Meta, 'default_views',
                                 ('list', 'add', 'delete', 'change'))
 
+        """ 
+        The navigation is divided into three menus 
+        
+        module_menu: navigation for this top admin module
+        
+        sadmin_menu: navigation for "non-object" pages
+        sadmin_action_menu: action navigation for "non-object" pages
+        
+        object_menu: navigation for a specific object or view
+        object_action_menu: actions for an object
+        object_related_menu: cross navigation to other admin views
+        """
+        self.module_menu = Navigation()
         self.sadmin_menu = Navigation()
         self.sadmin_action_menu = Navigation()
         self.object_menu = Navigation()
         self.object_action_menu = Navigation()
-        self.related_objects_menu = Navigation()
+        self.object_related_menu = Navigation()
 
         if 'list' in default_views:
             self.page_root = SPage(
@@ -137,7 +162,7 @@ class SModelAdmin(admin.ModelAdmin):
                 'sadmin:%s_%s_changelist' % self._url_info,
                 permission=lambda user: user.has_perm('%s.change_%s' % self._url_info),
                 depth=self.depth)
-            self.sadmin_menu.register(self.page_root)
+            self.module_menu.register(self.page_root)
 
             register_object_search_page(self.Meta.app_name,
                                         self.Meta.name,
@@ -229,32 +254,43 @@ class SModelAdmin(admin.ModelAdmin):
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
     def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['menu'] = self.sadmin_menu
-        extra_context['tabbed_menu'] = self.object_menu
-        extra_context['action_menu'] = self.object_action_menu
-        extra_context['current_page'] = self.page_change
-        extra_context['related_objects_menu'] = self.related_objects_menu
+        context = {}
+        
+        context['menu'] = self.module_menu
+        context['object_menu'] = self.object_menu
+        context['action_menu'] = self.object_action_menu
+        context['current_page'] = self.page_change
+        context['object_related_menu'] = self.object_related_menu
+        context['title'] = _('Change %s') % self.Meta.display_name
+        
+        context.update(extra_context or {})
 
-        return super(SModelAdmin, self).change_view(request, object_id, extra_context)
+        return super(SModelAdmin, self).change_view(request, object_id, context)
 
     def add_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['current_page'] = self.page_add
-        extra_context['menu'] = self.sadmin_menu
-        extra_context['action_menu'] = self.sadmin_action_menu
+        context = {}
+        
+        context['current_page'] = self.page_add
+        context['menu'] = self.module_menu
+        context['object_menu'] = self.sadmin_menu
+        context['action_menu'] = self.sadmin_action_menu
+        
+        context.update(extra_context or {})
 
-        return super(SModelAdmin, self).add_view(request, extra_context=extra_context)
+        return super(SModelAdmin, self).add_view(request, extra_context=context)
 
     def delete_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
-        extra_context['current_page'] = self.page_delete
-        extra_context['menu'] = self.sadmin_menu
-        extra_context['tabbed_menu'] = self.object_menu
-        extra_context['action_menu'] = self.object_action_menu
-        extra_context['title'] = _(u'Delete %s') % self.Meta.display_name
+        context = {}
+        
+        context['current_page'] = self.page_delete
+        context['menu'] = self.module_menu
+        context['object_menu'] = self.object_menu
+        context['action_menu'] = self.object_action_menu
+        context['title'] = _(u'Delete %s') % self.Meta.display_name
 
-        return super(SModelAdmin, self).delete_view(request, object_id, extra_context=extra_context)
+        context.update(extra_context or {})
+
+        return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context)
 
     def changelist_view(self, request, extra_context=None):
         args = [obj.pk for obj in self._get_navigation_stack(request)]
@@ -271,17 +307,19 @@ class SModelAdmin(admin.ModelAdmin):
         else:
             search_url = search_url + 'q='
 
-        extra_context = extra_context or {}
-        extra_context['search_url'] = mark_safe(search_url)
+        context = {}
+        context['search_url'] = mark_safe(search_url)
 
-        extra_context['title'] = extra_context.get('title',
-                                _(u'Browse %s') % self.Meta.display_name_plural)
+        context['title'] = _(u'Browse %s') % self.Meta.display_name_plural
 
-        extra_context['current_page'] = self.page_root
-        extra_context['menu'] = self.sadmin_menu
-        extra_context['action_menu'] = self.sadmin_action_menu
+        context['current_page'] = self.page_root
+        context['menu'] = self.module_menu
+        context['action_menu'] = self.sadmin_action_menu
+        context['object_menu'] = self.sadmin_menu
+        
+        context.update(extra_context or {})
 
-        return super(SModelAdmin, self).changelist_view(request, extra_context=extra_context)
+        return super(SModelAdmin, self).changelist_view(request, extra_context=context)
 
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)

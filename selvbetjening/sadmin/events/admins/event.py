@@ -76,7 +76,7 @@ class EventAdmin(SModelAdmin):
                                            'sadmin:%s_%s_register_payment' % self._url_info,
                                            parent=self.page_root)
 
-        self.sadmin_menu.register(self.page_register_payment)
+        self.module_menu.register(self.page_register_payment)
 
         self.page_statistics = LeafSPage(_(u'Statistics'),
                                          'sadmin:%s_%s_statistics' % self._url_info,
@@ -95,18 +95,20 @@ class EventAdmin(SModelAdmin):
 
         attendee_admin = AttendeeAdmin()
         attendee_admin.page_root.parent = self.page_change
+        attendee_admin.module_menu = self.module_menu
         attendee_admin.sadmin_menu = self.object_menu
         self.object_menu.register(attendee_admin.page_root)
 
         option_group_admin = OptionGroupAdmin()
         option_group_admin.page_root.parent = self.page_change
+        option_group_admin.module_menu = self.module_menu
         option_group_admin.sadmin_menu = self.object_menu
         self.object_menu.register(option_group_admin.page_root)
 
         group_admin = GroupAdmin()
         group_admin.page_root.parent = self.page_root
-        group_admin.sadmin_menu = self.sadmin_menu
-        self.sadmin_menu.register(group_admin.page_root)
+        group_admin.module_menu = self.module_menu
+        self.module_menu.register(group_admin.page_root)
 
         urlpatterns = super(EventAdmin, self).get_urls()
 
@@ -162,7 +164,7 @@ class EventAdmin(SModelAdmin):
                                    'payment': payment,
                                    'multiple_attendees': multiple_attendees,
                                    'current_page': self.page_register_payment,
-                                   'menu': self.sadmin_menu},
+                                   'menu': self.module_menu},
                                   context_instance=RequestContext(request))
 
     def statistics_view(self, request, event_pk):
@@ -192,7 +194,7 @@ class EventAdmin(SModelAdmin):
 
         # attendees graph
 
-        attendees = event.attendees.all()
+        attendees = event.attendees.filter(registration_date__isnull=False)
 
         if attendees.count() > 0:
 
@@ -267,7 +269,8 @@ class EventAdmin(SModelAdmin):
 
             optiongroups.append((optiongroup, options))
 
-        statistics.update({'menu': self.object_menu,
+        statistics.update({'menu': self.module_menu,
+                           'object_menu': self.object_menu,
                            'current_page': self.page_statistics,
                            'original' : event,
                            'attendees_count' : attendees_count,
@@ -300,6 +303,7 @@ class EventAdmin(SModelAdmin):
                                    'total' : total,
                                    'adminformattingform' : adminformattingform,
                                    'original' : event,
-                                   'menu' : self.object_menu,
+                                   'menu': self.module_menu,
+                                   'object_menu' : self.object_menu,
                                    'current_page' : self.page_financials },
                                   context_instance=RequestContext(request))

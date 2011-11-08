@@ -52,12 +52,12 @@
     <header class="page-header">
 
     {% if not is_popup %}
-    {% if action_menu or related_objects_menu %}
+    {% if action_menu or object_related_menu %}
     <nav class="action-nav">
       <ul>
 
-    {% if related_objects_menu %}
-      {% get_navigation_pages related_objects_menu current_page as pages %}
+    {% if object_related_menu %}
+      {% get_navigation_pages object_related_menu current_page as pages %}
 
       {% for page in pages %}
         <li class="related{% if page.in_path %} current{% endif %}"><a href="{{ page.url }}">{{ page.title|lower }}</a></li>
@@ -96,9 +96,9 @@
     {% endif %}
 
     {% if not is_popup %}
-    {% block tabbed_menu %}{% if tabbed_menu %}
+    {% block object_menu %}{% if object_menu %}
     
-      {% get_navigation_pages tabbed_menu current_page as pages %}
+      {% get_navigation_pages object_menu current_page as pages %}
 
       <nav class="tabbed-nav">
       <ul>

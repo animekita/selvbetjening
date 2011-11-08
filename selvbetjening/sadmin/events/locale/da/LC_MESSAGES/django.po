@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-27 20:06+0200\n"
+"POT-Creation-Date: 2011-11-08 22:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,14 @@ msgstr "Ikke deltagede"
 #: forms.py:18
 msgid "Filter attended"
 msgstr "Filtrer deltagelse"
+
+#: admins/attendee.py:26
+msgid "Attendee"
+msgstr "Deltager"
+
+#: admins/attendee.py:27
+msgid "Attendees"
+msgstr "Deltagere"
 
 #: admins/attendee.py:35
 msgid "Name"
@@ -64,7 +72,7 @@ msgstr "Betalingsnøgler"
 
 #: admins/attendee.py:82 templates/sadmin/events/attendee/selections.html:5
 msgid "Selections"
-msgstr "Tilvalg"
+msgstr "Valg"
 
 #: admins/attendee.py:92
 msgid "User Information"
@@ -74,7 +82,7 @@ msgstr "Bruger information"
 msgid "Add Attendee"
 msgstr "Tilføj deltager"
 
-#: admins/attendee.py:136
+#: admins/attendee.aymenpy:136
 msgid "Attendee moved to the accepted list"
 msgstr "Deltager flyttet til listen over accepterede"
 
@@ -102,9 +110,9 @@ msgstr "Deltager betalt"
 msgid "Payment registered"
 msgstr "Betaling registreret"
 
-#: admins/attendee.py:218
+#: admins/attendee.py:219
 msgid "Selections changed"
-msgstr "Tilvalg ændret"
+msgstr "Valg ændret"
 
 #: admins/event.py:47 admins/optiongroup.py:25
 msgid "Conditions"
@@ -134,7 +142,7 @@ msgstr "Statistik"
 msgid "Financials"
 msgstr "Økonomi"
 
-#: admins/event.py:294
+#: admins/event.py:297
 msgid "Formatting"
 msgstr "Formatering"
 
@@ -164,11 +172,11 @@ msgstr "Valgmuligheder"
 
 #: admins/optiongroup.py:16
 msgid "Option Group"
-msgstr "Valgmulighed gruppe"
+msgstr "Tilvalg"
 
 #: admins/optiongroup.py:17
 msgid "Option Groups"
-msgstr "Valgmulighed grupper"
+msgstr "Tilvalg"
 
 #: admins/optiongroup.py:29
 msgid "Other"

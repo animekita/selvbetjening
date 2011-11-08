@@ -23,8 +23,8 @@ class AttendeeAdmin(SBoundModelAdmin):
     class Meta:
         app_name = 'events'
         name = 'attendee'
-        display_name = 'Attendee'
-        display_name_plural = 'Attendees'
+        display_name = _(u'Attendee')
+        display_name_plural = _('Attendees')
         model = Attend
         bound_model = Event
         default_views = ('list', 'delete', 'change')
@@ -91,7 +91,7 @@ class AttendeeAdmin(SBoundModelAdmin):
         profile_url = lambda context, stack: reverse('sadmin:auth_user_change', args=[stack[-1].user.pk])
         self.page_profile = RemoteSPage(_(u'User Information'), profile_url)
 
-        self.related_objects_menu.register(self.page_profile)
+        self.object_related_menu.register(self.page_profile)
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
@@ -100,7 +100,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         non_attendee_admin = NonAttendeeAdmin()
         non_attendee_admin.page_root.parent = self.page_root
-        non_attendee_admin.sadmin_menu = self.sadmin_menu
+        non_attendee_admin.module_menu = self.module_menu
         non_attendee_admin.sadmin_action_menu = self.sadmin_action_menu
         self.sadmin_action_menu.register(non_attendee_admin.page_root,
                                          title=_('Add Attendee'))
@@ -188,9 +188,10 @@ class AttendeeAdmin(SBoundModelAdmin):
         else:
             form = PaymentForm()
 
-        context = {'menu': self.object_menu,
+        context = {'menu': self.module_menu,
+                   'object_menu': self.object_menu,
                    'action_menu': self.object_action_menu,
-                   'related_objects_menu': self.related_objects_menu,
+                   'object_related_menu': self.object_related_menu,
                    'current_page': self.page_change,
                    'attendee': attendee,
                    'original': attendee,
@@ -222,7 +223,8 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         checkin_parts = change_selection_handler.view()
 
-        context = {'menu': self.object_menu,
+        context = {'menu': self.module_menu,
+                   'object_menu': self.object_menu,
                    'current_page': self.page_selections,
                    'original': attendee,
                    'option_forms' : option_forms,
@@ -271,3 +273,4 @@ class AttendeeAdmin(SBoundModelAdmin):
         return render_to_response('sadmin/events/attendee/checkin.html',
                                   context,
                                   context_instance=RequestContext(request))
+        

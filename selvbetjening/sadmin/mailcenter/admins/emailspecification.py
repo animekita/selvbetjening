@@ -82,8 +82,8 @@ class EmailSpecificationAdmin(SModelAdmin):
 
         outgoing_admin = OutgoingAdmin()
         outgoing_admin.page_root.parent = self.page_root
-        outgoing_admin.sadmin_menu = self.sadmin_menu
-        self.sadmin_menu.register(outgoing_admin.page_root)
+        outgoing_admin.module_menu = self.module_menu
+        self.module_menu.register(outgoing_admin.page_root)
 
 
         urlpatterns = super(EmailSpecificationAdmin, self).get_urls()
@@ -134,7 +134,8 @@ class EmailSpecificationAdmin(SModelAdmin):
                                   {'email': email,
                                    'original': email, # compatibility
                                    'forms': [admin_formize(form) for form in forms],
-                                   'menu': self.object_menu,
+                                   'menu': self.module_menu,
+                                   'object_menu': self.object_menu,
                                    'current_page': self.page_filter},
                                   context_instance=RequestContext(request))
 
@@ -147,7 +148,8 @@ class EmailSpecificationAdmin(SModelAdmin):
             return render_to_response('sadmin/mailcenter/email/email-bound.html',
                                       {'email': email,
                                        'original': email, # compatibility
-                                       'menu': self.object_menu,
+                                       'menu': self.module_menu,
+                                       'object_menu': self.object_menu,
                                        'current_page': self.page_mass_email},
                                       context_instance=RequestContext(request))
 
@@ -175,7 +177,8 @@ class EmailSpecificationAdmin(SModelAdmin):
                                    'email': email,
                                    'original': email, # compatibility
                                    'recipients': recipients,
-                                   'menu': self.object_menu,
+                                   'object_menu': self.object_menu,
+                                   'menu': self.module_menu,
                                    'current_page': self.page_mass_email},
                                   context_instance=RequestContext(request))
 
@@ -200,6 +203,7 @@ class EmailSpecificationAdmin(SModelAdmin):
                                   {'form': admin_formize(form),
                                    'email': email,
                                    'original': email, # compatibility
-                                   'menu': self.object_menu,
+                                   'menu': self.module_menu,
+                                   'object_menu': self.object_menu,
                                    'current_page': self.page_send},
                                   context_instance=RequestContext(request))
