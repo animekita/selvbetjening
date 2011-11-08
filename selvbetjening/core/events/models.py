@@ -523,7 +523,7 @@ class Option(models.Model):
         return len(self.paid_selections)
 
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s: %s' % (self.group.event.title, self.name)
 
 class SubOption(models.Model):
     option = models.ForeignKey(Option)
