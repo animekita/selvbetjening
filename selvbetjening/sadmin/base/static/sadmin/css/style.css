@@ -331,6 +331,14 @@ div.filtered #changelist-search #searchbox-container input[type="text"] {
   width: 780px;
 }
 
+#changelist div.actions .button {
+  height: 2.4em;
+  padding-left: 1em;
+  padding-right: 1em;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 /** Messages **/
 ul.messages { margin: 0 0 1em 0; list-style: none; width: 1024px; }
 ul.messages-narrow { margin: 0 0 1em 0; list-style: none; width: 512; }

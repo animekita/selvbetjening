@@ -10,11 +10,15 @@ Dependencies
 Refactoring
 
  * Now using django.contrib.staticfiles - update MEDIA_ROOT et.al. accordingly
- * Improved sadmin menu organisation 
 
 Options and option groups
 
  * Selections in an option group can be locked for all accepted attendees
+
+SAdmin
+
+ * Improved sadmin menu organisation 
+ * Various visual improvements
 
 6.3.0
 

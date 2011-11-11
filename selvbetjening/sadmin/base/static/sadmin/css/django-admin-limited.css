@@ -31,7 +31,7 @@ tfoot td {
     color: #666;
     padding: 2px 5px;
     font-size: 11px;
-    background: #e1e1e1 url(../img/admin/nav-bg.gif) top left repeat-x;
+    background-color: #e1e1e1;
     border-left: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
@@ -90,14 +90,6 @@ table thead th.sorted a {
     padding-right: 13px;
 }
 
-table thead th.ascending a {
-    background: url(../img/admin/arrow-down.gif) right .4em no-repeat;
-}
-
-table thead th.descending a {
-    background: url(../img/admin/arrow-up.gif) right .4em no-repeat;
-}
-
 /* ORDERABLE TABLES */
 
 table.orderable tbody tr td:hover {
@@ -106,7 +98,6 @@ table.orderable tbody tr td:hover {
 
 table.orderable tbody tr td:first-child {
     padding-left: 14px;
-    background-image: url(../img/admin/nav-bg-grabber.gif);
     background-repeat: repeat-y;
 }
 
@@ -136,29 +127,19 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 /* FORM BUTTONS */
 
 .button, input[type=submit], input[type=button], .submit-row input {
-    background: white url(../img/admin/nav-bg.gif) bottom repeat-x;
+    background: white;
     padding: 3px 5px;
     color: black;
     border: 1px solid #bbb;
     border-color: #ddd #aaa #aaa #ddd;
 }
 
-.button:active, input[type=submit]:active, input[type=button]:active {
-    background-image: url(../img/admin/nav-bg-reverse.gif);
-    background-position: top;
-}
-
 .button.default, input[type=submit].default, .submit-row input.default {
     border: 2px solid #5b80b2;
-    background: #7CA0C7 url(../img/admin/default-bg.gif) bottom repeat-x;
+    background-color: #7CA0C7;
     font-weight: bold;
     color: white;
     float: right;
-}
-
-.button.default:active, input[type=submit].default:active {
-    background-image: url(../img/admin/default-bg-reverse.gif);
-    background-position: top;
 }
 
 /* MODULES */
@@ -192,37 +173,12 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     font-size: 11px;
     text-align: left;
     font-weight: bold;
-    background: #7CA0C7 url(../img/admin/default-bg.gif) top left repeat-x;
+    background: #7CA0C7;
     color: white;
 }
 
 .module table {
     border-collapse: collapse;
-}
-
-/* ACTION ICONS */
-
-.addlink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_addlink.gif) 0 .2em no-repeat;
-}
-
-.changelink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_changelink.gif) 0 .2em no-repeat;
-}
-
-.deletelink {
-    padding-left: 12px;
-    background: url(../img/admin/icon_deletelink.gif) 0 .25em no-repeat;
-}
-
-a.deletelink:link, a.deletelink:visited {
-    color: #CC3434;
-}
-
-a.deletelink:hover {
-    color: #993333;
 }
 
 /* MESSAGES & ERRORS */
