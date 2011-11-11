@@ -5,12 +5,11 @@
 # , fuzzy
 #
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-19 21:26+0200\n"
+"POT-Creation-Date: 2011-11-11 18:55+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -206,7 +205,7 @@ msgstr "Postnummer"
 
 #: models.py:56 migrations/0000_initial.py:13
 msgid "city"
-msgstr ""
+msgstr "By"
 
 #: models.py:59 migrations/0000_initial.py:16
 msgid "phonenumber"
@@ -216,15 +215,19 @@ msgstr "Telefonnummer"
 msgid "Send me emails"
 msgstr "Send mig emails"
 
-#: models.py:66
+#: models.py:63
+msgid "Picture"
+msgstr "Profilbillede"
+
+#: models.py:68
 msgid "user profile"
 msgstr "Bruger profil"
 
-#: models.py:67
+#: models.py:69
 msgid "user profiles"
 msgstr "Bruger profiler"
 
-#: models.py:74
+#: models.py:76
 #, python-format
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
@@ -236,35 +239,5 @@ msgstr "Hjem"
 #: templates/admin/auth/user/migration.html:38
 msgid "Please correct the error below."
 msgid_plural "Please correct the errors below."
-msgstr[0] ""
-msgstr[1] ""
-
-#~ msgid "address"
-#~ msgstr "Adresse"
-
-#~ msgid "Age"
-#~ msgstr "Alder"
-
-#~ msgid "Groups"
-#~ msgstr "Grupper"
-
-#~ msgid "Statistics"
-#~ msgstr "Statistik"
-
-#~ msgid "Migration"
-#~ msgstr "Flyt data"
-
-#~ msgid "You may edit it again below."
-#~ msgstr "Du må redigere det igen nedenfor."
-
-#~ msgid "Add user"
-#~ msgstr "Tilføj bruger"
-
-#~ msgid "Other"
-#~ msgstr "Andet"
-
-#~ msgid "Personal information updated"
-#~ msgstr "Dine personoplysninger er blevet opdateret"
-
-#~ msgid "State your date of birth using the format %(format)s."
-#~ msgstr "Angiv din fødselsdato ved hjælp af kalenderen %(format)s."
+msgstr[0] "Ret venligst fejlen nedenfor"
+msgstr[1] "Ret venligst fejlene nedenfor"
