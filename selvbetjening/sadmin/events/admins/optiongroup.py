@@ -27,7 +27,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
             'classes' : ('collapse', ),
             }),
         (_('Other'), {
-            'fields' : ('order', 'public_statistic',),
+            'fields' : ('order', 'public_statistic', 'lock_selections_on_acceptance'),
             }),)
 
     inlines = [TranslationInline,]
@@ -46,6 +46,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
 
         option_admin = OptionAdmin()
         option_admin.page_root.parent = self.page_change
+        option_admin.module_menu = self.module_menu
         option_admin.sadmin_menu = self.object_menu
         
         self.object_menu.register(option_admin.page_root)
@@ -65,5 +66,5 @@ class OptionGroupAdmin(SBoundModelAdmin):
             instance.event = request.bound_object
             
         return instance
-        
+
         

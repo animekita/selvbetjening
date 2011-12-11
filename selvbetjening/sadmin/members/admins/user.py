@@ -88,8 +88,8 @@ class UserAdmin(SModelAdmin):
                                               parent=self.page_change,
                                               permission=lambda user: user.has_perm('%s.change_%s' % self._url_info))
 
-        self.sadmin_menu.register(self.page_statistics)
-        self.sadmin_menu.register(self.page_map)
+        self.module_menu.register(self.page_statistics)
+        self.module_menu.register(self.page_map)
 
         self.object_menu.register(self.page_change, title=_(u'User'))
         self.object_menu.register(self.page_change_password)
@@ -101,12 +101,12 @@ class UserAdmin(SModelAdmin):
 
         group_admin = GroupAdmin()
         group_admin.page_root.parent = self.page_root
-        group_admin.sadmin_menu = self.sadmin_menu
-        self.sadmin_menu.register(group_admin.page_root)
+        group_admin.module_menu = self.module_menu
+        self.module_menu.register(group_admin.page_root)
 
         access_admin = AccessAdmin()
         access_admin.page_change.parent = self.page_change
-        access_admin.sadmin_menu = self.sadmin_menu
+        access_admin.module_menu = self.module_menu
         access_admin.object_action_menu = self.object_action_menu
         access_admin.object_menu = self.object_menu
         self.object_menu.register(access_admin.page_change, title=_(u'Access'))
@@ -135,7 +135,18 @@ class UserAdmin(SModelAdmin):
     def add_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['title'] = _(u'Create Member')
-        return super(UserAdmin, self).add_view(request, extra_context=extra_context)
+        
+        # fix problem with creating users with profiles directly
+        inlines = self.inline_instances
+        self.inline_instances = [] 
+        # fix end
+        
+        result = super(UserAdmin, self).add_view(request, extra_context=extra_context)
+        
+        # restore from fix
+        self.inline_instances = inlines
+        
+        return result
 
     def user_change_password(self, request, username):
         """
@@ -171,8 +182,8 @@ class UserAdmin(SModelAdmin):
             'save_as': False,
             'show_save': True,
             'root_path': self.admin_site.root_path,
-            'menu': self.sadmin_menu,
-            'tabbed_menu': self.object_menu,
+            'menu': self.module_menu,
+            'object_menu': self.object_menu,
             'action_menu': self.object_action_menu,
             'current_page': self.page_change_password,
         }, context_instance=RequestContext(request))
@@ -256,7 +267,7 @@ class UserAdmin(SModelAdmin):
 
         age_data.update(join_data)
 
-        age_data['menu'] = self.sadmin_menu
+        age_data['menu'] = self.module_menu
         age_data['current_page'] = self.page_statistics
 
         return render_to_response('sadmin/members/statistics.html',
@@ -270,7 +281,7 @@ class UserAdmin(SModelAdmin):
         invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
 
         return render_to_response('sadmin/members/map.html',
-                                  {'menu': self.sadmin_menu,
+                                  {'menu': self.module_menu,
                                    'current_page': self.page_map,
                                    'locations': locations,
                                    'expired': expired,

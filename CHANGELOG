@@ -1,3 +1,8 @@
+7.1.0
+
+ * Added a new direct url page type to sadmin
+ * Added support for multiple payment registration forms in sadmin
+
 7.0.0
 
 Dependencies
@@ -10,6 +15,15 @@ Dependencies
 Refactoring
 
  * Now using django.contrib.staticfiles - update MEDIA_ROOT et.al. accordingly
+
+Options and option groups
+
+ * Selections in an option group can be locked for all accepted attendees
+
+SAdmin
+
+ * Improved sadmin menu organisation 
+ * Various visual improvements
 
 6.3.0
 

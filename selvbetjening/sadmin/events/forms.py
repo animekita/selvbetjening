@@ -137,6 +137,10 @@ class RegisterPaymentForm(forms.Form):
         if len(results) == 0:
             raise forms.ValidationError(u'No matching payment keys found')
         
-        self.attendees = results
+        if len(results) > 1:
+            raise forms.ValidationError(u'Multiple matching payment keys found')
+        
+        self.cleaned_data['handler'] = results[0][0]
+        self.cleaned_data['attendee'] = results[0][1]
         
         return payment_key

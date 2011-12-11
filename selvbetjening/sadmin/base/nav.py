@@ -29,6 +29,11 @@ denotes if the page is placed before of after the object page.
 
 """
 
+class DirectPage(Page):
+ 
+    def get_url(self, context):
+        return self._url   
+
 class SPage(Page):
     offset = 0
 

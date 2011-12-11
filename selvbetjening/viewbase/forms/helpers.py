@@ -15,9 +15,17 @@ class Fieldset(helpers.Fieldset):
             self.css = self.css + ' ' + ext_class if self.css else ext_class
 
         if help_text is not None:
-            self.fields = [helpers.HTML(unicode(help_text))] + list(self.fields)
+            self.fields = [helpers.HTML('<p>%s</p>' % unicode(help_text))] + list(self.fields)
 
 class InlineFieldset(Fieldset):
     def __init__(self, *args, **kwargs):
+        ext_class = kwargs.get('ext_class', None)
+        
+        if ext_class is None:
+            ext_class = 'inlineLabels'
+        else:
+            ext_class += ' inlineLabels'
+            
+        kwargs['ext_class'] = ext_class
+        
         super(InlineFieldset, self).__init__(*args, **kwargs)
-        self.css = 'inlineLabels'

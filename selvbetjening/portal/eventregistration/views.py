@@ -145,17 +145,15 @@ def signoff(request, event,
 @eventdecorators.event_attendance_required
 @disable_invoice_updates
 def change_options(request, event,
-                   form=OptionForms,
                    success_page='eventregistration_status',
                    omit_event_id_on_success=False,
                    template_name='eventregistration/change_options.html'):
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    handler = change_processors.get_handler(request, attendee)
-
     if request.method == 'POST':
         form = OptionForms(event, request.POST, attendee=attendee)
+        handler = change_processors.get_handler(request, attendee, optionforms=form)
 
         if form.is_valid() and handler.is_valid():
             form.save()
@@ -171,10 +169,11 @@ def change_options(request, event,
                        request=request, event=attendee.event)
 
             return HttpResponseRedirect(
-                reverse(success_page, kwargs={'event_id':event.id} if not omit_event_id_on_success else {}))
+                reverse(success_page, kwargs={'event_id':event.id} if not omit_event_id_on_success else {}) + '?change=1')
 
     else:
         form = OptionForms(event, attendee=attendee)
+        handler = change_processors.get_handler(request, attendee, optionforms=form)
 
     signup_render = handler.view()
 

@@ -410,6 +410,7 @@ class OptionGroup(models.Model):
     order = models.IntegerField(_('Order'), default=0)
 
     public_statistic = models.BooleanField(default=False)
+    lock_selections_on_acceptance = models.BooleanField(default=False)
 
     class Translation:
         fields = ('name', 'description')
@@ -522,7 +523,7 @@ class Option(models.Model):
         return len(self.paid_selections)
 
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s: %s' % (self.group.event.title, self.name)
 
 class SubOption(models.Model):
     option = models.ForeignKey(Option)

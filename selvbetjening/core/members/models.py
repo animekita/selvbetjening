@@ -60,7 +60,9 @@ class UserProfile(models.Model):
 
     send_me_email = models.BooleanField(_(u'Send me emails'))
 
-    picture = ThumbnailField(upload_to='pictures/', blank=True, size=(260,260), quality=100)
+    picture = ThumbnailField(_(u'Picture'),
+                             upload_to='pictures/', 
+                             blank=True, size=(260,260), quality=100)
 
     class Meta:
         verbose_name = _(u'user profile')

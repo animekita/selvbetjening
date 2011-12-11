@@ -4,12 +4,14 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.helpers import AdminForm
 from django.views.defaults import RequestContext
 from django.core.urlresolvers import reverse
+from django.forms.formsets import formset_factory
+from django.conf import settings
 
 from selvbetjening.core.events.models import Event, AttendState,\
      payment_registered_source, Attend
 from selvbetjening.core.invoice.models import Invoice, Payment
 
-from selvbetjening.sadmin.base import admin_formize, graph
+from selvbetjening.sadmin.base import admin_formize_set, graph
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.nav import SPage, LeafSPage
@@ -76,7 +78,7 @@ class EventAdmin(SModelAdmin):
                                            'sadmin:%s_%s_register_payment' % self._url_info,
                                            parent=self.page_root)
 
-        self.sadmin_menu.register(self.page_register_payment)
+        self.module_menu.register(self.page_register_payment)
 
         self.page_statistics = LeafSPage(_(u'Statistics'),
                                          'sadmin:%s_%s_statistics' % self._url_info,
@@ -93,20 +95,22 @@ class EventAdmin(SModelAdmin):
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
-        attendee_admin = AttendeeAdmin()
-        attendee_admin.page_root.parent = self.page_change
-        attendee_admin.sadmin_menu = self.object_menu
-        self.object_menu.register(attendee_admin.page_root)
+        self.attendee_admin = AttendeeAdmin()
+        self.attendee_admin.page_root.parent = self.page_change
+        self.attendee_admin.module_menu = self.module_menu
+        self.attendee_admin.sadmin_menu = self.object_menu
+        self.object_menu.register(self.attendee_admin.page_root)
 
         option_group_admin = OptionGroupAdmin()
         option_group_admin.page_root.parent = self.page_change
+        option_group_admin.module_menu = self.module_menu
         option_group_admin.sadmin_menu = self.object_menu
         self.object_menu.register(option_group_admin.page_root)
 
         group_admin = GroupAdmin()
         group_admin.page_root.parent = self.page_root
-        group_admin.sadmin_menu = self.sadmin_menu
-        self.sadmin_menu.register(group_admin.page_root)
+        group_admin.module_menu = self.module_menu
+        self.module_menu.register(group_admin.page_root)
 
         urlpatterns = super(EventAdmin, self).get_urls()
 
@@ -121,48 +125,50 @@ class EventAdmin(SModelAdmin):
             url(r'^([0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
                 name='%s_%s_financials' % self._url_info),
-            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(attendee_admin.urls)),
+            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(self.attendee_admin.urls)),
             (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(option_group_admin.urls)),
         ) + urlpatterns
 
         return urlpatterns
 
     def register_payment_view(self, request):
-        found_attendee = None
-        payment = None
-        multiple_attendees = None
+
+        number = getattr(settings, 'SADMIN_EVENT_PAYMENTREGISTRATION_FORMS', 1)
+        payments = []
+        
+        RegisterPaymentFormSet = formset_factory(RegisterPaymentForm, extra=number)
 
         if request.method == 'POST':
-            form = RegisterPaymentForm(request.POST)
+            forms = RegisterPaymentFormSet(request.POST)
 
-            if form.is_valid():
-                if len(form.attendees) == 1:
-                    handler, found_attendee = form.attendees[0]
-                    payment = Payment.objects.create(invoice=found_attendee.invoice,
-                                                     amount=form.cleaned_data['payment'],
+            if forms.is_valid():
+                
+                for result in [result for result in forms.cleaned_data if len(result) > 0]:
+                    
+                    payment = Payment.objects.create(invoice=result['attendee'].invoice,
+                                                     amount=result['payment'],
                                                      signee=request.user)
 
-                    payment_registered_source.trigger(found_attendee.user,
-                                                      attendee=found_attendee,
+                    payment_registered_source.trigger(result['attendee'].user,
+                                                      attendee=result['attendee'],
                                                       payment=payment)
+                    
+                    payments.append({'attendee': result['attendee'], 
+                                     'payment': payment})
 
-                    form = RegisterPaymentForm()
-
-                else:
-                    multiple_attendees = form.attendees
+                
+                forms = RegisterPaymentFormSet()
 
         else:
-            form = RegisterPaymentForm()
+            forms = RegisterPaymentFormSet()
 
-        adminform = admin_formize(form)
+        adminforms = admin_formize_set(forms)
 
         return render_to_response('sadmin/events/register_payment.html',
-                                  {'adminform': adminform,
-                                   'found_attendee': found_attendee,
-                                   'payment': payment,
-                                   'multiple_attendees': multiple_attendees,
+                                  {'adminforms': adminforms,
+                                   'payments': payments,
                                    'current_page': self.page_register_payment,
-                                   'menu': self.sadmin_menu},
+                                   'menu': self.module_menu},
                                   context_instance=RequestContext(request))
 
     def statistics_view(self, request, event_pk):
@@ -192,7 +198,7 @@ class EventAdmin(SModelAdmin):
 
         # attendees graph
 
-        attendees = event.attendees.all()
+        attendees = event.attendees.filter(registration_date__isnull=False)
 
         if attendees.count() > 0:
 
@@ -267,7 +273,8 @@ class EventAdmin(SModelAdmin):
 
             optiongroups.append((optiongroup, options))
 
-        statistics.update({'menu': self.object_menu,
+        statistics.update({'menu': self.module_menu,
+                           'object_menu': self.object_menu,
                            'current_page': self.page_statistics,
                            'original' : event,
                            'attendees_count' : attendees_count,
@@ -300,6 +307,7 @@ class EventAdmin(SModelAdmin):
                                    'total' : total,
                                    'adminformattingform' : adminformattingform,
                                    'original' : event,
-                                   'menu' : self.object_menu,
+                                   'menu': self.module_menu,
+                                   'object_menu' : self.object_menu,
                                    'current_page' : self.page_financials },
                                   context_instance=RequestContext(request))

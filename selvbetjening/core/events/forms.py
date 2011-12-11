@@ -9,6 +9,8 @@ from selvbetjening.viewbase.forms.helpers import InlineFieldset
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.models import Payment
 
+from models import AttendState
+
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
         self.optiongroup = translate_model(optiongroup)
@@ -30,14 +32,17 @@ class OptionGroupForm(forms.Form):
 
         super(OptionGroupForm, self).__init__(*args, **kwargs)
 
-        selected_options = [selection.option for selection in selections]
+        self.selected_option_pks = [selection.option.pk for selection in selections]
 
         for option in optiongroup.options:
             translate_model(option)
 
-            selected = option in selected_options
+            selected = option.pk in self.selected_option_pks
 
-            disabled = option.max_attendees_reached() and not selected
+            disabled = self.attendee is not None and \
+                self.optiongroup.lock_selections_on_acceptance == True and \
+                self.attendee.state != AttendState.waiting
+            disabled = disabled or (option.max_attendees_reached() and not selected)
             disabled = disabled or option.is_frozen()
 
             suboptions = option.suboptions
@@ -94,7 +99,7 @@ class OptionGroupForm(forms.Form):
             self.attendee = attendee
 
         for option, suboptions in self.save_options:
-            if self.cleaned_data.get(self._get_id(option), False):
+            if self.cleaned_data.get(self._get_id_pk(option.pk), False):
                 suboption_id = self.cleaned_data.get(self._get_sub_id(option), None)
 
                 if suboption_id:
@@ -106,6 +111,16 @@ class OptionGroupForm(forms.Form):
             else:
                 self.attendee.deselect_option(option)
 
+    def is_selected(self, option_pk):
+        if option_pk in [option.pk for option, suboptions in self.save_options]:
+            return self.cleaned_data.get(self._get_id_pk(option_pk), False)
+        else:
+            return option_pk in self.selected_option_pks
+    
+    @staticmethod
+    def _get_id_pk(option_pk):
+        return 'option_' + str(option_pk)
+    
     @staticmethod
     def _get_id(option):
         return 'option_' + str(option.pk)
@@ -139,6 +154,13 @@ class OptionForms(object):
     def save(self, attendee=None):
         for form in self.forms:
             form.save(attendee=attendee)
+            
+    def is_selected(self, option_pk):
+        for form in self.forms:
+            if form.is_selected(option_pk):
+                return True
+            
+        return False
 
     def __iter__(self):
         for form in self.forms:

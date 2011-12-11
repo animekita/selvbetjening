@@ -26,7 +26,7 @@
 body {
   font-family: "DejaVuSansCondensed",sans-serif;
   padding: 0 0 0 0;
-  background-color: red;
+  background-color: #EEEEEE;
   color: #000000;
 
   background-image: url(../images/bg.png);
@@ -329,6 +329,14 @@ p.deletelink-box a {
 
 div.filtered #changelist-search #searchbox-container input[type="text"] {
   width: 780px;
+}
+
+#changelist div.actions .button {
+  height: 2.4em;
+  padding-left: 1em;
+  padding-right: 1em;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 /** Messages **/
