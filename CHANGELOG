@@ -1,5 +1,6 @@
 7.1.0
 
+ * Added a new direct url page type to sadmin
  * Added support for multiple payment registration forms in sadmin
 
 7.0.0
