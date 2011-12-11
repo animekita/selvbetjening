@@ -95,11 +95,11 @@ class EventAdmin(SModelAdmin):
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
-        attendee_admin = AttendeeAdmin()
-        attendee_admin.page_root.parent = self.page_change
-        attendee_admin.module_menu = self.module_menu
-        attendee_admin.sadmin_menu = self.object_menu
-        self.object_menu.register(attendee_admin.page_root)
+        self.attendee_admin = AttendeeAdmin()
+        self.attendee_admin.page_root.parent = self.page_change
+        self.attendee_admin.module_menu = self.module_menu
+        self.attendee_admin.sadmin_menu = self.object_menu
+        self.object_menu.register(self.attendee_admin.page_root)
 
         option_group_admin = OptionGroupAdmin()
         option_group_admin.page_root.parent = self.page_change
@@ -125,7 +125,7 @@ class EventAdmin(SModelAdmin):
             url(r'^([0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
                 name='%s_%s_financials' % self._url_info),
-            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(attendee_admin.urls)),
+            (r'^(?P<bind_pk>[0-9]+)/attendees/', include(self.attendee_admin.urls)),
             (r'^(?P<bind_pk>[0-9]+)/optiongroups/', include(option_group_admin.urls)),
         ) + urlpatterns
 
