@@ -3,8 +3,6 @@ from django.views.generic.simple import redirect_to, direct_to_template
 
 from selvbetjening.portal.profile.views import profile_redirect
 
-import admin
-
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
 
