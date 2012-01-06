@@ -307,7 +307,11 @@ post_save.connect(delete_event_attendees_cache, sender=Attend)
 
 def update_invoice_handler_attend(sender, **kwargs):
     instance = kwargs['instance']
-    instance.invoice.update()
+    
+    try: 
+        instance.invoice.update()
+    except Invoice.DoesNotExist:
+        pass
 
 post_delete.connect(update_invoice_handler_attend, sender=Attend)
 
