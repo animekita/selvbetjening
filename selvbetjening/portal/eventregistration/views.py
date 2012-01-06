@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import Context, Template, RequestContext
 from django.utils.translation import ugettext as _
 
+from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.logger import logger
 from selvbetjening.core.invoice.decorators import disable_invoice_updates
 from selvbetjening.core.events.models import Event, Attend, attendes_event_source
@@ -188,6 +189,7 @@ def change_options(request, event,
 @eventdecorators.event_attendance_required
 def view_invoice(request, event,
                  template_name='eventregistration/status.html'):
+    translate_model(event)
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
