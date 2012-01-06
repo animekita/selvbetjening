@@ -568,7 +568,11 @@ class Selection(models.Model):
 
 def update_invoice_handler(sender, **kwargs):
     instance = kwargs['instance']
-    instance.attendee.invoice.update()
+    
+    try: 
+        instance.attendee.invoice.update()
+    except Attend.DoesNotExist:
+        pass
 
 post_delete.connect(update_invoice_handler, sender=Selection)
 post_save.connect(update_invoice_handler, sender=Selection)
