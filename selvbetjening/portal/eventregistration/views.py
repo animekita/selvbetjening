@@ -168,6 +168,8 @@ def change_options(request, event,
             logger.log('eventregistration', 'event-registration', log_msg,
                        request=request, event=attendee.event)
 
+            handler.postsave()
+
             return HttpResponseRedirect(
                 reverse(success_page, kwargs={'event_id':event.id} if not omit_event_id_on_success else {}) + '?change=1')
 

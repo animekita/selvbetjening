@@ -40,5 +40,8 @@ class ChangeHandler(ProcessorHandler):
 
     def save(self):
         self._call_all('save')
+        
+    def postsave(self):
+        self._call_all('postsave')
 
 change_processors = ProcessorRegistry(ChangeHandler)
