@@ -210,7 +210,7 @@ class EventAdmin(SModelAdmin):
 
                 if last_changed > last:
                     last = last_changed
-            except Attend.DoesNotExist:
+            except IndexError:
                 pass
 
             axis = graph.generate_week_axis(first, last)

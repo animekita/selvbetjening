@@ -243,6 +243,9 @@ class Attend(models.Model):
         self.selection_set.filter(option=option).delete()
 
     def is_new(self):
+        if self.event.startdate is None:
+            return False
+        
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(state=AttendState.attended).count() == 0
     is_new.boolean = True
 
