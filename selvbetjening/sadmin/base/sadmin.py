@@ -33,21 +33,16 @@ class SAdminSite(admin.AdminSite):
         self.page_root = SPage('Dashboard',
                                'sadmin:dashboard')
         
-        self._is_initialised = False
         self._registry = SortedDict()
 
     def register(self, mount, modeladmin):
-        self._registry[mount] = modeladmin
+        self._registry[mount] = modeladmin()
+                    
+        if self._registry[mount].page_root.parent is None:
+            self._registry[mount].page_root.parent = self.page_root        
 
     def unregister(self, *args, **kwargs):
         raise NotImplementedError
-
-    def _initialise_admins(self):
-        for mount in self._registry:
-            self._registry[mount] = self._registry[mount]()
-            
-            if self._registry[mount].page_root.parent is None:
-                self._registry[mount].page_root.parent = self.page_root
 
     def get(self, mount):
         return self._registry[mount]
@@ -57,9 +52,6 @@ class SAdminSite(admin.AdminSite):
         Modified version of get_urls from admin, removed
         unused views and added custom sadmin views
         """
-        if not self._is_initialised:
-            self._is_initialised = True
-            self._initialise_admins()
         
         from django.conf.urls.defaults import patterns, url, include
 
