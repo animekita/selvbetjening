@@ -57,7 +57,7 @@ class ChangeUsernameForm(forms.Form):
         return validate_username(self.cleaned_data['new_username'])
 
 class ChangePictureForm(forms.Form):
-    picture = forms.ImageField()
+    picture = forms.ImageField(label=_(u'Picture'))
 
     helper = FormHelper()
 
