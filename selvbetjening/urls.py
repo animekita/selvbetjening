@@ -1,9 +1,8 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import redirect_to, direct_to_template
 
+from selvbetjening.sadmin.base import sadmin
 from selvbetjening.portal.profile.views import profile_redirect
-
-import admin
 
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
@@ -20,9 +19,12 @@ urlpatterns = patterns('',
     (r'^api/',
      include('selvbetjening.api.sso.urls')),
 
+    (r'^api/',
+     include('selvbetjening.api.eventsapi.urls')),
+
     (r'^notify/vanillaforum/',
      include('selvbetjening.notify.vanillaforum.urls')),
 
     # Admin urls
-    (r'^admin/', include(admin.site.urls)),
+    (r'^admin/', include(sadmin.site.urls)),
 )
