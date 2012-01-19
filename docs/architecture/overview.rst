@@ -19,8 +19,11 @@ Selvbetjening er opdelt i fire forskellige typer moduler; core, viewbase, portal
  API
   API modulerne blotlægger et webservice API (pull) som kan bruges af andre systemer til at snakke med Selvbetjening.
 
+ HA-API
+  High-Availabilty API modulerne tilbyder varianter af de almindelige API moduler, men her beregnet til "slave" instancer af Selvbetjening.
+
  Notify
-  Notify modulerne implementerer et push baseret system til at meddele andre systemer om hændelser i Selvbetjening..
+  Notify modulerne implementerer et push baseret system til at meddele andre systemer om hændelser i Selvbetjening.
 
 
 .. image:: images/architecture.png
