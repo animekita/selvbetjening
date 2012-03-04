@@ -5,9 +5,10 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.defaults import RequestContext
+from django.http import HttpResponseRedirect
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, \
-     request_attendee_pks_signal
+     request_attendee_pks_signal, attendes_event_source
 from selvbetjening.core.events.processor_handlers import change_selection_processors
 from selvbetjening.core.events.forms import OptionForms
 from selvbetjening.core.invoice.models import Payment
@@ -84,9 +85,15 @@ class AttendeeAdmin(SBoundModelAdmin):
                                          parent=self.page_change,
                                          depth=self.depth)
 
+        self.page_resend_emails = LeafSPage(_(u'Resend E-mails'),
+                                            'sadmin:%s_%s_resend' % self._url_info,
+                                            parent=self.page_change,
+                                            depth=self.depth)
+
         self.object_menu.register(self.page_change, title=self.Meta.display_name)
         self.object_menu.register(self.page_payment_keys)
         self.object_menu.register(self.page_selections)
+        self.object_action_menu.register(self.page_resend_emails)
 
         profile_url = lambda context, stack: reverse('sadmin:auth_user_change', args=[stack[-1].user.pk])
         self.page_profile = RemoteSPage(_(u'User Information'), profile_url)
@@ -106,6 +113,9 @@ class AttendeeAdmin(SBoundModelAdmin):
                                          title=_('Add Attendee'))
 
         urlpatterns = patterns('',
+            url(r'^([0-9]+)/resend-emails/',
+                self._wrap_view(self.resend_emails),
+                name='%s_%s_resend' % self._url_info),
             url(r'^([0-9]+)/selections/',
                 self._wrap_view(self.selections_view),
                 name='%s_%s_selections' % self._url_info),
@@ -124,6 +134,16 @@ class AttendeeAdmin(SBoundModelAdmin):
         qs = super(SBoundModelAdmin, self).queryset(request)
 
         return qs.filter(event=request.bound_object)
+
+    def resend_emails(self, request, attendee_pk, extra_context=None):
+        attendee = get_object_or_404(Attend, pk=attendee_pk)
+
+        messages.add_message(request, messages.INFO, _('E-mails have been sent again to the user'))
+
+        attendes_event_source.trigger(attendee.user, attendee=attendee)
+
+        return HttpResponseRedirect(reverse('sadmin:events_attendee_change', args=[attendee.event.pk,
+                                                                                   attendee.pk]))
 
     def change_view(self, request, attendee_pk, extra_context=None):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
@@ -273,4 +293,3 @@ class AttendeeAdmin(SBoundModelAdmin):
         return render_to_response('sadmin/events/attendee/checkin.html',
                                   context,
                                   context_instance=RequestContext(request))
-        

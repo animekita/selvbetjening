@@ -1,3 +1,13 @@
+7.2.0
+
+ * Added new APIs and High-Availability APIs
+ * Added a resend-emails function in sadmin for all attendees
+
+Dependencies
+
+ * Now supports (and requires) Django 1.3.1
+ * Now requires django-piston (API support)
+
 7.1.1
  * Small bugfixes
 
@@ -25,7 +35,7 @@ Options and option groups
 
 SAdmin
 
- * Improved sadmin menu organisation 
+ * Improved sadmin menu organisation
  * Various visual improvements
 
 6.3.0
