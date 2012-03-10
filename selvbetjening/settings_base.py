@@ -4,6 +4,8 @@
 # pre setup
 import selvbetjening
 import os
+import sys
+
 SELV_DIRNAME = os.path.abspath(os.path.dirname(__file__))
 
 from selvbetjening import contrib
@@ -86,8 +88,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'selvbetjening.core.resources',
     'selvbetjening.core.database',
-
     'selvbetjening.core.events',
     'selvbetjening.core.members',
     'selvbetjening.core.invoice',
@@ -96,6 +98,9 @@ INSTALLED_APPS = [
     'selvbetjening.core.mailcenter',
 ]
 
-DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter',]
+if not 'test' in sys.argv:
+    # disable database routers under test conditions
+    DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter',]
 
+SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False

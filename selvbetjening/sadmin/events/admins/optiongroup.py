@@ -26,6 +26,10 @@ class OptionGroupAdmin(SBoundModelAdmin):
             'fields' : ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
             'classes' : ('collapse', ),
             }),
+        (_('Package'), {
+            'fields' : ('package_solution', 'package_price'),
+            'classes' : ('collapse', ),
+            }),
         (_('Other'), {
             'fields' : ('order', 'public_statistic', 'lock_selections_on_acceptance'),
             }),)
@@ -35,12 +39,12 @@ class OptionGroupAdmin(SBoundModelAdmin):
     def queryset(self, request):
         qs = super(OptionGroupAdmin, self).queryset(request)
         return qs.filter(event=request.bound_object)
-    
+
     def _init_navigation(self):
         super(OptionGroupAdmin, self)._init_navigation()
-        
+
         self.object_menu.register(self.page_change, self.Meta.display_name)
-    
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, include
 
@@ -48,9 +52,9 @@ class OptionGroupAdmin(SBoundModelAdmin):
         option_admin.page_root.parent = self.page_change
         option_admin.module_menu = self.module_menu
         option_admin.sadmin_menu = self.object_menu
-        
+
         self.object_menu.register(option_admin.page_root)
-        
+
         urlpattern = super(OptionGroupAdmin, self).get_urls()
 
         urlpattern = patterns('',
@@ -61,10 +65,9 @@ class OptionGroupAdmin(SBoundModelAdmin):
 
     def save_form(self, request, form, change):
         instance = form.save(commit=False)
-        
+
         if not change:
             instance.event = request.bound_object
-            
+
         return instance
 
-        

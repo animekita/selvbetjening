@@ -23,7 +23,14 @@ class DatabaseRouter(object):
 
         return True
 
+    def db_for_write(self, model, **hints):
+        return False
+
+    def db_for_read(self, model, **hints):
+        return False
+
     def allow_syncdb(self, db, model):
+
         if model in self._external_tables:
             return db in self._external_tables[model]
 

@@ -1,6 +1,11 @@
 {% extends "sadmin/base/base.html" %}
 {% load navtreehelpers %}
 
+{% block scripts %}
+    {{ block.super }}
+    <script src="{{STATIC_URL}}scheckin/legacy/logic.js"></script>
+{% endblock %}
+
 {% block body %}
 
     <header class="top-header"><div class="center">
@@ -24,20 +29,20 @@
     </div></nav>
 
     <div class="center">
-    
+
         <div id="main">
-        
+
         <div id="toolbar">
         <form id="changelist-search" action="" method="get">
             <div id="searchbox-container">
             <input type="text" id="searchbox" name="q" autofocus="autofocus" autocomplete="off" placeholder="" required="required" value="" /> <input type="submit" value="" id="searchsubmit" />
             </div>
-        </form></div>        
-        
+        </form></div>
+
         </div>
-    
+
         <footer>
-    
+
         </footer>
     </div> <!--! end of center -->
 

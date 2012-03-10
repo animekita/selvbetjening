@@ -245,7 +245,7 @@ class Attend(models.Model):
     def is_new(self):
         if self.event.startdate is None:
             return False
-        
+
         return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(state=AttendState.attended).count() == 0
     is_new.boolean = True
 
@@ -310,8 +310,8 @@ post_save.connect(delete_event_attendees_cache, sender=Attend)
 
 def update_invoice_handler_attend(sender, **kwargs):
     instance = kwargs['instance']
-    
-    try: 
+
+    try:
         instance.invoice.update()
     except Invoice.DoesNotExist:
         pass
@@ -323,6 +323,7 @@ def update_invoice_with_attend_handler(sender, **kwargs):
     invoice = invoice_revision.invoice
 
     for attendee in Attend.objects.filter(invoice=invoice):
+
         for selection in attendee.selections:
             invoice_revision.add_line(description=unicode(selection),
                                       price=selection.price,
@@ -415,6 +416,15 @@ class OptionGroup(models.Model):
 
     freeze_time = models.DateTimeField(_('Freeze time'), blank=True, null=True)
     order = models.IntegerField(_('Order'), default=0)
+
+    # A package is a way to select all options in the group collectively, at an
+    # alternative price. This is purely "virtual", e.g. we never record that a
+    # member selected a package explictly.
+    # If a user selects a package, we select all options for the user and
+    # interpret this as the user selecting the package. Thus, if the user selects
+    # all options, we will automatically convert this into him selecting the package.
+    package_solution = models.BooleanField(default=False)
+    package_price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
     public_statistic = models.BooleanField(default=False)
     lock_selections_on_acceptance = models.BooleanField(default=False)
@@ -575,8 +585,8 @@ class Selection(models.Model):
 
 def update_invoice_handler(sender, **kwargs):
     instance = kwargs['instance']
-    
-    try: 
+
+    try:
         instance.attendee.invoice.update()
     except Attend.DoesNotExist:
         pass

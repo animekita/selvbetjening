@@ -34,6 +34,16 @@ class OptionGroupForm(forms.Form):
 
         self.selected_option_pks = [selection.option.pk for selection in selections]
 
+        display_params = None
+
+        # package controls
+        if optiongroup.package_solution:
+            self.fields[self._get_package_id(optiongroup)] = \
+                forms.BooleanField(label=_(u'Package'), required=False,
+                                   widget=forms.CheckboxInput(attrs={'class': 'package'}))
+
+            display_params = {'class': 'in_package in_package_%s' % optiongroup.pk}
+
         for option in optiongroup.options:
             translate_model(option)
 
@@ -50,7 +60,7 @@ class OptionGroupForm(forms.Form):
             if self._should_save(option, suboptions, disabled):
                 self.save_options.append((option, suboptions))
 
-            self._display_option(option, disabled, suboptions)
+            self._display_option(option, disabled, suboptions, display_params)
             self._register_clean_function(option, selected, disabled)
 
         # setup display related settings
@@ -116,11 +126,11 @@ class OptionGroupForm(forms.Form):
             return self.cleaned_data.get(self._get_id_pk(option_pk), False)
         else:
             return option_pk in self.selected_option_pks
-    
+
     @staticmethod
     def _get_id_pk(option_pk):
         return 'option_' + str(option_pk)
-    
+
     @staticmethod
     def _get_id(option):
         return 'option_' + str(option.pk)
@@ -129,13 +139,17 @@ class OptionGroupForm(forms.Form):
     def _get_sub_id(option):
         return 'suboptions_' + str(option.pk)
 
+    @staticmethod
+    def _get_package_id(optiongroup):
+        return 'package_' + str(optiongroup.pk)
+
 class OptionForms(object):
     optiongroupform = OptionGroupForm
 
     def __init__(self, event, post=None, attendee=None):
         self.forms = []
 
-        for optiongroup in event.optiongroups:
+        for optiongroup in event.optiongroups.order_by('order'):
             if post is None:
                 self.forms.append(self.optiongroupform(optiongroup,
                                                        attendee=attendee))
@@ -154,12 +168,12 @@ class OptionForms(object):
     def save(self, attendee=None):
         for form in self.forms:
             form.save(attendee=attendee)
-            
+
     def is_selected(self, option_pk):
         for form in self.forms:
             if form.is_selected(option_pk):
                 return True
-            
+
         return False
 
     def __iter__(self):

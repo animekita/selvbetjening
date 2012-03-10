@@ -1,5 +1,9 @@
 from selvbetjening.settings_base import *
 
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+STATIC_DEBUG = DEBUG
+
 import os
 DIRNAME = os.path.abspath(os.path.dirname(__file__))
 
@@ -35,6 +39,16 @@ INSTALLED_APPS.extend([
     'selvbetjening.notify.externaldjango',
     'selvbetjening.notify.vanillaforum',
 
+    'selvbetjening.sadmin.base',
+    'selvbetjening.sadmin.members',
+    'selvbetjening.sadmin.events',
+    'selvbetjening.sadmin.mailcenter',
+
+
+    'selvbetjening.api.eventsapi',
+
+    'selvbetjening.scheckin.legacy',
+
 ])
 
 # this would normally be placed in the local settings file
@@ -54,3 +68,6 @@ DATABASES = {
 }
 
 SITE_URL = 'dev.anime-kita.dk'
+
+STATIC_URL = 'http://localhost:8000/static/'
+STATIC_ROOT = os.path.join(DIRNAME, '..', '..', '..', 'static', 'trunk')
