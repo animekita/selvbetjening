@@ -195,3 +195,8 @@ div .checkbox {
 div .checkbox_checked {
   background-color: #8ae234;
 }
+
+div .checkbox input {
+  float: left;
+  margin-right: 1em;
+}
