@@ -61,7 +61,7 @@ function prepare_changelist() {
 		$(".iframe").fancybox({
 					'width'				: '100%',
 					'height'				: '100%',
-					'scrolling'				: 'no',
+					'scrolling'				: 'auto',
 					'autoScale'				: true,
 					'transitionIn'			: 'elastic',
 					'transitionOut'			: 'elastic',
