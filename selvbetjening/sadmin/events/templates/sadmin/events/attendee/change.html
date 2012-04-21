@@ -12,17 +12,17 @@
 <h3>{% trans "Status" %}</h3>
 
     <fieldset class="module aligned">
-    
+
     {% ifequal attendee.state "waiting" %}
     <div class="form-row error-row">
-    {% else %}{% ifequal attendee.state "accepted" %}    
+    {% else %}{% ifequal attendee.state "accepted" %}
     <div class="form-row warning-row">
     {% else %}
     <div class="form-row success-row">
     {% endifequal %}{% endifequal %}
         <div><label>Status:</label><p>{{attendee.state}}</p></div>
     </div>
-    
+
     {% if attendee.invoice.in_balance %}
     <div class="form-row success-row">
     {% else %}{% if attendee.invoice.is_paid %}
@@ -40,19 +40,19 @@
         {% endif %}{% endif %}
         </div>
     </div>
-    
+
     {{ checkin_rendered|safe }}
-    
+
     </fieldset>
 
     {% ifequal attendee.state "waiting" %}
 
     <div class="submit-row" >
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Move to accepted list" %}" class="default" name="do_accept" />
-    </div>   
-    
+    </div>
+
     {% else %}{% ifequal attendee.state "accepted" %}
-    
+
     <div class="submit-row" >
         {% if not attendee.invoice.is_paid %}
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Betal og Checkin" %}" class="default" name="do_checkin_and_pay" />
@@ -60,73 +60,31 @@
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Checkin uden betaling" %}" class="default" name="do_checkin" />
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Move to waitinglist" %}" name="do_unaccept" />
     </div>
-    
+
     {% else %}
-    
+
     <div class="submit-row" >
         {% if not attendee.invoice.is_paid %}
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Pay" %}" class="default" name="do_pay" />
         {% endif %}
         <input style="float: left; font-size: 100%;" type="submit" value="{% trans "Checkout" %}" name="do_checkout" />
-    </div>    
-    
-    {% endifequal %}{% endifequal %} 
-    
-    <br/><br/>
-    
-<h3>{% trans "Invoice" %}</h3>
+    </div>
 
-    {% if attendee.invoice.in_balance %}
-    <fieldset class="module aligned " style="border-color: green; border-width: 4px;">
-    {% else %}
-        {% if attendee.invoice.is_paid %}
-        <fieldset class="module aligned " style="border-color: yellow; border-width: 4px;">
-        {% else %}
-        <fieldset class="module aligned " style="border-color: red; border-width: 4px;">
-        {% endif %}
-    {% endif %}
-    
-    <div class="form-row type"><div>
-        <h4>{% trans "Items" %}</h4>
-    </div></div>
-    
-    {% for line in attendee.invoice.line_set.all %}
-    <div class="form-row type"><div>
-        {{line.description}} - {{line.price}},-
-    </div></div>
-    {% endfor %}
-    
-    <div class="form-row type"><div>
-        <h4>{% trans "Summary" %}</h4>
-    </div></div>
-    
-    <div class="form-row type"><div>
-        Total: {{attendee.invoice.total_price}},- &nbsp; &nbsp; &nbsp; Heraf betalt: {{attendee.invoice.paid}},-
-    </div></div>
-    
-    <div class="form-row type"><div>
-        {% if attendee.invoice.in_balance %}
-        <b>Denne invoice er betalt</b>
-        {% endif %}
-        
-        {% if not attendee.invoice.is_paid %}
-        <b>Total til betaling: {{attendee.invoice.unpaid}},-</b>
-        {% endif %}
-        
-        {% if attendee.invoice.is_overpaid %}
-        <b>Total til udbetaling: {{attendee.invoice.overpaid}},-</b>
-        {% endif %}
-    </div></div>
-    
-    </fieldset>
+    {% endifequal %}{% endifequal %}
+
+    <br/><br/>
+
+{% include "sadmin/events/attendee/parts/invoice.html" with invoice=attendee.invoice %}
+
+</fieldset>
 
 </form>
 <form method="POST" action="">{% csrf_token %}
 
 {% for fieldset in form %}
       {% include "admin/includes/fieldset.html" %}
-{% endfor %}    
-   
+{% endfor %}
+
 <div class="submit-row" >
     <input type="submit" value="{% trans "Register payment" %}" class="default" name="do_single_payment" />
 </div>

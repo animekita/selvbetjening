@@ -324,10 +324,49 @@ def update_invoice_with_attend_handler(sender, **kwargs):
 
     for attendee in Attend.objects.filter(invoice=invoice):
 
-        for selection in attendee.selections:
-            invoice_revision.add_line(description=unicode(selection),
+        selections = attendee.selections.order_by('option__group__order',
+                                                  'option__order',
+                                                  'option__pk')
+
+        selected_groups = set()
+        selected_options = set()
+
+        for selection in selections:
+            if selection.option.group.package_solution:
+                selected_groups.add(selection.option.group)
+                selected_options.add(selection.option.pk)
+
+        unselected_options = Option.objects.filter(group__in=selected_groups).\
+                                            exclude(pk__in=selected_options)
+
+        for option in unselected_options:
+            try:
+                selected_groups.remove(option.group)
+            except KeyError:
+                pass
+
+        last_group = None
+
+        for selection in selections:
+
+            if last_group is not None and \
+               last_group != selection.option.group and \
+               last_group.package_solution and \
+               last_group in selected_groups:
+
+                invoice_revision.add_line(description=unicode(_(u'Package Discount')),
+                                          group_name=unicode(last_group.name),
+                                          price=last_group.package_price,
+                                          managed=True)
+
+            invoice_revision.add_line(description=unicode(selection.option.name),
+                                      group_name=unicode(selection.option.group.name),
                                       price=selection.price,
                                       managed=True)
+
+            last_group = selection.option.group
+
+
 
 populate_invoice.connect(update_invoice_with_attend_handler)
 

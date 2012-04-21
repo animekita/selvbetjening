@@ -227,6 +227,9 @@ table.error {
   width: 1024px;
 }
 
+table.data tr th { font-size: 1.2em; color: #000000; font-style: normal; }
+table.data tr td { font-size: 1.0em; }
+
 /* Forms */
 
 form input[type="text"], form input[type="password"], form textarea, form select {

@@ -39,7 +39,7 @@ class Invoice(models.Model):
 
     @property
     def line_set(self):
-        return self.latest_revision.line_set
+        return self.latest_revision.line_set.all().order_by('group_name', 'pk')
 
     @property
     def total_price(self):
@@ -143,9 +143,13 @@ class InvoiceRevision(models.Model):
         return self.paid == 0 and not self.total_price == 0
     is_unpaid.boolean = True
 
-    def add_line(self, description, price, managed=False):
+    def add_line(self, description, price, managed=False, group_name=None):
+        if group_name is None:
+            group_name = ''
+
         return Line.objects.create(revision=self,
                                    description=description,
+                                   group_name=group_name,
                                    price=price,
                                    managed=managed)
 
@@ -154,6 +158,7 @@ class InvoiceRevision(models.Model):
 
 class Line(models.Model):
     revision = models.ForeignKey(InvoiceRevision)
+    group_name = models.CharField(max_length=255, default='')
     description = models.CharField(max_length=255)
     managed = models.BooleanField(default=False)
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
@@ -168,8 +173,8 @@ class Payment(models.Model):
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')
     note = models.CharField(max_length=256, blank=True)
 
-    
-    
+
+
 class InvoicePaymentWorkflow(models.Model):
     name = models.CharField(name=_('Workflow name'), max_length=255)
 

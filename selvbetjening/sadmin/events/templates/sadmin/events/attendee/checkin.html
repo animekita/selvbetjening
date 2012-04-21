@@ -35,34 +35,7 @@
 
 <form method="post" action="">{% csrf_token %}
 
-<h3>Tilvalg</h3>
-
-{% if original.invoice.in_balance %}
-    <table class="success">
-{% else %}{% if original.invoice.is_paid %}
-    <table class="warning">
-{% else %}
-    <table class="error">
-{% endif %}{% endif %}
-
-    {% for line in original.invoice.line_set.all %}
-    <tr>
-        <td>{{line.description}}</td><td>{{line.price}},-</td>
-    </tr>
-    {% endfor %}
-
-    <tr>
-    <td colspan="2"></td>
-    </tr>
-
-    <tr>
-        <th>Total:</th><th>{{original.invoice.total_price}},-</th>
-    </tr>
-    <tr>
-        <th>Heraf betalt:</th><th>{{original.invoice.paid}},-</th>
-    </tr>
-
-</table>
+{% include "sadmin/events/attendee/parts/invoice.html" with invoice=original.invoice %}
 
 <div class="action">
 
