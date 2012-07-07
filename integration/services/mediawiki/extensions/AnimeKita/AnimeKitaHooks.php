@@ -4,6 +4,19 @@ require_once("sso_api.php");
 
 class AnimeKitaHooks {
 
+	public static function onUserLoginForm($template) {
+		$returnto = urlencode($_GET['returnto']);
+
+		header("Location: /selvbetjening/profil/login/?next=/wiki/" . $returnto);
+
+	}
+
+	public static function onUserLogout(&$user) {
+
+		header("Location: /selvbetjening/profil/logud/");
+
+	}
+
 	public static function onUserLoadFromSession($user, &$result) {
 
 		$si_sso = new SelvbetjeningIntegrationSSO("wiki");
