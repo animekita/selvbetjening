@@ -1,24 +1,6 @@
-# template for per instance settings file
 from selvbetjening.settings_base import *
 
-import os
-DIRNAME = os.path.abspath(os.path.dirname(__file__))
-
-# email
-DEFAULT_FROM_EMAIL = 'noreply@anime-kita.dk'
-SERVER_EMAIL = 'noreply@anime-kita.dk'
-
-# various settings
-ROOT_URLCONF = 'selvbetjening.urls'
-
-ADMINS = (
-    #('admin', 'admin@example.org'),
-)
-
-# template directories
-TEMPLATE_DIRS = [
-    os.path.join(DIRNAME, 'templates')
-].extend(TEMPLATE_DIRS)
+ROOT_URLCONF = 'urls'
 
 # installed applications
 INSTALLED_APPS.extend([
@@ -32,12 +14,20 @@ INSTALLED_APPS.extend([
 
     'selvbetjening.notify',
     'selvbetjening.notify.concrete5',
+    'selvbetjening.notify.proftpd',
+    'selvbetjening.notify.externaldjango',
+    'selvbetjening.notify.vanillaforum',
 
-    'selvbetjening.api.sso',
-])
+    'selvbetjening.sadmin.base',
+    'selvbetjening.sadmin.members',
+    'selvbetjening.sadmin.events',
+    'selvbetjening.sadmin.mailcenter',
 
-# processors
-# Insert required processors
+    'selvbetjening.api.eventsapi',
+
+    'selvbetjening.scheckin.legacy',
+
+    ])
 
 # import localsettings, a per deployment configuration file
 try:
