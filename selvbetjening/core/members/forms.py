@@ -431,8 +431,8 @@ class RegistrationForm(BaseProfileForm):
         return user
 
 class AdminSelectMigrationUsers(forms.Form):
-    old_user = forms.IntegerField(label=_('Old user account'), widget=ForeignKeyRawIdWidget(OneToOneRel(User, 'id')))
-    new_user = forms.IntegerField(label=_('New user account'), widget=ForeignKeyRawIdWidget(OneToOneRel(User, 'id')))
+    old_user = forms.IntegerField(label=_('Old user account'))
+    new_user = forms.IntegerField(label=_('New user account'))
 
     def clean(self):
         try:

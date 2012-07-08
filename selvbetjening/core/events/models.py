@@ -3,7 +3,7 @@
 from datetime import date, datetime
 
 from django.contrib.auth.models import User, AnonymousUser
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save, Signal
 from django.core.cache import cache
