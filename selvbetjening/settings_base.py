@@ -65,7 +65,7 @@ TEMPLATE_LOADERS = (
     #     'django.template.loaders.eggs.Loader',
     )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -74,8 +74,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#    'debug_toolbar.middleware.DebugToolbarMiddleware'
-)
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
