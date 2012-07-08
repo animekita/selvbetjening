@@ -1,6 +1,6 @@
 Django==1.4.0
 
-South==0.7.3
+South==0.7.5
 django-debug-toolbar==0.8.5
 sorl-thumbnail==3.2.5
 django-tinymce==1.5.1a2

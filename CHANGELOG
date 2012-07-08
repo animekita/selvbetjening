@@ -8,6 +8,7 @@
 Dependencies
 
  * Now supports (and requires) Django 1.4.0
+ * Now requires south 1.7.5
  * Now requires django-piston (API support)
 
 7.1.1
