@@ -12,8 +12,6 @@ from selvbetjening.core.invoice.models import Invoice, Payment
 from selvbetjening.core.invoice.signals import populate_invoice
 from selvbetjening.core.mailcenter.sources import Source
 
-import processors
-
 _EVENT_CACHE_IDS = []
 
 def purge_cache():

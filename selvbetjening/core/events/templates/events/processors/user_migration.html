@@ -1,8 +1,0 @@
-<h3>Arrangementer</h3>
-
-{% if overlapping_events %}
-<p class="errornote">Deltagelse af arrangementer kan ikke flyttes fordi der er arrangementer begge brugere har deltaget i. Dette gælder for følgende arrangementer:</p>
-<ul class="errorlist">{% for event in overlapping_events %}<li>{{ event.title }}</li>{% endfor %}</ul>
-{% else %}
-<p>Deltagelse af {{count}} arrangementer vil blive flyttet over.</p>
-{% endif %}

@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 import signals
-import processors
 
 _disable_invoice_updates = {}
 
