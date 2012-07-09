@@ -60,7 +60,7 @@ class OptionGroupForm(forms.Form):
             if self._should_save(option, suboptions, disabled):
                 self.save_options.append((option, suboptions))
 
-            self._display_option(option, disabled, suboptions, display_params)
+            self._display_option(option, disabled, suboptions, display_params=display_params)
             self._register_clean_function(option, selected, disabled)
 
         # setup display related settings

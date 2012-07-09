@@ -33,18 +33,18 @@ class EventViewTestCase(TestCase):
         self.assertTemplateUsed(resp, 'eventregistration/signup.html')
 
     def test_sigup_event_submit_form(self):
-        user = Database.new_user(id='user')
+        Database.new_user(id='user')
         event = Database.new_event()
 
         data = {'confirm' : True}
 
         self.client.login(username='user', password='user')
-        resp = self.client.post(reverse('eventregistration_signup',
-                                       kwargs={'event_id' : event.id}),
-                                data)
 
-        self.assertRedirects(resp, reverse('eventregistration_view',
-                                           kwargs={'event_id':event.id}))
+        resp = self.client.post(reverse('eventregistration_signup',
+                                        kwargs={'event_id' : event.id}), data)
+
+        self.assertRedirects(resp, reverse('eventregistration_status',
+                                           kwargs={'event_id': event.id}) + '?signup=1')
 
 class EventOptionsFormTestCase(TestCase):
     def test_displayed_fields(self):
@@ -88,23 +88,6 @@ class EventOptionsFormTestCase(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertTrue(form.option_disabled)
-
-    def test_displayed_fields_order(self):
-        user = Database.new_user()
-        event = Database.new_event()
-        optiongroup = Database.new_optiongroup(event)
-
-        Database.new_option(optiongroup, order=1, name='1')
-        Database.new_option(optiongroup, order=0, name='0')
-        Database.new_option(optiongroup, order=3, name='2')
-
-        form = OptionGroupForm(optiongroup)
-
-        id = 0
-        for field in form.Meta.layout[0][1]:
-            field_id = field[0]
-            self.assertTrue(form.fields[field_id].label.endswith(str(id)))
-            id += 1
 
     def test_initial_values_set(self):
         user = Database.new_user()

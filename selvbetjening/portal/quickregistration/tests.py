@@ -10,7 +10,7 @@ def get_user_data():
             'first_name' : 'test',
             'last_name' : 'test',
             'email' : 'user@example.org',
-            'dateofbirth' : '1987-10-14',
+            'dateofbirth' : '14.10.1987',
             'street' : 'duck street',
             'postalcode' : '1000',
             'city' : 'duck town',
@@ -34,6 +34,8 @@ class ViewTestCase(TestCase):
         response = self.client.post(reverse('quickregistration_register'),
                                     self.user_data)
 
+        test_user_created(self, "unittest_test")
+
         self.assertEqual(response.status_code, 302) # redirect
 
-        test_user_created(self, "unittest_test")
+
