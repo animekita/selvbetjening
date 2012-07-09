@@ -18,6 +18,18 @@
 
 <p>Hvis du ikke har en selvbetjening bruger, skal du først <a href="{% url quickregistration_register %}">oprette en her</a>.</p>
 
+    {% if next and user.is_authenticated %}
+        <div class="alert alert-block alert-error">
+            <h4 class="alert-header">Adgang nægtet</h4>
+            <p>Du har desværre ikke adgang til siden <strong>{{ SITE_URL }}/{{ next }}</strong>.</p>
+        </div>
+    {% elif next %}
+    <div class="alert alert-block alert-information">
+        <h4 class="alert-header">Log ind for at se denne side</h4>
+        <p>Du har besøgt siden <strong>{{ SITE_URL }}{{ next }}</strong> som kræver en selvbetjening bruger. Log ind nedenfor eller <a href="{% url quickregistration_register %}">oprette en bruger nu</a>.</p>
+    </div>
+    {% endif %}
+
     {% crispy form form.helper %}
 
 <ul class="table-options">
