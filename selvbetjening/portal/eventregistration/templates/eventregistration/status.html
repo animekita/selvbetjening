@@ -14,7 +14,7 @@
     {% if custom_signup_message %}
         {{custom_signup_message|safe}}
     {% else %}
-        <p class="notice">Vi har modtaget din tilmelding til {{event.title|escape}}.</p>
+        <p class="alert alert-info">Vi har modtaget din tilmelding til {{event.title|escape}}.</p>
     {% endif %}
 {% endif %}
 
@@ -22,7 +22,7 @@
     {% if custom_change_message %}
         {{custom_change_message|safe}}
     {% else %}
-        <p class="notice">Dine tilvalg er blevet rettet.</p>
+        <p class="alert alert-info">Dine tilvalg er blevet rettet.</p>
     {% endif %}
 {% endif %}
 

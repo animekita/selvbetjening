@@ -8,7 +8,7 @@
 {% if event.is_registration_open %}
 
     {% if is_attendee %}
-        <p class="notice">Du er tilmeldt dette arrangement.
+        <p class="alert alert-info">Du er tilmeldt dette arrangement.
         {% if event.has_options %}
         Du kan stadig <a href="{% url eventregistration_change_options event.pk %}">ændre din tilmelding</a> og <a href="{% url eventregistration_status event.pk %}">se status for din tilmelding</a>.
         {% else %}
@@ -18,14 +18,14 @@
 
     {% else %}
         {% if event.is_registration_allowed %}
-            <p class="notice"><a href="{% url eventregistration_signup event.id %}">Tilmeld dig dette arrangement nu.</a></p>
+            <p class="alert alert-info"><a href="{% url eventregistration_signup event.id %}">Tilmeld dig dette arrangement nu.</a></p>
         {% else %}
-            <p class="notice">Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
+            <p class="alert alert-info">Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
         {% endif %}
     {% endif %}
 
 {% else %}
-    <p class="notice">Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
+    <p class="alert alert-info">Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
 
 {% endif %}
 
