@@ -1,5 +1,5 @@
 {% extends "sadmin/base/base.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block bodyclass %}login{% endblock %}
 
@@ -31,7 +31,7 @@ form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.
     {% endif %}
 
     {% with form.helper as helper %}
-        {% uni_form form helper %}
+        {% crispy form helper %}
     {% endwith %}
 
 </div>

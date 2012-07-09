@@ -3,9 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import PasswordChangeForm
 from django import forms
 
-from uni_form.helpers import FormHelper, Submit, Layout, HTML
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, HTML
 
-from selvbetjening.viewbase.forms.helpers import InlineFieldset, Fieldset
+from selvbetjening.viewbase.forms.helpers import Fieldset
 from selvbetjening.core.members.forms import UsernameField, validate_username
 
 from processor_handlers import extended_privacy_processors
@@ -14,12 +15,13 @@ from models import UserPrivacy
 class LoginForm(AuthenticationForm):
     helper = FormHelper()
 
-    layout = Layout(Fieldset(None, 'username', 'password'))
-    submit = Submit('submit_login', _('Sign in'))
+    helper.add_layout(Layout(
+        Fieldset('', 'username', 'password')
+    ))
 
-    helper.add_layout(layout)
-    helper.add_input(submit)
-    helper.use_csrf_protection = True
+    helper.add_input(
+        Submit('submit_login', _('Sign in'))
+    )
     
     def clean(self):
         """
@@ -46,7 +48,7 @@ class ChangeUsernameForm(forms.Form):
 
     helper = FormHelper()
 
-    layout = Layout(InlineFieldset(_('New username'), 'new_username'))
+    layout = Layout(Fieldset(_('New username'), 'new_username'))
     submit = Submit(_('Change username'), _('Change username'))
 
     helper.add_layout(layout)
@@ -129,8 +131,8 @@ class PrivacyForm(forms.ModelForm):
         options = {'ext_class' : 'privacy_settings',
                   'help_text' : _('Select the information which is to be visible on your profile.')}
 
-        layout = Layout(InlineFieldset(None, 'public_profile'),
-                        InlineFieldset(*fields, **options),
+        layout = Layout(Fieldset(None, 'public_profile'),
+                        Fieldset(*fields, **options),
                         HTML(self.html))
 
         submit = Submit(_('Update privacy settings'), _('Update privacy settings'))

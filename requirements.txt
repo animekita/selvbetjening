@@ -3,11 +3,11 @@ Django==1.4.0
 South==0.7.5
 django-debug-toolbar==0.9.1
 sorl-thumbnail==3.2.5
+django-crispy-forms==1.1.4
 
 django-extensions==0.6
 phpserialize==1.2
 django-piston==0.2.3
 
--e git://github.com/sema/django-uni-form.git#egg=django-uni-form
 -e git://github.com/jtauber/django-mailer.git@cea79940d477246ebace#egg=django-mailer
 -e git://github.com/sema/navtree.git#egg=navtree

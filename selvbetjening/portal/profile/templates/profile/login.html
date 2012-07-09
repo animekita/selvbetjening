@@ -1,5 +1,5 @@
 {% extends "site.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -18,9 +18,7 @@
 
 <p>Hvis du ikke har en selvbetjening bruger, skal du først <a href="{% url quickregistration_register %}">oprette en her</a>.</p>
 
-{% with form.helper as helper %}
-    {% uni_form form helper %}
-{% endwith %}
+    {% crispy form form.helper %}
 
 <ul class="table-options">
     <li>&#187; <a href="{% url auth_password_reset %}">Glemt dit kodeord?</a></li>

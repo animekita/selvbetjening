@@ -1,9 +1,9 @@
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% for optiongroupform in optionforms %}
 
 {% with optiongroupform.helper as helper %}
-    {% uni_form optiongroupform helper %}
+    {% crispy optiongroupform helper %}
 {% endwith %}
 
 {% endfor %}

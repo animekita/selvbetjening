@@ -1,5 +1,5 @@
 {% extends "profile/profile.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -23,7 +23,7 @@
 <p>Af denne grund beder vi vores brugerer om at begrænse ændringer af deres brugernavn og tænke sig om før de ændre det.</p>
 
 {% with form.helper as helper %}
-    {% uni_form form helper %}
+    {% crispy form helper %}
 {% endwith %}
 
 {% endblock %}

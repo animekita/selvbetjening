@@ -1,5 +1,5 @@
 {% extends "profile/profile.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -21,7 +21,7 @@
 <p>Du kan også vise disse oplysninger på din profil som kun kan ses af andre medlemmer af foreningen. Du kan kontrollerer hvilke oplysninger der er synlige, på privacy siden.</p>
 
 {% with form.helper as helper %}
-    {% uni_form form helper %}
+    {% crispy form helper %}
 {% endwith %}
 
 {% endblock %}

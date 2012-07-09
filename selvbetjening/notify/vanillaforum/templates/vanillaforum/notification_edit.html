@@ -1,5 +1,5 @@
 {% extends "profile/profile.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -17,7 +17,7 @@
 {% block content %}
 
 {% with form.helper as helper %}
-    {% uni_form form helper %}
+    {% crispy form helper %}
 {% endwith %}
 
 {% endblock %}

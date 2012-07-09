@@ -1,5 +1,5 @@
 {% extends "events/base_event.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -22,7 +22,7 @@
 {% csrf_token %}
 
 {% with form.helper as helper %}
-    {% uni_form form helper %}
+    {% crispy form helper %}
 {% endwith %}
 
 {% if event.has_options %}

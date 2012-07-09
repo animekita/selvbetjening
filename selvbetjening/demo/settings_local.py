@@ -1,6 +1,7 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 STATIC_DEBUG = DEBUG
+CRISPY_FAIL_SILENTLY = not DEBUG
 
 ADMINS = (
 # ('Your Name', 'your_email@example.com'),

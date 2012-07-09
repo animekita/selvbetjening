@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.template import Context, Template
+from django.contrib import messages
 
 from selvbetjening.core.invoice.decorators import disable_invoice_updates
 
@@ -55,7 +56,7 @@ def signup(request, event_id, template_name, template_cant_signup, template_regi
                                           context_instance=RequestContext(request))
 
             else:
-                request.user.message_set.create(message=_(u'You are now signed up to the event.'))
+                messages.add_message(request, messages.INFO, _(u'You are now signed up to the event.'))
                 return HttpResponseRedirect(reverse(success_page, kwargs={'event_id':event.id}))
     else:
         form = form_class()

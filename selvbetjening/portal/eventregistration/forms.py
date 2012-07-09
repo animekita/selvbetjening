@@ -5,9 +5,9 @@ from django.utils.translation import ungettext_lazy, ugettext_lazy
 from django import forms
 from django.utils.safestring import mark_safe
 
-from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
+from crispy_forms.helpers import FormHelper, Submit, Fieldset, Layout
 
-from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import Fieldset
 
 from selvbetjening.core.events.forms import OptionForms as BaseOptionForms
 from selvbetjening.core.events.forms import OptionGroupForm as BaseOptionGroupForm
@@ -24,7 +24,7 @@ class AcceptForm(forms.Form):
                                                     label=self.label())
 
         self.helper = FormHelper()
-        self.helper.add_layout(Layout(InlineFieldset(self.heading(), 'confirm')))
+        self.helper.add_layout(Layout(Fieldset(self.heading(), 'confirm')))
 
     def heading(self):
         return None
@@ -47,7 +47,7 @@ class SignupForm(AcceptForm):
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
 
-        layout = Layout(InlineFieldset(ugettext_lazy(u"Accept terms"),
+        layout = Layout(Fieldset(ugettext_lazy(u"Accept terms"),
                                        'confirm'))
         self.helper.add_layout(layout)
         self.helper.form_tag = False
@@ -62,7 +62,7 @@ class SignoffForm(AcceptForm):
     def __init__(self, *args, **kwargs):
         super(SignoffForm, self).__init__(*args, **kwargs)
 
-        layout = Layout(InlineFieldset('', 'confirm'))
+        layout = Layout(Fieldset('', 'confirm'))
 
         submit = Submit(_('Sign off'), _('Sign off'))
         self.helper.add_input(submit)

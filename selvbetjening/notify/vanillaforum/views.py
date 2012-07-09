@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from selvbetjening.portal.profile.forms import ChangePictureForm
 
@@ -24,7 +25,7 @@ def picture_edit(request,
             user_settings.picture = form.cleaned_data['picture']
             user_settings.save()
 
-            request.user.message_set.create(message=_(u'Forum picture changed'))
+            messages.add_message(request, messages.INFO, _(u'Forum picture changed'))
 
     else:
         form = form_class()

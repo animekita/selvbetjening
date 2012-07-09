@@ -1,5 +1,5 @@
 {% extends "sadmin/base/extendedsite.html" %}
-{% load i18n uni_form_tags %}
+{% load i18n crispy_forms_tags %}
 
 {% block content_title %}
 <h2>{% trans "Selections" %}</h2>
@@ -11,7 +11,7 @@
 
 {% for option_form in option_forms %}
     {% with option_form.helper as helper %}
-         {% uni_form option_form helper %}
+         {% crispy option_form helper %}
     {% endwith %}
 {% endfor %}
 

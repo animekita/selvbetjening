@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import Context, Template, RequestContext
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.logger import logger
@@ -129,8 +130,7 @@ def signoff(request, event,
 
             attendee.invoice.update(force=True)
 
-            request.user.message_set.create(
-                message=_(u'You are now removed from the event.'))
+            messages.add_message(request, messages.INFO, _(u'You are now removed from the event.'))
 
             return HttpResponseRedirect(
                 reverse(success_page, kwargs={'event_id':event.id}) + '?change=1')

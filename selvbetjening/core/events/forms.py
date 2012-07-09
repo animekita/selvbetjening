@@ -2,9 +2,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ModelForm
 
-from uni_form.helpers import FormHelper, Submit, Fieldset, Layout
+from crispy_forms.helpers import FormHelper, Submit, Fieldset, Layout
 
-from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import Fieldset
 
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.models import Payment
@@ -69,7 +69,7 @@ class OptionGroupForm(forms.Form):
         options = {'help_text' : self.optiongroup.description,
                    'large_hints' : True}
 
-        layout = Layout(InlineFieldset(*fields, **options))
+        layout = Layout(Fieldset(*fields, **options))
 
         self.helper = FormHelper()
 
@@ -190,7 +190,7 @@ class PaymentForm(ModelForm):
         model = Payment
         fields = ('amount', 'note')
 
-    layout = Layout(InlineFieldset(_(u'Payment'), *Meta.fields))
+    layout = Layout(Fieldset(_(u'Payment'), *Meta.fields))
     submit = Submit('submit_payment', _('Pay'))
 
     helper = FormHelper()

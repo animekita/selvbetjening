@@ -1,0 +1,20 @@
+div.formRow {
+    overflow: auto;
+    padding: 1em 0 1em 0;
+}
+
+div.formRow div.control-group {
+    float: left;
+}
+
+div.control-group {
+    margin-left: 1em;
+}
+
+.datepicker table {
+    font-size: 1.0em;
+}
+
+.datepicker td {
+    border-width: 0px;
+}

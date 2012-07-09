@@ -101,7 +101,7 @@ INSTALLED_APPS = [
     'countries',
     'south',
     'mailer',
-    'uni_form',
+    'crispy_forms',
     'sorl.thumbnail',
     'crumbs',
     'debug_toolbar',
@@ -161,3 +161,5 @@ if not 'test' in sys.argv:
 
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
+
+#CRISPY_TEMPLATE_PACK = 'uni_form'

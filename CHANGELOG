@@ -7,6 +7,7 @@
 
 Dependencies
 
+ * Change djang-uni-form to django-crispy-forms 1.1.4
  * Now supports (and requires) Django 1.4.0
  * Now requires south 1.7.5
  * Now requires debug-debug-toolbar 0.9.1

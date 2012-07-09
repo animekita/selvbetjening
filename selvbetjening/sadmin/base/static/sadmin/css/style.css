@@ -219,6 +219,8 @@ table tr td { font-size: 1.5em; }
 table tr th h3 { font-size: 1.5em; color: #000000; font-style: normal; }
 table td a { font-size: 0.8em; }
 
+table thead th { height: 2em; }
+
 table td span.attr { font-size: 0.8em; }
 
 table.error {

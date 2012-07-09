@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.contrib.formtools.preview import FormPreview
+from django.contrib import messages
 
 from selvbetjening.core.logger import logger
 from selvbetjening.core.members.forms import ProfileForm
@@ -81,7 +82,7 @@ def profile_edit(request,
         form = form_class(request.user, request.POST)
         if form.is_valid():
             form.save()
-            request.user.message_set.create(message=_(u'Personal information updated'))
+            messages.add_message(request, messages.INFO, _(u'Personal information updated'))
             return HttpResponseRedirect(reverse(success_page))
     else:
         form = form_class(request.user)
@@ -102,7 +103,7 @@ def privacy_edit(request,
         form = form_class(request.POST, instance=privacy)
         if form.is_valid:
             form.save()
-            request.user.message_set.create(message=_(u'Privacy settings updated'))
+            messages.add_message(request, messages.INFO, _(u'Privacy settings updated'))
             return HttpResponseRedirect(reverse(success_page))
 
     else:
@@ -126,7 +127,7 @@ def picture_edit(request,
             profile.picture = form.cleaned_data['picture']
             profile.save()
 
-            request.user.message_set.create(message=_(u'Profile picture changed'))
+            messages.add_message(request, messages.INFO, _(u'Profile picture changed'))
             return HttpResponseRedirect(reverse(success_page))
 
     else:
@@ -146,7 +147,7 @@ def password_change(request,
         form = change_password_form(request.user, request.POST)
         if form.is_valid():
             form.save()
-            request.user.message_set.create(message=_(u'Password changed'))
+            messages.add_message(request, messages.INFO, _(u'Password changed'))
             return HttpResponseRedirect(reverse(post_change_redirect))
     else:
         form = change_password_form(request.user)
@@ -187,7 +188,7 @@ class UsernameChangeView(FormPreview):
         logger.log('profile', 'profile-edit', log_msg,
                    request=request)
 
-        request.user.message_set.create(message=_(u'Username changed'))
+        messages.add_message(request, messages.INFO, _(u'Username changed'))
         return HttpResponseRedirect(reverse('members_profile'))
 
 username_change = login_required(UsernameChangeView(ChangeUsernameForm))

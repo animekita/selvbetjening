@@ -1,6 +1,7 @@
 # coding=UTF-8
 import re
 
+from django.template import Context
 from django.conf import settings
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -9,10 +10,10 @@ from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.db.models import OneToOneRel
 
 from countries.models import Country
-from uni_form.helpers import FormHelper, Submit, Layout, Row, HTML
+from crispy_forms.helpers import FormHelper, Submit, Layout, Row, HTML
 
 from selvbetjening.viewbase.forms import widgets
-from selvbetjening.viewbase.forms.helpers import InlineFieldset
+from selvbetjening.viewbase.forms.helpers import Fieldset
 
 from models import UserProfile, UserCommunication, UserWebsite
 from shortcuts import get_or_create_profile
@@ -78,8 +79,7 @@ class BaseProfileForm(forms.Form):
 
     email = forms.EmailField(max_length=75, label=_(u'E-mail'))
 
-    dateofbirth = forms.DateField(widget=widgets.UniformSelectDateWidget(
-        years=range(1910, 2012)), label=_(u'Date of birth'))
+    dateofbirth = forms.DateField(label=_(u'Date of birth'))
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
@@ -196,20 +196,19 @@ class ProfileForm(BaseProfileForm):
         methods = self._build_communication()
         websites = self._build_websites()
 
-        layout = Layout(InlineFieldset(_(u'Basic Information'),
-                                       'first_name', 'last_name', 'dateofbirth', 'sex',),
-                        InlineFieldset(_(u'Address'),
-                                       'street', 'postalcode', 'city', 'country'),
-                        InlineFieldset(_(u'Contact Information'),
+        layout = Layout(Fieldset(_(u'Basic Information'),
+                                       Row('first_name', 'last_name'), 'dateofbirth', 'sex',),
+                        Fieldset(_(u'Address'),
+                                       'street', Row('postalcode', 'city'), 'country'),
+                        Fieldset(_(u'Contact Information'),
                                        'phonenumber', 'email', 'send_me_email',
                                        *methods),
-                        InlineFieldset(_(u'Your Homepages (shown on your profile)'), *websites))
+                        Fieldset(_(u'Your Homepages (shown on your profile)'), *websites))
 
         submit = Submit(_('Change personal information'),
                         _('Change personal information'))
 
         self.helper = FormHelper()
-        self.helper.use_csrf_protection = True
         self.helper.add_input(submit)
         self.helper.add_layout(layout)
 
@@ -271,12 +270,14 @@ class ProfileForm(BaseProfileForm):
 
         template_field_name = self.WEBSITE_NAME_FIELDNAME % 'new[ELEMENT_ID]'
         template_field_url = self.WEBSITE_URL_FIELDNAME % 'new[ELEMENT_ID]'
+
         template_form = forms.Form()
         self._add_website_fields(template_form,
                                  template_field_name,
                                  template_field_url)
+        template_form.rendered_fields = set()
 
-        template_row = Row(template_field_name, template_field_url).render(template_form)
+        template_row = Row(template_field_name, template_field_url).render(template_form, 'default', Context())
         template_row = template_row.replace("\n", '')
 
         html = """
@@ -367,13 +368,13 @@ class RegistrationForm(BaseProfileForm):
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow the storage of my personal information on this site."))
 
-    layout = Layout(InlineFieldset(_(u"Personal Information"),
+    layout = Layout(Fieldset(_(u"Personal Information"),
                              'first_name', 'last_name', 'dateofbirth', 'sex', 'phonenumber', 'email', 'send_me_email'),
-                    InlineFieldset(_(u"Address"),
+                    Fieldset(_(u"Address"),
                              'street', 'postalcode', 'city', 'country'),
-                    InlineFieldset(_(u"User"),
+                    Fieldset(_(u"User"),
                              'username', 'password1', 'password2'),
-                    InlineFieldset(_(u"Data management terms"),
+                    Fieldset(_(u"Data management terms"),
                              'tos'))
 
     helper = FormHelper()
