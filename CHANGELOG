@@ -4,6 +4,7 @@
  * Added a resend-emails function in sadmin for all attendees
  * Added package concept to option groups
      An option group declared as a package gives a discount if all options are selected
+ * Improved login page with indications of access denied and remote login requests
 
 Dependencies
 
