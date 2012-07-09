@@ -126,21 +126,22 @@ class SModelAdmin(admin.ModelAdmin):
         self._init_navigation()
 
     def _init_navigation(self):
-        default_views = getattr(self.Meta, 'default_views',
-                                ('list', 'add', 'delete', 'change'))
+        """
+        The navigation is divided into three menus
 
-        """ 
-        The navigation is divided into three menus 
-        
         module_menu: navigation for this top admin module
-        
+
         sadmin_menu: navigation for "non-object" pages
         sadmin_action_menu: action navigation for "non-object" pages
-        
+
         object_menu: navigation for a specific object or view
         object_action_menu: actions for an object
         object_related_menu: cross navigation to other admin views
         """
+
+        default_views = getattr(self.Meta, 'default_views',
+                                ('list', 'add', 'delete', 'change'))
+
         self.module_menu = Navigation()
         self.sadmin_menu = Navigation()
         self.sadmin_action_menu = Navigation()
@@ -257,7 +258,7 @@ class SModelAdmin(admin.ModelAdmin):
         
         context.update(extra_context or {})
 
-        return super(SModelAdmin, self).change_view(request, object_id, context)
+        return super(SModelAdmin, self).change_view(request, object_id, extra_context=context)
 
     def add_view(self, request, extra_context=None):
         context = {}
