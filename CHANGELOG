@@ -11,7 +11,7 @@ Dependencies
  * Now supports (and requires) Django 1.4.0
  * Now requires south 1.7.5
  * Now requires debug-debug-toolbar 0.9.1
- * Now requires django-piston (API support)
+ * Now requires django-tastypie (API support)
 
 7.1.1
  * Small bugfixes

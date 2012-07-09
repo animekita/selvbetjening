@@ -1,6 +1,6 @@
 from selvbetjening.settings_base import *
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'demo.urls'
 
 # installed applications
 INSTALLED_APPS.extend([
@@ -23,7 +23,7 @@ INSTALLED_APPS.extend([
     'selvbetjening.sadmin.events',
     'selvbetjening.sadmin.mailcenter',
 
-    'selvbetjening.api.eventsapi',
+    'selvbetjening.api.rest',
 
     'selvbetjening.scheckin.legacy',
 

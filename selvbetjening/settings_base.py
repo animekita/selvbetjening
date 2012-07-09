@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_extensions',
     'navtree',
+    'tastypie',
 
     'django.contrib.sites',
     'django.contrib.auth',
@@ -162,4 +163,5 @@ if not 'test' in sys.argv:
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
 
-#CRISPY_TEMPLATE_PACK = 'uni_form'
+TEST_RUNNER = 'selvbetjening.core.testrunner.IncludingTestSuiteRunner'
+TEST_INCLUDE = ['selvbetjening']

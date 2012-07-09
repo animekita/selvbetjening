@@ -10,7 +10,7 @@ def get_user_data():
             'first_name' : 'test',
             'last_name' : 'test',
             'email' : 'user@example.org',
-            'dateofbirth' : '1987-10-14',
+            'dateofbirth' : '14.10.1987',
             'country' : 'DK',
             'send_me_email' : False,
             'tos' : True}
