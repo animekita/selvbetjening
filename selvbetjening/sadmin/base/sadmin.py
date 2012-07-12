@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.cache import never_cache
@@ -12,6 +14,7 @@ from django.contrib.auth import logout as do_logout
 from django.contrib import messages
 from django.utils.safestring import mark_safe
 from django.utils.datastructures import SortedDict
+from django.core.urlresolvers import NoReverseMatch
 
 from selvbetjening.portal.profile.forms import LoginForm
 from selvbetjening.core import ObjectWrapper
@@ -23,11 +26,57 @@ from widgets import SAdminForeignKeyRawIdWidget, register_object_search_page
 
 main_menu = Navigation() # default sadmin navigation
 
+@contextmanager
+def reverse_patch(request, smodel_admin):
+    """
+    Patch the reverse function for particular Django admin views
+
+    The Django admin views (change, changelist, add, and delete)
+    now (from 1.4) uses the reverse function to redirect users
+    after specific actions (such as deleting an object).
+    Unfortunately, this clashes with SAdmin, since additional
+    args must be provided in order to reverse bound admin
+    models.
+
+    We can't overwrite the usage of reverse by defining new
+    methods on SModelAdmin (we can, but it will overwrite
+    large quantities of logic). So we patch the reverse
+    function when rendering each view.
+
+    This should be sound, since Django is executed in a single
+    process. We take great care in restoring the real reverse
+    function again after the view has rendered, e.g. we
+    implement this using the new "with" statement in Python.
+    """
+
+    import django.contrib.admin.options as admin_impl
+    old_reverse = admin_impl.reverse
+
+    def reverse_injected(*args, **kwargs):
+        try:
+            return old_reverse(*args, **kwargs)
+        except NoReverseMatch:
+            url_args = [obj.pk for obj in smodel_admin._get_navigation_stack(request)]
+
+            for arg in kwargs.get('args', []):
+                url_args.append(arg)
+
+            kwargs['args'] = url_args
+
+            return old_reverse(*args, **kwargs)
+
+    try:
+        admin_impl.reverse = reverse_injected
+        yield
+
+    finally:
+        admin_impl.reverse = old_reverse
+
 class SAdminSite(admin.AdminSite):
     def __init__(self):
         super(SAdminSite, self).__init__()
 
-        self.app_name = 'sadmin'
+        self.app_name = 'admin'
         self.name = 'sadmin'
 
         self.page_root = SPage('Dashboard',
@@ -258,7 +307,8 @@ class SModelAdmin(admin.ModelAdmin):
         
         context.update(extra_context or {})
 
-        return super(SModelAdmin, self).change_view(request, object_id, extra_context=context)
+        with reverse_patch(request, self):
+            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context)
 
     def add_view(self, request, extra_context=None):
         context = {}
@@ -270,7 +320,8 @@ class SModelAdmin(admin.ModelAdmin):
         
         context.update(extra_context or {})
 
-        return super(SModelAdmin, self).add_view(request, extra_context=context)
+        with reverse_patch(request, self):
+            return super(SModelAdmin, self).add_view(request, extra_context=context)
 
     def delete_view(self, request, object_id, extra_context=None):
         context = {}
@@ -283,7 +334,8 @@ class SModelAdmin(admin.ModelAdmin):
 
         context.update(extra_context or {})
 
-        return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context)
+        with reverse_patch(request, self):
+            return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context)
 
     def changelist_view(self, request, extra_context=None):
         args = [obj.pk for obj in self._get_navigation_stack(request)]
@@ -312,7 +364,8 @@ class SModelAdmin(admin.ModelAdmin):
         
         context.update(extra_context or {})
 
-        return super(SModelAdmin, self).changelist_view(request, extra_context=context)
+        with reverse_patch(request, self):
+            return super(SModelAdmin, self).changelist_view(request, extra_context=context)
 
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)
@@ -369,4 +422,5 @@ class STabularInline(admin.TabularInline):
             return db_field.formfield(**kwargs)
 
         return super(STabularInline, self).formfield_for_foreignkey(db_field, request=request, **kwargs)
+
 
