@@ -1,6 +1,6 @@
 7.2.0
 
- * Added new APIs and High-Availability APIs
+ * Added initial implementation of REST API
  * Added a resend-emails function in sadmin for all attendees
  * Added package concept to option groups
      An option group declared as a package gives a discount if all options are selected
