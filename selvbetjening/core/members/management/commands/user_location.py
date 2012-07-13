@@ -23,7 +23,7 @@ class Command(NoArgsCommand):
             profile = get_or_create_profile(location.user)
 
             if profile.street == '' or \
-               (profile.postalcode == None or profile.city == ''):
+               (profile.postalcode is None or profile.city == ''):
                 # no address, ignore
                 location.save()
                 continue

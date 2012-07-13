@@ -8,12 +8,10 @@ user_created = Signal(providing_args=['instance', 'clear_text_password'])
 
 # hijack the django set_password function for users
 # origin: http://www.djangosnippets.org/snippets/397/
-from django.contrib.auth.models import User
-
 real_set_password = User.set_password
 
 def set_password(self, raw_password):
-    if self.id == None:
+    if self.id is None:
         self.save()
 
     real_set_password(self, raw_password)

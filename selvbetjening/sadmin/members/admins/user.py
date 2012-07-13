@@ -95,7 +95,7 @@ class UserAdmin(SModelAdmin):
         self.object_menu.register(self.page_change_password)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
+        from django.conf.urls import patterns, url, include
 
         urlpattern = super(UserAdmin, self).get_urls()
 

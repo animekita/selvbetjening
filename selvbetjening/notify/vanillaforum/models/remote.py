@@ -47,10 +47,10 @@ class RemoteUserRole(models.Model):
 
 class RemoteUserAssociationManager(models.Manager):
 
-    def create(self, *args, **kwargs):
+    def create(self, **kwargs):
         kwargs['provider'] = 'selvbetjeningsso'
 
-        return super(RemoteUserAssociation, self).create(*args, **kwargs)
+        return super(RemoteUserAssociationManager, self).create(**kwargs)
 
     def get_query_set(self):
         return super(RemoteUserAssociationManager, self).get_query_set().filter(provider='selvbetjeningsso')

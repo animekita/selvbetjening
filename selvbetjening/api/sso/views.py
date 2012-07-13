@@ -4,7 +4,6 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.auth import authenticate as auth_authenticate
 from django.shortcuts import render_to_response
-from django.template import RequestContext
 
 import models
 import forms

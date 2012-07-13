@@ -7,10 +7,10 @@ from selvbetjening.notify import BaseNotifyRegistry
 
 from remote import RemoteUserAssociation, RemoteUser, RemoteRole, RemoteUserRole
 from listeners import UserChangedListener, UserDeletedListener, \
-     SettingsChangedListener, GroupMembersChangedListener, register_new_user,\
-     update_user_settings
+     SettingsChangedListener, GroupMembersChangedListener, \
+    GroupRemoteRole, register_new_user, update_user_settings
 
-from native import Settings, GroupRemoteRole
+from native import Settings
 
 class VanillaForumRegistry(BaseNotifyRegistry):
     def __init__(self):

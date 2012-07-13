@@ -3,7 +3,6 @@ import re
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-from django.template.loader import render_to_string
 from django.template import Template, Context
 from django.utils.translation import ugettext as _
 

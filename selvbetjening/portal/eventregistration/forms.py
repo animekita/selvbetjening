@@ -3,18 +3,12 @@
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext_lazy, ugettext_lazy
 from django import forms
-from django.utils.safestring import mark_safe
 
-from crispy_forms.helpers import FormHelper, Submit, Fieldset, Layout
-
-from selvbetjening.viewbase.forms.helpers import Fieldset
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Fieldset, Layout
 
 from selvbetjening.core.events.forms import OptionForms as BaseOptionForms
 from selvbetjening.core.events.forms import OptionGroupForm as BaseOptionGroupForm
-
-class DummyWidget(forms.Widget):
-    def render(self):
-        return forms.mark_safe(u'')
 
 class AcceptForm(forms.Form):
     def __init__(self, *args, **kwargs):

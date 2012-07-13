@@ -46,7 +46,7 @@ class OptionGroupAdmin(SBoundModelAdmin):
         self.object_menu.register(self.page_change, self.Meta.display_name)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, include
+        from django.conf.urls import patterns, include
 
         option_admin = OptionAdmin()
         option_admin.page_root.parent = self.page_change

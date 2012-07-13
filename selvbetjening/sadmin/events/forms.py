@@ -3,11 +3,7 @@ from decimal import Decimal
 from django import forms
 from django.utils.translation import ugettext as _
 
-from crispy_forms.helpers import FormHelper, Submit
-
-from selvbetjening.viewbase.forms.helpers import Fieldset
-
-from selvbetjening.core.events.models import AttendState, Attend, find_attendee_signal
+from selvbetjening.core.events.models import AttendState, find_attendee_signal
 from selvbetjening.core.invoice.models import Payment
 
 class InvoiceFormattingForm(forms.Form):

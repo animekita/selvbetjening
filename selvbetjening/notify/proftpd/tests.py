@@ -1,7 +1,6 @@
 from django.core.management.base import CommandError
 from django.test import TransactionTestCase
 from django.contrib.auth.models import Group
-from django.conf import settings
 
 from selvbetjening.core.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase

@@ -1,7 +1,5 @@
-import re
-
-from django.template import Node, NodeList, Variable, Library
-from django.template import TemplateSyntaxError, VariableDoesNotExist
+from django.template import Node, Variable
+from django.template import VariableDoesNotExist
 
 
 def parse_args_kwargs(parser, token):

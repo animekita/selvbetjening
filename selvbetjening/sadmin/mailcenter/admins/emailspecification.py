@@ -78,7 +78,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         self.object_menu.register(self.page_mass_email)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
+        from django.conf.urls import patterns, url, include
 
         outgoing_admin = OutgoingAdmin()
         outgoing_admin.page_root.parent = self.page_root
@@ -186,7 +186,7 @@ class EmailSpecificationAdmin(SModelAdmin):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
 
         if request.method == 'POST':
-            form = SendEmailForm(request.POST)
+            form = SendEmailForm(request.POST, admin_site=self.admin_site)
 
             if form.is_valid():
                 user = form.cleaned_data['user']
@@ -194,10 +194,10 @@ class EmailSpecificationAdmin(SModelAdmin):
                 email.send_email(user, bypass_conditions=True)
                 messages.success(request, _(u'E-mail successfully sent to %s') % user.get_full_name())
 
-                form = SendEmailForm()
+                form = SendEmailForm(admin_site=self.admin_site)
 
         else:
-            form = SendEmailForm()
+            form = SendEmailForm(admin_site=self.admin_site)
 
         return render_to_response('sadmin/mailcenter/email/send.html',
                                   {'form': admin_formize(form),

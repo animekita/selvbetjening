@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db.models import F
 
@@ -62,7 +62,7 @@ class Command(BaseCommand):
                                                  .create(selv_user_id=unsynced_user.pk,
                                                          remote_user_id=remote_user.id)
 
-                    user_settings, created = Settings.objects.get_or_create(user=user)
+                    user_settings, created = Settings.objects.get_or_create(user=unsynced_user)
                     update_user_settings(database_id, user_settings)
 
                     print '.',

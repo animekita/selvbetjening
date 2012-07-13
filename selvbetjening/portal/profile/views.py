@@ -13,7 +13,6 @@ from django.contrib import messages
 
 from selvbetjening.core.logger import logger
 from selvbetjening.core.members.forms import ProfileForm
-from selvbetjening.core.members.models import UserProfile
 from selvbetjening.core.events.models import Attend
 
 from forms import ChangePasswordForm, ChangePictureForm, PrivacyForm, ChangeUsernameForm

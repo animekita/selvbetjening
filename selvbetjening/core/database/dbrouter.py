@@ -6,7 +6,7 @@ class DatabaseRouter(object):
         databases = cls._external_tables.get(model, [])
         databases.append(database_name)
 
-        cls._external_tables[model] = databases;
+        cls._external_tables[model] = databases
 
     def allow_relation(self, obj1, obj2, **hints):
         if obj1.__class__ in self._external_tables:

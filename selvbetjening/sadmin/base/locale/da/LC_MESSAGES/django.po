@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: sadmin.py:89
-msgid "User sucessfully logged out"
+msgid "User successfully logged out"
 msgstr "Bruger logget ud"
 
 #: sadmin.py:163

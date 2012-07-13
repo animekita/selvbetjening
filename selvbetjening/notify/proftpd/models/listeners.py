@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from selvbetjening.notify import BaseListener
 from selvbetjening.core.members.signals import user_changed_password, user_created
 
-from native import GroupProftpdGroup, CompatiblePassword
+from native import CompatiblePassword
 from proftpd import ProftpdGroup, ProftpdUser
 
 class GroupMembersChangedListener(BaseListener):
@@ -44,13 +44,6 @@ class GroupMembersChangedListener(BaseListener):
             self._clear_handler(user)
 
     def _add_handler(self, user, group_pk):
-        try:
-            proftpdGroup = ProftpdGroup.objects.get(group=group_pk,
-                                                    database_id=self._database_id)
-
-        except ProftpdGroup.DoesNotExist:
-            # group not present in proftpd or not associated, ignore.
-            pass
 
         username = self._config['username_format'] % user.username
 
@@ -72,21 +65,29 @@ class GroupMembersChangedListener(BaseListener):
                                        uid=self._uid,
                                        ftpdir=self._ftpdir)
 
-        if not proftpdGroup.is_member(username):
-            proftpdGroup.add_member(username)
+        try:
+            proftpdGroup = ProftpdGroup.objects.get(group=group_pk,
+                database_id=self._database_id)
+
+            if not proftpdGroup.is_member(username):
+                proftpdGroup.add_member(username)
+
+        except ProftpdGroup.DoesNotExist:
+            # group not present in proftpd or not associated, ignore.
+            pass
 
     def _remove_handler(self, user, group_pk):
         try:
             proftpdGroup = ProftpdGroup.objects.get(group=group_pk,
                                                     database_id=self._database_id)
 
+            username = self._config['username_format'] % user.username
+
+            proftpdGroup.remove_member(username)
+
         except ProftpdGroup.DoesNotExist:
             # group not present in proftpd or not associated, ignore.
             pass
-
-        username = self._config['username_format'] % user.username
-
-        proftpdGroup.remove_member(username)
 
     def _clear_handler(self, user):
         username = self._config['username_format'] % user.username

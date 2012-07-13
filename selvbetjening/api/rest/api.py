@@ -1,6 +1,6 @@
 from tastypie.resources import ModelResource
 
-from selvbetjening.core.events.models import Attend, Invoice
+from selvbetjening.core.events.models import Attend
 
 class AttendeeResource(ModelResource):
     class Meta:

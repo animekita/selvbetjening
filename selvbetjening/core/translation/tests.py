@@ -7,7 +7,6 @@ Replace these with more appropriate tests for your application.
 
 from django.test import TestCase
 
-from selvbetjening.core.events.models import Event
 from selvbetjening.core.events.tests import Database as EventDatabase
 
 from utility import translate_model

@@ -1,8 +1,4 @@
-import copy
-import pprint
-
 from django import template
-from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
 from crumbs.templatetags import CaktNode, parse_args_kwargs

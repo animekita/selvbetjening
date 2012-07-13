@@ -2,7 +2,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db.models import ManyToOneRel
-from django.core.urlresolvers import reverse
 
 from selvbetjening.core.events.models import AttendState
 from selvbetjening.core.mailcenter.models import UserConditions, \
@@ -16,8 +15,10 @@ class SendEmailForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(SendEmailForm, self).__init__(*args, **kwargs)
 
+        admin_site = kwargs.pop('admin_site')
+
         self.fields['username'] = forms.CharField(
-            widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username')))
+            widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username'), admin_site))
 
     fieldsets = [(None, {
         'fields': ('username',)
@@ -58,13 +59,13 @@ class BaseConditionForm(forms.ModelForm):
 
         super(BaseConditionForm, self).__init__(*args, **kwargs)
 
-    def save(self):
+    def save(self, commit=True):
         instance = super(BaseConditionForm, self).save(commit=False)
         instance.specification = self.specification
 
-        instance.save()
-
-        self.save_m2m()
+        if commit:
+            instance.save()
+            self.save_m2m()
 
         return instance
 

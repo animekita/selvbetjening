@@ -1,9 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext as _
 
-from crispy_forms.helpers import FormHelper, Submit, Fieldset, Layout, Row
-
-from selvbetjening.viewbase.forms.helpers import Fieldset
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Fieldset, Layout, Row
 
 from models import Settings
 

@@ -102,7 +102,7 @@ class SAdminSite(admin.AdminSite):
         unused views and added custom sadmin views
         """
         
-        from django.conf.urls.defaults import patterns, url, include
+        from django.conf.urls import patterns, url, include
 
         def wrap(view, cacheable=False):
             def wrapper(*args, **kwargs):
@@ -136,15 +136,15 @@ class SAdminSite(admin.AdminSite):
                                   context_instance=RequestContext(request))
 
     @never_cache
-    def logout(self, request):
+    def logout(self, request, extra_context=None):
         do_logout(request)
 
-        messages.success(request, _(u'User sucessfully logged out'))
+        messages.success(request, _(u'User successfully logged out'))
 
         return HttpResponseRedirect(reverse('sadmin:login'))
 
     @never_cache
-    def login(self, request):
+    def login(self, request, extra_context=None):
         wrapped_request = ObjectWrapper(request)
 
         if request.REQUEST.get(REDIRECT_FIELD_NAME, None) is None:
@@ -153,7 +153,8 @@ class SAdminSite(admin.AdminSite):
 
         return auth_views.login(wrapped_request,
                                 template_name='sadmin/base/login.html',
-                                authentication_form=LoginForm)
+                                authentication_form=LoginForm,
+                                extra_context=extra_context)
 
 site = SAdminSite()
 
@@ -254,7 +255,7 @@ class SModelAdmin(admin.ModelAdmin):
         return update_wrapper(wrapper, view)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls import patterns, url
 
         default_views = getattr(self.Meta, 'default_views',
                                 ('list', 'add', 'delete', 'change'))
@@ -303,7 +304,7 @@ class SModelAdmin(admin.ModelAdmin):
         else:
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, extra_context=None, **kwargs):
         context = {}
         
         context['menu'] = self.module_menu
@@ -316,9 +317,9 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context)
+            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context, **kwargs)
 
-    def add_view(self, request, extra_context=None):
+    def add_view(self, request, extra_context=None, **kwargs):
         context = {}
         
         context['current_page'] = self.page_add
@@ -329,7 +330,7 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).add_view(request, extra_context=context)
+            return super(SModelAdmin, self).add_view(request, extra_context=context, **kwargs)
 
     def delete_view(self, request, object_id, extra_context=None):
         context = {}
@@ -389,7 +390,7 @@ class SModelAdmin(admin.ModelAdmin):
 
         db = kwargs.get('using')
         if db_field.name in self.raw_id_fields:
-            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, using=db)
+            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, self.admin_site, using=db)
 
             return db_field.formfield(**kwargs)
 
@@ -425,7 +426,7 @@ class STabularInline(admin.TabularInline):
 
         db = kwargs.get('using')
         if db_field.name in self.raw_id_fields:
-            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, using=db)
+            kwargs['widget'] = SAdminForeignKeyRawIdWidget(db_field.rel, self.admin_site, using=db)
 
             return db_field.formfield(**kwargs)
 

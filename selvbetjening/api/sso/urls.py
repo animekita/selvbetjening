@@ -1,5 +1,4 @@
-from django.conf.urls.defaults import *
-from django.contrib.auth import views as auth_views
+from django.conf.urls import *
 
 import views
 

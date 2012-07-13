@@ -93,7 +93,7 @@ class EventAdmin(SModelAdmin):
         self.object_menu.register(self.page_financials)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
+        from django.conf.urls import patterns, url, include
 
         self.attendee_admin = AttendeeAdmin()
         self.attendee_admin.page_root.parent = self.page_change

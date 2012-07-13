@@ -1,7 +1,6 @@
-from django.db import models
 from django.conf import settings
 from django.db.models import signals
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 
 from selvbetjening.core.database.dbrouter import DatabaseRouter
 from selvbetjening.core.members.signals import user_changed_username

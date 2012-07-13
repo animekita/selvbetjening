@@ -6,11 +6,10 @@ from django.conf import settings
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.contrib.admin.widgets import ForeignKeyRawIdWidget
-from django.db.models import OneToOneRel
 
 from countries.models import Country
-from crispy_forms.helpers import FormHelper, Submit, Layout, Row, HTML
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Row, HTML
 
 from selvbetjening.viewbase.forms import widgets
 from selvbetjening.viewbase.forms.helpers import Fieldset

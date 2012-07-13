@@ -17,11 +17,11 @@ class Database(object):
         return User.objects.create_user(id, '%s@example.org' % id, id)
 
     @classmethod
-    def new_invoice(self, user):
+    def new_invoice(cls, user):
         return models.Invoice.objects.create(name='test', user=user)
 
     @classmethod
-    def pay_invoice(self, invoice):
+    def pay_invoice(cls, invoice):
         models.Payment.objects.create(revision=invoice.latest_revision,
                                       amount=invoice.total_price)
     

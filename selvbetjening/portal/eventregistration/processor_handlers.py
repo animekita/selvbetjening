@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.utils.safestring import mark_safe
 
 from selvbetjening.utility import ProcessorHandler, ProcessorRegistry

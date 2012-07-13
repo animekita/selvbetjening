@@ -1,8 +1,8 @@
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import Group, User
+from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 
-from selvbetjening.notify.htdigest.models import CompatiblePassword, HTDigestFile, filter_username
+from selvbetjening.notify.htdigest.models import HTDigestFile, filter_username
 
 class Command(BaseCommand):
     help = 'Generate htdigest files'

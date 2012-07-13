@@ -2,7 +2,6 @@ from django.contrib.auth.models import Group
 
 from selvbetjening.notify import BaseListener
 
-from native import GroupDjangoGroup
 from externaldjango import DjangoGroup, DjangoUser
 
 class GroupMembersChangedListener(BaseListener):

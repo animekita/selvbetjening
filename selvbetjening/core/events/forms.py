@@ -2,9 +2,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ModelForm
 
-from crispy_forms.helpers import FormHelper, Submit, Fieldset, Layout
-
-from selvbetjening.viewbase.forms.helpers import Fieldset
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Fieldset, Layout
 
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.models import Payment

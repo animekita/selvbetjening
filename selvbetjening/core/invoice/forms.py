@@ -4,11 +4,9 @@ from decimal import Decimal
 
 from django import forms
 from django.utils.translation import ugettext as _
-from django.contrib.admin.widgets import AdminRadioSelect
 from django.contrib.auth.models import User
 
 from selvbetjening.core.events.models import Event, AttendState
-from selvbetjening.core.invoice.models import Line
 
 from models import Invoice, InvoiceRevision
 

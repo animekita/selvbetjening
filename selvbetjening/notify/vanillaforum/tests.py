@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Group
-from django.core.management.base import CommandError
 
 from selvbetjening.core.events.tests import Database
 from selvbetjening.notify.tests import BaseNotifyTestCase

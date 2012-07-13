@@ -55,7 +55,6 @@ class AttendeeAdmin(SBoundModelAdmin):
                                                     attendee.get_state_display())
     status.allow_tags = True
 
-
     def attendee_actions(attendee):
         if attendee.state == AttendState.attended:
             return ''
@@ -68,7 +67,11 @@ class AttendeeAdmin(SBoundModelAdmin):
 
     list_filter = ('state',)
     list_per_page = 50
-    list_display = ('user', name, status, in_balance, attendee_actions)
+    list_display = ('user',
+                    name,
+                    status,
+                    in_balance,
+                    attendee_actions)
 
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
@@ -101,7 +104,7 @@ class AttendeeAdmin(SBoundModelAdmin):
         self.object_related_menu.register(self.page_profile)
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
+        from django.conf.urls import patterns, url, include
 
         urlpatterns = super(AttendeeAdmin, self).get_urls()
 

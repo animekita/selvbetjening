@@ -1,6 +1,3 @@
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
-
 from selvbetjening.utility import ProcessorHandler, ProcessorRegistry
 
 class ChangeSelectionHandler(ProcessorHandler):

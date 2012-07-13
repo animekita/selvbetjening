@@ -1,6 +1,5 @@
 # coding=UTF-8
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -17,11 +16,6 @@ from selvbetjening.core.events import decorators as eventdecorators
 
 from forms import SignupForm, SignoffForm, OptionForms
 from processor_handlers import signup_processors, change_processors
-
-if 'mailer' in settings.INSTALLED_APPS:
-    from mailer import send_mail
-else:
-    from django.core.mail import send_mail
 
 def list_events(request, template_name='eventregistration/list.html'):
     return render_to_response(template_name,

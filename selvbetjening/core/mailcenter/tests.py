@@ -5,9 +5,8 @@ from django.contrib.auth.models import User
 from django.core import mail
 
 from selvbetjening.core.members.models import UserProfile
-from selvbetjening.core.events.models import Event, Attend, AttendState
 
-from models import EmailSpecification, UserConditions, AttendConditions
+from models import EmailSpecification, UserConditions
 
 class EmailSpecificationTest(TestCase):
     def setUp(self):
