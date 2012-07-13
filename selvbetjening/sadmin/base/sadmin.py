@@ -171,6 +171,13 @@ class SModelAdmin(admin.ModelAdmin):
     def __init__(self):
         super(SModelAdmin, self).__init__(self.Meta.model, site)
         self._url_info = self.Meta.app_name, self.Meta.name
+
+        # Django now uses the models internal opts (Options)
+        # object for the module name (name in our Meta object).
+        #
+        # We inject the "correct" module name without overwriting
+        # the value of the object (since the object is global).
+        self.opts = ObjectWrapper(self.opts)
         self.opts.module_name = self.Meta.name
 
         self._init_navigation()
