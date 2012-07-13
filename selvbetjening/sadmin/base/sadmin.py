@@ -171,6 +171,7 @@ class SModelAdmin(admin.ModelAdmin):
     def __init__(self):
         super(SModelAdmin, self).__init__(self.Meta.model, site)
         self._url_info = self.Meta.app_name, self.Meta.name
+        self.opts.module_name = self.Meta.name
 
         self._init_navigation()
 
