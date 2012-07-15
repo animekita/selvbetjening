@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-27 18:45+0200\n"
+"POT-Creation-Date: 2012-07-14 19:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Access"
 msgstr "Rettigheder"
 
-#: admins/access.py:16 admins/group.py:10
+#: admins/access.py:16 admins/group.py:14
 msgid "Groups"
 msgstr "Grupper"
 
@@ -30,11 +30,15 @@ msgstr "Grupper"
 msgid "Permissions"
 msgstr "Rettigheder"
 
-#: admins/group.py:11
+#: admins/group.py:8
+msgid "User count"
+msgstr "Antal brugere"
+
+#: admins/group.py:15
 msgid "Group"
 msgstr "Gruppe"
 
-#: admins/group.py:20
+#: admins/group.py:25
 msgid "Browse Groups"
 msgstr "Grupper"
 
@@ -78,11 +82,11 @@ msgstr "Medlemmer"
 msgid "Create Member"
 msgstr "Tilføj medlem"
 
-#: admins/user.py:150
+#: admins/user.py:161
 msgid "Password changed successfully."
 msgstr "Kodeord ændret"
 
-#: admins/user.py:160
+#: admins/user.py:171
 #, python-format
 msgid "Change password: %s"
 msgstr "Ændre kodeord for %s"
