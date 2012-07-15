@@ -379,6 +379,7 @@ class SModelAdmin(admin.ModelAdmin):
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)
 
+        response.render()
         start = response.content.rfind('<form')
         stop = response.content.rfind('</form>') + 7
         response.content = response.content[start:stop]
