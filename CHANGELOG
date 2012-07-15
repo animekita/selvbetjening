@@ -1,5 +1,6 @@
 7.2.0
 
+ * Remove htdigest notify module
  * Added initial implementation of REST API
  * Added a resend-emails function in sadmin for all attendees
  * Added package concept to option groups
