@@ -98,4 +98,16 @@
     {% endif %}
 </div>
 
+<div id="profile-groups" class="right">
+    <h4>Grupper</h4>
+
+    <table class="vertical">
+    {% for group in user.groups.all %}
+        <tr>
+            <td>{{ group.name }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+
 {{ add_to_profile|safe }}
