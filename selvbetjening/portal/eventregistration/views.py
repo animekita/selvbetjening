@@ -9,7 +9,6 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 
 from selvbetjening.core.translation.utility import translate_model
-from selvbetjening.core.logger import logger
 from selvbetjening.core.invoice.decorators import disable_invoice_updates
 from selvbetjening.core.events.models import Event, Attend, attendes_event_source
 from selvbetjening.core.events import decorators as eventdecorators
@@ -68,12 +67,6 @@ def signup(request, event,
 
         if form.is_valid() and optionforms.is_valid() and handler.is_valid():
 
-            log_msg = '<user %s> registered for <event %s>' %\
-                    (request.user.username, event.title)
-
-            logger.log('eventregistration', 'event-registration', log_msg,
-                       request=request, event=event)
-
             attendee = event.add_attendee(request.user)
             optionforms.save(attendee=attendee)
 
@@ -114,12 +107,6 @@ def signoff(request, event,
 
         if form.is_valid():
 
-            log_msg = '<user %s> removed registration for <event %s>' %\
-                    (request.user.username, event.title)
-
-            logger.log('eventregistration', 'event-registration', log_msg,
-                        request=request, event=event)
-
             attendee.delete()
 
             attendee.invoice.update(force=True)
@@ -156,12 +143,6 @@ def change_options(request, event,
             handler.save()
 
             attendee.invoice.update(force=True)
-
-            log_msg = '<user %s> changed options for <event %s>' %\
-                    (attendee.user.username, attendee.event.title)
-
-            logger.log('eventregistration', 'event-registration', log_msg,
-                       request=request, event=attendee.event)
 
             handler.postsave()
 

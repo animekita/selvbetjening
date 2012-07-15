@@ -123,7 +123,6 @@ INSTALLED_APPS = [
     'selvbetjening.core.members',
     'selvbetjening.core.invoice',
     'selvbetjening.core.translation',
-    'selvbetjening.core.logger',
     'selvbetjening.core.mailcenter',
 ]
 

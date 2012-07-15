@@ -11,7 +11,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.formtools.preview import FormPreview
 from django.contrib import messages
 
-from selvbetjening.core.logger import logger
 from selvbetjening.core.members.forms import ProfileForm
 from selvbetjening.core.events.models import Attend
 
@@ -180,12 +179,6 @@ class UsernameChangeView(FormPreview):
 
         request.user.username = cleaned_data['new_username']
         request.user.save()
-
-        log_msg = '<user %s> changed name to <user %s>' %\
-                    (old_username, cleaned_data['new_username'])
-
-        logger.log('profile', 'profile-edit', log_msg,
-                   request=request)
 
         messages.add_message(request, messages.INFO, _(u'Username changed'))
         return HttpResponseRedirect(reverse('members_profile'))
