@@ -1,11 +1,16 @@
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
-from selvbetjening.sadmin.base.sadmin import SModelAdmin
+from selvbetjening.sadmin.base.sadmin import SModelAdmin, STabularInline
 
 def _user_count(group):
     return group.user_set.all().count()
 _user_count.short_description = _('User count')
+
+class UserTabularAdmin(STabularInline):
+    model = User.groups.through
+    readonly_fields = ('user',)
+    extra = 0
 
 class GroupAdmin(SModelAdmin):
     class Meta:
@@ -19,6 +24,8 @@ class GroupAdmin(SModelAdmin):
     ordering = ('name',)
     filter_horizontal = ('permissions',)
     list_display = ('name', _user_count)
+
+    inlines = [UserTabularAdmin,]
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
