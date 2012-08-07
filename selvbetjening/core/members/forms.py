@@ -12,7 +12,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, HTML
 
 from selvbetjening.viewbase.forms import widgets
-from selvbetjening.viewbase.forms.helpers import Fieldset
+from selvbetjening.viewbase.forms.helpers import SFieldset
 
 from models import UserProfile, UserCommunication, UserWebsite
 from shortcuts import get_or_create_profile
@@ -195,14 +195,14 @@ class ProfileForm(BaseProfileForm):
         methods = self._build_communication()
         websites = self._build_websites()
 
-        layout = Layout(Fieldset(_(u'Basic Information'),
+        layout = Layout(SFieldset(_(u'Basic Information'),
                                        Row('first_name', 'last_name'), 'dateofbirth', 'sex',),
-                        Fieldset(_(u'Address'),
+                        SFieldset(_(u'Address'),
                                        'street', Row('postalcode', 'city'), 'country'),
-                        Fieldset(_(u'Contact Information'),
+                        SFieldset(_(u'Contact Information'),
                                        'phonenumber', 'email', 'send_me_email',
                                        *methods),
-                        Fieldset(_(u'Your Homepages (shown on your profile)'), *websites))
+                        SFieldset(_(u'Your Homepages (shown on your profile)'), *websites))
 
         submit = Submit(_('Change personal information'),
                         _('Change personal information'))
@@ -367,13 +367,13 @@ class RegistrationForm(BaseProfileForm):
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label=_(u"I allow the storage of my personal information on this site."))
 
-    layout = Layout(Fieldset(_(u"Personal Information"),
+    layout = Layout(SFieldset(_(u"Personal Information"),
                              'first_name', 'last_name', 'dateofbirth', 'sex', 'phonenumber', 'email', 'send_me_email'),
-                    Fieldset(_(u"Address"),
+                    SFieldset(_(u"Address"),
                              'street', 'postalcode', 'city', 'country'),
-                    Fieldset(_(u"User"),
+                    SFieldset(_(u"User"),
                              'username', 'password1', 'password2'),
-                    Fieldset(_(u"Data management terms"),
+                    SFieldset(_(u"Data management terms"),
                              'tos'))
 
     helper = FormHelper()

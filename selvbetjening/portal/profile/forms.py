@@ -4,9 +4,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, HTML
+from crispy_forms.layout import Submit, Layout, HTML, Fieldset
 
-from selvbetjening.viewbase.forms.helpers import Fieldset
+from selvbetjening.viewbase.forms.helpers import SFieldset
 from selvbetjening.core.members.forms import UsernameField, validate_username
 
 from processor_handlers import extended_privacy_processors
@@ -16,7 +16,7 @@ class LoginForm(AuthenticationForm):
     helper = FormHelper()
 
     helper.add_layout(Layout(
-        Fieldset('', 'username', 'password')
+        SFieldset('', 'username', 'password')
     ))
 
     helper.add_input(
@@ -48,7 +48,7 @@ class ChangeUsernameForm(forms.Form):
 
     helper = FormHelper()
 
-    layout = Layout(Fieldset(_('New username'), 'new_username'))
+    layout = Layout(SFieldset(_('New username'), 'new_username'))
     submit = Submit(_('Change username'), _('Change username'))
 
     helper.add_layout(layout)
@@ -128,11 +128,8 @@ class PrivacyForm(forms.ModelForm):
                   'public_town', 'public_contact',
                   'public_websites',] + extended_fields
 
-        options = {'ext_class' : 'privacy_settings',
-                  'help_text' : _('Select the information which is to be visible on your profile.')}
-
-        layout = Layout(Fieldset(None, 'public_profile'),
-                        Fieldset(*fields, **options),
+        layout = Layout('public_profile',
+                        Fieldset(*fields, css_class='privacy_settings'),
                         HTML(self.html))
 
         submit = Submit(_('Update privacy settings'), _('Update privacy settings'))

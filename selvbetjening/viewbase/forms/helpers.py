@@ -1,12 +1,12 @@
 from crispy_forms import layout
 
-class Fieldset(layout.Fieldset):
+class SFieldset(layout.Fieldset):
     def __init__(self, *args, **kwargs):
         ext_class = kwargs.pop('ext_class', None)
         help_text = kwargs.pop('help_text', None)
         large_hints = kwargs.pop('large_hints', False)
 
-        super(Fieldset, self).__init__(*args, **kwargs)
+        super(SFieldset, self).__init__(*args, **kwargs)
 
         if large_hints:
             self.css_class = self.css_class + ' optionList' if self.css_class else 'optionList'
