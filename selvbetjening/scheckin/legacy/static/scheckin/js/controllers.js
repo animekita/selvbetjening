@@ -1,94 +1,103 @@
 
-angular.module('scheckin-services', ['ngResource']).
-    config(function($provide) {
-
-    $provide.factory('attendeeService', function($http) {
-
-        var attendeeService = {
-
-            attendees : [],
-            attendeesLoaded : false,
-            attendeesLoadProgress : 0,
-
-            loadAttendeesPartial: function(event, offset) {
-
-                var url = '/api/rest/v1/attendee/?event=' + event + '&offset=' + offset + '&format=json';
-
-                var that = this;
-
-                $http.get(url).success(function(data) {
-                    that.attendees = that.attendees.concat(data.objects);
-
-                    var loaded = parseInt(data.meta.offset) + parseInt(data.meta.limit);
-                    var total = parseInt(data.meta.total_count);
-                    var last = loaded >= total;
-
-                    if (last) {
-                        that.attendeesLoaded = true;
-                    } else {
-                        that.attendeesLoadProgress = parseInt((loaded / total) * 100);
-                        that.loadAttendeesPartial(event, loaded);
-                    }
-                });
-            }
-
-        };
-
-        attendeeService.loadAttendeesPartial(41, 0);
-
-        return attendeeService;
-
-    });
-
-    $provide.factory('eventService', function($resource) {
-
-        return $resource('/api/rest/v1/event/?format=json').get()
-
-    });
-
-    });
-
 angular.module('scheckin', ['ngResource', 'scheckin-services']).
     config(function($provide, $routeProvider) {
 
     $routeProvider.
-        when('/attendees', {
+        when('/:eventId/attendees', {
             templateUrl: '/static/scheckin/partials/attendees.html',
             controller: AttendeeListController
         }).
-        when('/attendees/:attendeeId', {
+        when('/:eventId/attendees/:attendeeId', {
             templateUrl: '/static/scheckin/partials/attendee.html',
             controller: AttendeeController
         }).
+        when('/', {
+            templateUrl: '/static/scheckin/partials/selectevent.html',
+            controller: EventSelectionController
+        }).
         otherwise({
-            redirectTo: '/attendees'
+            redirectTo: '/'
         });
 });
 
-function AttendeeListController($scope, attendeeService) {
+function AttendeeListController($scope, $routeParams, eventService) {
 
-    $scope.attendeeService = attendeeService;
+    $scope.event = eventService.get($routeParams.eventId);
+    $scope.event.loadAttendees();
 
 }
 
-function AttendeeController($scope, $resource, $routeParams) {
+function AttendeeController($scope, $http, $resource, $routeParams, eventService) {
 
-    $scope.attendee = $resource('/api/rest/v1/attendee/:attendeeId/?format=json', {
-        attendeeId: $routeParams.attendeeId
-    }, {
-        save: {method: 'PUT'},
-        create: {method: 'POST'}
-    }).get();
+    $scope.event = eventService.get($routeParams.eventId);
 
-    $scope.checkin = function() {
-        $scope.attendee.$save();
+    $scope.selections = {};
+    var selections_original = {};
+
+    $scope.attendee = $resource('/api/rest/v1/attendee/:attendeeId/?format=json',
+        {
+            attendeeId: $routeParams.attendeeId
+        },
+        {
+            save: {method: 'PUT'},
+            create: {method: 'POST'}
+        }).get(function() {
+            for (var i = 0; i < $scope.attendee.selections.length; i++) {
+                var selection = $scope.attendee.selections[i];
+                $scope.selections[selection['option']] = true;
+                selections_original[selection['option']] = true;
+            }
+        });
+
+    $scope.saveSelections = function() {
+
+        var patch = {
+            'objects': [],
+            'deleted_objects': []
+        };
+
+        // remove unchecked elements
+        for (var i = 0; i < $scope.attendee.selections.length; i++) {
+            var selection = $scope.attendee.selections[i];
+
+            if ($scope.selections[selection['option']] == false) {
+                patch["deleted_objects"].push(selection['resource_uri']);
+            }
+        }
+
+        // add new elements
+        for (var optionUri in $scope.selections) {
+            if ($scope.selections[optionUri] == true &&
+                selections_original[optionUri] == undefined) {
+
+                patch["objects"].push({
+                    "attendee": $scope.attendee.resource_uri,
+                    "option": optionUri,
+                    "suboption": null
+                });
+            }
+        }
+
+        $http.defaults.headers.patch = {"Content-Type": "application/json"};
+
+        var request = {
+            method: "patch",
+            url: "http://localhost:8000/api/rest/v1/selection/?format=json",
+            data: patch
+        };
+
+        $http(request).
+            success(function(data, status, headers, config) {
+
+            });
+
+        //$scope.attendee.$save();
     }
 }
 
-function EventSelectorController($scope, eventService) {
-    $scope.eventService = eventService;
-}
+function EventSelectionController($scope, eventService) {
 
-$(function() {
-    $('.dropdown-toggle').dropdown();
-});
+    $scope.events = eventService.events;
+    $scope.eventListLimit = 5;
+
+}

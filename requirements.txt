@@ -12,3 +12,4 @@ django-tastypie==0.9.11
 
 -e git://github.com/jtauber/django-mailer.git@cea79940d477246ebace#egg=django-mailer
 -e git://github.com/sema/navtree.git#egg=navtree
+-e git://github.com/PaulUithol/backbone-tastypie.git

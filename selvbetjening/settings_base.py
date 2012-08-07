@@ -117,7 +117,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'selvbetjening.core.resources',
     'selvbetjening.core.database',
     'selvbetjening.core.events',
     'selvbetjening.core.members',

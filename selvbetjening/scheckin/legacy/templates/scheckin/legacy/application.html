@@ -1,9 +1,81 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='http://fonts.googleapis.com/css?family=Nobile' rel='stylesheet' type='text/css'>
+
+    <link href="{{ STATIC_URL }}contrib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}contrib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="{{ STATIC_URL }}css/branding.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}scheckin/css/scheckin.css" rel="stylesheet" type="text/css" />
+
+    <script src="{{ STATIC_URL }}contrib/jquery/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}contrib/underscore/underscore.min.js"></script>
+
+    <script src="{{ STATIC_URL }}contrib/handlebars/handlebars.js"></script>
+    <script src="{{ STATIC_URL }}contrib/backbonejs/backbone.min.js"></script>
+    <script src="{{ STATIC_URL }}contrib/backbone-tastypie/backbone-tastypie.js"></script>
+    <script src="{{ STATIC_URL }}contrib/backbone-relational/backbone-relational.js"></script>
+    <script src="{{ STATIC_URL }}contrib/backbone-layoutmanager/backbone-layoutmanager.min.js"></script>
+
+    <script src="{{ STATIC_URL }}scheckin/js/models.js"></script>
+    <script src="{{ STATIC_URL }}scheckin/js/views.js"></script>
+    <script src="{{ STATIC_URL }}scheckin/js/ui.js"></script>
+
+    <script id="chrome-layout" type="layout">
+        <div class="container-fluid">
+
+            <div class="row-fluid page-header">
+
+                <div class="span12 logo">
+                    <h1>Selvbetjening <strong>nem check-in</strong></h1>
+                </div>
+
+            </div>
+
+            <div id="main-view"></div>
+
+        </div>
+    </script>
+
+    <script id="event-list-template" type="text/x-handlebars-template">
+        <div class="row-fluid">
+            <div class="container"><div class="hero-unit">
+                <h1>Nem check-in</h1>
+                <p>Den nye, hurtige, moderne og nemme check-in løsning til event check-in.</p>
+            </div></div>
+        </div>
+
+
+        <div class="row-fluid">
+        <table class="table table-striped eventSelectionList">
+
+            <thead>
+            <tr>
+                <th>Event</th>
+                <th>Deltagere</th>
+                <th>Handlinger</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            </tbody>
+
+        </table>
+        </div>
+    </script>
+
+    <script id="event-list-item-template" type="text/x-handlebars-template">
+        <td>{{ event.title }}</td>
+        <td>{{ event.attendee_count }}</td>
+        <td><a class="btn btn-primary" href="#/{{ event.id }}/attendees/">check-in</a></td>
+    </script>
+
 </head>
+
 <body>
 
 </body>
