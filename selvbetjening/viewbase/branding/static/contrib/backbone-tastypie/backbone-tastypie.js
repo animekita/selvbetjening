@@ -7,12 +7,19 @@
         idAttribute: 'resource_uri',
 
         url: function() {
+            var uri = this.get('resource_uri');
+        
+            if (uri !== undefined) {
+                return uri;
+            }
+            
             var url = getValue(this, 'urlRoot') || getValue(this.collection, 'urlRoot') || urlError();
 
-            if (this.isNew())
-                return url;
+            if (this.get('id') !== undefined)
+                return url + this.get('id') + '/';
 
-            return this.get('resource_uri');
+            return url;
+
         },
         _getId: function() {
             if (this.has('id'))
@@ -101,10 +108,4 @@
     var urlError = function() {
         throw new Error('A "url" property or function must be specified');
     };
-})(window.$, window._, window.Backbone);/**
- * Created with PyCharm.
- * User: semadk
- * Date: 8/1/12
- * Time: 8:16 AM
- * To change this template use File | Settings | File Templates.
- */
+})(window.$, window._, window.Backbone);

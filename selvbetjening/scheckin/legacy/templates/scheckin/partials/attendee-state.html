@@ -1,0 +1,140 @@
+{% load verbatim %}{% verbatim %}
+
+<form class="attendeeForm" name="attendeeForm" method="get">
+
+    {{ #unless editStatusMode }}
+    <a class="right doToggleEdit"><i class="icon-edit"></i> Rediger</a>
+    {{ /unless }}
+
+    <h3>Status</h3>
+
+    <table class="table">
+
+        <tr>
+            <th>Tilmelding</th>
+
+            <td>
+                {{ #if editStatusMode }}
+
+                <div class="form-inline right">
+                    <label class="radio"><input type="radio" name="state" value="waiting"{{ #if attendee.isWaiting }} checked{{ /if }}>
+                        <span class="label">Tilmeldt</span></label>
+                    <label class="radio"><input type="radio" name="state" value="accepted"{{ #if attendee.isAccepted }} checked{{ /if }}>
+                        <span class="label">Accepteret</span></label>
+                    <label class="radio"><input type="radio" name="state" value="attended"{{ #if attendee.isCheckedin }} checked{{ /if }}>
+                        <span class="label">Checked in</span></label>
+                </div>
+
+                {{ else }}
+                    <span class="right">
+                    <span class="label label-success">
+                        Tilmeldt
+                    </span> <i class="icon-chevron-right"></i>
+                    <span class="label label-{{#unless attendee.isWaiting}}success{{ else }}warning{{/unless}}">
+                        Accepteret
+                    </span> <i class="icon-chevron-right"></i>
+                    <span class="label label-{{#if attendee.isCheckedin}}success{{ else }}warning{{/if}}">
+                        Checked in
+                    </span></span>
+                {{ /if }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+            <th>Betaling <a class="doToggleEdit">(se betalinger)</a></th>
+
+            <td>
+                {{ #if editStatusMode }}
+
+                <div class="form-inline right text-right" name="attendeePaymentForm">
+
+                    <div class="input-append"><label class="control-label" for="paymentAmount">Registrer betaling
+                        <input type="text" placeholder="0,00" class="text-right" id="paymentAmount" name="paymentAmount" /><span class="add-on">DKK</span>
+                    </label></div>
+
+                    <p class="help-block">Skriv et negativt beløb hvis du giver penge tilbage.</p>
+
+                </div>
+
+                {{ else }}
+
+                        <span class="right">
+
+                        {{ #if attendee.hasPaid }}
+                        <span class="label label-success">
+                            Betalt
+                        </span>
+                        {{ else }}
+                            {{ #if attendee.hasPaymentDue }}
+                            <span class="label label-important">
+                                Mangler betaling
+                            </span>
+                            {{ else }}
+                            <span class="label label-warning">
+                                Betalt for meget
+                            </span>
+
+                            {{ /if }}
+                        {{ /if }}
+
+                        </span>
+
+                {{ /if }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th></th>
+            <td><span class="right">Pris: {{ attendee.invoice.amount_total }} <b>&minus;</b> Betalt: {{ attendee.invoice.amount_paid }} <b>=</b> <b>Rest: {{ attendee.paymentDue }}</b></span></span></td>
+
+        </tr>
+
+    </table>
+
+    <div class="form-actions">
+
+        {{ #if editStatusMode }}
+
+        <button class="btn btn-primary doSave"><i class="icon-ok icon-white"></i> Gem</button>
+
+        {{ else }}
+
+        {{ #unless attendee.isCheckedin }}
+        <button class="btn btn-primary btn-large doCheckIn"><i class="icon-ok icon-white"></i> Check ind</button>
+        {{ /unless }}
+
+        {{ #if attendee.hasCashbackDue }}
+        <button class="btn btn-danger btn-large doPay"><i class="icon-gift icon-white"></i> Betal tilbage</button>
+        {{ /if }}
+
+        {{ #if attendee.hasPaymentDue }}
+        <button class="btn btn-primary btn-large doPay"><i class="icon-shopping-cart icon-white"></i> Betal</button>
+        {{ /if }}
+
+        {{ #unless attendee.isCheckedin }}
+        {{ #if attendee.hasPaymentDue }}
+        <button class="btn btn-success btn-large doCheckIn doPay"><i class="icon-shopping-cart icon-white"></i> Check ind og betal</button>
+        {{ /if }}
+        {{ /unless }}
+
+        {{ /if }}
+
+        {{ #if attendee.hasPaymentDue }}
+        <div class="right">
+            <h1><u>{{ attendee.paymentDue }} DKK</u></h1>
+        </div>
+        {{ /if }}
+        {{ #if attendee.hasCashbackDue }}
+        <div class="right">
+            <h1><span class="label label-important">OBS: Penge retur</span> <u>{{ attendee.paymentDue }} <small>DKK</small></u></h1>
+        </div>
+        {{ /if }}
+    </div>
+
+</form>
+
+{% endverbatim %}

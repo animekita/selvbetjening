@@ -74,7 +74,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    #'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -167,3 +167,16 @@ TEST_INCLUDE = ['selvbetjening']
 DEBUG_TOOLBAR_CONFIG = {
     "INTERCEPT_REDIRECTS" : False
 }
+
+DEBUG_TOOLBAR_PANELS = (
+    'debug_toolbar.panels.version.VersionDebugPanel',
+    'debug_toolbar.panels.timer.TimerDebugPanel',
+    'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
+    'debug_toolbar.panels.headers.HeaderDebugPanel',
+    'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
+    'debug_toolbar.panels.template.TemplateDebugPanel',
+    'debug_toolbar.panels.sql.SQLDebugPanel',
+    'debug_toolbar.panels.signals.SignalDebugPanel',
+    'debug_toolbar.panels.logger.LoggingPanel',
+#    'debug_toolbar.panels.profiling.ProfilingDebugPanel'
+)

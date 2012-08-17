@@ -6,6 +6,7 @@ except ImportError:
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.db.models.signals import post_save
 
 import signals
 
@@ -23,16 +24,22 @@ class InvoiceManager(models.Manager):
 class Invoice(models.Model):
     name = models.CharField(max_length=256)
     user = models.ForeignKey(User)
+    latest = models.ForeignKey('InvoiceRevision', related_name='latestrevision', null=True, blank=True)
 
     objects = InvoiceManager()
 
     @property
     def latest_revision(self):
         if not hasattr(self, '_latest_revision'):
-            try:
-                self._latest_revision = self.revision_set.latest('id')
-            except InvoiceRevision.DoesNotExist:
-                self._latest_revision = InvoiceRevision.objects.create(invoice=self)
+            self._latest_revision = self.latest
+
+            if self._latest_revision is None:
+                try:
+                    self._latest_revision = self.revision_set.latest('id')
+                    self.latest = self._latest_revision
+                    self.save()
+                except InvoiceRevision.DoesNotExist:
+                    self._latest_revision = InvoiceRevision.objects.create(invoice=self)
 
         return self._latest_revision
 
@@ -155,6 +162,17 @@ class InvoiceRevision(models.Model):
     def __unicode__(self):
         return u'Invoice as of %s' % self.created_date
 
+def update_revision_pointer(**kwargs):
+    created = kwargs['created']
+    instance = kwargs['instance']
+
+    if created:
+        instance.invoice.latest = instance
+        instance.invoice.save()
+
+post_save.connect(update_revision_pointer, InvoiceRevision)
+
+
 class Line(models.Model):
     revision = models.ForeignKey(InvoiceRevision)
     group_name = models.CharField(max_length=255, default='')
@@ -173,12 +191,3 @@ class Payment(models.Model):
     note = models.CharField(max_length=256, blank=True)
 
 
-
-class InvoicePaymentWorkflow(models.Model):
-    name = models.CharField(name=_('Workflow name'), max_length=255)
-
-    notification_email_subject = models.CharField(name=_(u'Notification e-mail subject'), max_length=255)
-    notification_email = models.TextField(name=_(u'Notification e-mail'), help_text=_('Available variables: attendee, payment, invoice_rev'))
-
-    def __unicode__(self):
-        return self.name

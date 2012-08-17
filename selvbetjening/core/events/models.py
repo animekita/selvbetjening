@@ -549,3 +549,11 @@ attendes_event_source = Source('attends_event_signal',
 payment_registered_source = Source('payment_registered',
                                    _(u'Payment registered'),
                                    [Attend, Payment])
+
+class AttendeeComment(models.Model):
+    attendee = models.ForeignKey(Attend)
+
+    author = models.CharField(max_length=256)
+    comment = models.TextField()
+
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,11 @@
+.attendee-state-indicator {
+    border-width: 0 0 1.5em 0;
+    border-style: solid;
+    border-color: #F89406;
+
+    margin-bottom: 2em;
+}
+
+.attendee-state-indicator-attended {
+    border-color: #468847;
+}

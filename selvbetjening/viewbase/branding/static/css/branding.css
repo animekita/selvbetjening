@@ -5,16 +5,25 @@ body {
 div.logo h1 {
     font-family: 'Nobile', sans-serif;
     font-weight: 400;
+    color: #000000;
+}
+
+div.logo a:hover {
+    text-decoration: none;
 }
 
 .center-text {
     text-align: center;
 }
 
-.attendee-state-indicator {
-    border-color: #468847;
-    border-width: 0 0 1.5em 0;
-    border-style: solid;
+.right {
+    float: right;
+}
 
-    margin-bottom: 2em;
+a {
+    cursor: pointer;
+}
+
+.text-right {
+    text-align: right;
 }
