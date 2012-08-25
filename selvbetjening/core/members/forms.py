@@ -11,7 +11,6 @@ from countries.models import Country
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, HTML
 
-from selvbetjening.viewbase.forms import widgets
 from selvbetjening.viewbase.forms.helpers import SFieldset
 
 from models import UserProfile, UserCommunication, UserWebsite
