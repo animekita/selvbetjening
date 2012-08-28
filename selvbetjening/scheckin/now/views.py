@@ -25,7 +25,7 @@ def checkin(request, event_id):
 
     attendees_json = attendee_resource.serialize(None, attendees_list, 'application/json')
 
-    return render(request, 'scheckin/legacy/application.html', {
+    return render(request, 'scheckin/now/application.html', {
         'event_json': event_json,
         'attendees_json': attendees_json
     })

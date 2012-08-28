@@ -1,4 +1,4 @@
-<!doctype html>
+{% load assets %}<!doctype html>
 <html lang="en">
 <head>
     <title>Selvbetjening nem check-in</title>
@@ -6,26 +6,13 @@
 
     <link href='http://fonts.googleapis.com/css?family=Nobile' rel='stylesheet' type='text/css'>
 
-    <link href="{{ STATIC_URL }}contrib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="{{ STATIC_URL }}contrib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
+    {% assets "now_css" %}
+        <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css" />
+    {% endassets %}
 
-    <link href="{{ STATIC_URL }}css/branding.css" rel="stylesheet" type="text/css" />
-    <link href="{{ STATIC_URL }}scheckin/css/scheckin.css" rel="stylesheet" type="text/css" />
-
-    <script src="{{ STATIC_URL }}contrib/jquery/jquery.min.js"></script>
-    <script src="{{ STATIC_URL }}contrib/jquery/jquery.blockUI.js"></script>
-    <script src="{{ STATIC_URL }}contrib/underscore/underscore.min.js"></script>
-
-    <script src="{{ STATIC_URL }}contrib/handlebars/handlebars.js"></script>
-    <script src="{{ STATIC_URL }}contrib/backbonejs/backbone.min.js"></script>
-    <script src="{{ STATIC_URL }}contrib/backbone-tastypie/backbone-tastypie.js"></script>
-    <script src="{{ STATIC_URL }}contrib/backbone-layoutmanager/backbone-layoutmanager.min.js"></script>
-    <script src="{{ STATIC_URL }}contrib/backbone-mutators/backbone.mutators.min.js"></script>
-    <script src="{{ STATIC_URL }}contrib/backbone-statemachine/backbone-statemachine.js"></script>
-
-    <script src="{{ STATIC_URL }}scheckin/js/models.js"></script>
-    <script src="{{ STATIC_URL }}scheckin/js/views.js"></script>
-    <script src="{{ STATIC_URL }}scheckin/js/init.js"></script>
+    {% assets "now_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
 
     <script id="chrome-layout" type="layout">
         {% include "scheckin/partials/layout.html" %}
@@ -72,13 +59,8 @@
     </script>
 
     <script>
-        var event = new Event(
-        {{ event_json|safe }}
-        );
-
-        var attendees = new Attendees(
-        {{ attendees_json|safe }}
-        );
+    var event_data = {{ event_json|safe }};
+    var attendee_data = {{ attendees_json|safe }};
     </script>
 </head>
 

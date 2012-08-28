@@ -25,7 +25,7 @@ INSTALLED_APPS.extend([
 
     'selvbetjening.api.rest',
 
-    'selvbetjening.scheckin.legacy',
+    'selvbetjening.scheckin.now',
 
     ])
 

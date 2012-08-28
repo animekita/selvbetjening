@@ -12,6 +12,9 @@ phpserialize==1.2
 simplejson
 django-tastypie==0.9.11
 
+webassets==0.7.1
+django-assets==0.2
+
 -e git://github.com/jtauber/django-mailer.git@cea79940d477246ebace#egg=django-mailer
 -e git://github.com/sema/navtree.git#egg=navtree
 -e git://github.com/PaulUithol/backbone-tastypie.git#egg=tastypie

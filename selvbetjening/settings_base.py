@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'navtree',
     'tastypie',
+    'django_assets',
 
     'django.contrib.sites',
     'django.contrib.auth',
