@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     (r'^api/sso/', include('selvbetjening.api.sso.urls')),
     (r'^api/rest/', include('selvbetjening.api.rest.urls')),
 
-    (r'^scheckin/now/', include('selvbetjening.scheckin.now.urls')),
+    (r'^scheckin/now/', include('selvbetjening.scheckin.easy.urls')),
 
 )
 
