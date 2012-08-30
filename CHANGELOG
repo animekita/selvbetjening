@@ -1,3 +1,12 @@
+7.3.0
+
+ * Add scheckin (Ajax powered check-in solution)
+ * Improvements to the REST API
+
+Dependencies
+
+ * Now requires Django 1.4.1
+
 7.2.0
 
  * Remove htdigest notify module
@@ -9,7 +18,7 @@
 
 Dependencies
 
- * Change djang-uni-form to django-crispy-forms 1.1.4
+ * Change django-uni-form to django-crispy-forms 1.1.4
  * Now supports (and requires) Django 1.4.0
  * Now requires south 1.7.5
  * Now requires debug-debug-toolbar 0.9.1
