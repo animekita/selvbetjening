@@ -1,9 +1,12 @@
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
+from selvbetjening.sadmin.decorators import superuser_required
 from selvbetjening.api.rest.api import EventResource, AttendeeResource
-from selvbetjening.core.events.models import  Attend
 
+@login_required
+@superuser_required
 def checkin(request, event_id):
 
     event_resource = EventResource()

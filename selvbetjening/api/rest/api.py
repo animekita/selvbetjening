@@ -7,10 +7,23 @@ from django.contrib.auth.models import User
 from selvbetjening.core.events.models import Attend, Event, Selection, \
     Option, OptionGroup, SubOption, Invoice, Payment, AttendeeComment
 
+class DjangoAuthentication(object):
+    def is_authenticated(self, request, **kwargs):
+        return request.user.is_authenticated()
+
+    def get_identifier(self, request):
+        return request.user.username
+
+class AdminAuthorization(Authorization):
+    def is_authorized(self, request, object=None):
+        return request.user.is_authenticated() and request.user.is_superuser
+
 class SubOptionResource(ModelResource):
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = SubOption.objects.all()
         resource_name = 'suboption'
 
@@ -23,7 +36,9 @@ class OptionResource(ModelResource):
     suboptions = fields.ToManyField(SubOptionResource, 'suboption_set', full=True)
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = Option.objects.all()
         resource_name = 'option'
 
@@ -36,7 +51,9 @@ class OptionGroupResource(ModelResource):
     options = fields.ToManyField(OptionResource, 'option_set', full=True)
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = OptionGroup.objects.all()
         resource_name = 'optiongroup'
 
@@ -50,11 +67,12 @@ class EventResource(ModelResource):
     option_groups = fields.ToManyField(OptionGroupResource, 'optiongroup_set', full=True)
 
     class Meta:
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = Event.objects.all().select_related().prefetch_related('optiongroup_set').prefetch_related('optiongroup_set__option_set').prefetch_related('optiongroup_set__option_set__suboption_set')
         resource_name = 'event'
         fields = ['id', 'title', 'startdate', 'enddate']
-
-        authorization = Authorization()
 
         always_return_data = True
 
@@ -66,11 +84,12 @@ class UserResource(ModelResource):
     name = fields.CharField(readonly=True)
 
     class Meta:
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = User.objects.all()
         resource_name = 'user'
         fields = ['username', 'first_name', 'last_name', 'email']
-
-        authorization = Authorization()
 
         always_return_data = True
 
@@ -85,7 +104,9 @@ class SelectionResource(ModelResource):
     attendee = fields.ToOneField('selvbetjening.api.rest.api.AttendeeResource', 'attendee')
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
+
         queryset = Selection.objects.all()
 
         filtering = {
@@ -102,7 +123,8 @@ class InvoiceResource(ModelResource):
     amount_paid = fields.IntegerField(readonly=True)
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
 
         queryset = Invoice.objects.all()
         resource_name = 'invoice'
@@ -122,7 +144,8 @@ class PaymentResource(ModelResource):
     invoice = fields.ToOneField(InvoiceResource, 'invoice')
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
 
         queryset = Payment.objects.all()
         resource_name = 'payment'
@@ -135,7 +158,8 @@ class AttendeeResource(ModelResource):
     invoice = fields.ForeignKey(InvoiceResource, 'invoice', full=True, readonly=True)
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
 
         queryset = Attend.objects.all().select_related().prefetch_related('invoice__payment_set').prefetch_related('invoice__latest').prefetch_related('invoice__latest__line_set')
         resource_name = 'attendee'
@@ -151,7 +175,8 @@ class AttendeeCommentResource(ModelResource):
     attendee = fields.ForeignKey(AttendeeResource, 'attendee')
 
     class Meta:
-        authorization = Authorization()
+        authentication = DjangoAuthentication()
+        authorization = AdminAuthorization()
 
         queryset = AttendeeComment.objects.all()
         resource_name = 'attendeecomment'
