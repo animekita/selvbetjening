@@ -14,7 +14,7 @@ class AccessAdmin(SModelAdmin):
 
     fieldsets = (
         (_('Groups'), {'fields': ('groups',)}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
 
     def _init_navigation(self):

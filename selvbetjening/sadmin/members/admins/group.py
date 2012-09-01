@@ -14,7 +14,7 @@ class UserTabularAdmin(STabularInline):
 
 class GroupAdmin(SModelAdmin):
     class Meta:
-        app_name = 'members'
+        app_name = 'auth'
         name = 'group'
         display_name_plural = _('Groups')
         display_name = _('Group')
@@ -22,8 +22,9 @@ class GroupAdmin(SModelAdmin):
 
     search_fields = ('name',)
     ordering = ('name',)
-    filter_horizontal = ('permissions',)
     list_display = ('name', _user_count)
+
+    fields = ('name',)
 
     inlines = [UserTabularAdmin,]
 
