@@ -1,5 +1,5 @@
 from datetime import date
-
+from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Min, Max
@@ -157,7 +157,7 @@ class UserAdmin(SModelAdmin):
         if request.method == 'POST':
             form = AdminPasswordChangeForm(user, request.POST)
             if form.is_valid():
-                new_user = form.save()
+                form.save()
                 msg = _('Password changed successfully.')
                 messages.success(request, msg)
                 return HttpResponseRedirect('..')
@@ -170,6 +170,7 @@ class UserAdmin(SModelAdmin):
         return render_to_response('admin/auth/user/change_password.html', {
             'title': _('Change password: %s') % escape(user.username),
             'adminForm': adminForm,
+            'form_url': '',
             'form': form,
             'is_popup': '_popup' in request.REQUEST,
             'add': True,
@@ -181,7 +182,6 @@ class UserAdmin(SModelAdmin):
             'original': user,
             'save_as': False,
             'show_save': True,
-            'root_path': self.admin_site.root_path,
             'menu': self.module_menu,
             'object_menu': self.object_menu,
             'action_menu': self.object_action_menu,
