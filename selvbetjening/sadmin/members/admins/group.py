@@ -9,8 +9,8 @@ _user_count.short_description = _('User count')
 
 class UserTabularAdmin(STabularInline):
     model = User.groups.through
-    readonly_fields = ('user',)
     extra = 0
+    raw_id_fields = ['user']
 
 class GroupAdmin(SModelAdmin):
     class Meta:

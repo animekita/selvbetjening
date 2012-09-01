@@ -2,6 +2,8 @@
 
  * Add scheckin (Ajax powered check-in solution)
  * Improvements to the REST API
+ * Improved administration of groups
+ * Add group membership to user profile
 
 Dependencies
 

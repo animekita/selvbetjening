@@ -22,7 +22,7 @@ from selvbetjening.core import ObjectWrapper
 from navtree.navigation import Navigation
 
 from nav import LeafSPage, ObjectSPage, SPage
-from widgets import SAdminForeignKeyRawIdWidget, register_object_search_page
+from widgets import SAdminForeignKeyRawIdWidget
 
 main_menu = Navigation() # default sadmin navigation
 
@@ -215,9 +215,6 @@ class SModelAdmin(admin.ModelAdmin):
                 depth=self.depth)
             self.module_menu.register(self.page_root)
 
-            register_object_search_page(self.Meta.app_name,
-                                        self.Meta.name,
-                                        'sadmin:%s_%s_changelist' % self._url_info)
         else:
             self.page_root = None
 
