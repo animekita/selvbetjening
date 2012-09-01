@@ -47,6 +47,7 @@ class UserAdmin(SModelAdmin):
     list_display = ('username', 'first_name', 'last_name', 'display_age')
     search_fields = ('id', 'username', 'first_name', 'last_name', 'email')
     readonly_fields = ('last_login', 'date_joined')
+    list_filter = ['is_superuser', 'is_staff', 'is_active']
 
     inlines = [UserProfileInline, UserWebsiteInline, UserCommunicationInline]
 

@@ -24,7 +24,15 @@ class GroupAdmin(SModelAdmin):
     ordering = ('name',)
     list_display = ('name', _user_count)
 
-    fields = ('name',)
+    fieldsets = (
+        (None, {
+            'fields': ('name',)
+        }),
+        (_('Access'), {
+            'fields': ('permissions',),
+            'classes': ('collapse',),
+        })
+    )
 
     inlines = [UserTabularAdmin,]
 
