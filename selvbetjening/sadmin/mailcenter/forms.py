@@ -13,9 +13,9 @@ from selvbetjening.sadmin.base.widgets import SAdminForeignKeyRawIdWidget
 
 class SendEmailForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(SendEmailForm, self).__init__(*args, **kwargs)
-
         admin_site = kwargs.pop('admin_site')
+
+        super(SendEmailForm, self).__init__(*args, **kwargs)
 
         self.fields['username'] = forms.CharField(
             widget=SAdminForeignKeyRawIdWidget(ManyToOneRel(User, 'username'), admin_site))
