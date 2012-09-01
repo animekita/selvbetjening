@@ -1,5 +1,5 @@
 from datetime import date
-from django.contrib.auth.admin import UserAdmin
+
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Min, Max
@@ -132,7 +132,7 @@ class UserAdmin(SModelAdmin):
         extra_context['title'] = _(u'Browse Members')
         return super(UserAdmin, self).changelist_view(request, extra_context)
 
-    def add_view(self, request, extra_context=None):
+    def add_view(self, request, extra_context=None, **kwargs):
         extra_context = extra_context or {}
         extra_context['title'] = _(u'Create Member')
 
@@ -141,7 +141,7 @@ class UserAdmin(SModelAdmin):
         self.inline_instances = []
         # fix end
 
-        result = super(UserAdmin, self).add_view(request, extra_context=extra_context)
+        result = super(UserAdmin, self).add_view(request, extra_context=extra_context, **kwargs)
 
         # restore from fix
         self.inline_instances = inlines
