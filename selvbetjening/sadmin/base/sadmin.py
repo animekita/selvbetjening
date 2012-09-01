@@ -124,7 +124,7 @@ class SAdminSite(admin.AdminSite):
                 name='jsi18n'),
         )
 
-        urlpatterns += patterns('selvbetjening.sadmin.base.views',
+        urlpatterns += patterns('',
             *[(r'^%s/' % mount, include(self._registry[mount].urls)) for mount in self._registry]
             )
 
