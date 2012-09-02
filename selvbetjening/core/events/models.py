@@ -132,6 +132,12 @@ class AttendManager(models.Manager):
 
         return super(AttendManager, self).create(**kwargs)
 
+    def all_related(self):
+        return self.all().select_related().\
+            prefetch_related('invoice__payment_set').\
+            prefetch_related('invoice__latest').\
+            prefetch_related('invoice__latest__line_set')
+
 class AttendState(object):
     waiting = 'waiting'
     accepted = 'accepted'

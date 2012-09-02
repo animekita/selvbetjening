@@ -161,7 +161,7 @@ class AttendeeResource(ModelResource):
         authentication = DjangoAuthentication()
         authorization = AdminAuthorization()
 
-        queryset = Attend.objects.all().select_related().prefetch_related('invoice__payment_set').prefetch_related('invoice__latest').prefetch_related('invoice__latest__line_set')
+        queryset = Attend.objects.all_related()
         resource_name = 'attendee'
 
         filtering = {

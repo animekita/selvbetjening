@@ -6,6 +6,7 @@ from django.views.defaults import RequestContext
 from django.core.urlresolvers import reverse
 from django.forms.formsets import formset_factory
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from selvbetjening.core.events.models import Event, AttendState,\
      payment_registered_source, Attend
@@ -176,18 +177,19 @@ class EventAdmin(SModelAdmin):
         statistics = {}
 
         # attendees
-        attendees_count = event.attendees.count()
+        attendees = Attend.objects.all_related().filter(event=event_pk).prefetch_related('user__attend_set')
+        attendees_count = attendees.count()
 
         def attendee_statistics(state, identifier):
-            attendees = event.attendees.filter(state=state)
-            count = attendees.count()
+            _attendees = attendees.filter(state=state)
+            _count = _attendees.count()
 
             new = 0
-            for attendee in attendees:
+            for attendee in _attendees:
                 if attendee.is_new():
                     new += 1
 
-            statistics[identifier + '_count'] = count
+            statistics[identifier + '_count'] = _count
             statistics[identifier + '_new'] = new
 
             return new
@@ -198,15 +200,15 @@ class EventAdmin(SModelAdmin):
 
         # attendees graph
 
-        attendees = event.attendees.filter(registration_date__isnull=False)
+        _attendees = attendees.filter(registration_date__isnull=False)
 
-        if attendees.count() > 0:
+        if _attendees.count() > 0:
 
-            first = attendees.order_by('registration_date')[0].registration_date
-            last = attendees.order_by('-registration_date')[0].registration_date
+            first = _attendees.order_by('registration_date')[0].registration_date
+            last = _attendees.order_by('-registration_date')[0].registration_date
 
             try:
-                last_changed = attendees.exclude(state=AttendState.waiting).order_by('-change_timestamp')[0].change_timestamp
+                last_changed = _attendees.exclude(state=AttendState.waiting).order_by('-change_timestamp')[0].change_timestamp
 
                 if last_changed > last:
                     last = last_changed
@@ -217,7 +219,7 @@ class EventAdmin(SModelAdmin):
             registration_data = [0 for i in axis]
             accepted_data = [0 for i in axis]
 
-            for attendee in attendees:
+            for attendee in _attendees:
                 week = graph.diff_in_weeks(first, attendee.registration_date)
                 registration_data[week] += 1
 
@@ -241,7 +243,12 @@ class EventAdmin(SModelAdmin):
         statistics['invoices_overpaid'] = 0
         statistics['invoices_count'] = 0
 
-        for invoice in Invoice.objects.filter(attend__in=event.attendees):
+        invoices = Invoice.objects.select_related().\
+                        prefetch_related('payment_set').\
+                        prefetch_related('latest__line_set').\
+                        filter(attend__in=event.attendees)
+
+        for invoice in invoices:
             statistics['invoices_count'] += 1
 
             if invoice.in_balance():
