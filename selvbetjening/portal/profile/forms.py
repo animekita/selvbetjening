@@ -128,8 +128,12 @@ class PrivacyForm(forms.ModelForm):
                   'public_town', 'public_contact',
                   'public_websites',] + extended_fields
 
+        properties = {
+                'css_class': 'privacy_settings'
+        }
+
         layout = Layout('public_profile',
-                        Fieldset(*fields, css_class='privacy_settings'),
+                        Fieldset(*fields, **properties),
                         HTML(self.html))
 
         submit = Submit(_('Update privacy settings'), _('Update privacy settings'))
