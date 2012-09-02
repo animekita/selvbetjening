@@ -5,12 +5,24 @@
 
 {% block extrastyle %}{{block.super}}
 <style type="text/css">
-.uniForm { width: 650px; padding: 1em;}
+form { width: 650px; padding: 1em; overflow: auto;}
 
-.uniForm .buttonHolder { margin: 1em 0 2em 0; padding:1em;	text-align:right; background-color: #729fcf; }
-.uniForm .buttonHolder input { font-size: 24px; }
-
+form .control-group { float: left; margin-left: 2em; }
 form label { display: block; font-weight: bold; font-size: 1.2em; margin: 0 0 0.5em 0; }
+form .form-actions { float: right; margin-right: 8.2em; margin-top: 1em;}
+form .help-inline { display: block; }
+
+div.alert-error ul { margin: 0 0 1em 0; list-style: none; width: 550px; }
+
+div.alert-error ul li {
+    padding: 1em;
+    font-size: 1.2em;
+
+    background-color: #FF9595;
+    background: -webkit-gradient(linear, left top, left bottom, from(#FF9595), to(#FF7C7C));
+    background: -moz-linear-gradient(top, #FF9595, #FF7C7C);
+}
+
 </style>
 {% endblock %}
 
