@@ -90,6 +90,7 @@
 </table>
 </div>
 
+<div class="right">
 <div id="profile-image" class="right">
     {% if viewed_user.get_profile.picture %}
     <img src="{{viewed_user.get_profile.picture.url}}">
@@ -102,12 +103,13 @@
     <h4>Grupper</h4>
 
     <table class="vertical">
-    {% for group in user.groups.all %}
+    {% for group in viewed_user.groups.all %}
         <tr>
             <td>{{ group.name }}</td>
         </tr>
     {% endfor %}
     </table>
+</div>
 </div>
 
 {{ add_to_profile|safe }}
