@@ -294,7 +294,10 @@ class EventAdmin(SModelAdmin):
 
     def financial_report_view(self, request, event_pk):
         event = get_object_or_404(Event, pk=event_pk)
-        invoice_queryset = Invoice.objects.filter(attend__event=event)
+        invoice_queryset = Invoice.objects.select_related().\
+            prefetch_related('payment_set').\
+            prefetch_related('latest__line_set').\
+            filter(attend__event=event)
 
         if request.method == 'POST' or request.GET.has_key('event'):
             formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
