@@ -138,14 +138,14 @@ class UserAdmin(SModelAdmin):
         extra_context['title'] = _(u'Create Member')
 
         # fix problem with creating users with profiles directly
-        inlines = self.inline_instances
-        self.inline_instances = []
+        inlines_old = self.inlines
+        self.inlines = []
         # fix end
 
         result = super(UserAdmin, self).add_view(request, extra_context=extra_context, **kwargs)
 
         # restore from fix
-        self.inline_instances = inlines
+        self.inlines = inlines_old
 
         return result
 
