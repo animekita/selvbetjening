@@ -2,6 +2,10 @@ from django.contrib.auth import models as auth_models
 from django.test import TestCase
 from django.contrib.auth.models import User
 
+from selvbetjening.core.events.tests import Database as EventDatabase
+
+import signals
+
 def get_user_data():
     return {'username' : 'unittest_test',
             'password1' : 'test*',
@@ -70,3 +74,8 @@ class RegistrationFormTestCase(TestCase):
         user = form.save()
 
         test_user_created(self, user.username)
+
+class SignalsTestCase(TestCase):
+    def test_change_password_non_ascii(self):
+        user = EventDatabase.new_user()
+        user.set_password(u'abc\xf8')

@@ -6,6 +6,7 @@ from django.conf import settings
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.utils.encoding import smart_str
 
 from countries.models import Country
 from crispy_forms.helper import FormHelper
@@ -425,7 +426,7 @@ class RegistrationForm(BaseProfileForm):
 
         signals.user_created.send(sender=self,
                                   instance=user,
-                                  clear_text_password=self.cleaned_data["password1"])
+                                  clear_text_password=smart_str(self.cleaned_data["password1"]))
 
         return user
 

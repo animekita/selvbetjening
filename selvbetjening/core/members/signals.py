@@ -1,6 +1,7 @@
 from django.dispatch import Signal
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
+from django.utils.encoding import smart_str
 
 user_changed_username = Signal(providing_args=['old_username', 'new_username'])
 user_changed_password = Signal(providing_args=['instance', 'clear_text_password'])
@@ -17,7 +18,7 @@ def set_password(self, raw_password):
     real_set_password(self, raw_password)
 
     # signal changed password
-    user_changed_password.send(sender=self, instance=self, clear_text_password=raw_password)
+    user_changed_password.send(sender=self, instance=self, clear_text_password=smart_str(raw_password))
 
 # replace the method
 User.set_password = set_password
