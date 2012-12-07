@@ -1,3 +1,12 @@
+7.4.0
+
+ * Update Django to 1.4.2
+ * Update South to 0.7.6
+ * Update django-crispy-forms to 1.2.3
+ * Update django-extensions to 1.0.1
+ * Update django-debug-toolbar to 0.9.4
+ * Update webassets and django-assets to 0.8
+
 7.3.0
 
  * Add scheckin (Ajax powered check-in solution)

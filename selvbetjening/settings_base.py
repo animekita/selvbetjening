@@ -104,7 +104,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'sorl.thumbnail',
     'crumbs',
-    #'debug_toolbar',
+    'debug_toolbar',
     'django_extensions',
     'navtree',
     'tastypie',
