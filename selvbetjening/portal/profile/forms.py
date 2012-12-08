@@ -1,6 +1,8 @@
+# encoding: utf8
+
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from django import forms
 
 from crispy_forms.helper import FormHelper
@@ -22,19 +24,20 @@ class LoginForm(AuthenticationForm):
     helper.add_input(
         Submit('submit_login', _('Sign in'))
     )
-    
+
     def clean(self):
         """
         Overwrite clean in order to provide an more clean error message
         """
-        
+
         try:
             return super(LoginForm, self).clean()
         except forms.ValidationError, ex:
             if self.user_cache is None:
                 ex = forms.ValidationError(_(u"Please enter a correct username and password."))
-            
+
             raise ex
+
 
 class ChangePasswordForm(PasswordChangeForm):
     helper = FormHelper()
@@ -42,6 +45,7 @@ class ChangePasswordForm(PasswordChangeForm):
     submit = Submit(_('Change password'), _('Change password'))
     helper.add_input(submit)
     helper.use_csrf_protection = True
+
 
 class ChangeUsernameForm(forms.Form):
     new_username = UsernameField()
@@ -58,6 +62,7 @@ class ChangeUsernameForm(forms.Form):
     def clean_new_username(self):
         return validate_username(self.cleaned_data['new_username'])
 
+
 class ChangePictureForm(forms.Form):
     picture = forms.ImageField(label=_(u'Picture'))
 
@@ -66,6 +71,7 @@ class ChangePictureForm(forms.Form):
     submit = Submit(_('Change picture'), _('Change picture'))
     helper.add_input(submit)
     helper.use_csrf_protection = True
+
 
 class PrivacyForm(forms.ModelForm):
     html = """
@@ -156,3 +162,19 @@ class PrivacyForm(forms.ModelForm):
     class Meta:
         model = UserPrivacy
         exclude = ('user',)
+
+
+class CrispySetPasswordForm(SetPasswordForm):
+
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.use_csrf_protection = True
+    helper.add_input(Submit(u'Vælg kodeord', _(u'Vælg kodeord')))
+
+
+class CrispyPasswordResetForm(PasswordResetForm):
+
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.use_csrf_protection = True
+    helper.add_input(Submit(_('Recover Account'), _('Recover Account')))

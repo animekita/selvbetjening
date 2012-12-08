@@ -163,7 +163,8 @@ def change_options(request, event,
 @eventdecorators.get_event_from_id
 @eventdecorators.event_attendance_required
 def view_invoice(request, event,
-                 template_name='eventregistration/status.html'):
+                 template_name='eventregistration/status.html',
+                 extra_context=None):
     translate_model(event)
 
     attendee = Attend.objects.get(user=request.user, event=event)
@@ -196,5 +197,7 @@ def view_invoice(request, event,
 
     template_vars['show_signup_message'] = request.GET.get('signup', False)
     template_vars['show_change_message'] = request.GET.get('change', False)
+
+    template_vars.update(extra_context)
 
     return event_page(request, event, template_name, template_vars)
