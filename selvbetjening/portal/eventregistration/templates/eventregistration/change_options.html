@@ -16,14 +16,14 @@
 
 {% block content %}
 
-<form method="POST" class="uniForm" action="">{% csrf_token %}
+<form method="POST" class="form-horizontal" action="">{% csrf_token %}
 
 {% include "eventregistration/parts/options.html" %}
 
 {{ signup_render|safe }}
 
-<div class="buttonHolder">
-	<input type="submit" name="Ændre" value="{% trans "Change" %}" />
+<div class="form-actions">
+	<input type="submit" class="btn btn-primary" name="Ændre" value="Ændre tilmelding" />
 </div>
 
 </form>
