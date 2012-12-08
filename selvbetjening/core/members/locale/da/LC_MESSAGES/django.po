@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-11 18:55+0100\n"
+"POT-Creation-Date: 2012-12-08 22:40+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -18,37 +18,33 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin_views.py:42
-msgid "User account migration accomplished."
-msgstr "Migrering af bruger konto afsluttet."
-
-#: forms.py:25
+#: forms.py:26
 msgid "Usernames can only contain letters, numbers and underscores"
 msgstr "Brugernavne kan kun indeholde bogstaver, tal og underscore."
 
-#: forms.py:32
+#: forms.py:33
 msgid "This username is already taken. Please choose another."
 msgstr "Dit valgte brugernavn er allerede taget, vælg venligst et andet."
 
-#: forms.py:38
+#: forms.py:39
 msgid "Username"
 msgstr "Brugernavn"
 
-#: forms.py:39
+#: forms.py:40
 msgid ""
 "Your username can only contain the characters a-z, underscore and numbers."
 msgstr ""
 "Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
 
-#: forms.py:71
+#: forms.py:72
 msgid "First name"
 msgstr "Fornavn"
 
-#: forms.py:76
+#: forms.py:77
 msgid "Last name"
 msgstr "Efternavn"
 
-#: forms.py:79
+#: forms.py:80
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -56,127 +52,135 @@ msgstr "E-mail"
 msgid "Date of birth"
 msgstr "Fødselsdag"
 
-#: forms.py:86
+#: forms.py:83
+msgid "Use the date format dd.mm.yyyy"
+msgstr "Skriv datoen som dd.mm.yyyy"
+
+#: forms.py:88
 msgid "Street"
 msgstr "Vej"
 
-#: forms.py:88
+#: forms.py:90
 msgid "Postal code"
 msgstr "Postnummer"
 
-#: forms.py:92
+#: forms.py:94
 msgid "City"
 msgstr "By"
 
-#: forms.py:95
+#: forms.py:97
 msgid "Country"
 msgstr "Land"
 
-#: forms.py:98
+#: forms.py:100
 msgid "Phonenumber"
 msgstr "Telefonnummer"
 
-#: forms.py:102
+#: forms.py:104
 msgid "Inform me about events and other important changes."
 msgstr "Informer mig omkring arrangementer og andre tiltag igennem min e-mail."
 
-#: forms.py:105
+#: forms.py:107
 msgid "Sex"
 msgstr "Køn"
 
-#: forms.py:130
+#: forms.py:133
 msgid "Your birthday is not allowed to be dated before 1900"
 msgstr "Du kan ikke angive din fødselsdag til at være før år 1900."
 
-#: forms.py:140
+#: forms.py:143
 msgid "Invalid country selected"
 msgstr "Ugyldigt land valgt"
 
-#: forms.py:199
+#: forms.py:202
 msgid "Basic Information"
 msgstr "Basale-informationer"
 
-#: forms.py:201 forms.py:372
+#: forms.py:204 forms.py:376
 msgid "Address"
 msgstr "Adresse"
 
-#: forms.py:203
+#: forms.py:206
 msgid "Contact Information"
 msgstr "Kontaktoplysninger"
 
-#: forms.py:206
+#: forms.py:209
 msgid "Your Homepages (shown on your profile)"
 msgstr "Dine hjemmesider (vist på din profil)"
 
-#: forms.py:208 forms.py:209
+#: forms.py:211 forms.py:212
 msgid "Change personal information"
 msgstr "Ændre dine personoplysninger"
 
-#: forms.py:233
+#: forms.py:235
 msgid "Name"
 msgstr "Navn"
 
-#: forms.py:236
+#: forms.py:238
 msgid "URL"
 msgstr "URL"
 
-#: forms.py:268
+#: forms.py:270
 msgid "Add website"
 msgstr "Tilføj hjemmeside"
 
-#: forms.py:363
+#: forms.py:367
 msgid "Password"
 msgstr "Kodeord"
 
-#: forms.py:365
+#: forms.py:369
 msgid "Verify password"
 msgstr "Bekræft kodeord"
 
-#: forms.py:368
+#: forms.py:372
 msgid "I allow the storage of my personal information on this site."
 msgstr "Jeg tillader opbevaringen af mine personlige data på denne side."
 
-#: forms.py:370
+#: forms.py:374
 msgid "Personal Information"
 msgstr "Personoplysninger"
 
-#: forms.py:374
+#: forms.py:378
 msgid "User"
 msgstr "Brugere"
 
-#: forms.py:376
+#: forms.py:380
 msgid "Data management terms"
 msgstr "Vilkår for databehandling"
 
-#: forms.py:381
+#: forms.py:385
 msgid "Create user"
 msgstr "Opret bruger"
 
-#: forms.py:388
+#: forms.py:392
 msgid "You must allow us to store your information to create an account."
 msgstr ""
 "Du skal tillade os at gemme dine personlige informationer for at oprette en "
 "konto hos os."
 
-#: forms.py:402
+#: forms.py:406
 msgid "You must type the same password each time"
 msgstr "Du skal indtaste det samme kodeord to gange."
 
-#: forms.py:434
+#: forms.py:438
 msgid "Old user account"
 msgstr "Gammel bruger konto"
 
-#: forms.py:435
+#: forms.py:439
 msgid "New user account"
 msgstr "Ny bruger konto"
 
-#: forms.py:440
+#: forms.py:444
 msgid "Old user account and new user account must be different"
 msgstr "Den gamle og den nye bruger konto skal være forskellige"
 
 #: models.py:27 models.py:37 models.py:48 migrations/0000_initial.py:17
 msgid "user"
 msgstr "bruger"
+
+#: models.py:46
+msgid "Unspecified"
+msgstr "Uspecificeret"
 
 #: models.py:46
 msgid "male"
@@ -232,12 +236,13 @@ msgstr "Bruger profiler"
 msgid "Registration profile for %s"
 msgstr "Registreringsprofil for %s"
 
-#: templates/admin/auth/user/migration.html:19
-msgid "Home"
-msgstr "Hjem"
+#~ msgid "User account migration accomplished."
+#~ msgstr "Migrering af bruger konto afsluttet."
 
-#: templates/admin/auth/user/migration.html:38
-msgid "Please correct the error below."
-msgid_plural "Please correct the errors below."
-msgstr[0] "Ret venligst fejlen nedenfor"
-msgstr[1] "Ret venligst fejlene nedenfor"
+#~ msgid "Home"
+#~ msgstr "Hjem"
+
+#~ msgid "Please correct the error below."
+#~ msgid_plural "Please correct the errors below."
+#~ msgstr[0] "Ret venligst fejlen nedenfor"
+#~ msgstr[1] "Ret venligst fejlene nedenfor"

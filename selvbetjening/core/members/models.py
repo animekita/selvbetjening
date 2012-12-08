@@ -43,7 +43,7 @@ class UserCommunication(models.Model):
         unique_together = ('method', 'user')
 
 class UserProfile(models.Model):
-    SEX = (('', ''), ('male', _('male')), ('female', _('female')))
+    SEX = (('', _('Unspecified')), ('male', _('male')), ('female', _('female')))
 
     user = models.ForeignKey(User, unique=True, verbose_name=_(u'user'), db_column='user_id', primary_key=True)
 

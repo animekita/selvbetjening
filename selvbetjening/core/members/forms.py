@@ -1,4 +1,5 @@
 # coding=UTF-8
+from django.forms.widgets import RadioSelect
 import re
 
 from django.template import Context
@@ -78,7 +79,9 @@ class BaseProfileForm(forms.Form):
 
     email = forms.EmailField(max_length=75, label=_(u'E-mail'))
 
-    dateofbirth = forms.DateField(label=_(u'Date of birth'))
+    dateofbirth = forms.DateField(label=_(u'Date of birth'),
+                                  help_text=_(u'Use the date format dd.mm.yyyy'),
+                                  input_formats=['%d.%m.%Y'])
 
     street = forms.CharField(max_length=50,
                              widget=forms.TextInput(),
@@ -103,7 +106,8 @@ class BaseProfileForm(forms.Form):
 
     sex = forms.ChoiceField(label=_(u'Sex'),
                             choices=UserProfile.SEX,
-                            required=False)
+                            required=False,
+                            widget=RadioSelect)
 
     def _build_initial(self):
         user_profile = get_or_create_profile(self.user)
