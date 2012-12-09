@@ -86,7 +86,7 @@ def profile_edit(request,
         form = form_class(request.user)
 
     return render_to_response(template_name,
-                              {'form' : form},
+                              {'form': form},
                               context_instance=RequestContext(request))
 
 @login_required

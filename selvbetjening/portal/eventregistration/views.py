@@ -129,7 +129,8 @@ def signoff(request, event,
 def change_options(request, event,
                    success_page='eventregistration_status',
                    omit_event_id_on_success=False,
-                   template_name='eventregistration/change_options.html'):
+                   template_name='eventregistration/change_options.html',
+                   extra_context=None):
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
@@ -155,9 +156,11 @@ def change_options(request, event,
 
     signup_render = handler.view()
 
-    return event_page(request, event, template_name,
-                      {'optionforms' : form,
-                       'signup_render' : signup_render})
+    context = {'optionforms': form,
+               'signup_render': signup_render}
+    context.update(extra_context)
+
+    return event_page(request, event, template_name, context)
 
 @login_required
 @eventdecorators.get_event_from_id
