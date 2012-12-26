@@ -1,6 +1,6 @@
 7.4.0
 
- * Update Django to 1.4.2
+ * Update Django to 1.4.3
  * Update South to 0.7.6
  * Update django-crispy-forms to 1.2.3
  * Update django-extensions to 1.0.1
