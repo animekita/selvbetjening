@@ -30,7 +30,7 @@ class Invoice(models.Model):
 
     @property
     def latest_revision(self):
-        if not hasattr(self, '_latest_revision'):
+        if not hasattr(self, '_latest_revision') or self._latest_revision is None:
             self._latest_revision = self.latest
 
             if self._latest_revision is None:
