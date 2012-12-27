@@ -166,6 +166,9 @@ class BaseProfileForm(forms.Form):
         profile.sex = self.cleaned_data['sex']
         profile.save()
 
+        return user
+
+
 class ProfileForm(BaseProfileForm):
     COMMUNICATION_FIELDNAME = 'usercommunication_%s'
     WEBSITE_NAME_FIELDNAME = 'userwebsite_name_%s'

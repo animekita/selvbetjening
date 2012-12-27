@@ -79,6 +79,8 @@ class Invoice(models.Model):
             revision = InvoiceRevision.objects.create(invoice=self)
             signals.populate_invoice.send(self, invoice_revision=revision)
 
+            self._latest_revision = None
+
     def is_paid(self):
         return self.paid >= self.total_price
     is_paid.boolean = True

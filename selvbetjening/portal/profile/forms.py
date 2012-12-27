@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
@@ -169,7 +169,7 @@ class CrispySetPasswordForm(SetPasswordForm):
     helper = FormHelper()
     helper.form_tag = False
     helper.use_csrf_protection = True
-    helper.add_input(Submit(u'Vælg kodeord', _(u'Vælg kodeord')))
+    helper.add_input(Submit(_(u'Choose Password'), _(u'Choose Password')))
 
 
 class CrispyPasswordResetForm(PasswordResetForm):

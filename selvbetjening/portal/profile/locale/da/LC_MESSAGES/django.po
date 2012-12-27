@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-04 22:37+0200\n"
+"POT-Creation-Date: 2012-12-26 22:17+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -18,115 +18,121 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:18
+#: forms.py:25
 msgid "Sign in"
 msgstr "Log ind"
 
-#: forms.py:29
+#: forms.py:37
 msgid "Please enter a correct username and password."
 msgstr "Indtast venligst et korrekt brugernavn og adgangskode."
 
-#: forms.py:36
+#: forms.py:45
 msgid "Change password"
 msgstr "Ændre kodeord"
 
-#: forms.py:45
+#: forms.py:55
 msgid "New username"
 msgstr "Nyt brugernavn"
 
-#: forms.py:46
+#: forms.py:56
 #, fuzzy
 msgid "Change username"
 msgstr "Ændre billede"
 
-#: forms.py:60
+#: forms.py:67
+msgid "Picture"
+msgstr "Billede"
+
+#: forms.py:71
 msgid "Change picture"
 msgstr "Ændre billede"
 
-#: forms.py:91
+#: forms.py:103
 msgid "Public profile"
 msgstr "Offentlig profil"
 
-#: forms.py:92
+#: forms.py:104
 msgid "Name"
 msgstr "Navn"
 
-#: forms.py:93
+#: forms.py:105
 msgid "Age"
 msgstr "Alder"
 
-#: forms.py:94
+#: forms.py:106
 msgid "Sex"
 msgstr "Køn"
 
-#: forms.py:95
+#: forms.py:107
 msgid "Email"
 msgstr "Email"
 
-#: forms.py:96
+#: forms.py:108
 msgid "Phonenumber"
 msgstr "Telefonnummer"
 
-#: forms.py:97
+#: forms.py:109
 msgid "Town"
 msgstr "By"
 
-#: forms.py:98
+#: forms.py:110
 msgid "Contact"
 msgstr "Kontaktoplysninger"
 
-#: forms.py:99
+#: forms.py:111
 msgid "Websites"
 msgstr "Hjemmesider"
 
-#: forms.py:100
+#: forms.py:112
 msgid "Join date"
 msgstr "Dato for indmeldelse"
 
-#: forms.py:118
+#: forms.py:130
 msgid "Visible on my profile"
 msgstr "Synlig på min profil"
 
-#: forms.py:126
-msgid "Select the information which is to be visible on your profile."
-msgstr "Vælg de informationer der skal være synligt på din offentlige profil."
-
-#: forms.py:132
+#: forms.py:145
 msgid "Update privacy settings"
 msgstr "Opdater privacy indstillinger"
 
-#: views.py:84
+#: forms.py:172
+#, fuzzy
+msgid "Choose Password"
+msgstr "Ændre kodeord"
+
+#: forms.py:180
+msgid "Recover Account"
+msgstr "Genskab konto"
+
+#: views.py:83
 msgid "Personal information updated"
 msgstr "Personlige oplysninger opdateret"
 
-#: views.py:105
+#: views.py:104
 msgid "Privacy settings updated"
 msgstr "Privacy indstillinger opdateret"
 
-#: views.py:129
+#: views.py:128
 msgid "Profile picture changed"
 msgstr "Profil billede opdateret"
 
-#: views.py:149
+#: views.py:148
 msgid "Password changed"
 msgstr "Kodeord ændret"
 
-#: views.py:190
+#: views.py:183
 msgid "Username changed"
 msgstr "Brugernavn ændret"
 
 #: templates/profile/password_reset/password_reset.html:14
-msgid "Forgot your password"
-msgstr "Glemt kodeord"
+msgid "Forgot your username and password?"
+msgstr "Glemt dit brugernavn og kodeord?"
 
 #: templates/profile/password_reset/password_reset.html:17
-msgid "Enter your e-mail below and we will send you a new password."
-msgstr "Giv os din e-mail, og vi vil sende dig et nyt kodeord."
-
-#: templates/profile/password_reset/password_reset.html:23
-#: templates/profile/password_reset/password_reset.html:32
-msgid "Send new password"
-msgstr "Send nyt kodeord"
+msgid ""
+"Enter your e-mail below and we will send you your username and a link to "
+"reset your password."
+msgstr "Giv os din e-mail, og vi vil sende dig dit brugernavn og link til at nulstille dit kodeord med."
 
 #: templates/profile/password_reset/password_reset_confirm.html:11
 msgid "Home"
@@ -135,3 +141,10 @@ msgstr "Hjem"
 #: templates/profile/password_reset/password_reset_confirm.html:11
 msgid "Password reset confirmation"
 msgstr "Bekræftigelse af nulstilning af kodeord"
+
+#~ msgid "Select the information which is to be visible on your profile."
+#~ msgstr ""
+#~ "Vælg de informationer der skal være synligt på din offentlige profil."
+
+#~ msgid "Send new password"
+#~ msgstr "Send nyt kodeord"
