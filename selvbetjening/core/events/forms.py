@@ -3,10 +3,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms import ModelForm
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Fieldset, Layout
+from crispy_forms.layout import Submit, Layout
 
 from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.models import Payment
+
+from selvbetjening.viewbase.forms.helpers import SFieldset
 
 from models import AttendState
 
@@ -65,10 +67,10 @@ class OptionGroupForm(forms.Form):
         # setup display related settings
 
         fields = [self.optiongroup.name,] + [field_id for field_id in self.fields]
-        options = {'help_text' : self.optiongroup.description,
-                   'large_hints' : True}
+        options = {'help_text': self.optiongroup.description,
+                   'large_hints': True}
 
-        layout = Layout(Fieldset(*fields, **options))
+        layout = Layout(SFieldset(*fields, **options))
 
         self.helper = FormHelper()
 
@@ -184,12 +186,13 @@ class OptionForms(object):
         for form in self.forms:
             yield form
 
+
 class PaymentForm(ModelForm):
     class Meta:
         model = Payment
         fields = ('amount', 'note')
 
-    layout = Layout(Fieldset(_(u'Payment'), *Meta.fields))
+    layout = Layout(SFieldset(_(u'Payment'), *Meta.fields))
     submit = Submit('submit_payment', _('Pay'))
 
     helper = FormHelper()
