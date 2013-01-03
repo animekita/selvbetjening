@@ -91,7 +91,12 @@ class OptionGroupForm(forms.Form):
         if option.price == 0:
             label = option.name
         else:
-            label = '%s (%s,-)' % (option.name, option.price)
+            price = option.price
+
+            if float(price).is_integer():
+                price = int(price)
+
+            label = '%s (%s,-)' % (option.name, price)
 
         self.fields[self._get_id(option)] = forms.BooleanField(label=label,
                                                                required=False,
