@@ -8,6 +8,8 @@ from django.forms.formsets import formset_factory
 from django.conf import settings
 from django.contrib.auth.models import User
 
+from selvbetjening.core.members.models import UserLocation
+
 from selvbetjening.core.events.models import Event, AttendState,\
      payment_registered_source, Attend
 from selvbetjening.core.invoice.models import Invoice, Payment
@@ -85,12 +87,17 @@ class EventAdmin(SModelAdmin):
                                          'sadmin:%s_%s_statistics' % self._url_info,
                                          parent=self.page_change)
 
+        self.page_map = LeafSPage(_(u'Map'),
+                                  'sadmin:%s_%s_map' % self._url_info,
+                                  parent=self.page_change)
+
         self.page_financials = LeafSPage(_(u'Financials'),
                                          'sadmin:%s_%s_financials' % self._url_info,
                                          parent=self.page_change)
 
         self.object_menu.register(self.page_change, title=self.Meta.display_name)
         self.object_menu.register(self.page_statistics)
+        self.object_menu.register(self.page_map)
         self.object_menu.register(self.page_financials)
 
     def get_urls(self):
@@ -123,6 +130,9 @@ class EventAdmin(SModelAdmin):
             url(r'^([0-9]+)/statistics/$',
                 self._wrap_view(self.statistics_view),
                 name='%s_%s_statistics' % self._url_info),
+            url(r'^(?P<bind_pk>[0-9]+)/map/$',
+                self._wrap_view(self.map_view),
+                name='%s_%s_map' % self._url_info),
             url(r'^([0-9]+)/financial/$',
                 self._wrap_view(self.financial_report_view),
                 name='%s_%s_financials' % self._url_info),
@@ -320,4 +330,23 @@ class EventAdmin(SModelAdmin):
                                    'menu': self.module_menu,
                                    'object_menu' : self.object_menu,
                                    'current_page' : self.page_financials },
+                                  context_instance=RequestContext(request))
+
+    def map_view(self, request, bind_pk):
+        event = get_object_or_404(Event, pk=bind_pk)
+
+        locations = UserLocation.objects.exclude(lat=None, lng=None).exclude(expired=True).filter(user__attend__event=event.pk).select_related()
+        expired = UserLocation.objects.filter(expired=True).count()
+        invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
+
+        return render_to_response('sadmin/members/map.html',
+                                  {'menu': self.module_menu,
+                                   'current_page': self.page_map,
+                                   'locations': locations,
+                                   'expired': expired,
+                                   'invalid': invalid,
+                                   'original' : event,
+                                   'menu': self.module_menu,
+                                   'object_menu' : self.object_menu,
+                                   'current_page' : self.page_map },
                                   context_instance=RequestContext(request))

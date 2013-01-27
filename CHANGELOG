@@ -6,6 +6,9 @@
  * Update django-extensions to 1.0.1
  * Update django-debug-toolbar to 0.9.4
  * Update webassets and django-assets to 0.8
+
+ * Add attendee map for events
+
  * Fixed missing chart libraries
 
 7.3.0
