@@ -8,6 +8,7 @@
  * Update webassets and django-assets to 0.8
 
  * Add attendee map for events
+ * SAdmin modules are now mounted from the user application (fixing the multiple registrations problem)
 
  * Fixed missing chart libraries
 

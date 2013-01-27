@@ -74,6 +74,7 @@ def reverse_patch(request, smodel_admin):
     finally:
         admin_impl.reverse = old_reverse
 
+
 class SAdminSite(admin.AdminSite):
     def __init__(self):
         super(SAdminSite, self).__init__()
@@ -83,14 +84,14 @@ class SAdminSite(admin.AdminSite):
 
         self.page_root = SPage('Dashboard',
                                'sadmin:dashboard')
-        
+
         self._registry = SortedDict()
 
     def register(self, mount, modeladmin):
         self._registry[mount] = modeladmin()
-                    
+
         if self._registry[mount].page_root.parent is None:
-            self._registry[mount].page_root.parent = self.page_root        
+            self._registry[mount].page_root.parent = self.page_root
 
     def unregister(self, *args, **kwargs):
         raise NotImplementedError
@@ -103,7 +104,7 @@ class SAdminSite(admin.AdminSite):
         Modified version of get_urls from admin, removed
         unused views and added custom sadmin views
         """
-        
+
         from django.conf.urls import patterns, url, include
 
         def wrap(view, cacheable=False):
