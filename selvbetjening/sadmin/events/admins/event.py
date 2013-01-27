@@ -339,12 +339,15 @@ class EventAdmin(SModelAdmin):
         expired = UserLocation.objects.filter(expired=True).count()
         invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
 
+        map_key = getattr(settings, 'MAP_KEY', None)
+
         return render_to_response('sadmin/members/map.html',
                                   {'menu': self.module_menu,
                                    'current_page': self.page_map,
                                    'locations': locations,
                                    'expired': expired,
                                    'invalid': invalid,
+                                   'map_key': map_key,
                                    'original' : event,
                                    'menu': self.module_menu,
                                    'object_menu' : self.object_menu,

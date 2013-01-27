@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block extrahead %}{{block.super}}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCX84dfVLIv0IO2UlmQz3PenHT33DJdN6I&sensor=false"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp{% if map_key %}&key={{ map_key }}{% endif %}&sensor=false"></script>
 <script type="text/javascript">
 
   function initialize() {

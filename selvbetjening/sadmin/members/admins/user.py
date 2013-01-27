@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Min, Max
@@ -281,10 +282,13 @@ class UserAdmin(SModelAdmin):
         expired = UserLocation.objects.filter(expired=True).count()
         invalid = UserLocation.objects.filter(expired=False).count() - locations.count()
 
+        map_key = getattr(settings, 'MAP_KEY', None)
+
         return render_to_response('sadmin/members/map.html',
                                   {'menu': self.module_menu,
                                    'current_page': self.page_map,
                                    'locations': locations,
                                    'expired': expired,
-                                   'invalid': invalid},
+                                   'invalid': invalid,
+                                   'map_key': map_key},
                                   context_instance=RequestContext(request))
