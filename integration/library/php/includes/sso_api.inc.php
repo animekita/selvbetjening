@@ -1,5 +1,5 @@
 <?php
-require_once('sso_api.config.inc.php');
+//require_once('sso_api.config.inc.php');
 
 // General technical exceptions (for production, only concentrate on the first)
 class AuthenticationServerException extends Exception { }
