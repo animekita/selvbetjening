@@ -201,6 +201,7 @@ def view_invoice(request, event,
     template_vars['show_signup_message'] = request.GET.get('signup', False)
     template_vars['show_change_message'] = request.GET.get('change', False)
 
-    template_vars.update(extra_context)
+    if extra_context is not None:
+        template_vars.update(extra_context)
 
     return event_page(request, event, template_name, template_vars)
