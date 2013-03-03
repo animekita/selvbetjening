@@ -158,7 +158,9 @@ def change_options(request, event,
 
     context = {'optionforms': form,
                'signup_render': signup_render}
-    context.update(extra_context)
+
+    if extra_context is not None:
+        context.update(extra_context)
 
     return event_page(request, event, template_name, context)
 
