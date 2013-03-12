@@ -12,7 +12,7 @@
 
 {% if not own_privacy.public_profile %}
 <div class="alert alert-info">
-<p>Din profil er ikke offentlig og kan derfor ikke ses af foreningens medlemmer.<br/><a href="{% url members_editprivacy %}">Du skal ændre dine privacy indstillinger for at gøre din profil synlig.</a></p>
+<p>Din profil er ikke offentlig og kan derfor ikke ses af foreningens medlemmer.<br/><a href="{% url "members_editprivacy" %}">Du skal ændre dine privacy indstillinger for at gøre din profil synlig.</a></p>
 </div>
 {% endif %}
 
