@@ -1,5 +1,5 @@
 {% extends "sadmin/base/extendedsite.html" %}
-{% load i18n adminmedia i18n %}
+{% load i18n i18n %}
 
 {% block content_title %}<h2>{% trans "Financial Report" %}</h2>{% endblock %}
 
@@ -8,7 +8,7 @@
 <form method="POST" action="">{% csrf_token %}
 
 {% for fieldset in adminformattingform %}
-      {% include "admin/includes/fieldset.html" %}
+      {% include "{{STATIC_URL}}admin/includes/fieldset.html" %}
 {% endfor %}
 
     <div class="submit-row" >

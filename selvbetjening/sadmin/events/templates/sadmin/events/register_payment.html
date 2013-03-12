@@ -1,5 +1,5 @@
 {% extends "sadmin/base/extendedsite.html" %}
-{% load adminmedia i18n %}
+{% load i18n %}
 
 {% block content_title %}
 <h2>{% trans "Register Payment" %}</h2>
@@ -26,7 +26,7 @@
 {% for adminform in adminforms %}
 
     {% for fieldset in adminform %}
-          {% include "admin/includes/fieldset.html" %}
+          {% include "{{STATIC_URL}}admin/includes/fieldset.html" %}
     {% endfor %}
     
 {% endfor %}
