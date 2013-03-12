@@ -27,8 +27,6 @@
   <link rel="stylesheet" href="{{STATIC_URL}}sadmin/css/django-admin-limited.css?v=1">
   <link rel="stylesheet" href="{{STATIC_URL}}sadmin/css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 
-  {% load adminmedia %}
-
   {% block extrastyle %}{% endblock %}
 
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
@@ -36,9 +34,6 @@
 
   <script src="{{STATIC_URL}}sadmin/js/modernizr-1.5.min.js"></script>
 
-  {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" />{% endif %}
-
-  <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
   <script src="{{STATIC_URL}}sadmin/js/jquery-1.4.4.min.js"></script>
   <script src="{{STATIC_URL}}sadmin/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
   <script src="{{STATIC_URL}}sadmin/js/fancybox/jquery.easing-1.3.pack.js"></script>
