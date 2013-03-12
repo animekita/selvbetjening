@@ -26,7 +26,7 @@ from navtree.navigation import Navigation
 from nav import LeafSPage, ObjectSPage, SPage
 from widgets import SAdminForeignKeyRawIdWidget
 
-main_menu = Navigation() # default sadmin navigation
+main_menu = Navigation()  # default sadmin navigation
 
 @contextmanager
 def reverse_patch(request, smodel_admin):
@@ -51,8 +51,9 @@ def reverse_patch(request, smodel_admin):
     implement this using the new "with" statement in Python.
     """
 
-    import django.contrib.admin.options as admin_impl
-    old_reverse = admin_impl.reverse
+    import django.contrib.admin.options as admin_impl_options
+    import django.contrib.admin.views.main as admin_impl_views
+    old_reverse = admin_impl_options.reverse
 
     def reverse_injected(*args, **kwargs):
         try:
@@ -68,11 +69,13 @@ def reverse_patch(request, smodel_admin):
             return old_reverse(*args, **kwargs)
 
     try:
-        admin_impl.reverse = reverse_injected
+        admin_impl_options.reverse = reverse_injected
+        admin_impl_views.reverse = reverse_injected
         yield
 
     finally:
-        admin_impl.reverse = old_reverse
+        admin_impl_options.reverse = old_reverse
+        admin_impl_views.reverse = old_reverse
 
 
 class SAdminSite(admin.AdminSite):
@@ -160,6 +163,7 @@ class SAdminSite(admin.AdminSite):
                                 extra_context=extra_context)
 
 site = SAdminSite()
+
 
 class SModelAdmin(admin.ModelAdmin):
     depth = 0
@@ -317,7 +321,7 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context, **kwargs)
+            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context, **kwargs).render()
 
     def add_view(self, request, extra_context=None, **kwargs):
         context = {}
@@ -330,7 +334,7 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).add_view(request, extra_context=context, **kwargs)
+            return super(SModelAdmin, self).add_view(request, extra_context=context, **kwargs).render()
 
     def delete_view(self, request, object_id, extra_context=None):
         context = {}
@@ -344,7 +348,7 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context)
+            return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context).render()
 
     def changelist_view(self, request, extra_context=None):
         args = [obj.pk for obj in self._get_navigation_stack(request)]
@@ -374,12 +378,11 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).changelist_view(request, extra_context=context)
+            return super(SModelAdmin, self).changelist_view(request, extra_context=context).render()
 
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)
 
-        response.render()
         start = response.content.rfind('<form')
         stop = response.content.rfind('</form>') + 7
         response.content = response.content[start:stop]
@@ -420,6 +423,7 @@ class SBoundModelAdmin(SModelAdmin):
 
     def _get_navigation_stack(self, request):
         return [request.bound_object,]
+
 
 class STabularInline(admin.TabularInline):
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):

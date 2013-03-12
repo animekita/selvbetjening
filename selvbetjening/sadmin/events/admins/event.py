@@ -33,7 +33,7 @@ class EventAdmin(SModelAdmin):
         model = Event
 
     def attendees_count(event):
-        return '<a href="%s">%s</a>' % (reverse('sadmin:events_attendee_changelist', args=[event.pk]),
+        return '<a href="%s">%s</a>' % (reverse('sadmin:events_attend_changelist', args=[event.pk]),
                                         event.attendees.count())
     attendees_count.short_description = 'Attendees'
     attendees_count.admin_order_field = 'attend__count'

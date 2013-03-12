@@ -20,10 +20,11 @@ from selvbetjening.sadmin.base import admin_formize
 from selvbetjening.sadmin.events.admins.nonattendee import NonAttendeeAdmin
 from selvbetjening.sadmin.events.forms import PaymentForm
 
+
 class AttendeeAdmin(SBoundModelAdmin):
     class Meta:
         app_name = 'events'
-        name = 'attendee'
+        name = 'attend'
         display_name = _(u'Attendee')
         display_name_plural = _('Attendees')
         model = Attend
@@ -59,7 +60,7 @@ class AttendeeAdmin(SBoundModelAdmin):
         if attendee.state == AttendState.attended:
             return ''
         else:
-            checkin_url = reverse('sadmin:events_attendee_checkin', args=[attendee.event.pk, attendee.pk])
+            checkin_url = reverse('sadmin:events_attend_checkin', args=[attendee.event.pk, attendee.pk])
             return '<b><a class="iframe" href="%s?_popup=1&_modal=1">check-in</a></b>' % checkin_url
 
     attendee_actions.allow_tags = True
@@ -129,7 +130,7 @@ class AttendeeAdmin(SBoundModelAdmin):
                 self._wrap_view(self.checkin_view),
                 name='%s_%s_checkin' % self._url_info),
             (r'^new/', include(non_attendee_admin.urls)),
-            ) + urlpatterns
+        ) + urlpatterns
 
         return urlpatterns
 
@@ -145,38 +146,38 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         attendes_event_source.trigger(attendee.user, attendee=attendee)
 
-        return HttpResponseRedirect(reverse('sadmin:events_attendee_change', args=[attendee.event.pk,
+        return HttpResponseRedirect(reverse('sadmin:events_attend_change', args=[attendee.event.pk,
                                                                                    attendee.pk]))
 
-    def change_view(self, request, attendee_pk, extra_context=None):
+    def change_view(self, request, attendee_pk, extra_context=None, **kwargs):
         attendee = get_object_or_404(Attend, pk=attendee_pk)
 
-        if request.method == 'POST' and not request.POST.has_key('do_single_payment'):
+        if request.method == 'POST' and not 'do_single_payment' in request.POST:
             if request.POST.has_key('do_accept'):
                 attendee.state = AttendState.accepted
                 attendee.save()
 
                 messages.success(request, _(u'Attendee moved to the accepted list'))
 
-            elif request.POST.has_key('do_unaccept'):
+            elif 'do_unaccept' in request.POST:
                 attendee.state = AttendState.waiting
                 attendee.save()
 
                 messages.success(request, _(u'Attendee moved back to the waiting list'))
 
-            elif request.POST.has_key('do_checkin'):
+            elif 'do_checkin' in request.POST:
                 attendee.state = AttendState.attended
                 attendee.save()
 
                 messages.success(request, _(u'Attendee checked-in'))
 
-            elif request.POST.has_key('do_checkout'):
+            elif 'do_checkout' in request.POST:
                 attendee.state = AttendState.accepted
                 attendee.save()
 
                 messages.success(request, _(u'Attendee checked-out'))
 
-            elif request.POST.has_key('do_checkin_and_pay'):
+            elif 'do_checkin_and_pay' in request.POST:
                 attendee.state = AttendState.attended
                 attendee.save()
 
@@ -186,7 +187,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
                 messages.success(request, _(u'Attendee checked-in and paied for'))
 
-            elif request.POST.has_key('do_pay'):
+            elif 'do_pay' in request.POST:
                 Payment.objects.create(invoice=attendee.invoice,
                                        amount=attendee.invoice.unpaid,
                                        signee=request.user)
@@ -195,7 +196,7 @@ class AttendeeAdmin(SBoundModelAdmin):
 
             form = PaymentForm()
 
-        elif request.method == 'POST' and request.POST.has_key('do_single_payment'):
+        elif request.method == 'POST' and 'do_single_payment' in request.POST:
             form = PaymentForm(request.POST)
             form.invoice = attendee.invoice
 

@@ -8,7 +8,7 @@
 <form method="POST" action="">{% csrf_token %}
 
 {% for fieldset in adminformattingform %}
-      {% include "{{STATIC_URL}}admin/includes/fieldset.html" %}
+      {% include "admin/includes/fieldset.html" %}
 {% endfor %}
 
     <div class="submit-row" >

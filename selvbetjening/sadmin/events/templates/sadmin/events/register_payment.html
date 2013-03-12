@@ -15,7 +15,7 @@
     {% if not payment.attendee.invoice.in_balance %}
         <br/><br/>
         <div style="background-color: #fce94f; border-style: solid; border-color: #000000; border-width: 1px; padding: 1em;">
-        <h3>Denne person har enten ikke betalt det fulde beløb eller har betalt for meget. Gennemgå venligst <a href="{% url sadmin:events_attendee_change payment.attendee.event.pk payment.attendee.pk %}">denne persons kvittering</a> og <a href="mailto:{{payment.attendee.user.email}}">kontakt personen</a>.</h3>
+        <h3>Denne person har enten ikke betalt det fulde beløb eller har betalt for meget. Gennemgå venligst <a href="{% url sadmin:events_attend_change payment.attendee.event.pk payment.attendee.pk %}">denne persons kvittering</a> og <a href="mailto:{{payment.attendee.user.email}}">kontakt personen</a>.</h3>
         </div>
     {% endif %}
     <br/><br/>
@@ -26,7 +26,7 @@
 {% for adminform in adminforms %}
 
     {% for fieldset in adminform %}
-          {% include "{{STATIC_URL}}admin/includes/fieldset.html" %}
+          {% include "admin/includes/fieldset.html" %}
     {% endfor %}
     
 {% endfor %}
