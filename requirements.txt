@@ -10,7 +10,7 @@ django-crispy-forms==1.2.3
 django-extensions==1.0.1
 phpserialize==1.2
 simplejson
-django-tastypie==0.9.11
+django-tastypie==0.9.12
 
 webassets==0.8
 django-assets==0.8
