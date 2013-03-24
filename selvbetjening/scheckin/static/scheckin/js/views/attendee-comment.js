@@ -1,4 +1,4 @@
-var AttendeeCommentView = Backbone.LayoutView.extend({
+var AttendeeCommentView = Backbone.Layout.extend({
     template: '#attendee-comment-item-template',
     tagName: 'tr',
 

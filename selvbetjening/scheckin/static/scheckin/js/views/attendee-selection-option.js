@@ -1,5 +1,5 @@
 
-var AttendeeSelectionOption = Backbone.LayoutView.extend({
+var AttendeeSelectionOptionView = Backbone.Layout.extend({
     template: "#attendee-selection-option-template",
     tagName: "div",
     className: "controls",
@@ -32,19 +32,20 @@ var AttendeeSelectionOption = Backbone.LayoutView.extend({
 
     selectionChangedHandler: function() {
 
-        var checked = this.$('input:checkbox').attr('checked') == "checked";
+        var checked = this.$('input:checkbox')[0].checked;
 
+        console.log("modelCHecked: " + this.modelChecked + " checked: " + checked);
         if (checked != this.modelChecked) {
 
             if (checked) {
                 // add it
-
+                console.log('commit');
                 this.selectionModel.save();
                 this.modelChecked = true;
 
             } else {
                 // delete it
-
+                console.log('rewoke');
                 this.selectionModel.destroy({
                     success: function(model) {
                         model.unset('id');
@@ -55,6 +56,8 @@ var AttendeeSelectionOption = Backbone.LayoutView.extend({
                 this.modelChecked = false;
             }
 
+        } else {
+            console.log('hunh');
         }
     },
 

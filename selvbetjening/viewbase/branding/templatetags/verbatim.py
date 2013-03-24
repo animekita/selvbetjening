@@ -6,9 +6,12 @@ jQuery templates use constructs like:
 This, of course, completely screws up Django templates,
 because Django thinks {{ and }} mean something.
 
-Wrap {% verbatim %} and {% endverbatim %} around those
+Wrap {% verbatimhb %} and {% endverbatimhb %} around those
 blocks of jQuery templates and this will try its best
 to output the contents with no changes.
+
+NOTE THIS IS STILL NEDED AFTER DJANGO 1.5
+(due to small semantic differences between the two)
 """
 
 from django import template
@@ -26,11 +29,11 @@ class VerbatimNode(template.Node):
 
 
 @register.tag
-def verbatim(parser, token):
+def verbatimhb(parser, token):
     text = []
     while 1:
         token = parser.tokens.pop(0)
-        if token.contents == 'endverbatim':
+        if token.contents == 'endverbatimhb':
             break
         if token.token_type == template.TOKEN_VAR:
             text.append('{{')

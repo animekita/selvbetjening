@@ -1,5 +1,5 @@
 
-var AttendeeSelectionGroupView = Backbone.LayoutView.extend({
+var AttendeeSelectionGroupView = Backbone.Layout.extend({
     template: "#attendee-selection-group-template",
 
     optionGroup: null,

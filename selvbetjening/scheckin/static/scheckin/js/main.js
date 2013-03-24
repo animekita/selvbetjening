@@ -1,5 +1,5 @@
 
-Backbone.LayoutManager.configure({
+Backbone.Layout.configure({
     fetch: function (path){
         return Handlebars.compile($(path).html());
     },
@@ -7,7 +7,6 @@ Backbone.LayoutManager.configure({
         return template(context);
     }
 });
-
 
 $(function() {
 
@@ -18,7 +17,6 @@ $(function() {
         eventModel: event,
         attendeesCollection: attendees
     });
-    application.startStateMachine({currentState: 'init'});
 
     $("body").html(application.el);
     application.render();
@@ -26,15 +24,15 @@ $(function() {
     var router = new Router();
 
     router.on('route:attendees', function() {
-        application.trigger('findAttendee');
+        application.displaySearchHandler();
     });
 
     router.on('route:attendee', function(attendeeId) {
-        application.trigger('selectAttendee', attendeeId);
+        application.displayCheckInHandler(attendeeId);
     });
 
     attendees.on('selected', function(attendeeModel) {
-        application.trigger('selectAttendee', attendeeModel.get('id'));
+        router.gotoAttendee(attendeeModel.get('id'));
     });
 
     Backbone.history.start();

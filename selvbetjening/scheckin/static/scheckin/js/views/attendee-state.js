@@ -1,18 +1,21 @@
 
-var AttendeeStateView = Backbone.LayoutView.extend({
+var AttendeeStateView = Backbone.Layout.extend({
     template: "#attendee-state-template",
 
     attendeeModel: null,
     eventModel: null,
 
-    editStatusMode: false,
+    paymentsView: null,
 
     events: {
         'click .doCheckIn': 'checkInHandler',
+        'click .doCheckOut': 'checkOutHandler',
+
+        'click .doShowPayments': 'showPayments',
+        'click .doHidePayments': 'hidePayments',
+
         'click .doPay': 'payHandler',
-        'click .doToggleEdit': 'toggleEditHandler',
-        'click .doSave': 'saveHandler',
-        'submit form': 'saveHandler'
+        'submit .doCustomPay': 'customPayHandler'
     },
 
     initialize: function(options) {
@@ -20,27 +23,24 @@ var AttendeeStateView = Backbone.LayoutView.extend({
         this.attendeeModel.on('change', this.render, this);
 
         this.eventModel = options.eventModel;
+
+        this.paymentsView = new AttendeePaymentsView({
+            attendeeModel: options.attendeeModel
+        });
+    },
+
+    beforeRender: function() {
+        this.setView('.attendeePayments', this.paymentsView).render();
     },
 
     serialize: function() {
         return {
             attendee: this.attendeeModel.toJSON(),
-            editStatusMode: this.editStatusMode
+            paymentsHidden: this.paymentsView.isHidden()
         };
     },
 
-    afterRender: function() {
-        if (this.editStatusMode == true) {
-            this.$('#paymentAmount').focus();
-        }
-    },
-
-    toggleEditHandler: function() {
-        this.editStatusMode = !this.editStatusMode;
-        this.render();
-    },
-
-    enterSavingMode: function() {
+    _enterSavingMode: function() {
         this.$('.attendeeForm').block({
             message: "Gemmer...",
             css: {
@@ -58,9 +58,19 @@ var AttendeeStateView = Backbone.LayoutView.extend({
         });
     },
 
+    showPayments: function() {
+        this.paymentsView.show();
+        this.render();
+    },
+
+    hidePayments: function() {
+        this.paymentsView.hide();
+        this.render();
+    },
+
     checkInHandler: function() {
 
-        this.enterSavingMode();
+        this._enterSavingMode();
 
         this.attendeeModel.set('state', 'attended');
 
@@ -72,9 +82,24 @@ var AttendeeStateView = Backbone.LayoutView.extend({
         });
     },
 
+    checkOutHandler: function() {
+
+        this._enterSavingMode();
+
+        this.attendeeModel.set('state', 'accepted');
+
+        var that = this;
+        this.attendeeModel.save().done(function() {
+            that.attendeeModel.fetch().done(function() {
+                that.render();
+            });
+        });
+
+    },
+
     payHandler: function() {
 
-        this.enterSavingMode();
+        this._enterSavingMode();
 
         var payment = new Payment({
             amount: this.attendeeModel.get('paymentDue'),
@@ -85,48 +110,48 @@ var AttendeeStateView = Backbone.LayoutView.extend({
         var that = this;
         payment.save().done(function() {
             that.attendeeModel.fetch().done(function() {
+                that.paymentsView.reset();
                 that.render();
             });
         });
     },
 
-    saveHandler: function(e) {
-        e.stopImmediatePropagation();
+    customPayHandler: function(e) {
+
+        e.stopPropagation();
         e.preventDefault();
 
-        var that = this;
-        this.enterSavingMode();
+        this._enterSavingMode();
 
-        this.attendeeModel.set('state', this.$('form[name=attendeeForm] input:radio[name=state]:checked').val());
+        //this.attendeeModel.set('state', this.$('form[name=attendeeForm] input:radio[name=state]:checked').val());
 
-        var paymentAmount = this.$('form[name=attendeeForm] input:text[name=paymentAmount]').val();
+        var paymentAmount = this.$('form[name=attendeePaymentForm] input[name=paymentAmount]').val();
 
-        if (paymentAmount != undefined) {
-
-            paymentAmount = parseFloat(paymentAmount.replace(',', '.'));
-
-            if (paymentAmount != 0 && !isNaN(paymentAmount)) {
-
-                var payment = new Payment({
-                    amount: paymentAmount,
-                    note: "Automatic payment through nem check-in",
-                    invoice: this.attendeeModel.get('invoice').resource_uri
-                });
-
-                this.attendeeModel.get('invoice').total_paid += paymentAmount;
-
-                payment.save().done(function() {
-                    that.attendeeModel.save().done(function() {
-                        that.toggleEditHandler();
-                    });
-                });
-
-            } else {
-                this.attendeeModel.save().done(function() {
-                    that.toggleEditHandler();
-                });
-            }
+        if (paymentAmount == undefined) {
+            return;
         }
+
+        paymentAmount = parseFloat(paymentAmount.replace(',', '.'));
+
+        if (paymentAmount == 0 || isNaN(paymentAmount)) {
+            this.render();
+            return;
+        }
+
+        var payment = new Payment({
+            amount: paymentAmount,
+            note: "Automatic payment through nem check-in",
+            invoice: this.attendeeModel.get('invoice').resource_uri
+        });
+
+        var that = this;
+        payment.save().done(function() {
+            that.attendeeModel.save().done(function() {
+                that.attendeeModel.get('invoice').total_paid += paymentAmount;
+                that.paymentsView.reset();
+                that.render();
+            });
+        });
     }
 
 });

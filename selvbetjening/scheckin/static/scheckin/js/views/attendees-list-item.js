@@ -1,12 +1,12 @@
 
-var AttendeeListItemView = Backbone.LayoutView.extend({
-    template: '#attendee-list-item-template',
+var AttendeeListItemView = Backbone.Layout.extend({
+    template: '#attendees-list-item-template',
     tagName: 'tr',
 
     attendeeModel: null,
 
     events: {
-        'click .doSelectAttendee' : 'selectAttendeeHandler'
+        'click' : 'selectAttendeeHandler'
     },
 
     initialize: function(options) {
@@ -30,11 +30,17 @@ var AttendeeListItemView = Backbone.LayoutView.extend({
         this.attendeeModel.trigger('selected', this.attendeeModel);
     },
 
-    showHandler: function() {
+    showHandler: function(highlightQuery) {
         this.$el.show();
+
+        if (highlightQuery) {
+            this.$(".field").removeHighlight();
+            this.$(".field").highlight(highlightQuery);
+        }
     },
 
     hideHandler: function() {
+        this.$(".field").removeHighlight();
         this.$el.hide();
     }
 

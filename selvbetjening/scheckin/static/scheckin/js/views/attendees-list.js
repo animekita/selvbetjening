@@ -1,6 +1,6 @@
 
-var AttendeeListView = Backbone.LayoutView.extend({
-    template: "#attendee-list-template",
+var AttendeeListView = Backbone.Layout.extend({
+    template: "#attendees-list-template",
 
     attendeesCollection: null,
 

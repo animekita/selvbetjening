@@ -9,3 +9,29 @@
 .attendee-state-indicator-attended {
     border-color: #468847;
 }
+
+.form-search input {
+    width: 50%;
+}
+
+.attendees-table tbody tr {
+    cursor: hand; cursor: pointer;
+}
+
+.attendees-table tbody tr:hover {
+    background-color: #D9EDF7;
+}
+
+.attendees-table tbody tr td.status-waiting,
+.attendees-table tbody tr td.status-accepted {
+    font-weight: bold;
+}
+
+.highlight { background-color: yellow }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* Hides the up and down buttons for input::number */
+    -webkit-appearance: none;
+    margin: 0;
+}

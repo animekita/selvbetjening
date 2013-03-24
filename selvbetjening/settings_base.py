@@ -124,6 +124,8 @@ INSTALLED_APPS = [
     'selvbetjening.core.invoice',
     'selvbetjening.core.translation',
     'selvbetjening.core.mailcenter',
+
+    'selvbetjening.viewbase.branding'
 ]
 
 # A sample logging configuration. The only tangible logging

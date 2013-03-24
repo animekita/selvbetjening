@@ -2,8 +2,12 @@
 var Router = Backbone.Router.extend({
 
     routes: {
-        "": "attendees",
-        "attendee/:attendeeId/" : "attendee"
+        "attendee/:attendeeId/" : "attendee",
+        "": "attendees"
+    },
+
+    gotoAttendee: function(attendeeId) {
+        this.navigate("attendee/" + attendeeId + "/", {trigger: true});
     }
 
 });

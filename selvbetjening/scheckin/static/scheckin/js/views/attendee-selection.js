@@ -1,5 +1,5 @@
 
-var AttendeeSelectionView = Backbone.LayoutView.extend({
+var AttendeeSelectionView = Backbone.Layout.extend({
     template: "#attendee-selection-template",
 
     eventModel: null,
@@ -10,12 +10,16 @@ var AttendeeSelectionView = Backbone.LayoutView.extend({
         this.eventModel = options.eventModel;
         this.eventModel.on('change', this.render, this);
 
-        this.selectionCollection = options.selectionCollection;
         this.attendeeModel = options.attendeeModel;
-    },
 
-    cleanup: function(options) {
-        this.eventModel.off('change', this.render, this);
+        this.selectionCollection = new Selections();
+        this.selectionCollection.fetch({
+            data: {
+                attendee: options.attendeeId,
+                limit: 0
+            },
+            reset: true
+        });
     },
 
     beforeRender: function() {

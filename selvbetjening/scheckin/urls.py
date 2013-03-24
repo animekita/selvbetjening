@@ -7,7 +7,7 @@ from selvbetjening.sadmin.base.nav import RemoteSPage
 from selvbetjening.scheckin import views
 
 urlpatterns = patterns('',
-    url(r'^(?P<event_id>[0-9]+)/$', views.checkin, name='scheckin_checkin'),
+    url(r'^(?P<event_id>[0-9]+)/', views.checkin, name='scheckin_checkin'),
 )
 
 if 'selvbetjening.sadmin.events' in settings.INSTALLED_APPS:

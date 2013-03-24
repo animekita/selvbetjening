@@ -59,6 +59,8 @@ var Attendee = Backbone.Model.extend({
         if (response) {
             response.invoice.amount_paid = parseInt(response.invoice.amount_paid);
             response.invoice.amount_total = parseInt(response.invoice.amount_total);
+            response.invoice.invoiceId = parseInt(response.invoice.resource_uri.split("/")[5]);
+            response.attendeeId = parseInt(response.resource_uri.split("/")[2]);
         }
         return response;
     }

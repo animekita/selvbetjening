@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from selvbetjening.core.events.models import Attend, Event, Selection, \
     Option, OptionGroup, SubOption, Invoice, Payment, AttendeeComment
 
+
 class DjangoAuthentication(object):
     def is_authenticated(self, request, **kwargs):
         return request.user.is_authenticated()
@@ -14,9 +15,11 @@ class DjangoAuthentication(object):
     def get_identifier(self, request):
         return request.user.username
 
+
 class AdminAuthorization(Authorization):
     def is_authorized(self, request, object=None):
         return request.user.is_authenticated() and request.user.is_superuser
+
 
 class SubOptionResource(ModelResource):
 
@@ -30,6 +33,7 @@ class SubOptionResource(ModelResource):
         fields = ('name', 'price')
 
         always_return_data = True
+
 
 class OptionResource(ModelResource):
 
@@ -46,6 +50,7 @@ class OptionResource(ModelResource):
 
         always_return_data = True
 
+
 class OptionGroupResource(ModelResource):
 
     options = fields.ToManyField(OptionResource, 'option_set', full=True)
@@ -60,6 +65,7 @@ class OptionGroupResource(ModelResource):
         fields = ('name', 'description', 'minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time', 'order', 'package_solution', 'package_price', 'lock_selections_on_acceptance')
 
         always_return_data = True
+
 
 class EventResource(ModelResource):
 
@@ -79,6 +85,7 @@ class EventResource(ModelResource):
     def dehydrate_attendee_count(self, bundle):
         return bundle.obj.attendees.count()
 
+
 class UserResource(ModelResource):
 
     name = fields.CharField(readonly=True)
@@ -95,6 +102,7 @@ class UserResource(ModelResource):
 
     def dehydrate_name(self, bundle):
         return bundle.obj.get_full_name()
+
 
 class SelectionResource(ModelResource):
 
@@ -114,6 +122,7 @@ class SelectionResource(ModelResource):
         }
 
         always_return_data = True
+
 
 class InvoiceResource(ModelResource):
 
@@ -139,6 +148,7 @@ class InvoiceResource(ModelResource):
     def dehydrate_amount_paid(self, bundle):
         return bundle.obj.paid
 
+
 class PaymentResource(ModelResource):
 
     invoice = fields.ToOneField(InvoiceResource, 'invoice')
@@ -150,7 +160,12 @@ class PaymentResource(ModelResource):
         queryset = Payment.objects.all()
         resource_name = 'payment'
 
+        filtering = {
+            'invoice': constants.ALL
+        }
+
         always_return_data = True
+
 
 class AttendeeResource(ModelResource):
     user = fields.ForeignKey(UserResource, 'user', full=True, readonly=True)
@@ -169,6 +184,7 @@ class AttendeeResource(ModelResource):
         }
 
         always_return_data = True
+
 
 class AttendeeCommentResource(ModelResource):
 

@@ -1,5 +1,5 @@
 
-var AttendeesPage = Backbone.LayoutView.extend({
+var AttendeesPage = Backbone.Layout.extend({
     template: "#attendees-page-template",
 
     events:{
@@ -8,6 +8,8 @@ var AttendeesPage = Backbone.LayoutView.extend({
 
     eventModel: null,
     attendeesCollection: null,
+
+    highlightTainted: false,
 
     initialize: function(options) {
 
@@ -26,14 +28,25 @@ var AttendeesPage = Backbone.LayoutView.extend({
     },
 
     inputChanged: function() {
-        var q = this.$('input').attr('value').toLowerCase();
+        var q = this.$('input')[0].value.toLowerCase();
+
+        var doHighlight = q.length >= 3;
+
+        if (this.highlightTainted && !doHighlight) {
+            this.$el.removeHighlight();
+        }
+
+        this.highlightTainted = doHighlight;
 
         if (q == '') {
 
+            if (this.highlightMode) {
+                this.$el.removeHighlight();
+                this.highlightMode = false;
+            }
+
             this.attendeesCollection.each(function(attendeeModel) {
-
                 attendeeModel.trigger('show');
-
             });
 
         } else {
@@ -45,12 +58,9 @@ var AttendeesPage = Backbone.LayoutView.extend({
                     user.name.toLowerCase().indexOf(q) != -1 ||
                     user.email.toLowerCase().indexOf(q) != -1) {
 
-                    attendeeModel.trigger('show');
-
+                    attendeeModel.trigger('show', doHighlight ? q : null);
                 } else {
-
                     attendeeModel.trigger('hide');
-
                 }
 
             });

@@ -1,0 +1,18 @@
+{% load verbatim %}{% verbatim %}
+
+<td class="field status-{{ attendee.state }}">{{ attendee.user.username }}</td>
+<td class="field status-{{ attendee.state }}">{{ attendee.user.name }}</td>
+<td class="field status-{{ attendee.state }}">{{ attendee.user.email }}</td>
+<td>
+    <span class="label label-success">
+        Tilmeldt
+    </span> <i class="icon-chevron-right"></i>
+    <span class="label label-{{#unless attendee.isWaiting}}success{{ else }}inverse{{/unless}}">
+        Godkendt
+    </span> <i class="icon-chevron-right"></i>
+    <span class="label label-{{#if attendee.isCheckedin}}success{{ else }}inverse{{/if}}">
+        Ankommet
+    </span>
+</td>
+
+{% endverbatim %}

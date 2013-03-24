@@ -1,17 +1,21 @@
 
-var AttendeePage = Backbone.LayoutView.extend({
+var AttendeePage = Backbone.Layout.extend({
     template: "#attendee-page-template",
 
-    attendeeModel: null,
     eventModel: null,
-    selectionCollection: null,
+    attendeeModel: null,
     commentCollection: null,
+    attendeeId: null,
 
     events: {
-        'click .doBack' : 'backHandler'
+        'click .doBack' : function() {
+            this.trigger('doneEditing');
+        }
     },
 
     initialize: function(options) {
+
+        this.eventModel = options.eventModel;
 
         this.attendeeModel = new Attendee({
             id: options.attendeeId
@@ -19,25 +23,7 @@ var AttendeePage = Backbone.LayoutView.extend({
         this.attendeeModel.on('change', this.render, this);
         this.attendeeModel.fetch();
 
-        this.eventModel = new Event({
-            id: options.eventId
-        });
-        this.eventModel.fetch();
-
-        this.selectionCollection = new Selections();
-        this.selectionCollection.fetch({
-            data: {
-                attendee: options.attendeeId
-            }
-        });
-
-        this.commentCollection = new Comments();
-        this.commentCollection.fetch({
-            data: {
-                attendee: options.attendeeId
-            }
-        });
-
+        this.attendeeId = options.attendeeId;
     },
 
     serialize: function() {
@@ -55,17 +41,12 @@ var AttendeePage = Backbone.LayoutView.extend({
         this.setView('.attendeeSelection', new AttendeeSelectionView({
             eventModel: this.eventModel,
             attendeeModel: this.attendeeModel,
-            selectionCollection: this.selectionCollection
+            attendeeId: this.attendeeId
         })).render();
 
         this.setView('.attendeeComments', new AttendeeCommentsView({
-            commentCollection: this.commentCollection,
             attendeeModel: this.attendeeModel
         })).render();
-    },
-
-    backHandler: function() {
-        this.trigger('doneEditing');
     }
 
 });
