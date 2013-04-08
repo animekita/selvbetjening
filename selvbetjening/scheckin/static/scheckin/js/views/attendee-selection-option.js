@@ -34,7 +34,7 @@ var AttendeeSelectionOptionView = Backbone.Layout.extend({
 
         var checked = this.$('input:checkbox')[0].checked;
 
-        console.log("modelCHecked: " + this.modelChecked + " checked: " + checked);
+        console.log("modelChecked: " + this.modelChecked + " checked: " + checked);
         if (checked != this.modelChecked) {
 
             if (checked) {
