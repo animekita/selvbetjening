@@ -10,15 +10,15 @@
     {% if is_attendee %}
         <p class="alert alert-info">Du er tilmeldt dette arrangement.
         {% if event.has_options %}
-        Du kan stadig <a href="{% url eventregistration_change_options event.pk %}">ændre din tilmelding</a> og <a href="{% url eventregistration_status event.pk %}">se status for din tilmelding</a>.
+        Du kan stadig <a href="{% url "eventregistration_change_options" event.pk %}">ændre din tilmelding</a> og <a href="{% url "eventregistration_status" event.pk %}">se status for din tilmelding</a>.
         {% else %}
-        Du kan stadig <a href="{% url eventregistration_status event.pk %}">se status for din tilmelding</a>.
+        Du kan stadig <a href="{% url "eventregistration_status" event.pk %}">se status for din tilmelding</a>.
         {% endif %}
         </p>
 
     {% else %}
         {% if event.is_registration_allowed %}
-            <p class="alert alert-info"><a href="{% url eventregistration_signup event.id %}">Tilmeld dig dette arrangement nu.</a></p>
+            <p class="alert alert-info"><a href="{% url "eventregistration_signup" event.id %}">Tilmeld dig dette arrangement nu.</a></p>
         {% else %}
             <p class="alert alert-info">Det maksimale antal deltagere er opnået, tilmeldingen er derfor lukket.</p>
         {% endif %}

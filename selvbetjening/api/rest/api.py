@@ -10,22 +10,17 @@ from selvbetjening.core.events.models import Attend, Event, Selection, \
 
 class DjangoAuthentication(object):
     def is_authenticated(self, request, **kwargs):
-        return request.user.is_authenticated()
+        return request.user.is_authenticated() and request.user.is_superuser
 
     def get_identifier(self, request):
         return request.user.username
-
-
-class AdminAuthorization(Authorization):
-    def is_authorized(self, request, object=None):
-        return request.user.is_authenticated() and request.user.is_superuser
 
 
 class SubOptionResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = SubOption.objects.all()
         resource_name = 'suboption'
@@ -41,7 +36,7 @@ class OptionResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = Option.objects.all()
         resource_name = 'option'
@@ -57,7 +52,7 @@ class OptionGroupResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = OptionGroup.objects.all()
         resource_name = 'optiongroup'
@@ -74,9 +69,12 @@ class EventResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
-        queryset = Event.objects.all().select_related().prefetch_related('optiongroup_set').prefetch_related('optiongroup_set__option_set').prefetch_related('optiongroup_set__option_set__suboption_set')
+        queryset = Event.objects.all().select_related()\
+            .prefetch_related('optiongroup_set')\
+            .prefetch_related('optiongroup_set__option_set')\
+            .prefetch_related('optiongroup_set__option_set__suboption_set')
         resource_name = 'event'
         fields = ['id', 'title', 'startdate', 'enddate']
 
@@ -92,7 +90,7 @@ class UserResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = User.objects.all()
         resource_name = 'user'
@@ -113,7 +111,7 @@ class SelectionResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = Selection.objects.all()
 
@@ -133,7 +131,7 @@ class InvoiceResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = Invoice.objects.all()
         resource_name = 'invoice'
@@ -155,7 +153,7 @@ class PaymentResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = Payment.objects.all()
         resource_name = 'payment'
@@ -174,7 +172,7 @@ class AttendeeResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = Attend.objects.all_related()
         resource_name = 'attendee'
@@ -192,7 +190,7 @@ class AttendeeCommentResource(ModelResource):
 
     class Meta:
         authentication = DjangoAuthentication()
-        authorization = AdminAuthorization()
+        authorization = Authorization()
 
         queryset = AttendeeComment.objects.all()
         resource_name = 'attendeecomment'

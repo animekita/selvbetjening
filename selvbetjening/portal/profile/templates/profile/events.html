@@ -10,7 +10,7 @@
 
 {% block content %}
 
-{% url eventregistration_view_all as all_events_url %}
+{% url "eventregistration_view_all" as all_events_url %}
 
 <p>Her kan du se alle arrangementer du har deltaget i eller er tilmeldt.</p>
 
@@ -31,7 +31,7 @@
     {% endifchanged %}
 
     <tr>
-        <td><a href="{% url eventregistration_information attend.event.id %}">{{attend.event.title}}</a></td>
+        <td><a href="{% url "eventregistration_information" attend.event.id %}">{{attend.event.title}}</a></td>
 
         <td>
         {% if attend.event.startdate.month == attend.event.enddate.month %}

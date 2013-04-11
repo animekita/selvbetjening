@@ -23,19 +23,23 @@ from selvbetjening.sadmin.base.nav import SPage, LeafSPage
 from selvbetjening.sadmin.members.admins.group import GroupAdmin
 from selvbetjening.sadmin.members.admins.access import AccessAdmin
 
+
 class UserProfileInline(StackedInline):
     model = UserProfile
     extra = 1
     max_num = 1
     can_delete = False
 
+
 class UserWebsiteInline(StackedInline):
     model = UserWebsite
     extra = 0
 
+
 class UserCommunicationInline(StackedInline):
     model = UserCommunication
     extra = 0
+
 
 class UserAdmin(SModelAdmin):
     class Meta:
@@ -128,6 +132,10 @@ class UserAdmin(SModelAdmin):
             ) + urlpattern
 
         return urlpattern
+
+    def queryset(self, request):
+        qs = super(UserAdmin, self).queryset(request)
+        return qs.prefetch_related('userprofile_set')  # improves performance for age column
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}

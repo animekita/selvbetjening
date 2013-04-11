@@ -174,9 +174,10 @@ def view_invoice(request, event,
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    template_vars = {'invoice_rev' :  attendee.invoice.latest_revision,
-                     'event' : event,
-                     'user' : attendee.user,
+    template_vars = {'invoice_rev':  attendee.invoice,
+                     'invoice': attendee.invoice,
+                     'event': event,
+                     'user': attendee.user,
                      'attendee': attendee}
 
     context = Context(template_vars)

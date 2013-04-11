@@ -9,6 +9,7 @@ from django.views.defaults import RequestContext
 from selvbetjening.core.mailcenter.models import EmailSpecification
 from selvbetjening.core.forms import form_collection_builder
 from selvbetjening.core.mailcenter.models import EmailSpecification
+from selvbetjening.core.events.models import Event, Attend
 
 from selvbetjening.sadmin.base import admin_formize
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
@@ -139,7 +140,6 @@ class EmailSpecificationAdmin(SModelAdmin):
                                    'current_page': self.page_filter},
                                   context_instance=RequestContext(request))
 
-
     def masssend_view(self, request, email_pk):
         email = get_object_or_404(EmailSpecification, pk=email_pk)
 
@@ -153,10 +153,13 @@ class EmailSpecificationAdmin(SModelAdmin):
                                        'current_page': self.page_mass_email},
                                       context_instance=RequestContext(request))
 
-        recipients = User.objects.filter(userprofile__send_me_email=True).\
-                   exclude(username__in=email.recipients.values_list('username', flat=True))
+        recipients = User.objects.filter(userprofile__send_me_email=True)\
+            .exclude(username__in=email.recipients.values_list('username', flat=True))
 
-        recipients = filter(email.passes_conditions, recipients)
+        attend_cache = {}  # populated by demand, yes this is ugly :(
+
+        for condition in email.conditions:
+            recipients = [recipient for recipient in recipients if condition.passes(recipient, attend_cache=attend_cache)]
 
         if request.method == 'POST':
             form = SendNewsletterForm(request.POST)

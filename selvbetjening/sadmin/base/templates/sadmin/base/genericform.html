@@ -3,7 +3,7 @@
 {% block object-tools %}{% endblock %}
 
 {% block extrahead %}
-{% url sadmin:jsi18n as jsi18nurl %}
+{% url "sadmin:jsi18n" as jsi18nurl %}
 <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>

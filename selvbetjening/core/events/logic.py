@@ -45,14 +45,15 @@ def signup(request, event_id, template_name, template_cant_signup, template_regi
 
             if event.show_registration_confirmation:
                 template = Template(event.registration_confirmation)
-                context = Context({'invoice_rev' : attendee.invoice.latest_revision,
-                                   'event' : event,
-                                   'user' : attendee.user,})
+                context = Context({'invoice_rev': attendee.invoice,
+                                   'invoice': attendee.invoice,
+                                   'event': event,
+                                   'user': attendee.user})
                 registration_confirmation = template.render(context)
 
                 return render_to_response(template_registration_confirmation,
-                                          {'registration_confirmation' : registration_confirmation,
-                                           'event' : event},
+                                          {'registration_confirmation': registration_confirmation,
+                                           'event': event},
                                           context_instance=RequestContext(request))
 
             else:

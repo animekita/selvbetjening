@@ -1,9 +1,10 @@
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 
 from django.test import TestCase
 from django.contrib.auth.models import User
 
 import models
+
 
 class Database(object):
     _id = 0
@@ -41,7 +42,7 @@ class Database(object):
     @classmethod
     def new_optiongroup(cls, event, min_select=0, max_select=0, max_attend=0, freeze_time=None):
         if freeze_time is None:
-            freeze_time = date.today() + timedelta(days=1)
+            freeze_time = datetime.now() + timedelta(days=1)
         return models.OptionGroup.objects.create(event=event,
                                                  name=cls.new_id(),
                                                  minimum_selected=min_select,
@@ -61,14 +62,16 @@ class Database(object):
 
         return models.Option.objects.create(maximum_attendees=maximum_attendees, **kwargs)
 
+
 class AttendModelTestCase(TestCase):
     def test_is_new(self):
         user = Database.new_user()
         event = Database.new_event()
 
-        attend = models.Attend(user=user, event=event)
+        attend = models.Attend.objects.create(user=user, event=event)
 
         self.assertTrue(attend.is_new)
+
 
 class EventModelTestCase(TestCase):
     def test_attendee_order(self):

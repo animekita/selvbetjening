@@ -6,15 +6,18 @@ from selvbetjening.core.events.models import Option, OptionGroup, SubOption, Sel
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 
+
 class SubOptionInline(StackedInline):
     model = SubOption
     extra = 0
+
 
 class SelectionInline(TabularInline):
     model = Selection
     extra = 0
 
     raw_id_fields = ('attendee',)
+
 
 class OptionAdmin(SBoundModelAdmin):
     depth = 2

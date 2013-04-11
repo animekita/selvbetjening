@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models.signals import post_delete, post_save, Signal
+from django.utils import timezone
 
 from selvbetjening.core.invoice.models import Invoice, Payment
 from selvbetjening.core.invoice.signals import populate_invoice
@@ -29,6 +30,7 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 class Event(models.Model):
     group = models.ForeignKey(Group, blank=True, null=True)
@@ -123,6 +125,7 @@ class Event(models.Model):
     def __unicode__(self):
         return _(u'%s') % self.title
 
+
 class AttendManager(models.Manager):
     def create(self, **kwargs):
         if not kwargs.has_key('invoice'):
@@ -135,8 +138,8 @@ class AttendManager(models.Manager):
     def all_related(self):
         return self.all().select_related().\
             prefetch_related('invoice__payment_set').\
-            prefetch_related('invoice__latest').\
-            prefetch_related('invoice__latest__line_set')
+            prefetch_related('invoice__line_set')
+
 
 class AttendState(object):
     waiting = 'waiting'
@@ -153,6 +156,7 @@ class AttendState(object):
             (AttendState.attended, _(u'Attended')),
             )
 
+
 class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
@@ -161,6 +165,8 @@ class Attend(models.Model):
     state = models.CharField(max_length=32,
                              choices=AttendState.get_choices(),
                              default=AttendState.waiting)
+
+    is_new = models.BooleanField(default=None, blank=True)  # the correct value is set by save()
 
     # Updates when state changes to and from "waiting".
     # This is used when ordering the accepted and waiting attendee
@@ -192,13 +198,6 @@ class Attend(models.Model):
     def deselect_option(self, option):
         self.selection_set.filter(option=option).delete()
 
-    def is_new(self):
-        if self.event.startdate is None:
-            return False
-
-        return self.user.attend_set.filter(event__startdate__lt=self.event.startdate).filter(state=AttendState.attended).count() == 0
-    is_new.boolean = True
-
     def user_first_name(self):
         return self.user.first_name
     user_first_name.admin_order_field = 'user__first_name'
@@ -214,8 +213,13 @@ class Attend(models.Model):
         return self.state == AttendState.attended
 
     def save(self, *args, **kwargs):
+
+        if self.is_new is None:
+            self.is_new = self.user.attend_set.all().count() == 0
+
         if self.event.move_to_accepted_policy == AttendeeAcceptPolicy.always and\
-           self.state not in AttendState.accepted_states:
+                self.state not in AttendState.accepted_states:
+
             self.state = AttendState.accepted
 
         try:
@@ -237,7 +241,6 @@ class Attend(models.Model):
 
             AttendStateChange.objects.create(state=self.state,
                                              attendee=self)
-
 
     def delete(self, *args, **kwargs):
         invoice = self.invoice
@@ -261,8 +264,7 @@ def update_invoice_handler_attend(sender, **kwargs):
 post_delete.connect(update_invoice_handler_attend, sender=Attend)
 
 def update_invoice_with_attend_handler(sender, **kwargs):
-    invoice_revision = kwargs['invoice_revision']
-    invoice = invoice_revision.invoice
+    invoice = kwargs['invoice']
 
     for attendee in Attend.objects.filter(invoice=invoice):
 
@@ -292,19 +294,19 @@ def update_invoice_with_attend_handler(sender, **kwargs):
         for selection in selections:
 
             if last_group is not None and \
-               last_group != selection.option.group and \
-               last_group.package_solution and \
-               last_group in selected_groups:
+                    last_group != selection.option.group and \
+                    last_group.package_solution and \
+                    last_group in selected_groups:
 
-                invoice_revision.add_line(description=unicode(_(u'Package Discount')),
-                                          group_name=unicode(last_group.name),
-                                          price=last_group.package_price,
-                                          managed=True)
+                invoice.add_line(description=unicode(_(u'Package Discount')),
+                                 group_name=unicode(last_group.name),
+                                 price=last_group.package_price,
+                                 managed=True)
 
-            invoice_revision.add_line(description=unicode(selection.option.name),
-                                      group_name=unicode(selection.option.group.name),
-                                      price=selection.price,
-                                      managed=True)
+            invoice.add_line(description=unicode(selection.option.name),
+                             group_name=unicode(selection.option.group.name),
+                             price=selection.price,
+                             managed=True)
 
             last_group = selection.option.group
 
@@ -342,7 +344,7 @@ def legacy_attendee_pks_handler(sender, **kwargs):
                         attendee.invoice.pk,
                         attendee.user.pk)
 
-    return ('Legacy ID', key)
+    return 'Legacy ID', key
 
 request_attendee_pks_signal.connect(legacy_attendee_pks_handler)
 
@@ -351,7 +353,7 @@ find_attendee_signal = Signal(providing_args=['pk'])
 def basic_find_attendee_handler(sender, **kwargs):
     try:
         pk = int(kwargs['pk'])
-        return ('Invoice ID', Attend.objects.get(pk=pk))
+        return 'Invoice ID', Attend.objects.get(pk=pk)
 
     except:
         return None
@@ -375,11 +377,13 @@ def legacy_find_attendee_handler(sender, **kwargs):
 
 find_attendee_signal.connect(legacy_find_attendee_handler)
 
+
 class AttendStateChange(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     state = models.CharField(max_length=32,
                              choices=AttendState.get_choices())
     attendee = models.ForeignKey(Attend, related_name='state_history')
+
 
 class OptionGroup(models.Model):
     event = models.ForeignKey(Event)
@@ -425,7 +429,7 @@ class OptionGroup(models.Model):
         if self.freeze_time is None:
             return False
         else:
-            return datetime.now() > self.freeze_time
+            return timezone.now() > self.freeze_time
 
     # business logic related to limitations
 
@@ -434,6 +438,7 @@ class OptionGroup(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
 
 class Option(models.Model):
     group = models.ForeignKey(OptionGroup)
@@ -485,8 +490,9 @@ class Option(models.Model):
             return True
 
         if self.maximum_attendees is not None and \
-           self.maximum_attendees > 0 and \
-           self.limited_selections.count() >= self.maximum_attendees:
+                self.maximum_attendees > 0 and \
+                self.limited_selections.count() >= self.maximum_attendees:
+
             return True
         else:
             return False
@@ -496,6 +502,7 @@ class Option(models.Model):
 
     def __unicode__(self):
         return u'%s: %s' % (self.group.event.title, self.name)
+
 
 class SubOption(models.Model):
     option = models.ForeignKey(Option)
@@ -512,6 +519,7 @@ class SubOption(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
 
 class Selection(models.Model):
     attendee = models.ForeignKey(Attend)

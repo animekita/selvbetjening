@@ -138,6 +138,7 @@ class UserConditions(models.Model):
 
         return comparator(user.get_profile().get_age(), self.user_age_argument)
 
+
 class GenericAttendeeConditions(models.Model):
     class Meta:
         abstract = True
@@ -156,13 +157,28 @@ class GenericAttendeeConditions(models.Model):
     attends_state = ListField(choices=ATTEND_STATE_CHOICES, blank=True,
                               default=ATTEND_STATE_CHOICES[0][0], null=True)
 
-    def passes(self, user, attendee=None):
+    def passes(self, user, attendee=None, **kwargs):
         if self.event is None:
             return True
 
         try:
             if attendee is None:
-                attendee = self.event.attendees.get(user=user)
+
+                attend_cache = kwargs.pop('attend_cache', None)
+
+                if attend_cache is None:
+                    attendee = self.event.attendees.get(user=user)
+                else:
+                    if self.event.pk not in attend_cache:
+                        attend_cache[self.event.pk] = dict()
+                        for attendee in Attend.objects.filter(event=self.event.pk).select_related():
+                            attend_cache[self.event.pk][attendee.user.pk] = attendee
+
+                    if user.pk in attend_cache[self.event.pk]:
+                        attendee = attend_cache[self.event.pk][user.pk]
+                    else:
+                        return False
+
         except Attend.DoesNotExist:
             return False
 
@@ -171,7 +187,10 @@ class GenericAttendeeConditions(models.Model):
             return False
 
         # selections check
-        desired_options = [option.pk for option in self.attends_selection_argument.all()]
+        if not hasattr(self, '_attends_selection_argument_cache'):
+            self._attends_selection_argument_cache = [option.pk for option in self.attends_selection_argument.all()]
+
+        desired_options = self._attends_selection_argument_cache
 
         if len(desired_options) > 0:
             actual_selections = attendee.selections.all()
@@ -195,6 +214,7 @@ class GenericAttendeeConditions(models.Model):
 
         return True
 
+
 class AttendConditions(GenericAttendeeConditions):
     """
     Checks if the user attends a given event.
@@ -202,10 +222,11 @@ class AttendConditions(GenericAttendeeConditions):
 
     @staticmethod
     def accepts(parameters):
-        return (Attend not in parameters)
+        return Attend not in parameters
 
     def passes(self, user, **kwargs):
-        return super(AttendConditions, self).passes(user)
+        return super(AttendConditions, self).passes(user, **kwargs)
+
 
 class BoundAttendConditions(GenericAttendeeConditions):
     """

@@ -74,7 +74,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'selvbetjening.core.database',
     'selvbetjening.core.events',

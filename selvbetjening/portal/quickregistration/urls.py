@@ -1,10 +1,10 @@
 from django.conf.urls import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 
 from views import register
 
 urlpatterns = patterns('',
     url(r'^$', register, name='quickregistration_register'),
-    url(r'^velkommen/$', direct_to_template,
-        {'template': 'quickregistration/welcome.html'}, name='quickregistration_complete')
+    url(r'^velkommen/$', TemplateView.as_view(template_name='quickregistration/welcome.html'),
+        name='quickregistration_complete')
 )

@@ -34,7 +34,7 @@ def reverse_patch(request, smodel_admin):
     Patch the reverse function for particular Django admin views
 
     The Django admin views (change, changelist, add, and delete)
-    now (from 1.4) uses the reverse function to redirect users
+    use (from 1.4 upwards) the reverse function to redirect users
     after specific actions (such as deleting an object).
     Unfortunately, this clashes with SAdmin, since additional
     args must be provided in order to reverse bound admin
@@ -53,6 +53,7 @@ def reverse_patch(request, smodel_admin):
 
     import django.contrib.admin.options as admin_impl_options
     import django.contrib.admin.views.main as admin_impl_views
+    import django.core.urlresolvers as global_urlresolvers
     old_reverse = admin_impl_options.reverse
 
     def reverse_injected(*args, **kwargs):
@@ -71,11 +72,13 @@ def reverse_patch(request, smodel_admin):
     try:
         admin_impl_options.reverse = reverse_injected
         admin_impl_views.reverse = reverse_injected
+        global_urlresolvers.reverse = reverse_injected
         yield
 
     finally:
         admin_impl_options.reverse = old_reverse
         admin_impl_views.reverse = old_reverse
+        global_urlresolvers.reverse = old_reverse
 
 
 class SAdminSite(admin.AdminSite):
@@ -309,7 +312,7 @@ class SModelAdmin(admin.ModelAdmin):
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
     def change_view(self, request, object_id, extra_context=None, **kwargs):
-        context = {}
+        context = dict()
         
         context['menu'] = self.module_menu
         context['object_menu'] = self.object_menu
@@ -321,10 +324,11 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).change_view(request, object_id, extra_context=context, **kwargs).render()
+            response = super(SModelAdmin, self).change_view(request, object_id, extra_context=context, **kwargs)
+            return response.render() if hasattr(response, 'render') else response
 
     def add_view(self, request, extra_context=None, **kwargs):
-        context = {}
+        context = dict()
         
         context['current_page'] = self.page_add
         context['menu'] = self.module_menu
@@ -334,10 +338,11 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).add_view(request, extra_context=context, **kwargs).render()
+            response = super(SModelAdmin, self).add_view(request, extra_context=context, **kwargs)
+            return response.render() if hasattr(response, 'render') else response
 
     def delete_view(self, request, object_id, extra_context=None):
-        context = {}
+        context = dict()
         
         context['current_page'] = self.page_delete
         context['menu'] = self.module_menu
@@ -348,7 +353,8 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).delete_view(request, object_id, extra_context=context).render()
+            response = super(SModelAdmin, self).delete_view(request, object_id, extra_context=context)
+            return response.render() if hasattr(response, 'render') else response
 
     def changelist_view(self, request, extra_context=None):
         args = [obj.pk for obj in self._get_navigation_stack(request)]
@@ -378,7 +384,8 @@ class SModelAdmin(admin.ModelAdmin):
         context.update(extra_context or {})
 
         with reverse_patch(request, self):
-            return super(SModelAdmin, self).changelist_view(request, extra_context=context).render()
+            response = super(SModelAdmin, self).changelist_view(request, extra_context=context)
+            return response.render() if hasattr(response, 'render') else response
 
     def changelist_ajax_view(self, request, extra_context=None):
         response = self.changelist_view(request, extra_context)

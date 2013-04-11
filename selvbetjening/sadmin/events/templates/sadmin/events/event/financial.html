@@ -1,5 +1,5 @@
 {% extends "sadmin/base/extendedsite.html" %}
-{% load i18n i18n %}
+{% load i18n humanize %}
 
 {% block content_title %}<h2>{% trans "Financial Report" %}</h2>{% endblock %}
 
@@ -21,7 +21,7 @@
 <table style="width: 100%;">
 
 <tr class="form-row type">
-    <th>Linje navn</th>
+    <th></th>
     <th>Overbetalt</th>
     <th>Betalt</th>
     <th>Delvist betalt</th>
@@ -31,35 +31,37 @@
 
 {% for line_group in line_groups %}
 
-<tr class="form-row type line_group">
+<tr class="form-row type line_group" style="font-size: 0.7em;">
     <td>{{line_group.name}}</td>
-    <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total}},-)</td>
-    <td>{{line_group.paid|length}} ({{line_group.paid_total}},-)</td>
-    <td>{{line_group.partial|length}} ({{line_group.partial_total}},-)</td>
-    <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total}},-)</td>
-    <td>{{line_group.lines|length}} ({{line_group.total}},-)</td>
+    <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total | intcomma}},-)</td>
+    <td>{{line_group.paid|length}} ({{line_group.paid_total | intcomma}},-)</td>
+    <td>{{line_group.partial|length}} ({{line_group.partial_total | intcomma}},-)</td>
+    <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total | intcomma}},-)</td>
+    <td>{{line_group.lines|length}} ({{line_group.total | intcomma}},-)</td>
 </tr>
 
 {% endfor %}
 
-<tr class="form-row type line_group">
+<tr class="form-row type line_group" style="font-size: 0.7em;">
     <td><b>Total</b></td>
-    <td><b>({{total.overpaid}},-)</b></td>
-    <td><b>({{total.paid}},-)</b></td>
-    <td><b>({{total.partial}},-)</b></td>
-    <td><b>({{total.unpaid}},-)</b></td>
-    <td><b>({{total.total}},-)</b></td>
+    <td><b>({{total.overpaid | intcomma}},-)</b></td>
+    <td><b>({{total.paid | intcomma}},-)</b></td>
+    <td><b>({{total.partial | intcomma}},-)</b></td>
+    <td><b>({{total.unpaid | intcomma}},-)</b></td>
+    <td><b>({{total.total | intcomma}},-)</b></td>
 </tr>
 
 </table>
 </fieldset>
+
+{% if detailed_view %}
 
 <h3>Detaljeret opgørelse</h3>
 <fieldset class="module aligned ">
 <table style="width: 100%;">
 
 <tr class="form-row type">
-    <th>Linje navn</th>
+    <th></th>
     <th>Overbetalt</th>
     <th>Betalt</th>
     <th>Delvist betalt</th>
@@ -69,23 +71,23 @@
 
 {% for line_group in line_groups %}
 
-<tr class="form-row type line_group">
-    <td><h4>{{line_group.name}}</h4></td>
-    <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total}},-)</td>
-    <td>{{line_group.paid|length}} ({{line_group.paid_total}},-)</td>
-    <td>{{line_group.partial|length}} ({{line_group.partial_total}},-)</td>
-    <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total}},-)</td>
-    <td>{{line_group.lines|length}} ({{line_group.total}},-)</td>
+<tr class="form-row type line_group" style="font-size: 0.7em;">
+    <td><b>{{line_group.name}}</b></td>
+    <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total | intcomma}},-)</td>
+    <td>{{line_group.paid|length}} ({{line_group.paid_total | intcomma}},-)</td>
+    <td>{{line_group.partial|length}} ({{line_group.partial_total | intcomma}},-)</td>
+    <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total | intcomma}},-)</td>
+    <td>{{line_group.lines|length}} ({{line_group.total | intcomma}},-)</td>
 </tr>
 
 {% for line in line_group.lines %}
-<tr>
-    <td><p>{{line.revision.invoice.user}}</p></td>
+<tr style="font-size: 0.7em;">
+    <td>{{line.invoice.user}}</td>
 
-    <td>{% if line.revision.invoice.is_overpaid %}x{% endif %}</td>
-    <td>{% if line.revision.invoice.in_balance %}x{% endif %}</td>
-    <td>{% if line.revision.invoice.is_partial %}x{% endif %}</td>
-    <td>{% if line.revision.invoice.is_unpaid %}x{% endif %}</td>
+    <td>{% if line.invoice.is_overpaid %}x{% endif %}</td>
+    <td>{% if line.invoice.in_balance %}x{% endif %}</td>
+    <td>{% if line.invoice.is_partial %}x{% endif %}</td>
+    <td>{% if line.invoice.is_unpaid %}x{% endif %}</td>
 
     <td>{{line.price}},-</td>
 </tr>
@@ -93,6 +95,8 @@
 
 
 {% endfor %}
+
+{% endif %}
 
 
 </table>

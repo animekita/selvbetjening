@@ -39,6 +39,9 @@
   <script src="{{STATIC_URL}}sadmin/js/fancybox/jquery.easing-1.3.pack.js"></script>
   <script src="{{STATIC_URL}}sadmin/js/script.js"></script>
 
+  {% load admin_static %}
+  <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+
   {% block scripts %}{% endblock %}
 
   {% block extrahead %}{% endblock %}

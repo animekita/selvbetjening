@@ -2,12 +2,15 @@ from django.conf import settings
 from django.conf.urls import *
 
 from selvbetjening.portal.profile.views import profile_redirect
-from selvbetjening.sadmin.base import sadmin
 
-# workaround for missing urls
-from selvbetjening.sadmin.events import models as event_models
-from selvbetjening.sadmin.mailcenter import models as mail_models
-from selvbetjening.sadmin.members import models as members_models
+from selvbetjening.sadmin.base import sadmin
+from selvbetjening.sadmin.members.models import MembersRootAdmin
+from selvbetjening.sadmin.events.models import EventsRootAdmin
+from selvbetjening.sadmin.mailcenter.models import MailcenterRootAdmin
+
+sadmin.site.register('members', MembersRootAdmin)
+sadmin.site.register('events', EventsRootAdmin)
+sadmin.site.register('mailcenter', MailcenterRootAdmin)
 
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
@@ -23,7 +26,7 @@ urlpatterns = patterns('',
     (r'^api/sso/', include('selvbetjening.api.sso.urls')),
     (r'^api/rest/', include('selvbetjening.api.rest.urls')),
 
-    (r'^scheckin/now/', include('selvbetjening.scheckin.easy.urls')),
+    (r'^scheckin/now/', include('selvbetjening.scheckin.urls')),
 
 )
 

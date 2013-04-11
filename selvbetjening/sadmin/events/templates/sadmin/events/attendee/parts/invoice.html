@@ -10,7 +10,7 @@
     <table class="error data">
 {% endif %}{% endif %}
 
-    {% for line in invoice.line_set.all %}
+    {% for line in invoice.line_set_ordered %}
 
     {% ifchanged line.group_name %}
     <tr>

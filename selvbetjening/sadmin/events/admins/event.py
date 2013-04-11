@@ -196,7 +196,7 @@ class EventAdmin(SModelAdmin):
 
             new = 0
             for attendee in _attendees:
-                if attendee.is_new():
+                if attendee.is_new:
                     new += 1
 
             statistics[identifier + '_count'] = _count
@@ -255,7 +255,7 @@ class EventAdmin(SModelAdmin):
 
         invoices = Invoice.objects.select_related().\
                         prefetch_related('payment_set').\
-                        prefetch_related('latest__line_set').\
+                        prefetch_related('line_set').\
                         filter(attend__in=event.attendees)
 
         for invoice in invoices:
@@ -303,33 +303,36 @@ class EventAdmin(SModelAdmin):
                                   context_instance=RequestContext(request))
 
     def financial_report_view(self, request, event_pk):
+
         event = get_object_or_404(Event, pk=event_pk)
+
         invoice_queryset = Invoice.objects.select_related().\
             prefetch_related('payment_set').\
-            prefetch_related('latest__line_set').\
+            prefetch_related('line_set').\
             filter(attend__event=event)
 
-        if request.method == 'POST' or request.GET.has_key('event'):
+        if request.method == 'POST' or 'event' in request.GET:
             formattingform = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
             formattingform.is_valid()
         else:
             formattingform = InvoiceFormattingForm(invoices=invoice_queryset)
 
-        line_groups, total = formattingform.format()
+        line_groups, total, detailed_view = formattingform.format()
 
         adminformattingform = AdminForm(formattingform,
                                         [(_('Formatting'), {'fields': formattingform.base_fields.keys()})],
                                         {})
 
         return render_to_response('sadmin/events/event/financial.html',
-                                  {'invoices' : invoice_queryset,
-                                   'line_groups' : line_groups,
-                                   'total' : total,
-                                   'adminformattingform' : adminformattingform,
-                                   'original' : event,
+                                  {'invoices': invoice_queryset,
+                                   'line_groups': line_groups,
+                                   'total': total,
+                                   'detailed_view': detailed_view,
+                                   'adminformattingform': adminformattingform,
+                                   'original': event,
                                    'menu': self.module_menu,
-                                   'object_menu' : self.object_menu,
-                                   'current_page' : self.page_financials },
+                                   'object_menu': self.object_menu,
+                                   'current_page': self.page_financials },
                                   context_instance=RequestContext(request))
 
     def map_view(self, request, bind_pk):

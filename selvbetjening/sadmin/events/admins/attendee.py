@@ -8,7 +8,7 @@ from django.views.defaults import RequestContext
 from django.http import HttpResponseRedirect
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, \
-     request_attendee_pks_signal, attendes_event_source
+    request_attendee_pks_signal, attendes_event_source
 from selvbetjening.core.events.processor_handlers import change_selection_processors
 from selvbetjening.core.events.forms import OptionForms
 from selvbetjening.core.invoice.models import Payment
@@ -251,8 +251,8 @@ class AttendeeAdmin(SBoundModelAdmin):
                    'object_menu': self.object_menu,
                    'current_page': self.page_selections,
                    'original': attendee,
-                   'option_forms' : option_forms,
-                   'checkin_parts' : checkin_parts}
+                   'option_forms': option_forms,
+                   'checkin_parts': checkin_parts}
 
         context.update(extra_context or {})
 
@@ -265,8 +265,9 @@ class AttendeeAdmin(SBoundModelAdmin):
 
         pks = request_attendee_pks_signal.send(self, attendee=attendee)
 
-        context = {'menu': self.object_menu,
-                   'current_page' : self.page_payment_keys,
+        context = {'menu': self.module_menu,
+                   'object_menu': self.object_menu,
+                   'current_page': self.page_payment_keys,
                    'original': attendee,
                    'pks': pks}
 

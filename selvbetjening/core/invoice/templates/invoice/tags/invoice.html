@@ -1,5 +1,5 @@
 <table class="invoice table">
-{% for line in invoice.line_set.all %}
+{% for line in invoice.line_set_ordered.all %}
     {% ifchanged line.group_name %}
     <tr class="invoice_group"><th colspan="2">{{line.group_name}}</th></tr>
     {% endifchanged %}

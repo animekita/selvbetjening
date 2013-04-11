@@ -7,6 +7,7 @@ from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.base.admin import TranslationInline
 from selvbetjening.sadmin.events.admins.option import OptionAdmin
 
+
 class OptionGroupAdmin(SBoundModelAdmin):
     class Meta:
         app_name = 'events'
@@ -20,21 +21,17 @@ class OptionGroupAdmin(SBoundModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields' : ('name', 'description'),
-            }),
+            'fields': ('name', 'description')}),
         (_('Conditions'), {
-            'fields' : ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
-            'classes' : ('collapse', ),
-            }),
+            'fields': ('minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time'),
+            'classes': ('collapse', )}),
         (_('Package'), {
-            'fields' : ('package_solution', 'package_price'),
-            'classes' : ('collapse', ),
-            }),
+            'fields': ('package_solution', 'package_price'),
+            'classes': ('collapse', )}),
         (_('Other'), {
-            'fields' : ('order', 'public_statistic', 'lock_selections_on_acceptance'),
-            }),)
+            'fields': ('order', 'public_statistic', 'lock_selections_on_acceptance')}),)
 
-    inlines = [TranslationInline,]
+    inlines = [TranslationInline]
 
     def queryset(self, request):
         qs = super(OptionGroupAdmin, self).queryset(request)

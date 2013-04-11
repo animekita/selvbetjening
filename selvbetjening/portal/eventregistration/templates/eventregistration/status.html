@@ -33,7 +33,7 @@
     {% if attendee.state == "waiting" %}
         <p>Vi har modtaget din tilmelding til arrangementet <i>{{event.title|escape}}</i> men vi har <b>ikke godkendt</b> den endnu. Du er derfor ikke sikret en plads til arrangementet før din tilmelding er godkendt.</p>
 
-        <p>Hvorfor din tilmelding ikke er godkendt endnu er afhængig af hvilket arrangement du har tilmeldt dig. Det burde fremgå på <a href="{% url eventregistration_information event.pk %}">informationssiden</a> hvad der skal gøres for at blive godkendt.</p>
+        <p>Hvorfor din tilmelding ikke er godkendt endnu er afhængig af hvilket arrangement du har tilmeldt dig. Det burde fremgå på <a href="{% url "eventregistration_information" event.pk %}">informationssiden</a> hvad der skal gøres for at blive godkendt.</p>
     {% endif %}
 
     {% if attendee.state == "accepted" %}

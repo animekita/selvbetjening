@@ -5,123 +5,50 @@ except ImportError:
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
-from django.db.models.signals import post_save
 
 import signals
 
 _disable_invoice_updates = {}
 
+
 class InvoiceManager(models.Manager):
     def halt_updates(self):
-        thread_ident = thread.get_ident()
-        _disable_invoice_updates[thread_ident] = True
+        _disable_invoice_updates[thread.get_ident()] = True
 
     def continue_updates(self):
-        thread_ident = thread.get_ident()
-        _disable_invoice_updates.pop(thread_ident, None)
+        _disable_invoice_updates.pop(thread.get_ident(), None)
+
 
 class Invoice(models.Model):
     name = models.CharField(max_length=256)
     user = models.ForeignKey(User)
-    latest = models.ForeignKey('InvoiceRevision', related_name='latestrevision', null=True, blank=True)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    total_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    paid = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
     objects = InvoiceManager()
 
     @property
+    def invoice(self):
+        """
+        Backwards compatibility with old InvoiceRevision
+        """
+        return self
+
+    @property
     def latest_revision(self):
-        if not hasattr(self, '_latest_revision') or self._latest_revision is None:
-            self._latest_revision = self.latest
-
-            if self._latest_revision is None:
-                try:
-                    self._latest_revision = self.revision_set.latest('id')
-                    self.latest = self._latest_revision
-                    self.save()
-                except InvoiceRevision.DoesNotExist:
-                    self._latest_revision = InvoiceRevision.objects.create(invoice=self)
-
-        return self._latest_revision
+        try:
+            return self.revision_set.latest('id')
+        except InvoiceRevision.DoesNotExist:
+            self.update()
+            return self.revision_set.latest('id')
 
     @property
-    def line_set(self):
-        return self.latest_revision.line_set.all().order_by('group_name', 'pk')
-
-    @property
-    def total_price(self):
-        return self.latest_revision.total_price
-
-    @property
-    def paid(self):
-        paid = 0
-        for payment in self.payment_set.all():
-            paid += payment.amount
-        return paid
-
-    @property
-    def unpaid(self):
-        return self.total_price - self.paid
-
-    @property
-    def overpaid(self):
-        return self.paid - self.total_price
-
-    @property
-    def payment_set(self):
-        return Payment.objects.filter(revision__invoice=self)
-
-    def update(self, force=False):
-        thread_ident = thread.get_ident()
-
-        if force or \
-           thread_ident not in _disable_invoice_updates:
-
-            revision = InvoiceRevision.objects.create(invoice=self)
-            signals.populate_invoice.send(self, invoice_revision=revision)
-
-            self._latest_revision = None
-
-    def is_paid(self):
-        return self.paid >= self.total_price
-    is_paid.boolean = True
-
-    def in_balance(self):
-        return self.paid == self.total_price
-    is_paid.boolean = True
-
-    def is_overpaid(self):
-        return self.paid > self.total_price
-    is_overpaid.boolean = True
-
-    def is_partial(self):
-        return self.paid > 0 and not self.is_paid()
-    is_partial.boolean = True
-
-    def is_unpaid(self):
-        return self.paid == 0 and not self.total_price == 0
-    is_unpaid.boolean = True
-
-    def __unicode__(self):
-        return self.name
-
-class InvoiceRevision(models.Model):
-    invoice = models.ForeignKey(Invoice, related_name='revision_set')
-    created_date = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def total_price(self):
-        total = 0
-        for line in self.line_set.all():
-            total += line.price
-        return total
-
-    @property
-    def paid(self):
-        paid = 0
-        for payment in Payment.objects.filter(revision=self):
-            paid += payment.amount
-
-        return paid
+    def line_set_ordered(self):
+        return self.line_set.all().order_by('group_name', 'pk')
 
     @property
     def unpaid(self):
@@ -155,28 +82,46 @@ class InvoiceRevision(models.Model):
         if group_name is None:
             group_name = ''
 
-        return Line.objects.create(revision=self,
-                                   description=description,
-                                   group_name=group_name,
-                                   price=price,
-                                   managed=managed)
+        self.total_price += price
+
+        return InvoiceLine.objects.create(invoice=self,
+                                          description=description,
+                                          group_name=group_name,
+                                          price=price,
+                                          managed=managed)
+
+    def update(self, force=False):
+        """
+        Save the current state into an invoice revision, and emit a signal that will
+        prompt all interested parties to update this invoice with new values.
+        """
+
+        if thread.get_ident() in _disable_invoice_updates and not force:
+            return
+
+        revision = InvoiceRevision.objects.create(invoice=self,
+                                                  total_price=self.total_price)
+
+        for line in self.line_set.all():
+            Line.objects.create(revision=revision,
+                                group_name=line.group_name,
+                                description=line.description,
+                                managed=line.managed,
+                                price=line.price)
+
+        self.total_price = 0
+        self.line_set.all().delete()
+
+        signals.populate_invoice.send(self, invoice=self)
+
+        self.save()
 
     def __unicode__(self):
-        return u'Invoice as of %s' % self.created_date
-
-def update_revision_pointer(**kwargs):
-    created = kwargs['created']
-    instance = kwargs['instance']
-
-    if created:
-        instance.invoice.latest = instance
-        instance.invoice.save()
-
-post_save.connect(update_revision_pointer, InvoiceRevision)
+        return self.name
 
 
-class Line(models.Model):
-    revision = models.ForeignKey(InvoiceRevision)
+class InvoiceLine(models.Model):
+    invoice = models.ForeignKey(Invoice, related_name='line_set')
     group_name = models.CharField(max_length=255, default='')
     description = models.CharField(max_length=255)
     managed = models.BooleanField(default=False)
@@ -185,6 +130,7 @@ class Line(models.Model):
     def __unicode__(self):
         return self.description
 
+
 class Payment(models.Model):
     invoice = models.ForeignKey(Invoice)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -192,4 +138,27 @@ class Payment(models.Model):
     signee = models.ForeignKey(User, null=True, blank=True, related_name='signed_payment_set')
     note = models.CharField(max_length=256, blank=True)
 
+    def save(self, *args, **kwargs):
+        self.invoice.paid += self.amount
+        self.invoice.save()
+        super(Payment, self).save(*args, **kwargs)
 
+
+class InvoiceRevision(models.Model):
+    invoice = models.ForeignKey(Invoice, related_name='revision_set')
+    created_date = models.DateTimeField(auto_now_add=True)
+    total_price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __unicode__(self):
+        return u'Invoice as of %s' % self.created_date
+
+
+class Line(models.Model):
+    revision = models.ForeignKey(InvoiceRevision, related_name='line_set')
+    group_name = models.CharField(max_length=255, default='')
+    description = models.CharField(max_length=255)
+    managed = models.BooleanField(default=False)
+    price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+
+    def __unicode__(self):
+        return self.description

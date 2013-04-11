@@ -24,8 +24,7 @@ INSTALLED_APPS.extend([
     'selvbetjening.sadmin.mailcenter',
 
     'selvbetjening.api.rest',
-
-    'selvbetjening.scheckin.now',
+    'selvbetjening.scheckin',
 
     ])
 

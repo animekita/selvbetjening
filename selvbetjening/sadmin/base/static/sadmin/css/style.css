@@ -85,17 +85,9 @@ div.login {
   border-radius-bottomleft: 10px; -moz-border-radius-bottomleft: 10px; -webkit-border-bottom-left-radius: 10px;
 }
 
-div.login ul.messages { width: 600px; color: #000000; }
-div.login div.ctrlHolder { border-width: 0; float: left; }
-div.login div.ctrlHolder input { width: 255px; }
-
-div.login div.buttonHolder { width: 550px; background-color: rgba(0, 0, 0, 0); }
-div.login div.buttonHolder input { font-size: 1.4em; }
-
-div.login #errorMsg { width: 530px; }
-div.login #errorMsg h3 { display: none; }
-div.login #errorMsg ol { list-style: none; margin: 0;  }
-div.login #errorMsg li { margin-left: 0; color: #000000; background-color: #FFDFDF; font-size: 1em; }
+div.login .control-group { margin-left: 0.3em; }
+div.login .error { background-color: transparent; }
+div.login .error strong { color: red; }
 
 p.copyright {
   text-align: center;

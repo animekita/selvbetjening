@@ -12,7 +12,7 @@
 </ul>
 
 <div class="block">
-    <p>Currently this e-mail will be sent to {{recipients|length}} receipients. Configure the <a href="{% url sadmin:mailcenter_emailspecification_change_filter email.pk %}">e-mail filter</a> to change who will receive this e-mail.</p>
+    <p>Currently this e-mail will be sent to {{recipients|length}} receipients. Configure the <a href="{% url "sadmin:mailcenter_emailspecification_change_filter" email.pk %}">e-mail filter</a> to change who will receive this e-mail.</p>
 </div>
 
 <form method="POST" action="">{% csrf_token %}

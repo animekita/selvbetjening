@@ -28,7 +28,7 @@
         {% endifchanged %}
 
         <tr>
-            <td><a href="{% url eventregistration_information event.id %}">{{event.title}}</a></td>
+            <td><a href="{% url "eventregistration_information" event.id %}">{{event.title}}</a></td>
 
             <td>
             {% if event.startdate.month == event.enddate.month %}
