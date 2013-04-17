@@ -11,16 +11,26 @@ def get_event_from_id(view_func):
 
     return lookup_event_id
 
-def event_registration_open_required(view_func):
-    def check_event_registration(request, event, *args, **kwargs):
-        if event.is_registration_open():
-            return view_func(request, event, *args, **kwargs)
-        else:
-            return render_to_response('events/signup_closed.html',
-                                      {'event' : event},
-                                      context_instance=RequestContext(request))
 
-    return check_event_registration
+def event_registration_open_required_ext(template_name=None):
+
+    def _view_func(view_func):
+
+        def check_event_registration(request, event, *args, **kwargs):
+            if event.is_registration_open():
+                return view_func(request, event, *args, **kwargs)
+            else:
+                return render_to_response(template_name if template_name is not None else 'events/signup_closed.html',
+                                          {'event': event},
+                                          context_instance=RequestContext(request))
+
+        return check_event_registration
+
+    return _view_func
+
+
+event_registration_open_required = event_registration_open_required_ext()
+
 
 def event_registration_allowed_required(view_func):
     def check_event_registration(request, event, *args, **kwargs):
