@@ -6,10 +6,10 @@ from mailer.models import Message
 
 class OutgoingAdmin(SModelAdmin):
     class Meta:
-        app_name = 'mailcenter'
-        name = 'outgoing'
+        app_name = 'mailer'
+        name = 'message'
         model = Message
-        default_views = ('list', 'change',)
+        default_views = ('list', 'change', 'delete')
         
         display_name = _(u'Outgoing E-mail')
         display_name_plural = _(u'Outgoing E-mails')
