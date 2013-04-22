@@ -311,6 +311,14 @@ class SModelAdmin(admin.ModelAdmin):
         else:
             return super(SModelAdmin, self).get_fieldsets(request, obj)
 
+    def get_readonly_fields(self, request, obj=None):
+        """
+        Adds change_readonly as an alternative to the normal readonly
+        """
+        if obj is not None and hasattr(self, 'change_readonly'):
+            return self.change_readonly + list(self.readonly_fields)
+        return self.readonly_fields
+
     def change_view(self, request, object_id, extra_context=None, **kwargs):
         context = dict()
         
