@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from django.utils.translation import ugettext as _
 from django.db.models import Count
 from django.shortcuts import render_to_response, get_object_or_404
@@ -208,6 +211,53 @@ class EventAdmin(SModelAdmin):
         new_count += attendee_statistics(AttendState.accepted, 'accepted')
         new_count += attendee_statistics(AttendState.attended, 'attended')
 
+        # check-in graph
+
+        _attendees = attendees.filter(state=AttendState.attended)\
+            .filter(changed__gt=event.startdate)\
+            .filter(changed__lt=event.startdate + datetime.timedelta(days=1))
+
+        start = None
+        end = None
+
+        for attendee in _attendees:
+            if start is None or attendee.changed < start:
+                start = attendee.changed
+
+            if end is None or attendee.changed > end:
+                end = attendee.changed
+
+        if start is not None:
+
+            normalized_start_unix = time.mktime(datetime.datetime(start.year, start.month, start.day, start.hour).timetuple())
+            end_unix = time.mktime(end.timetuple())
+
+            slot_size = (60 * 10)  # 10 minute slots
+
+            def get_slot(time_unix):
+                return int((time_unix - normalized_start_unix) / slot_size)
+
+            slots = get_slot(end_unix) + 1
+
+            checkin_times = [0] * slots
+
+            for attendee in _attendees:
+                slot = get_slot(time.mktime(attendee.changed.timetuple()))
+                checkin_times[slot] += 1
+
+            checkin_axis = [''] * (slots + 1)
+
+            for i in xrange(0, int(slots / 6) + 1):
+                slot_time = datetime.datetime(start.year, start.month, start.day, start.hour) + datetime.timedelta(hours=i)
+                checkin_axis[i * 6] = slot_time.strftime("%H:%M %x")
+
+            statistics['checkin_axis'] = checkin_axis
+            statistics['checkin_times'] = checkin_times
+
+        else:
+            statistics['checkin_axis'] = None
+            statistics['checkin_times'] = None
+
         # attendees graph
 
         _attendees = attendees.filter(registration_date__isnull=False)
@@ -226,8 +276,8 @@ class EventAdmin(SModelAdmin):
                 pass
 
             axis = graph.generate_week_axis(first, last)
-            registration_data = [0 for i in axis]
-            accepted_data = [0 for i in axis]
+            registration_data = [0] * len(axis)
+            accepted_data = [0] * len(axis)
 
             for attendee in _attendees:
                 week = graph.diff_in_weeks(first, attendee.registration_date)

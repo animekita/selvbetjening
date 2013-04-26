@@ -77,6 +77,49 @@ var registrationchart = new Highcharts.Chart({
    }]
 });
 
+var checkinchart = new Highcharts.Chart({
+   chart: {
+      renderTo: 'checkinchart',
+      defaultSeriesType: 'line',
+      margin: [50, 150, 60, 80]
+   },
+   title: {
+      text: 'Check-in',
+      style: {
+         margin: '10px 100px 0 0' // center it
+      }
+   },
+   xAxis: {
+      categories: {{checkin_axis|safe}},
+      title: {
+         text: 'Tidspunkt'
+      },
+      labels: {
+         rotation: 45,
+         align: 'right'
+      }
+   },
+   yAxis: {
+      title: {
+         text: 'Antal'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+   },
+   tooltip: {
+      formatter: function() {
+                return '<b>Tidspunkt</b> ' + this.x + '<br><b>Antal</b> ' + this.y;
+      }
+   },
+   series: [{
+      name: 'Deltagerer',
+      data: {{checkin_times|safe}}
+   }]
+});
+
 });
 </script>
 {% endif %}
@@ -119,6 +162,15 @@ var registrationchart = new Highcharts.Chart({
 <div class="block">
 
    <div id="registrationchart" style="width:800px; height: 400px;"></div>
+
+</div>
+{% endif %}
+
+{% if checkin_axis %}
+<h3>Check-in</h3>
+<div class="block">
+
+   <div id="checkinchart" style="width:800px; height: 400px;"></div>
 
 </div>
 {% endif %}

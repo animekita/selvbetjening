@@ -176,6 +176,8 @@ class Attend(models.Model):
     change_timestamp = models.DateTimeField(null=True, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True, null=True)
 
+    changed = models.DateTimeField(null=True, blank=True)
+
     objects = AttendManager()
 
     class Meta:
