@@ -24,9 +24,6 @@ urlpatterns = patterns('',
     (r'^sadmin/', include(sadmin.site.urls)),
 
     (r'^api/sso/', include('selvbetjening.api.sso.urls')),
-    (r'^api/rest/', include('selvbetjening.api.rest.urls')),
-
-    (r'^scheckin/now/', include('selvbetjening.scheckin.urls')),
 
 )
 
