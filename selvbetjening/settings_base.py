@@ -107,7 +107,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_extensions',
     'navtree',
-    'tastypie',
     'django_assets',
 
     'django.contrib.sites',
