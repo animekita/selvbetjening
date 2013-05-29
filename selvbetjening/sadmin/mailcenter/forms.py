@@ -4,12 +4,43 @@ from django.contrib.auth.models import User
 from django.db.models import ManyToOneRel
 
 from selvbetjening.core.events.models import AttendState
-from selvbetjening.core.mailcenter.models import UserConditions, \
-     AttendConditions, BoundAttendConditions
+from selvbetjening.core.mailcenter.models import UserConditions,\
+    AttendConditions, BoundAttendConditions
 
 from selvbetjening.portal.eventregistration.forms import AcceptForm
 
 from selvbetjening.sadmin.base.widgets import SAdminForeignKeyRawIdWidget
+
+
+def form_collection_builder(form_classes):
+    """
+    Takes a list of form classes, returning a FormCollection
+    with combined is_valid and save methods.
+    """
+
+    class FormCollection(object):
+        def __init__(self, *args, **kwargs):
+            self._forms = [klass(*args, **kwargs) for klass in self._form_classes]
+
+        def __iter__(self):
+            return iter(self._forms)
+
+        def is_valid(self):
+            error = False
+
+            for form in self._forms:
+                error = form.is_valid() or error
+
+            return error
+
+        def save(self, *args, **kwargs):
+            for form in self._forms:
+                form.save(*args, **kwargs)
+
+    FormCollection._form_classes = form_classes
+
+    return FormCollection
+
 
 class SendEmailForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -36,6 +67,7 @@ class SendEmailForm(forms.Form):
         self.cleaned_data['user'] = user
         return username
 
+
 class SendNewsletterForm(AcceptForm):
     fieldsets = [(None, {
         'fields': ('confirm',)
@@ -47,6 +79,7 @@ class SendNewsletterForm(AcceptForm):
 
     def error(self):
         return _(u'You must confirm you actually want to send this e-mail to all users.')
+
 
 class BaseConditionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -69,6 +102,7 @@ class BaseConditionForm(forms.ModelForm):
 
         return instance
 
+
 class UserConditionForm(BaseConditionForm):
     class Meta:
         model = UserConditions
@@ -78,6 +112,7 @@ class UserConditionForm(BaseConditionForm):
         'fields': (('user_age_comparator', 'user_age_argument'),),
         }),
     ]
+
 
 class AttendeeConditionForm(BaseConditionForm):
     class Meta:
@@ -93,6 +128,7 @@ class AttendeeConditionForm(BaseConditionForm):
         })
     ]
 
+
 class BoundAttendConditionForm(BaseConditionForm):
     class Meta:
         model = BoundAttendConditions
@@ -106,6 +142,7 @@ class BoundAttendConditionForm(BaseConditionForm):
                    'attends_state'),
         })
     ]
+
 
 class ConditionFormRegistry(object):
     def __init__(self):
