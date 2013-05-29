@@ -7,16 +7,15 @@ from django.core.urlresolvers import reverse
 from django.views.defaults import RequestContext
 
 from selvbetjening.core.mailcenter.models import EmailSpecification
-from selvbetjening.core.forms import form_collection_builder
-from selvbetjening.core.mailcenter.models import EmailSpecification
-from selvbetjening.core.events.models import Event, Attend
 
 from selvbetjening.sadmin.base import admin_formize
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
 from selvbetjening.sadmin.base.nav import LeafSPage
 
-from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry
+from selvbetjening.sadmin.mailcenter.forms import SendEmailForm, SendNewsletterForm, conditionform_registry,\
+    form_collection_builder
 from selvbetjening.sadmin.mailcenter.admins.outgoing import OutgoingAdmin
+
 
 class EmailSpecificationAdmin(SModelAdmin):
     class Meta:

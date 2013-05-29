@@ -1,8 +1,9 @@
 from django.db import models
-from south.modelsinspector import add_introspection_rules
 from django.core import exceptions
 
+from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^selvbetjening\.core\.models\.ListField"])
+
 
 class ListField(models.TextField):
     __metaclass__ = models.SubfieldBase
@@ -18,12 +19,14 @@ class ListField(models.TextField):
         return value.split(self.token)
 
     def get_prep_value(self, value):
-        if not value: return
+        if not value:
+            return
+
         assert(isinstance(value, list) or isinstance(value, tuple))
         return self.token.join([unicode(s) for s in value])
 
     def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
+        return self._get_val_from_obj(obj)
 
     def validate(self, values, model_instance):
         if isinstance(values, (list, tuple)):
