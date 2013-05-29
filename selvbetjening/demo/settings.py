@@ -14,7 +14,6 @@ INSTALLED_APPS.extend([
 
     'selvbetjening.notify',
     'selvbetjening.notify.concrete5',
-    'selvbetjening.notify.proftpd',
     'selvbetjening.notify.externaldjango',
     'selvbetjening.notify.vanillaforum',
 
