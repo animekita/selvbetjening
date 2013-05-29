@@ -1,6 +1,11 @@
-7.5.1
+dev
 
- * Add event pricing
+ * Code-cleanup
+
+   The following packages have been removed:
+   - The REST interface
+   - Translation framework
+   -  Remove translation framework
 
 7.5.0
 
