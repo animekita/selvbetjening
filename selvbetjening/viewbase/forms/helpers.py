@@ -1,5 +1,6 @@
 from crispy_forms import layout
 
+
 class SFieldset(layout.Fieldset):
     def __init__(self, *args, **kwargs):
         ext_class = kwargs.pop('ext_class', None)

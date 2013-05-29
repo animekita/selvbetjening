@@ -1,6 +1,7 @@
 from selvbetjening.core.members import messaging
 from selvbetjening.sadmin.base import sadmin
 
+
 def site_urls(request):
     from django.conf import settings
     return {'SITE_URL': settings.SITE_URL,
