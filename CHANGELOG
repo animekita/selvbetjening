@@ -6,6 +6,8 @@ dev
    - The REST interface
    - Translation framework
    - Remove translation framework
+   - Remove proftpd notification package
+   - Remove scheckin package
 
 7.5.0
 
