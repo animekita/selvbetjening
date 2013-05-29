@@ -1,3 +1,11 @@
+8.0.0
+
+ * Code-cleanup
+
+   The following packages have been removed:
+   - The REST interface
+   - Translation framework
+
 7.5.0
 
  * Update Django to 1.5.0

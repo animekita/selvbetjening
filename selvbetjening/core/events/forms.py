@@ -14,7 +14,7 @@ from models import AttendState
 
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
-        self.optiongroup = translate_model(optiongroup)
+        self.optiongroup = optiongroup
         self.selected_total = 0
         self.selected_initally = False
         self.save_options = []
@@ -46,7 +46,6 @@ class OptionGroupForm(forms.Form):
             display_params = {'class': 'in_package in_package_%s' % optiongroup.pk}
 
         for option in optiongroup.options:
-            translate_model(option)
 
             selected = option.pk in self.selected_option_pks
 

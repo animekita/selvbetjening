@@ -170,7 +170,6 @@ def change_options(request, event,
 def view_invoice(request, event,
                  template_name='eventregistration/status.html',
                  extra_context=None):
-    translate_model(event)
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
