@@ -13,7 +13,7 @@ class Migration:
     def forwards(self, orm):
 
         # Adding field 'Attend.invoice'
-        db.add_column('events_attend', 'invoice', models.ForeignKey(orm['invoice.Invoice'], blank=True, default=0))
+        db.add_column('events_attend', 'invoice', models.ForeignKey(orm['invoice.Invoice'], blank=True, default=None))
 
 
 
