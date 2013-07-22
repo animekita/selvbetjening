@@ -10,6 +10,12 @@ from crispy_forms.layout import Submit, Fieldset, Layout
 from selvbetjening.core.events.forms import OptionForms as BaseOptionForms
 from selvbetjening.core.events.forms import OptionGroupForm as BaseOptionGroupForm
 
+
+class EmptyForm(forms.Form):
+    helper = FormHelper()
+    helper.form_tag = False
+
+
 class AcceptForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(AcceptForm, self).__init__(*args, **kwargs)
@@ -37,6 +43,7 @@ class AcceptForm(forms.Form):
     def save(self):
         pass
 
+
 class SignupForm(AcceptForm):
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
@@ -51,6 +58,7 @@ class SignupForm(AcceptForm):
 
     def error(self):
         return _(u'You must accept to participate in the event')
+
 
 class SignoffForm(AcceptForm):
     def __init__(self, *args, **kwargs):

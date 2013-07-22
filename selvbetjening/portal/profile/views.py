@@ -18,6 +18,7 @@ from forms import ChangePasswordForm, ChangePictureForm, PrivacyForm, ChangeUser
 from processor_handlers import profile_page_processors
 from models import UserPrivacy
 
+
 def profile_redirect(request):
     if isinstance(request.user, AnonymousUser):
         return HttpResponseRedirect(reverse('members_login'))

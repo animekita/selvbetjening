@@ -169,7 +169,7 @@ TEST_RUNNER = 'selvbetjening.core.testrunner.IncludingTestSuiteRunner'
 TEST_INCLUDE = ['selvbetjening']
 
 DEBUG_TOOLBAR_CONFIG = {
-    "INTERCEPT_REDIRECTS" : False
+    "INTERCEPT_REDIRECTS": False
 }
 
 DEBUG_TOOLBAR_PANELS = (
@@ -184,3 +184,6 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
 #    'debug_toolbar.panels.profiling.ProfilingDebugPanel'
 )
+
+POLICY = dict()
+POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] = False

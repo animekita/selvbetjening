@@ -1,9 +1,10 @@
 # coding=UTF-8
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import Context, Template, RequestContext
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -16,10 +17,13 @@ from selvbetjening.core.events import decorators as eventdecorators
 from forms import SignupForm, SignoffForm, OptionForms
 from processor_handlers import signup_processors, change_processors
 
+
 def list_events(request, template_name='eventregistration/list.html'):
-    return render_to_response(template_name,
-                              { 'events' : Event.objects.order_by('-startdate') },
-                              context_instance=RequestContext(request))
+    return render(request, template_name,
+                  {
+                      'events': Event.objects.order_by('-startdate')
+                  })
+
 
 def event_page(request, event, template_name, extra_template_vars=None):
     template_vars = {'event' : event,
@@ -57,7 +61,19 @@ def signup(request, event,
 
     if event.is_attendee(request.user):
         return HttpResponseRedirect(
-            reverse('eventregistration_status', args=[event.pk,]))
+            reverse('eventregistration_status', args=[event.pk]))
+
+    if settings.POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] and \
+            len(signup_processors._registry) == 0 and \
+            not event.has_options():
+
+        attendee = event.add_attendee(request.user)
+        attendee.invoice.update(force=True)
+
+        attendes_event_source.trigger(request.user, attendee=attendee)
+
+        return HttpResponseRedirect(
+            reverse(success_page, kwargs={'event_id': event.pk}) + '?signup=1')
 
     handler = signup_processors.get_handler(request, request.user, event)
 
@@ -77,7 +93,7 @@ def signup(request, event,
             attendes_event_source.trigger(request.user, attendee=attendee)
 
             return HttpResponseRedirect(
-                reverse(success_page, kwargs={'event_id' : event.pk}) + '?signup=1')
+                reverse(success_page, kwargs={'event_id': event.pk}) + '?signup=1')
 
     else:
         form = form_class()
@@ -86,9 +102,9 @@ def signup(request, event,
     handler_view = handler.view()
 
     return event_page(request, event, template_name,
-                      {'form' : form,
-                       'optionforms' : optionforms,
-                       'signup_parts' : handler_view})
+                      {'form': form,
+                       'optionforms': optionforms,
+                       'signup_parts': handler_view})
 
 @login_required
 @eventdecorators.get_event_from_id

@@ -13,6 +13,7 @@ from django.template import RequestContext
 
 from selvbetjening.core.members.forms import RegistrationForm
 
+
 def register(request,
              success_page='quickregistration_complete',
              form_class=RegistrationForm,

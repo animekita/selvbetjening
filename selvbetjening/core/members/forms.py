@@ -21,6 +21,7 @@ import signals
 
 username_re = re.compile("^[a-zA-Z0-9_]+$")
 
+
 def validate_username(username):
     if not username_re.match(username):
         raise forms.ValidationError(_(u'Usernames can only contain letters, numbers and underscores'))
@@ -32,6 +33,7 @@ def validate_username(username):
 
     raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
 
+
 class UsernameField(forms.CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 30
@@ -41,6 +43,7 @@ class UsernameField(forms.CharField):
 
         super(UsernameField, self).__init__(*args, **kwargs)
 
+
 class LazyCountryChoices(object):
     """
     Defer database interaction such that database initialisation works.
@@ -49,6 +52,7 @@ class LazyCountryChoices(object):
         if not hasattr(self, 'cache'):
             self.cache = [(country.pk, str(country)) for country in Country.objects.only('printable_name')]
         return iter(self.cache)
+
 
 class BaseProfileForm(forms.Form):
     COUNTRY_CHOICES = LazyCountryChoices()
@@ -66,6 +70,20 @@ class BaseProfileForm(forms.Form):
 
         # defer database interactrion such that database initialisation works
         self.fields['country'].choices = self.COUNTRY_CHOICES
+
+        layout = Layout(SFieldset(_(u'Basic Information'),
+                                       Row('first_name', 'last_name'), 'dateofbirth', 'sex',),
+                        SFieldset(_(u'Address'),
+                                       'street', Row('postalcode', 'city'), 'country'),
+                        SFieldset(_(u'Contact Information'),
+                                       'phonenumber', 'email', 'send_me_email'))
+
+        submit = Submit(_('Change personal information'),
+                        _('Change personal information'))
+
+        self.helper = FormHelper()
+        self.helper.add_input(submit)
+        self.helper.add_layout(layout)
 
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
@@ -167,6 +185,13 @@ class BaseProfileForm(forms.Form):
         profile.save()
 
         return user
+
+
+class ProfileFormWithoutSpecials(BaseProfileForm):
+    def __init__(self, user, *args, **kwargs):
+        kwargs['user'] = user
+
+        super(ProfileFormWithoutSpecials, self).__init__(*args, **kwargs)
 
 
 class ProfileForm(BaseProfileForm):
@@ -362,6 +387,7 @@ class ProfileForm(BaseProfileForm):
                                            name=name_value,
                                            url=url_value)
 
+
 class RegistrationForm(BaseProfileForm):
     """ Form for registering a new user account. """
 
@@ -436,6 +462,7 @@ class RegistrationForm(BaseProfileForm):
                                   clear_text_password=smart_str(self.cleaned_data["password1"]))
 
         return user
+
 
 class AdminSelectMigrationUsers(forms.Form):
     old_user = forms.IntegerField(label=_('Old user account'))

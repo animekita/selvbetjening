@@ -37,7 +37,7 @@
     {% endif %}
 
     {% if attendee.state == "accepted" %}
-        <p>Vi har registreret din tilmelding til arrangementet <i>{{event.title|escape}}</i> så din plads til arrangementet er sikret.</p>
+        <p>Din tilmelding til <i>{{event.title|escape}}</i> er <b>godkendt</b>, så din plads til arrangementet er sikret.</p>
     {% endif %}
 
     {% if attendee.state == "attended" %}
