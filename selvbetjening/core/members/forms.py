@@ -71,20 +71,6 @@ class BaseProfileForm(forms.Form):
         # defer database interactrion such that database initialisation works
         self.fields['country'].choices = self.COUNTRY_CHOICES
 
-        layout = Layout(SFieldset(_(u'Basic Information'),
-                                       Row('first_name', 'last_name'), 'dateofbirth', 'sex',),
-                        SFieldset(_(u'Address'),
-                                       'street', Row('postalcode', 'city'), 'country'),
-                        SFieldset(_(u'Contact Information'),
-                                       'phonenumber', 'email', 'send_me_email'))
-
-        submit = Submit(_('Change personal information'),
-                        _('Change personal information'))
-
-        self.helper = FormHelper()
-        self.helper.add_input(submit)
-        self.helper.add_layout(layout)
-
     first_name = forms.CharField(max_length=50,
                           widget=forms.TextInput(),
                           label=_(u'First name'),
@@ -192,6 +178,20 @@ class ProfileFormWithoutSpecials(BaseProfileForm):
         kwargs['user'] = user
 
         super(ProfileFormWithoutSpecials, self).__init__(*args, **kwargs)
+
+        layout = Layout(SFieldset(_(u'Basic Information'),
+                               Row('first_name', 'last_name'), 'dateofbirth', 'sex',),
+                SFieldset(_(u'Address'),
+                               'street', Row('postalcode', 'city'), 'country'),
+                SFieldset(_(u'Contact Information'),
+                               'phonenumber', 'email', 'send_me_email'))
+
+        submit = Submit(_('Change personal information'),
+                        _('Change personal information'))
+
+        self.helper = FormHelper()
+        self.helper.add_input(submit)
+        self.helper.add_layout(layout)
 
 
 class ProfileForm(BaseProfileForm):
@@ -412,8 +412,8 @@ class RegistrationForm(BaseProfileForm):
     helper = FormHelper()
 
     submit = Submit(_('Create user'), _('Create user'))
+
     helper.add_input(submit)
-    helper.use_csrf_protection = True
     helper.add_layout(layout)
 
     def clean_tos(self):
