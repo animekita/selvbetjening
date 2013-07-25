@@ -1,0 +1,41 @@
+
+/*
+ * Side-wide
+ */
+
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.brand span {
+    color: #FFFFFF;
+    background: url("../img/slogo.png") no-repeat;
+    background-size: 20px;
+    text-indent: 25px;
+    float: left;
+}
+
+ul.sadmin-sidebar-nav li.nav-header {
+    font-size: 1.2em;
+    font-weight: normal;
+    color: #000000;
+    background-color: #EEEEEE;
+    margin-top: 1em;
+}
+
+/*
+ * Modifiers
+ */
+
+.clickable, .clickable * {
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
