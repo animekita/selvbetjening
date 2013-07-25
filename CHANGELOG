@@ -9,6 +9,8 @@ dev
    - Remove proftpd notification package
    - Remove scheckin package
 
+ * Update django-crispy-forms to 1.3.2
+
 7.5.0
 
  * Update Django to 1.5.0

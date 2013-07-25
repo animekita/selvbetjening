@@ -1,0 +1,13 @@
+{% extends "sadmin2/site.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
+
+{% include "sadmin2/events/partials/navigation.html" %}
+
+    {% crispy form form.helper %}
+
+{% endblock %}
