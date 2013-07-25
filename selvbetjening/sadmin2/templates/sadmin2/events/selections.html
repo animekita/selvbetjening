@@ -1,0 +1,9 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+<h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
+
+{% include "sadmin2/events/partials/navigation.html" %}
+
+{% endblock %}

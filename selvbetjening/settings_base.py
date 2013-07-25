@@ -79,6 +79,7 @@ MIDDLEWARE_CLASSES = [
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'selvbetjening.context_processors.site_urls',
+    'selvbetjening.sadmin2.context_processors.sadmin2_navigation',
 
     'django.core.context_processors.media',
     'django.core.context_processors.static',
