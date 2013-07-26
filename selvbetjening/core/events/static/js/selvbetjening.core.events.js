@@ -5,9 +5,9 @@ $(function() {
      */
 
     // select or deselect all items if package is selected or deselected
-    $('.package').live('change', function() {
+    $('input.package').live('change', function() {
 
-        var items = $(this).parent().siblings('.in_' + this.name).children('input');
+        var items = $('.in_' + this.name);
 
         for (i = 0; i < items.length; i++) {
             items[i].checked = this.checked;
@@ -19,28 +19,42 @@ $(function() {
     // deselect package if item is deselected
     $('input.in_package').live('change', function() {
 
-        if (this.checked == false) {
-            var p = $(this).parent().prevAll('div.package').children('input');
+        if (this.checked == true) {
+            return;
+        }
 
-            if (p.length > 0 && p[0].checked) {
-                p[0].checked = false;
-                selvbetjening.update_checkbox_class(p[0]);
+        var inRegex = /^in_package_([0-9]+)$/;
+        var classes = $(this)[0].className.split(/\s+/);
+
+        for (var i = 0; i < classes.length; i++) {
+            var match = classes[i].match(inRegex);
+
+            if (match != null) {
+                var package_input = $('#id_package_' + match[1]);
+
+                if (package_input.length > 0 && package_input[0].checked) {
+                    package_input[0].checked = false;
+                    selvbetjening.update_checkbox_class(package_input[0]);
+                }
+
             }
         }
     });
 
     // set the package to selected on load if all items are selected
-    $('div.package').each(function(i, p) {
-        var input = $(p).siblings('div.in_package').children('input');
+    $('input.package').each(function(i, p) {
 
-        for (i = 0; i < input.length; i++) {
-            if (input[i].checked == false) return;
+        var idRegex = /^id_package_([0-9]+)$/;
+        var id = p.id.match(idRegex)[1];
+
+        var input = $('.in_package_' + id);
+
+        for (j = 0; j < input.length; j++) {
+            if (input[j].checked == false) return;
         }
 
-        $(p).children('input').each(function(i, input) {
-            input.checked = true;
-            selvbetjening.update_checkbox_class(input);
-        });
+        $(p)[0].checked = true;
+        selvbetjening.update_checkbox_class($(p)[0]);
     });
 
 });
