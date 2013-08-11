@@ -265,7 +265,12 @@ def update_invoice_handler_attend(sender, **kwargs):
 
 post_delete.connect(update_invoice_handler_attend, sender=Attend)
 
+
 def update_invoice_with_attend_handler(sender, **kwargs):
+    """
+    Disclaimer, package handling in this function is very very bad, (a lazy hack x 2)
+    TODO: Clean this up
+    """
     invoice = kwargs['invoice']
 
     for attendee in Attend.objects.filter(invoice=invoice):
@@ -295,6 +300,7 @@ def update_invoice_with_attend_handler(sender, **kwargs):
 
         for selection in selections:
 
+            # inserts the package discount line after the last line in a group
             if last_group is not None and \
                     last_group != selection.option.group and \
                     last_group.package_solution and \
@@ -305,12 +311,26 @@ def update_invoice_with_attend_handler(sender, **kwargs):
                                  price=last_group.package_price,
                                  managed=True)
 
+                last_group = None
+
             invoice.add_line(description=unicode(selection.option.name),
                              group_name=unicode(selection.option.group.name),
                              price=selection.price,
                              managed=True)
 
             last_group = selection.option.group
+
+        # we hit this case if we are adding the package to the last group
+        if last_group is not None and \
+            last_group.package_solution and \
+            last_group in selected_groups:
+
+            invoice.add_line(description=unicode(_(u'Package Discount')),
+                             group_name=unicode(last_group.name),
+                             price=last_group.package_price,
+                             managed=True)
+
+
 
 populate_invoice.connect(update_invoice_with_attend_handler)
 
