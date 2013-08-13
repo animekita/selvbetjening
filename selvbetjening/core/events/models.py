@@ -63,6 +63,8 @@ class Event(models.Model):
     custom_status_page = models.TextField(blank=True,
         help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee')
 
+    attendance_price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+
     objects = models.Manager()
 
     class Translation:
@@ -124,6 +126,9 @@ class Event(models.Model):
 
     def __unicode__(self):
         return _(u'%s') % self.title
+
+
+
 
 
 class AttendManager(models.Manager):
@@ -274,6 +279,15 @@ def update_invoice_with_attend_handler(sender, **kwargs):
     invoice = kwargs['invoice']
 
     for attendee in Attend.objects.filter(invoice=invoice):
+
+        # event price
+
+        if not attendee.event.attendance_price == 0:
+            invoice.add_line(description=_(u'%s Registration Fee') % attendee.event.title,
+                             price=attendee.event.attendance_price,
+                             managed=True)
+
+        # selections
 
         selections = attendee.selections.order_by('option__group__order',
                                                   'option__order',

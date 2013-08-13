@@ -50,7 +50,7 @@ class EventAdmin(SModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields' : ('title', 'description', 'group', 'startdate', 'enddate', 'registration_open'),
+            'fields' : ('title', 'description', 'group', 'startdate', 'enddate', 'registration_open', 'attendance_price'),
             }),
         (_('Conditions'), {
             'fields' : ('maximum_attendees', 'move_to_accepted_policy', ),
