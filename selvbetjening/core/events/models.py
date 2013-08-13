@@ -372,6 +372,7 @@ request_attendee_pks_signal.connect(legacy_attendee_pks_handler)
 
 find_attendee_signal = Signal(providing_args=['pk'])
 
+
 def basic_find_attendee_handler(sender, **kwargs):
     try:
         pk = int(kwargs['pk'])
@@ -381,6 +382,7 @@ def basic_find_attendee_handler(sender, **kwargs):
         return None
 
 find_attendee_signal.connect(basic_find_attendee_handler)
+
 
 def legacy_find_attendee_handler(sender, **kwargs):
     pk=kwargs['pk']
@@ -398,6 +400,35 @@ def legacy_find_attendee_handler(sender, **kwargs):
         return None
 
 find_attendee_signal.connect(legacy_find_attendee_handler)
+
+
+def new_style_attendee_pks_handler(sender, **kwargs):
+    attendee = kwargs['attendee']
+    key = '%s.%s.%s' % (attendee.event.pk,
+                        attendee.user.pk,
+                        attendee.invoice.pk)
+
+    return ('New-Style ID', key)
+
+request_attendee_pks_signal.connect(new_style_attendee_pks_handler)
+
+
+def new_style_find_attendee_handler(sender, **kwargs):
+    pk = kwargs['pk']
+
+    try:
+        event_pk, user_pk, invoice_pk = pk.split('.')
+
+        attendee = Attend.objects.get(user__pk=user_pk,
+                                      invoice__pk=invoice_pk,
+                                      event__pk=event_pk)
+
+        return ('New-Style', attendee)
+
+    except:
+        return None
+
+find_attendee_signal.connect(new_style_find_attendee_handler)
 
 
 class AttendStateChange(models.Model):
