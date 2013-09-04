@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice, Selection, Option, OptionGroup, SubOption
 from selvbetjening.sadmin.base import graph
 
-from selvbetjening.sadmin2.forms import EventForm
+from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
 
 
 def event_list(request):
@@ -200,6 +200,37 @@ def event_statistics(request, event_pk):
     return render(request,
                   'sadmin2/events/statistics.html',
                   statistics)
+
+
+def event_financial(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    invoice_queryset = Invoice.objects.select_related(). \
+        prefetch_related('payment_set'). \
+        prefetch_related('line_set'). \
+        filter(attend__event=event)
+
+    if request.method == 'POST' or 'event' in request.GET:
+        formatting_form = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
+        formatting_form.is_valid()
+
+    else:
+        formatting_form = InvoiceFormattingForm(invoices=invoice_queryset)
+
+    line_groups, total, detailed_view = formatting_form.format()
+
+    return render(request,
+                  'sadmin2/events/financial.html',
+                  {
+                      'invoices': invoice_queryset,
+                      'line_groups': line_groups,
+                      'total': total,
+                      'detailed_view': detailed_view,
+                      'formatting_form': formatting_form,
+                      'event': event,
+                      'sadmin2_menu_event_active': 'financial'
+                  })
 
 
 def event_settings_selections(request, event_pk):
