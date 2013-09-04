@@ -1,0 +1,94 @@
+{% extends "sadmin2/site.html" %}
+{% load i18n humanize crispy_forms_tags %}
+
+{% block content %}
+
+<h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
+
+{% include "sadmin2/events/partials/navigation.html" %}
+
+<div class="block">
+
+<h3>Økonomi rapport</h3>
+
+{% crispy formatting_form formatting_form.helper %}
+
+<table class="table table-striped">
+    <tr>
+        <th></th>
+        <th>Overbetalt</th>
+        <th>Betalt</th>
+        <th>Delvist betalt</th>
+        <th>Ikke betalt</th>
+        <th>Total</th>
+    </tr>
+
+    {% for line_group in line_groups %}
+    <tr>
+        <td>{{line_group.name}}</td>
+        <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total | intcomma}},-)</td>
+        <td>{{line_group.paid|length}} ({{line_group.paid_total | intcomma}},-)</td>
+        <td>{{line_group.partial|length}} ({{line_group.partial_total | intcomma}},-)</td>
+        <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total | intcomma}},-)</td>
+        <td>{{line_group.lines|length}} ({{line_group.total | intcomma}},-)</td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+        <td><b>Total</b></td>
+        <td><b>({{total.overpaid | intcomma}},-)</b></td>
+        <td><b>({{total.paid | intcomma}},-)</b></td>
+        <td><b>({{total.partial | intcomma}},-)</b></td>
+        <td><b>({{total.unpaid | intcomma}},-)</b></td>
+        <td><b>({{total.total | intcomma}},-)</b></td>
+    </tr>
+</table>
+
+
+{% if detailed_view %}
+
+<h3>Detaljeret opgørelse</h3>
+
+<table class="table table-striped table-condensed">
+
+    <tr>
+        <th></th>
+        <th>Overbetalt</th>
+        <th>Betalt</th>
+        <th>Delvist betalt</th>
+        <th>Ikke betalt</th>
+        <th>Total</th>
+    </tr>
+
+    {% for line_group in line_groups %}
+
+    <tr>
+        <td><b>{{line_group.name}}</b></td>
+        <td>{{line_group.overpaid|length}} ({{line_group.overpaid_total | intcomma}},-)</td>
+        <td>{{line_group.paid|length}} ({{line_group.paid_total | intcomma}},-)</td>
+        <td>{{line_group.partial|length}} ({{line_group.partial_total | intcomma}},-)</td>
+        <td>{{line_group.unpaid|length}} ({{line_group.unpaid_total | intcomma}},-)</td>
+        <td>{{line_group.lines|length}} ({{line_group.total | intcomma}},-)</td>
+    </tr>
+
+        {% for line in line_group.lines %}
+        <tr>
+            <td>{{line.invoice.user}}</td>
+
+            <td>{% if line.invoice.is_overpaid %}x{% endif %}</td>
+            <td>{% if line.invoice.in_balance %}x{% endif %}</td>
+            <td>{% if line.invoice.is_partial %}x{% endif %}</td>
+            <td>{% if line.invoice.is_unpaid %}x{% endif %}</td>
+
+            <td>{{line.price}},-</td>
+        </tr>
+        {% endfor %}
+
+    {% endfor %}
+
+</table>
+{% endif %}
+
+</div>
+
+{% endblock %}
