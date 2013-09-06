@@ -1,6 +1,7 @@
 # coding=UTF-8
 
 from datetime import date, datetime
+from collections import OrderedDict
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.utils.translation import ugettext as _
@@ -24,6 +25,7 @@ class AttendeeAcceptPolicy(object):
             ('on_payment', _(u'Move attendees when a payment have been made')),
             ('always', _(u'Always move to accepted list'))
         )
+
 
 class Group(models.Model):
     name = models.CharField(_(u'name'), max_length=255)
@@ -272,10 +274,6 @@ post_delete.connect(update_invoice_handler_attend, sender=Attend)
 
 
 def update_invoice_with_attend_handler(sender, **kwargs):
-    """
-    Disclaimer, package handling in this function is very very bad, (a lazy hack x 2)
-    TODO: Clean this up
-    """
     invoice = kwargs['invoice']
 
     for attendee in Attend.objects.filter(invoice=invoice):
@@ -289,64 +287,48 @@ def update_invoice_with_attend_handler(sender, **kwargs):
 
         # selections
 
-        selections = attendee.selections.order_by('option__group__order',
-                                                  'option__order',
-                                                  'option__pk')
+        sorted_in_groups = OrderedDict()  # group_order -> group_id -> {'selections': [selections], 'max': <num>, 'group': <group>}
 
-        selected_groups = set()
-        selected_options = set()
+        for selection in attendee.selections.select_related().order_by('option__order', 'option__pk'):
+            group_order = selection.option.group.order
+            group_id = selection.option.group.pk
 
-        for selection in selections:
-            if selection.option.group.package_solution:
-                selected_groups.add(selection.option.group)
-                selected_options.add(selection.option.pk)
+            if not group_order in sorted_in_groups:
+                sorted_in_groups[group_order] = OrderedDict()
 
-        unselected_options = Option.objects.filter(group__in=selected_groups).\
-                                            exclude(pk__in=selected_options)
+            if not group_id in sorted_in_groups[group_order]:
+                sorted_in_groups[group_order][group_id] = {'selections': [], 'group': None}
 
-        for option in unselected_options:
-            try:
-                selected_groups.remove(option.group)
-            except KeyError:
-                pass
+            sorted_in_groups[group_order][group_id]['selections'].append(selection)
 
-        last_group = None
+        for group in attendee.event.optiongroups.annotate(option_count=models.Count('option')):
+            if group.order in sorted_in_groups and group.pk in sorted_in_groups[group.order]:
+                sorted_in_groups[group.order][group.pk]['group'] = group
 
-        for selection in selections:
+        # insert selections into invoice
 
-            # inserts the package discount line after the last line in a group
-            if last_group is not None and \
-                    last_group != selection.option.group and \
-                    last_group.package_solution and \
-                    last_group in selected_groups:
+        for group_order in sorted_in_groups:
+            for group_id in sorted_in_groups[group_order]:
 
-                invoice.add_line(description=unicode(_(u'Package Discount')),
-                                 group_name=unicode(last_group.name),
-                                 price=last_group.package_price,
-                                 managed=True)
+                group = sorted_in_groups[group_order][group_id]['group']
+                selections = sorted_in_groups[group_order][group_id]['selections']
 
-                last_group = None
+                for selection in selections:
 
-            invoice.add_line(description=unicode(selection.option.name),
-                             group_name=unicode(selection.option.group.name),
-                             price=selection.price,
-                             managed=True)
+                    invoice.add_line(description=unicode(selection.option.name),
+                                     group_name=unicode(selection.option.group.name),
+                                     price=selection.price,
+                                     managed=True)
 
-            last_group = selection.option.group
-
-        # we hit this case if we are adding the package to the last group
-        if last_group is not None and \
-            last_group.package_solution and \
-            last_group in selected_groups:
-
-            invoice.add_line(description=unicode(_(u'Package Discount')),
-                             group_name=unicode(last_group.name),
-                             price=last_group.package_price,
-                             managed=True)
-
+                if group.package_solution and group.option_count == len(selections):
+                    invoice.add_line(description=unicode(_(u'Package Discount')),
+                                     group_name=unicode(group.name),
+                                     price=group.package_price,
+                                     managed=True)
 
 
 populate_invoice.connect(update_invoice_with_attend_handler)
+
 
 def update_state_on_payment(sender, **kwargs):
     payment = kwargs['instance']
