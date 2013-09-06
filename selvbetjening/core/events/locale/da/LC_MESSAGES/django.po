@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-13 21:19+0200\n"
+"POT-Creation-Date: 2013-09-06 20:56+0200\n"
 "PO-Revision-Date: 2009-08-05 22:54+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -38,145 +38,146 @@ msgstr "Betal"
 msgid "You are now signed up to the event."
 msgstr "Du er nu tilmeldt arrangementet."
 
-#: models.py:23
+#: models.py:24
 msgid "Move attendees to accepted list manually"
 msgstr "Flyt deltagere til accepteret liste manuelt"
 
-#: models.py:24
+#: models.py:25
 msgid "Move attendees when a payment have been made"
 msgstr "Flyt deltagere når en betaling er modtaget"
 
-#: models.py:25
+#: models.py:26
 msgid "Always move to accepted list"
 msgstr "Altid flyt til accepteret liste"
 
-#: models.py:29
+#: models.py:31
 msgid "name"
 msgstr "Efternavn"
 
-#: models.py:38 migrations/0001_initial.py:28
+#: models.py:40 migrations/0001_initial.py:28
 msgid "title"
 msgstr "Titel"
 
-#: models.py:39 migrations/0001_initial.py:27
+#: models.py:41 migrations/0001_initial.py:27
 #: migrations/0008_use_html_fields.py:12 migrations/0008_use_html_fields.py:31
 msgid "description"
 msgstr "Beskrivelse"
 
-#: models.py:41 migrations/0001_initial.py:25
+#: models.py:43 migrations/0001_initial.py:25
 msgid "start date"
 msgstr "Start dato"
 
-#: models.py:42 migrations/0001_initial.py:26
+#: models.py:44 migrations/0001_initial.py:26
 msgid "end date"
 msgstr "Slut dato"
 
-#: models.py:50 models.py:463 models.py:516 migrations/0001_initial.py:16
+#: models.py:52 models.py:445 models.py:498 migrations/0001_initial.py:16
 #: migrations/0001_initial.py:48 migrations/0002_new_options.py:23
 #: migrations/0002_new_options.py:40 migrations/0003_event_max.py:13
 msgid "Maximum attendees"
 msgstr "Maksimal antal deltagere"
 
-#: models.py:51 migrations/0001_initial.py:29
+#: models.py:53 migrations/0001_initial.py:29
 msgid "registration open"
 msgstr "Tilmelding åben"
 
-#: models.py:56 models.py:60 models.py:64
+#: models.py:58 models.py:62 models.py:66
 #, python-format
 msgid "The following variables are available: %s."
 msgstr "De følgende variabler er tilgængelige: %s."
 
-#: models.py:74
+#: models.py:76
 msgid "event"
 msgstr "Event"
 
-#: models.py:75
+#: models.py:77
 msgid "events"
 msgstr "Events"
 
-#: models.py:128
+#: models.py:130
 #, python-format
 msgid "%s"
 msgstr "%s"
 
-#: models.py:159
+#: models.py:161
 msgid "Waiting"
 msgstr "Venter"
 
-#: models.py:160
+#: models.py:162
 msgid "Accepted"
 msgstr "Accepteret"
 
-#: models.py:161
+#: models.py:163
 msgid "Attended"
 msgstr "Deltaget"
 
-#: models.py:190
+#: models.py:192
 msgid "attendee"
 msgstr "deltager"
 
-#: models.py:191
+#: models.py:193
 msgid "attendees"
 msgstr "deltagerer"
 
-#: models.py:211
+#: models.py:213
 msgid "First name"
 msgstr "Fornavn"
 
-#: models.py:216
+#: models.py:218
 msgid "Last name"
 msgstr "Efternavn"
 
-#: models.py:254
+#: models.py:256
 #, python-format
 msgid "%(event_name)s (signed off)"
 msgstr "%(event_name)s (afmeldt)"
 
-#: models.py:286
+#: models.py:284
+#, python-format
 msgid "%s Registration Fee"
 msgstr "%s Entrè"
 
-#: models.py:323 models.py:342
+#: models.py:324
 msgid "Package Discount"
 msgstr "Pakke rabat"
 
-#: models.py:457 models.py:512 migrations/0001_initial.py:19
+#: models.py:439 models.py:494 migrations/0001_initial.py:19
 #: migrations/0001_initial.py:50
 msgid "Name"
 msgstr "Navn"
 
-#: models.py:458 models.py:513 migrations/0001_initial.py:14
+#: models.py:440 models.py:495 migrations/0001_initial.py:14
 #: migrations/0001_initial.py:45 migrations/0008_use_html_fields.py:21
 #: migrations/0008_use_html_fields.py:24 migrations/0008_use_html_fields.py:40
 #: migrations/0008_use_html_fields.py:43
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: models.py:460 migrations/0001_initial.py:46
+#: models.py:442 migrations/0001_initial.py:46
 #: migrations/0002_new_options.py:21 migrations/0002_new_options.py:38
 msgid "Minimum selected"
 msgstr "Minimum antal valgt"
 
-#: models.py:461 migrations/0002_new_options.py:16
+#: models.py:443 migrations/0002_new_options.py:16
 msgid "Maximum selected"
 msgstr "Maksimum antal valgt"
 
-#: models.py:465 models.py:515 migrations/0001_initial.py:13
+#: models.py:447 models.py:497 migrations/0001_initial.py:13
 #: migrations/0002_new_options.py:13
 msgid "Freeze time"
 msgstr "Stop tidspunkt"
 
-#: models.py:466 models.py:520 migrations/0001_initial.py:15
+#: models.py:448 models.py:502 migrations/0001_initial.py:15
 #: migrations/0002_new_options.py:19 migrations/0002_new_options.py:25
 #: migrations/0002_new_options.py:42
 msgid "Order"
 msgstr "Rækkefølge"
 
-#: models.py:627
+#: models.py:609
 msgid "User registers for event"
 msgstr ""
 
-#: models.py:631
+#: models.py:613
 msgid "Payment registered"
 msgstr ""
 
