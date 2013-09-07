@@ -1,0 +1,1 @@
+<li{% ifequal sadmin2_menu_event_active item.id %} class="active"{% endifequal %}><a href="{% url item.url event.pk %}">{% if item.icon %}<i class="icon-fixed-width icon-{{ item.icon }}"></i>{% endif %}{{ item.name }}</a></li>

@@ -1,0 +1,51 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
+
+    {% include "sadmin2/events/partials/navigation.html" %}
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Brugernavn</th>
+            <th>Navn</th>
+            <th>Status</th>
+            <th>Betaling</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for attendee in attendees %}
+        <tr onclick="document.location = '{% url "sadmin2:events_attendees_list" event.pk %}';" class="clickable">
+            <td><a href="{% url "sadmin2:events_attendees_list" event.pk %}">{{ attendee.user.username }}</a></td>
+            <td>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</td>
+            <td>
+                {% ifequal attendee.state "waiting" %}
+                <span class="label label-error">Venter</span>
+                {% endifequal %}
+                {% ifequal attendee.state "accepted" %}
+                <span class="label label-warning">Accepteret</span>
+                {% endifequal %}
+                {% ifequal attendee.state "attended" %}
+                <span class="label label-success">Deltaget</span>
+                {% endifequal %}
+            </td>
+            <td>
+                {% if attendee.invoice.in_balance %}
+                <span class="label label-success">Betalt</span>
+                {% elif attendee.invoice.is_overpaid %}
+                <span class="label label-warning">Betalt for meget</span>
+                {% elif attendee.invoice.is_partial %}
+                <span class="label label-warning">Betalt for lidt</span>
+                {% else %}
+                <span class="label label-error">Ubetalt</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

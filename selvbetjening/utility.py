@@ -14,6 +14,7 @@ class ProcessorHandler(object):
     def _is_all_true(self, return_values):
         return reduce(lambda x, y : x and y, return_values, True)
 
+
 class ProcessorRegistry(object):
     def __init__(self, handler):
         self.handler = handler

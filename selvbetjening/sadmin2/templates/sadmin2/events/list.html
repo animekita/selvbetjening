@@ -1,0 +1,29 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1>Arrangementer</h1>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Deltagere</th>
+            <th>Kategori</th>
+            <th>Starttidspunkt</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for event in events %}
+        <tr onclick="document.location = '{% url "sadmin2:events_attendees_list" event.pk %}';" class="clickable">
+            <td><a href="{% url "sadmin2:events_attendees_list" event.pk %}">{{ event.title }}</a></td>
+            <td>{{ event.attendees.count }}</td>
+            <td>{% if event.group %}{{ event.group }}{% else %}-{% endif %}</td>
+            <td>{{ event.startdate }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

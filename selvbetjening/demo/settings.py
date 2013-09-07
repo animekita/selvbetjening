@@ -14,18 +14,13 @@ INSTALLED_APPS.extend([
 
     'selvbetjening.notify',
     'selvbetjening.notify.concrete5',
-    'selvbetjening.notify.proftpd',
     'selvbetjening.notify.externaldjango',
     'selvbetjening.notify.vanillaforum',
 
     'selvbetjening.sadmin.base',
     'selvbetjening.sadmin.members',
     'selvbetjening.sadmin.events',
-    'selvbetjening.sadmin.mailcenter',
-
-    'selvbetjening.scheckin',
-
-    ])
+    'selvbetjening.sadmin.mailcenter'])
 
 # import localsettings, a per deployment configuration file
 try:

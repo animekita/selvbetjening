@@ -1,6 +1,7 @@
 from django.test import TransactionTestCase
 from django.db import connections
 
+
 class BaseNotifyTestCase(TransactionTestCase):
     def setUp(self):
         self.init_database('ext_database1')
