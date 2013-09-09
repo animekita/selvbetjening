@@ -223,6 +223,7 @@ class Attend(models.Model):
 
     def save(self, *args, **kwargs):
 
+        # TODO this mechanism does not seem to robust, do we ever update existing entries to have a correct value?
         if self.is_new is None:
             self.is_new = self.user.attend_set.all().count() == 0
 
