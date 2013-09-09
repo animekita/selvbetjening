@@ -125,6 +125,8 @@ INSTALLED_APPS = [
     'selvbetjening.core.invoice',
     'selvbetjening.core.mailcenter',
 
+    'selvbetjening.sadmin2',
+
     'selvbetjening.viewbase.branding'
 ]
 

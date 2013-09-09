@@ -1,6 +1,6 @@
 from selvbetjening.settings_base import *
 
-ROOT_URLCONF = 'demo.urls'
+ROOT_URLCONF = 'selvbetjening.demo.urls'
 
 # installed applications
 INSTALLED_APPS.extend([
