@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Attend.is_new'
         db.add_column(u'events_attend', 'is_new',
-                      self.gf('django.db.models.fields.BooleanField')(default=None),
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
 
 
