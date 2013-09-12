@@ -1,19 +1,19 @@
 
 /*
- * Side-wide
+ * Global
  */
 
 body {
     padding-top: 60px;
-    padding-bottom: 40px;
 }
 
-.brand span {
+.navbar-brand span {
     color: #FFFFFF;
-    background: url("../img/slogo.png") no-repeat;
-    background-size: 20px;
-    text-indent: 25px;
-    float: left;
+}
+
+ol.breadcrumb li.active a {
+    font-weight: bold;
+    color: #000000;
 }
 
 ul.sadmin-sidebar-nav li.nav-header {
@@ -31,6 +31,7 @@ ul.sadmin-sidebar-nav li.nav-header {
 .clickable, .clickable * {
     cursor: pointer;
 }
+
 
 
 

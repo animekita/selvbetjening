@@ -23,4 +23,5 @@ urlpatterns = patterns(
             'authentication_form': LoginForm
         }),
 
-    url(r'^$', sadmin_prerequisites(TemplateView.as_view(template_name='sadmin2/site.html')), name='dashboard'))
+    url(r'^$', sadmin_prerequisites(TemplateView.as_view(template_name='sadmin2/dashboard.html')), name='dashboard',
+        kwargs={'sadmin2_breadcrumbs_active': 'dashboard'}))

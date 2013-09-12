@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>Opret nyt event</h1>
+<h1><small><a href="{% url "sadmin2:dashboard" %}">Selvbetjening</a> / <a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>Opret nyt event</h1>
 
     {% crispy form form.helper %}
 
