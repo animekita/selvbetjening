@@ -9,10 +9,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# session settings
-SESSION_COOKIE_NAME = 'kita_auth_token'
-SESSION_COOKIE_DOMAIN = '.alpha.kita.dk'
-
 DATABASES = {
     'default': {
         'NAME': 'default',
