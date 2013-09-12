@@ -2,9 +2,20 @@
 
 {% block content %}
 
-    <h1><small><a href="{% url "sadmin2:dashboard" %}">Selvbetjening</a> / </small><br/>Arrangementer</h1>
+    {% include "sadmin2/parts/tabnavigation.html" with sadmin2_menu_tabmenu=sadmin2_menu_events sadmin2_menu_tabmenu_active="events" %}
 
-    <a href="{% url "sadmin2:events_create" %}">Nyt event</a>
+    <div class="panel panel-default">
+    <div class="panel-body">
+
+        <div class="input-group">
+          <input type="text" class="form-control input-lg">
+          <span class="input-group-btn">
+            <button class="btn btn-default btn-lg" type="button"><span class="glyphicon glyphicon-search"></span></button>
+          </span>
+        </div><!-- /input-group -->
+
+    </div>
+    </div>
 
     <table class="table table-hover">
         <thead>

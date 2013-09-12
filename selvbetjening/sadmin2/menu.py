@@ -49,7 +49,16 @@ sadmin2_menu_event = (
     )}
 )
 
+sadmin2_menu_events = (
+    {'items': (
+        {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list', 'icon': 'group'},
+        {'id': 'payment', 'name': _('Register Payment'), 'url': 'sadmin2:events_list', 'icon': 'money'},
+        {'id': 'create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'create pull-right'}
+    )}
+)
+
 sadmin2_menu_manifest = {
     'sadmin2_menu_main': sadmin2_menu_main,
-    'sadmin2_menu_event': sadmin2_menu_event
+    'sadmin2_menu_event': sadmin2_menu_event,
+    'sadmin2_menu_events': sadmin2_menu_events
 }
