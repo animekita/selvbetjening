@@ -1,17 +1,21 @@
 
 import datetime
 import time
+from django.core.urlresolvers import reverse
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.http import HttpResponseRedirect
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice, Selection, Option, OptionGroup, SubOption
 from selvbetjening.sadmin.base import graph
 
 from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
+from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 
 
+@sadmin_prerequisites
 def event_list(request):
 
     return render(request,
@@ -20,7 +24,7 @@ def event_list(request):
                       'events': Event.objects.all()
                   })
 
-
+@sadmin_prerequisites
 def event_attendees(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -33,7 +37,7 @@ def event_attendees(request, event_pk):
                       'sadmin2_menu_event_active': 'attendees'
                   })
 
-
+@sadmin_prerequisites
 def event_statistics(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -201,7 +205,7 @@ def event_statistics(request, event_pk):
                   'sadmin2/events/statistics.html',
                   statistics)
 
-
+@sadmin_prerequisites
 def event_financial(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -232,7 +236,7 @@ def event_financial(request, event_pk):
                       'sadmin2_menu_event_active': 'financial'
                   })
 
-
+@sadmin_prerequisites
 def event_settings_selections(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -244,7 +248,7 @@ def event_settings_selections(request, event_pk):
                       'sadmin2_menu_event_active': 'settings'
                   })
 
-
+@sadmin_prerequisites
 def event_settings(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -265,4 +269,24 @@ def event_settings(request, event_pk):
                       'event': event,
                       'form': form,
                       'sadmin2_menu_event_active': 'settings'
+                  })
+
+@sadmin_prerequisites
+def event_create(request):
+
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+
+        if form.is_valid():
+            event = form.save()
+            messages.add_message(request, messages.SUCCESS, _('Event created'))
+            return HttpResponseRedirect(reverse('sadmin2:events_attendees_list', kwargs={'event_pk': event.pk}))
+
+    else:
+        form = EventForm()
+
+    return render(request,
+                  'sadmin2/events/create.html',
+                  {
+                      'form': form
                   })
