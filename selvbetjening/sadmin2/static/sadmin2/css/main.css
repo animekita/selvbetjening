@@ -16,14 +16,6 @@ ol.breadcrumb li.active a {
     color: #000000;
 }
 
-ul.sadmin-sidebar-nav li.nav-header {
-    font-size: 1.2em;
-    font-weight: normal;
-    color: #000000;
-    background-color: #EEEEEE;
-    margin-top: 1em;
-}
-
 /*
  * Modifiers
  */
@@ -35,8 +27,21 @@ ul.sadmin-sidebar-nav li.nav-header {
 
 
 
+.nav-tabs  li.create  a {
+    color: #FFFFFF;
+    cursor: default;
+    background-color: #5CB85C;
+    border: 1px solid #dddddd;
+    border-bottom-color: transparent;
+    cursor: pointer;
+}
 
-
-
-
-
+.nav-tabs  li.create  a:hover,
+.nav-tabs  li.create  a:focus {
+    color: #FFFFFF;
+    cursor: default;
+    background-color: #47a447;
+    border: 1px solid #dddddd;
+    border-bottom-color: transparent;
+    cursor: pointer;
+}
