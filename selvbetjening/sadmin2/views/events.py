@@ -14,6 +14,18 @@ from selvbetjening.sadmin.base import graph
 from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 
+"""
+    sadmin views
+
+    Insert a view for each page you want to add.
+
+    IMPORTANT: Prefix all views by @sadmin_prerequisites, this adds authentication and authorization to the views.
+
+    You should add the following items to the view context for all rendered pages:
+
+    sadmin2_menu_main_active: The ID of the currently active page in the main menu.
+    sadmin2_breadcrumb_active: The ID of the current breadcrumb sequence you want to use.
+"""
 
 @sadmin_prerequisites
 def event_list(request):
@@ -21,6 +33,8 @@ def event_list(request):
     return render(request,
                   'sadmin2/events/list.html',
                   {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'events',
                       'events': Event.objects.all()
                   })
 
