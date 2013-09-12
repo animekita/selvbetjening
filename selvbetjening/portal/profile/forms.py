@@ -14,6 +14,7 @@ from selvbetjening.core.members.forms import UsernameField, validate_username
 from processor_handlers import extended_privacy_processors
 from models import UserPrivacy
 
+
 class LoginForm(AuthenticationForm):
     helper = FormHelper()
 

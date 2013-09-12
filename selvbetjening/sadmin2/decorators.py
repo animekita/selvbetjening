@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 def sadmin_prerequisites(function):
     actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated() and u.is_superuser(),
+        lambda u: u.is_authenticated(),
         login_url=reverse_lazy('sadmin2:login'),
         redirect_field_name=REDIRECT_FIELD_NAME
     )
