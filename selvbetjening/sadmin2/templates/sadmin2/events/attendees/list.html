@@ -2,9 +2,7 @@
 
 {% block content %}
 
-    <h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
-
-    {% include "sadmin2/events/partials/navigation.html" %}
+    {% include "sadmin2/parts/search_box.html" %}
 
     <table class="table table-hover">
         <thead>
@@ -15,11 +13,11 @@
             <th>Betaling</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="searchresult">
 
         {% for attendee in attendees %}
-        <tr onclick="document.location = '{% url "sadmin2:events_attendees_list" event.pk %}';" class="clickable">
-            <td><a href="{% url "sadmin2:events_attendees_list" event.pk %}">{{ attendee.user.username }}</a></td>
+        <tr onclick="document.location = '{% url "sadmin2:event_attendees" event.pk %}';" class="clickable">
+            <td><a href="{% url "sadmin2:event_attendees" event.pk %}">{{ attendee.user.username }}</a></td>
             <td>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</td>
             <td>
                 {% ifequal attendee.state "waiting" %}

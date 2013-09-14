@@ -15,20 +15,45 @@
     Each entry consists of an ID (the key) referenced by the parent properties, and a
     dictionary with the following keys.
 
-    name (required): The label rendered to the page
-    url (required): A string resolvable to a URL if used in the {% url %} template tag
+    name (required if no name_callback): A label for the item.
+    name_callback (required if no name): A function returning a label for the item. The current context is given as the first argument.
+    url (optional): A string resolvable to a URL if used in the {% url %} template tag
+    url_callback (optional): A function returning a full url. The current context is given as the first argument.
     parent (optional): A string pointing to an existing parent entry.
                        The traversal stops if this value is None or omitted.
 
 
 """
 
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
+
+def url_callback(url):
+    """
+    A quick shortcut for passing kwargs in the current request context to URLs we want to generate.
+
+    This assumes the naming of kwargs to be consistent across pages.
+
+    """
+    return lambda context: reverse_lazy(url, kwargs=context['request'].resolver_match.kwargs)
+
+
 breadcrumbs = {
-    'dashboard': {'name': _('Dashboard'), 'url': 'sadmin2:dashboard'},
-    'events': {'name': _('Events'), 'url': 'sadmin2:events_list', 'parent': 'dashboard'},
-    'events_create': {'name': _('Create'), 'url': 'sadmin2:events_create', 'parent': 'events'}
+    'dashboard': {'name': _('Dashboard'),
+                  'url': 'sadmin2:dashboard'},
+
+    'events': {'name': _('Events'),
+               'url': 'sadmin2:events_list',
+               'parent': 'dashboard'},
+    'events_create': {'name': _('Create'),
+                      'url': 'sadmin2:events_create',
+                      'parent': 'events'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event': {'name_callback': lambda context: context['event'].title,
+              'url_callback': url_callback('sadmin2:event_attendees'),
+              'parent': 'events'},
 }
 
 sadmin2_menu_main = (
@@ -43,21 +68,40 @@ sadmin2_menu_tab_events = (
     {'id': 'events_create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'create pull-right'}
 )
 
-sadmin2_menu_event = (
-    {'items': (
-        {'id': 'attendees', 'name': u'Deltagere', 'url': 'sadmin2:events_attendees_list', 'icon': 'group'},
-        {'id': 'statistics', 'name': u'Statistik', 'url': 'sadmin2:events_statistics', 'icon': 'picture'},
-        {'id': 'financial', 'name': u'Økonomi', 'url': 'sadmin2:events_financial', 'icon': 'money'},
-        {'id': 'settings', 'name': u'Settings', 'icon': 'wrench', 'dropdown': (
-            {'id': 'settings-event', 'name': u'Arrangement', 'url': 'sadmin2:events_settings'},
-            {'id': 'settings-selections', 'name': u'Tilvalg', 'url': 'sadmin2:events_settings_selections'}
-        )}
+# Assumes kwargs[event_pk]
+sadmin2_menu_tab_event = (
+    {'id': 'attendees',
+     'name': u'Deltagere',
+     'url_callback': url_callback('sadmin2:event_attendees'),
+     'icon': 'group'},
 
-    )}
+    {'id': 'statistics',
+     'name': u'Statistik',
+     'url_callback': url_callback('sadmin2:event_statistics'),
+     'icon': 'picture'},
+
+    {'id': 'financial',
+     'name': u'Økonomi',
+     'url_callback': url_callback('sadmin2:event_financial'),
+     'icon': 'money'},
+
+    {'id': 'settings',
+     'name': u'Settings',
+     'icon': 'wrench',
+     'dropdown': (
+         {'id': 'settings-event',
+          'name': u'Arrangement',
+          'url_callback': url_callback('sadmin2:event_settings'),
+          },
+
+         {'id': 'settings-selections',
+          'name': u'Tilvalg',
+          'url_callback': url_callback('sadmin2:event_settings_selections')
+          }
+     )}
 )
 
 
 sadmin2_menu_manifest = {
-    'sadmin2_menu_main': sadmin2_menu_main,
-    'sadmin2_menu_event': sadmin2_menu_event
+    'sadmin2_menu_main': sadmin2_menu_main
 }

@@ -30,6 +30,5 @@ class breadcrumb_iterator(object):
 @register.inclusion_tag('sadmin2/parts/breadcrumbs.html', takes_context=True)
 def sadmin2_breadcrumbs(context, id):
 
-    return {
-        'sadmin2_breadcrumbs': reversed(list(breadcrumb_iterator(id))),
-    }
+    context['sadmin2_breadcrumbs'] = reversed(list(breadcrumb_iterator(id)))
+    return context
