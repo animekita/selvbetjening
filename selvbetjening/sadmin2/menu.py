@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from django.utils.translation import ugettext_lazy as _
-
 """
 
     Breadcrumbs
@@ -25,15 +23,24 @@ from django.utils.translation import ugettext_lazy as _
 
 """
 
+from django.utils.translation import ugettext_lazy as _
+
 breadcrumbs = {
     'dashboard': {'name': _('Dashboard'), 'url': 'sadmin2:dashboard'},
-    'events': {'name': _('Events'), 'url': 'sadmin2:events_list', 'parent': 'dashboard'}
+    'events': {'name': _('Events'), 'url': 'sadmin2:events_list', 'parent': 'dashboard'},
+    'events_create': {'name': _('Create'), 'url': 'sadmin2:events_create', 'parent': 'events'}
 }
 
 sadmin2_menu_main = (
     {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
     {'id': 'users', 'name': _('Users'), 'url': 'sadmin:auth_user_changelist'},
     {'id': 'emails', 'name': _('Newsletters'), 'url': 'sadmin:mailcenter_emailspecification_changelist'}
+)
+
+sadmin2_menu_tab_events = (
+    {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list', 'icon': 'group'},
+    {'id': 'events_payment', 'name': _('Register Payment'), 'url': 'sadmin2:events_list', 'icon': 'money'},
+    {'id': 'events_create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'create pull-right'}
 )
 
 sadmin2_menu_event = (
@@ -49,16 +56,8 @@ sadmin2_menu_event = (
     )}
 )
 
-sadmin2_menu_events = (
-    {'items': (
-        {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list', 'icon': 'group'},
-        {'id': 'payment', 'name': _('Register Payment'), 'url': 'sadmin2:events_list', 'icon': 'money'},
-        {'id': 'create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'create pull-right'}
-    )}
-)
 
 sadmin2_menu_manifest = {
     'sadmin2_menu_main': sadmin2_menu_main,
-    'sadmin2_menu_event': sadmin2_menu_event,
-    'sadmin2_menu_events': sadmin2_menu_events
+    'sadmin2_menu_event': sadmin2_menu_event
 }

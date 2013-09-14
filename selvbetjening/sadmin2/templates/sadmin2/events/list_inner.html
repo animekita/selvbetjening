@@ -1,0 +1,9 @@
+
+{% for event in events %}
+<tr onclick="document.location = '{% url "sadmin2:events_attendees_list" event.pk %}';" class="clickable">
+    <td><a href="{% url "sadmin2:events_attendees_list" event.pk %}">{{ event.title }}</a></td>
+    <td>{{ event.attendees.count }}</td>
+    <td>{% if event.group %}{{ event.group }}{% else %}-{% endif %}</td>
+    <td>{{ event.startdate }}</td>
+</tr>
+{% endfor %}

@@ -10,6 +10,7 @@ import views.events
 urlpatterns = patterns(
     '',
     url(r'^events/$', views.events.event_list, name='events_list'),
+    url(r'^events/ajax/$', views.events.event_list, name='events_list_ajax', kwargs={'ajax': True}),
     url(r'^events/create/$', views.events.event_create, name='events_create'),
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/$', views.events.event_attendees, name='events_attendees_list'),
     url(r'^events/(?P<event_pk>[0-9]+)/statistics/$', views.events.event_statistics, name='events_statistics'),

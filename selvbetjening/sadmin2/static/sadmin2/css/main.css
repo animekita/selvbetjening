@@ -3,10 +3,6 @@
  * Global
  */
 
-body {
-    padding-top: 60px;
-}
-
 .navbar-brand span {
     color: #FFFFFF;
 }
@@ -23,9 +19,6 @@ ol.breadcrumb li.active a {
 .clickable, .clickable * {
     cursor: pointer;
 }
-
-
-
 
 .nav-tabs  li.create  a {
     color: #FFFFFF;

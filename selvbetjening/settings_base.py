@@ -169,7 +169,7 @@ SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'selvbetjening.core.testrunner.IncludingTestSuiteRunner'
 TEST_INCLUDE = ['selvbetjening']
 
-CRISPY_TEMPLATE_PACK = 'bootstrap'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 DEBUG_TOOLBAR_CONFIG = {
     "INTERCEPT_REDIRECTS": False
