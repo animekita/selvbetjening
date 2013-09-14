@@ -1,14 +1,25 @@
 {% extends "sadmin2/site.html" %}
 
-{% block content %}
+{% block head %}
+{{ block.super }}
 
-    {% include "sadmin2/parts/tabnavigation.html" with sadmin2_menu_tabmenu=sadmin2_menu_events sadmin2_menu_tabmenu_active="events" %}
+    {% if search_url %}
+    <script type="text/javascript">
+        $(function() {
+            init_livesearch('{{search_url}}');
+        });
+    </script>
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
 
     <div class="panel panel-default">
     <div class="panel-body">
 
         <div class="input-group">
-          <input type="text" class="form-control input-lg">
+          <input type="text" class="form-control input-lg" id="searchbox">
           <span class="input-group-btn">
             <button class="btn btn-default btn-lg" type="button"><span class="glyphicon glyphicon-search"></span></button>
           </span>
@@ -26,16 +37,8 @@
             <th>Starttidspunkt</th>
         </tr>
         </thead>
-        <tbody>
-
-        {% for event in events %}
-        <tr onclick="document.location = '{% url "sadmin2:events_attendees_list" event.pk %}';" class="clickable">
-            <td><a href="{% url "sadmin2:events_attendees_list" event.pk %}">{{ event.title }}</a></td>
-            <td>{{ event.attendees.count }}</td>
-            <td>{% if event.group %}{{ event.group }}{% else %}-{% endif %}</td>
-            <td>{{ event.startdate }}</td>
-        </tr>
-        {% endfor %}
+        <tbody id="searchresult">
+        {% include "sadmin2/events/list_inner.html" %}
         </tbody>
     </table>
 

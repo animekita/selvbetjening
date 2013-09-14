@@ -13,8 +13,15 @@ from selvbetjening.core.events.models import Event, AttendState
 
 class S2FormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
+        horizontal = kwargs.pop('horizontal', False)
+
         super(S2FormHelper, self).__init__(*args, **kwargs)
-        self.form_class = 'form-horizontal'
+
+        if horizontal:
+            self.form_class = 'form-horizontal'
+            self.label_class = 'col-lg-2'
+            self.field_class = 'col-lg-8'
+
         self.html5_required = True
 
 

@@ -1,19 +1,3 @@
-
-import datetime
-import time
-from django.core.urlresolvers import reverse
-
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
-from django.utils.translation import ugettext as _
-from django.http import HttpResponseRedirect
-
-from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice, Selection, Option, OptionGroup, SubOption
-from selvbetjening.sadmin.base import graph
-
-from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
-from selvbetjening.sadmin2.decorators import sadmin_prerequisites
-
 """
     sadmin views
 
@@ -25,17 +9,116 @@ from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 
     sadmin2_menu_main_active: The ID of the currently active page in the main menu.
     sadmin2_breadcrumb_active: The ID of the current breadcrumb sequence you want to use.
+    sadmin2_menu_tab: The tab-menu you want rendered
+    sadmin2_menu_tab_active: The ID of the item in the tab-menu you want highlighted.
+
 """
 
+import datetime
+import time
+import operator
+
+from django.db.models import Q
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+from django.http import HttpResponseRedirect
+from django.utils.safestring import mark_safe
+
+from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice, Selection, Option, OptionGroup, SubOption
+from selvbetjening.sadmin.base import graph
+
+from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
+from selvbetjening.sadmin2.decorators import sadmin_prerequisites
+from selvbetjening.sadmin2 import menu
+
+
+def apply_search_query(qs, query, columns):
+
+    if query is None:
+        return qs
+
+    or_groups = []
+
+    for term in [term.strip() for term in query.split()]:
+        or_group = [Q(**{'%s__icontains' % column: term}) for column in columns]
+        or_groups.append(reduce(operator.or_, or_group))
+
+    if len(or_groups) > 0:
+        return qs.filter(reduce(operator.and_, or_groups))
+
+    return qs
+
+
 @sadmin_prerequisites
-def event_list(request):
+def event_list(request, ajax=False):
+
+    columns = ('title',)
+
+    queryset = Event.objects.all()
+    queryset = apply_search_query(queryset, request.GET.get('q', ''), columns)
+
+    # Dynamically construct a search url based on the current url
+    # Ensure the query (q) is at the end of the url.
+    # We do this to maintain any filters et. al. that we could have added to the current url.
+
+    extra_params = request.GET.copy()
+    extra_params.pop('q', None)
+
+    search_url = reverse('sadmin2:events_list_ajax') + '?' + extra_params.urlencode()
+
+    if len(extra_params) > 0:
+        search_url += '&q='
+    else:
+        search_url += 'q='
 
     return render(request,
-                  'sadmin2/events/list.html',
+                  'sadmin2/events/list.html' if not ajax else 'sadmin2/events/list_inner.html',
                   {
                       'sadmin2_menu_main_active': 'events',
                       'sadmin2_breadcrumbs_active': 'events',
-                      'events': Event.objects.all()
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
+                      'sadmin2_menu_tab_active': 'events',
+
+                      'search_url': mark_safe(search_url),
+
+                      'events': queryset
+                  })
+
+@sadmin_prerequisites
+def event_list_ajax(self, request, extra_context=None):
+    response = self.changelist_view(request, extra_context)
+
+    start = response.content.rfind('<form')
+    stop = response.content.rfind('</form>') + 7
+    response.content = response.content[start:stop]
+
+    return response
+
+@sadmin_prerequisites
+def event_create(request):
+
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+
+        if form.is_valid():
+            event = form.save()
+            messages.add_message(request, messages.SUCCESS, _('Event created'))
+            return HttpResponseRedirect(reverse('sadmin2:events_attendees_list', kwargs={'event_pk': event.pk}))
+
+    else:
+        form = EventForm()
+
+    return render(request,
+                  'sadmin2/generic/form.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'events_create',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
+                      'sadmin2_menu_tab_active': 'events_create',
+
+                      'form': form
                   })
 
 @sadmin_prerequisites
@@ -285,22 +368,3 @@ def event_settings(request, event_pk):
                       'sadmin2_menu_event_active': 'settings'
                   })
 
-@sadmin_prerequisites
-def event_create(request):
-
-    if request.method == 'POST':
-        form = EventForm(request.POST)
-
-        if form.is_valid():
-            event = form.save()
-            messages.add_message(request, messages.SUCCESS, _('Event created'))
-            return HttpResponseRedirect(reverse('sadmin2:events_attendees_list', kwargs={'event_pk': event.pk}))
-
-    else:
-        form = EventForm()
-
-    return render(request,
-                  'sadmin2/events/create.html',
-                  {
-                      'form': form
-                  })
