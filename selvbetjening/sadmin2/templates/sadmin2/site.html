@@ -1,5 +1,5 @@
 {% extends "sadmin2/base.html" %}
-{% load sadmin2_breadcrumbs %}
+{% load sadmin2_breadcrumbs sadmin2_menu %}
 
 {% block head %}
 
@@ -57,7 +57,7 @@
                             <ul class="dropdown-menu">
                                 {% for item in item.dropdown %}
                                     <li class="{{ item.class }}{% ifequal sadmin2_menu_tab_active item.id %} active{% endifequal %}">
-                                        <a href="{% url item.url %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
+                                        <a href="{% sadmin2_emit_url item %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -66,7 +66,7 @@
                     {% else %}
 
                         <li class="{{ item.class }}{% ifequal sadmin2_menu_tab_active item.id %} active{% endifequal %}">
-                            <a href="{% url item.url %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
+                            <a href="{% sadmin2_emit_url item %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
                         </li>
 
                     {% endifnotequal %}

@@ -1,7 +1,9 @@
+{% load sadmin2_menu %}
+
 <ol class="breadcrumb">
   {% for item in sadmin2_breadcrumbs %}
     <li {% if forloop.last %}class="active"{% endif %}>
-        <a href="{% url item.url %}">{{ item.name }}</a>
+        <a href="{% sadmin2_emit_url item %}">{% sadmin2_emit_name item %}</a>
     </li>
   {% endfor %}
 </ol>
