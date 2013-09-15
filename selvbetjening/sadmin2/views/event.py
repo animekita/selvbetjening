@@ -22,7 +22,7 @@ def event_attendees(request, event_pk, ajax=False):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    columns = ('user__username',)
+    columns = ('user__username', 'user__first_name', 'user__last_name', 'user__email')
 
     queryset = event.attendees.select_related('user', 'invoice').all()
     queryset = apply_search_query(queryset, request.GET.get('q', ''), columns)
@@ -201,11 +201,17 @@ def event_statistics(request, event_pk):
 
         optiongroups.append((optiongroup, options))
 
-    statistics.update({'event': event,
-                       'attendees_count': attendees_count,
-                       'new_count': new_count,
-                       'optiongroups': optiongroups,
-                       'sadmin2_menu_event_active': 'statistics'})
+    statistics.update({
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_statistics',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'statistics',
+
+        'event': event,
+
+        'attendees_count': attendees_count,
+        'new_count': new_count,
+        'optiongroups': optiongroups})
 
     return render(request,
                   'sadmin2/event/statistics.html',
@@ -278,11 +284,15 @@ def event_settings(request, event_pk):
         form = EventForm(instance=event)
 
     return render(request,
-                  'sadmin2/event/settings.html',
+                  'sadmin2/generic/form.html',
                   {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_settings',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+                      'sadmin2_menu_tab_active': 'settings',
+
                       'event': event,
-                      'form': form,
-                      'sadmin2_menu_event_active': 'settings'
+                      'form': form
                   })
 
 

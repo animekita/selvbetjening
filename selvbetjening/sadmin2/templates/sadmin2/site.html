@@ -60,7 +60,7 @@
                 {% for item in sadmin2_menu_tab %}
                     {% ifnotequal item.dropdown None %}
 
-                        <li class="{% ifequal sadmin2_menu_tab_active item.id %}active {% endifequal %}dropdown">
+                        <li class="{{ item.class }} {% ifequal sadmin2_menu_tab_active item.id %}active {% endifequal %}dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">{% if item.icon %}<i class="icon-fixed-width icon-{{ item.icon }}"></i>{% endif %}{{ item.name }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for item in item.dropdown %}

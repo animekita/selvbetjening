@@ -23,10 +23,13 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 from django.utils.safestring import mark_safe
+from django.conf import settings
+from django.forms.formsets import formset_factory
 
-from selvbetjening.core.events.models import Event
+from selvbetjening.core.events.models import Event, payment_registered_source
+from selvbetjening.core.invoice.models import Payment
 
-from selvbetjening.sadmin2.forms import EventForm
+from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -86,6 +89,50 @@ def event_create(request):
                       'sadmin2_breadcrumbs_active': 'events_create',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
                       'sadmin2_menu_tab_active': 'events_create',
+
+                      'form': form
+                  })
+
+@sadmin_prerequisites
+def register_payments(request):
+
+    payments = []
+
+    if request.method == 'POST':
+        form = RegisterPaymentForm(request.POST)
+
+        if form.is_valid():
+
+            result = form.cleaned_data
+
+            payment = Payment.objects.create(invoice=result['attendee'].invoice,
+                                             amount=result['payment'],
+                                             signee=request.user)
+
+            payment_registered_source.trigger(result['attendee'].user,
+                                              attendee=result['attendee'],
+                                              payment=payment)
+
+            attendee = result['attendee']
+
+            messages.success(request, _('Payment for %s has been registered successfully') % attendee.user.username)
+
+            if not attendee.invoice.in_balance():
+                # TODO Add a link to the attendee overview
+                messages.warning(request, _('Payment did match the payment due. Please review the status of this person <a href="%s">here</a>') % '#')
+
+            return HttpResponseRedirect(reverse('events_register_payments'))
+
+    else:
+        form = RegisterPaymentForm()
+
+    return render(request,
+                  'sadmin2/generic/form.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'events_register_payments',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
+                      'sadmin2_menu_tab_active': 'events_register_payments',
 
                       'form': form
                   })

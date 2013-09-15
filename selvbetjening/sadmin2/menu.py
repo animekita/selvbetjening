@@ -46,9 +46,14 @@ breadcrumbs = {
     'events': {'name': _('Events'),
                'url': 'sadmin2:events_list',
                'parent': 'dashboard'},
+
     'events_create': {'name': _('Create'),
                       'url': 'sadmin2:events_create',
                       'parent': 'events'},
+
+    'events_register_payments': {'name': _('Register Payments'),
+                                 'url': 'sadmin2:events_register_payments',
+                                 'parent': 'events'},
 
     # Assumes: context[event], kwargs[event_pk]
     'event': {'name_callback': lambda context: context['event'].title,
@@ -60,6 +65,18 @@ breadcrumbs = {
         'name': _('Account'),
         'url_callback': url_callback('sadmin2:event_account'),
         'parent': 'event'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_settings':  {
+        'name': _('Settings'),
+        'url_callback': url_callback('sadmin2:event_settings'),
+        'parent': 'event'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_statistics':  {
+        'name': _('Statistics'),
+        'url_callback': url_callback('sadmin2:event_statistics'),
+        'parent': 'event'},
 }
 
 sadmin2_menu_main = (
@@ -69,9 +86,9 @@ sadmin2_menu_main = (
 )
 
 sadmin2_menu_tab_events = (
-    {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list', 'icon': 'group'},
-    {'id': 'events_payment', 'name': _('Register Payment'), 'url': 'sadmin2:events_list', 'icon': 'money'},
-    {'id': 'events_create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'create pull-right'}
+    {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
+    {'id': 'events_register_payments', 'name': _('Register Payment'), 'url': 'sadmin2:events_register_payments'},
+    {'id': 'events_create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'pull-right'}
 )
 
 # Assumes kwargs[event_pk]
@@ -100,7 +117,22 @@ sadmin2_menu_tab_event = (
           'name': u'Tilvalg',
           'url_callback': url_callback('sadmin2:event_settings_selections')
           }
-     )}
+     )},
+
+    {'id': 'add',
+     'name': _('Add attendee'),
+     'dropdown': (
+         {'id': 'add-existing',
+          'name': _('Existing user'),
+          'url_callback': url_callback('sadmin2:event_settings'),
+          },
+
+         {'id': 'add-new',
+          'name': _('New user'),
+          'url_callback': url_callback('sadmin2:event_settings_selections')
+          }),
+     'class': 'pull-right'
+     },
 )
 
 

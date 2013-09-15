@@ -6,10 +6,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset
-from crispy_forms.bootstrap import Tab, TabHolder
+from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div
 
 from selvbetjening.core.events.models import Event, AttendState
+from selvbetjening.core.events.models import find_attendee_signal
 
 
 class S2FormHelper(FormHelper):
@@ -28,8 +28,34 @@ class S2FormHelper(FormHelper):
 
 class S2Field(Field):
     def __init__(self, *args, **kwargs):
-        kwargs['css_class'] = 'input-xxlarge'
+
+        kwargs['css_class'] = kwargs.get('css_class', '') + ' input-lg'
+
+        if 'width' in kwargs:
+            kwargs['wrapper_class'] = kwargs.get('wrapper_class', '') + ' col-lg-%s' % kwargs.get('width')
+
         super(S2Field, self).__init__(*args, **kwargs)
+
+
+class S2HorizontalRow(Row):
+    def __init__(self, *args, **kwargs):
+        """
+        Formatting of inlined elements in horizontal rows is not pretty. Lets apply some col-lg-* hacking.
+
+        - Add a col-lg-2 to offset left-hand-side labels
+        - Add a col-lg-9 representing the useful span (avoiding the right-hand-side padding)
+
+        We add given fields to this second div.
+
+        """
+
+        super(S2HorizontalRow, self).__init__(Div(css_class='col-lg-2'), Div(*args, css_class='col-lg-9'), **kwargs)
+
+
+class S2Submit(Submit):
+    def __init__(self, *args, **kwargs):
+        kwargs['css_class'] = kwargs.get('css_class', '') + ' btn-lg'
+        super(S2Submit, self).__init__(*args, **kwargs)
 
 
 class EventForm(forms.ModelForm):
@@ -38,16 +64,17 @@ class EventForm(forms.ModelForm):
         fields = ('title', 'description', 'group', 'startdate', 'enddate', 'registration_open',
                   'maximum_attendees', 'move_to_accepted_policy')
 
-    helper = S2FormHelper()
+    helper = S2FormHelper(horizontal=True)
 
     layout = Layout(
         Fieldset(None,
                  S2Field('title'), S2Field('description'), S2Field('group'),
-                 S2Field('startdate'), S2Field('enddate'), S2Field('registration_open')),
+                 S2HorizontalRow(S2Field('startdate', width=6), S2Field('enddate', width=6)),
+                 S2Field('registration_open')),
         Fieldset(_('Conditions'),
                  S2Field('maximum_attendees'), S2Field('move_to_accepted_policy')))
 
-    submit = Submit('save', _('Save'))
+    submit = S2Submit('save', _('Save'))
 
     helper.add_layout(layout)
     helper.add_input(submit)
@@ -221,3 +248,42 @@ class InvoiceFormattingForm(forms.Form):
             total['realised'] += 1 if not invoice.is_unpaid() else 0
 
         return self.invoices, line_groups.values(), total, show_regular_attendees, show_irregular_attendees, attendee_filter_label
+
+
+class RegisterPaymentForm(forms.Form):
+    payment_key = forms.CharField(max_length=255)
+    payment = forms.DecimalField(decimal_places=2)
+
+    fieldsets = [
+        (None, {
+            'fields': ('payment_key', 'payment'),
+        })
+    ]
+
+    helper = S2FormHelper(horizontal=True)
+
+    layout = Layout(
+        Fieldset(None,
+                 S2Field('payment_key'), S2Field('payment')))
+
+    submit = Submit('update', _('Register payments'))
+
+    helper.add_layout(layout)
+    helper.add_input(submit)
+
+    def clean_payment_key(self):
+        payment_key = self.cleaned_data['payment_key']
+
+        results = find_attendee_signal.send(self, pk=payment_key)
+        results = [result for handler, result in results if result is not None]
+
+        if len(results) == 0:
+            raise forms.ValidationError(u'No matching payment keys found')
+
+        if len(results) > 1:
+            raise forms.ValidationError(u'Multiple matching payment keys found')
+
+        self.cleaned_data['handler'] = results[0][0]
+        self.cleaned_data['attendee'] = results[0][1]
+
+        return payment_key
