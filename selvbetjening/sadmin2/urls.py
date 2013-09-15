@@ -15,8 +15,9 @@ urlpatterns = patterns(
     url(r'^events/create/$', views.events.event_create, name='events_create'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/$', views.event.event_attendees, name='event_attendees'),
+    url(r'^events/(?P<event_pk>[0-9]+)/ajax/$', views.event.event_attendees, name='event_attendees_ajax', kwargs={'ajax': True}),
     url(r'^events/(?P<event_pk>[0-9]+)/statistics/$', views.event.event_statistics, name='event_statistics'),
-    url(r'^events/(?P<event_pk>[0-9]+)/financial/$', views.event.event_financial, name='event_financial'),
+    url(r'^events/(?P<event_pk>[0-9]+)/account/$', views.event.event_account, name='event_account'),
     url(r'^events/(?P<event_pk>[0-9]+)/settings/selections/$', views.event.event_settings_selections, name='event_settings_selections'),
     url(r'^events/(?P<event_pk>[0-9]+)/settings/$', views.event.event_settings, name='event_settings'),
 

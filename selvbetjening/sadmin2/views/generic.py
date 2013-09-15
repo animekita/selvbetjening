@@ -18,7 +18,7 @@ def apply_search_query(qs, query, columns):
     if len(or_groups) > 0:
         return qs.filter(reduce(operator.and_, or_groups))
 
-    return qs
+    return qs.distinct()
 
 
 def get_search_url(request, base_url):

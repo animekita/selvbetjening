@@ -12,6 +12,9 @@
     sadmin2_menu_tab: The tab-menu you want rendered
     sadmin2_menu_tab_active: The ID of the item in the tab-menu you want highlighted.
 
+    search_url (optinal): If provided, a searchbox will be rendered and results returned by <search_url> will be
+                          injected into #searchresult.
+
 """
 
 from django.core.urlresolvers import reverse

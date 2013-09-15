@@ -1,0 +1,104 @@
+{% extends "sadmin2/site.html" %}
+{% load i18n humanize crispy_forms_tags %}
+
+{% block content %}
+
+<div class="block">
+
+<div class="jumbotron hidden-print">
+    <h1>Regnskab</h1>
+    <p>Vi anbefaler at du gemmer et detaljeret regnskab for dit arrangement som en del af dit bogføring. Som standard inkludere regnskabet alle personer som har <b>deltaget</b> eller har <b>minimum 1 betaling</b> registreret.</p>
+
+    <p><a class="btn btn-lg btn-primary" href="javascript:window.print()">Print regnskab</a></p>
+</div>
+
+<div class="panel panel-default hidden-print">
+  <div class="panel-heading">Indstillinger</div>
+  <div class="panel-body">
+      {% crispy formatting_form formatting_form.helper %}
+  </div>
+</div>
+
+
+<h1>Regnskab <small>{{ event.title }}</small></h1>
+<p>Deltager filter: {{ attendee_filter_label }}</p>
+
+
+<h2>Resultat</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th><abbr title="Number of attendees (potential income if all attendees pays)."><i>Potential</i></abbr></th>
+        <th><abbr title="Attendees who have paid too much (pending refund).">Overpaid (+)</abbr></th>
+        <th><abbr title="Attendees who have paid too little (missing payments).">Underpaid (-)</abbr></th>
+        <th><abbr title="Attendees who have not paid anything (missing payments).">Unpaid (-)</abbr></th>
+        <th><abbr title="Number of attendees (the sum of all registered payments including pending refunds.">Realised (=)</abbr></th>
+    </tr>
+
+    <tr>
+        <td>{{ total.potential }} </br>({{ total.potential_total | intcomma }},-)</td>
+        <td>{{ total.overpaid }} </br>({{ total.overpaid_total | intcomma }},-)</td>
+        <td>{{ total.underpaid }} </br>({{ total.underpaid_total | intcomma }},-)</td>
+        <td>{{ total.unpaid }} </br>({{ total.unpaid_total | intcomma }},-)</td>
+        <td>{{ total.realised }} </br>({{ total.realised_total | intcomma }},-)</td>
+    </tr>
+
+</table>
+
+
+<h2>Linjeresultat</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th></th>
+        <th>Pris</th>
+        <th><abbr title="Number of attendees (potential income if all attendees pays)"><i>Potential</i></abbr></th>
+    </tr>
+
+    {% for line_group in line_groups %}
+    <tr>
+        <td class="col-lg-9">{{line_group.name}}</td>
+        <td> &nbsp; </br> {{line_group.price | intcomma}},-</td>
+        <td>{{line_group.potential|length}} </br> ({{line_group.potential_total | intcomma}},-)</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+{% if show_regular_attendees or show_irregular_attendees %}
+
+<h2>Deltagerliste</h2>
+{% if not show_regular_attendees %}<p>Liste over under- og over-betalte deltagere.</p>{% endif %}
+
+<table class="table table-striped table-condensed">
+
+    <tr>
+        <th>#</th>
+        <th>Username</th>
+        <th>Invoice total</th>
+        <th>Paid</th>
+        <th>+/-</th>
+    </tr>
+
+    {% for invoice in invoices %}
+
+    {% if show_regular_attendees or not invoice.is_paid %}
+    <tr>
+        <td>{{ invoice.user.pk }}</td>
+        <td>{{ invoice.user.username }}</td>
+        <td>{{ invoice.total_price | intcomma }},-</td>
+        <td>{{ invoice.paid | intcomma }},-</td>
+        <td>{% if not invoice.is_paid %}{{ invoice.unpaid | intcomma }},-{% endif %}</td>
+    </tr>
+    {% endif %}
+
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
