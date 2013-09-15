@@ -22,15 +22,15 @@ def event_attendees(request, event_pk, ajax=False):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    columns = ('title',)
+    columns = ('user__username',)
 
-    queryset = event.attendees.select_related('user', 'invoice'),
+    queryset = event.attendees.select_related('user', 'invoice').all()
     queryset = apply_search_query(queryset, request.GET.get('q', ''), columns)
 
-    search_url = get_search_url(request, reverse('sadmin2:events_list_ajax'))
+    search_url = get_search_url(request, reverse('sadmin2:event_attendees_ajax', kwargs={'event_pk': event_pk}))
 
     return render(request,
-                  'sadmin2/events/attendees/list.html' if not ajax else 'sadmin2/events/attendees/list_inner.html',
+                  'sadmin2/event/attendees.html' if not ajax else 'sadmin2/event/attendees_inner.html',
                   {
                       'sadmin2_menu_main_active': 'events',
                       'sadmin2_breadcrumbs_active': 'event',
@@ -208,11 +208,11 @@ def event_statistics(request, event_pk):
                        'sadmin2_menu_event_active': 'statistics'})
 
     return render(request,
-                  'sadmin2/events/statistics.html',
+                  'sadmin2/event/statistics.html',
                   statistics)
 
 @sadmin_prerequisites
-def event_financial(request, event_pk):
+def event_account(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
@@ -224,22 +224,30 @@ def event_financial(request, event_pk):
     if request.method == 'POST' or 'event' in request.GET:
         formatting_form = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
         formatting_form.is_valid()
-
     else:
         formatting_form = InvoiceFormattingForm(invoices=invoice_queryset)
 
-    line_groups, total, detailed_view = formatting_form.format()
+    invoices, line_groups, total, show_regular_attendees, show_irregular_attendees, attendee_filter_label = formatting_form.format()
 
     return render(request,
-                  'sadmin2/events/financial.html',
+                  'sadmin2/event/account.html',
                   {
-                      'invoices': invoice_queryset,
+                      'sadmin2_menu_main_active': 'event',
+                      'sadmin2_breadcrumbs_active': 'event_account',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+                      'sadmin2_menu_tab_active': 'account',
+
+                      'event': event,
+                      'invoices': invoices.order_by('user__username'),
+
                       'line_groups': line_groups,
                       'total': total,
-                      'detailed_view': detailed_view,
+
+                      'show_regular_attendees': show_regular_attendees,
+                      'show_irregular_attendees': show_irregular_attendees,
+
                       'formatting_form': formatting_form,
-                      'event': event,
-                      'sadmin2_menu_event_active': 'financial'
+                      'attendee_filter_label': attendee_filter_label
                   })
 
 @sadmin_prerequisites
@@ -248,7 +256,7 @@ def event_settings_selections(request, event_pk):
     event = get_object_or_404(Event, pk=event_pk)
 
     return render(request,
-                  'sadmin2/events/selections.html',
+                  'sadmin2/event/selections.html',
                   {
                       'event': event,
                       'sadmin2_menu_event_active': 'settings'
@@ -270,7 +278,7 @@ def event_settings(request, event_pk):
         form = EventForm(instance=event)
 
     return render(request,
-                  'sadmin2/events/settings.html',
+                  'sadmin2/event/settings.html',
                   {
                       'event': event,
                       'form': form,

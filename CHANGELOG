@@ -1,5 +1,10 @@
 8.0.0
 
+ * sadmin2
+
+   A total rewrite of the previous administration interface,
+   with a lot of nice improvements.
+
  * Code-cleanup
 
    The following packages have been removed:

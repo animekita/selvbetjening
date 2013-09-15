@@ -6,6 +6,14 @@
     {{ block.super }}
     <script src="{{STATIC_URL}}sadmin2/js/main.js"></script>
 
+    {% if search_url %}
+    <script type="text/javascript">
+        $(function() {
+            init_livesearch('{{search_url}}');
+        });
+    </script>
+    {% endif %}
+
 {% endblock %}
 
 
@@ -31,13 +39,13 @@
 </div>
 
 <div class="container">
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-lg-12">
             {% sadmin2_breadcrumbs sadmin2_breadcrumbs_active %}
         </div>
     </div>
 
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-lg-12">
 
         {% if messages %}
@@ -77,9 +85,19 @@
 
         {% endif %}
 
-        {% block content %}{% endblock %}
+        {% if search_url %}
+            {% include "sadmin2/parts/search_box.html" %}
+        {% endif %}
 
         </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+
+        {% block content %}{% endblock %}
+
+         </div>
     </div>
 
 </div> <!-- /container -->

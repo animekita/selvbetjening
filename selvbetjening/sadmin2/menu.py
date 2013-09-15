@@ -54,6 +54,12 @@ breadcrumbs = {
     'event': {'name_callback': lambda context: context['event'].title,
               'url_callback': url_callback('sadmin2:event_attendees'),
               'parent': 'events'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_account':  {
+        'name': _('Account'),
+        'url_callback': url_callback('sadmin2:event_account'),
+        'parent': 'event'},
 }
 
 sadmin2_menu_main = (
@@ -72,22 +78,18 @@ sadmin2_menu_tab_events = (
 sadmin2_menu_tab_event = (
     {'id': 'attendees',
      'name': u'Deltagere',
-     'url_callback': url_callback('sadmin2:event_attendees'),
-     'icon': 'group'},
+     'url_callback': url_callback('sadmin2:event_attendees')},
 
     {'id': 'statistics',
      'name': u'Statistik',
-     'url_callback': url_callback('sadmin2:event_statistics'),
-     'icon': 'picture'},
+     'url_callback': url_callback('sadmin2:event_statistics')},
 
-    {'id': 'financial',
-     'name': u'Økonomi',
-     'url_callback': url_callback('sadmin2:event_financial'),
-     'icon': 'money'},
+    {'id': 'account',
+     'name': _('Account'),
+     'url_callback': url_callback('sadmin2:event_account')},
 
     {'id': 'settings',
      'name': u'Settings',
-     'icon': 'wrench',
      'dropdown': (
          {'id': 'settings-event',
           'name': u'Arrangement',

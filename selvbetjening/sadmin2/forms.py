@@ -1,5 +1,6 @@
 
 from decimal import Decimal
+from collections import OrderedDict
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -75,21 +76,26 @@ class EventDisplayForm(forms.ModelForm):
 
 
 class InvoiceFormattingForm(forms.Form):
-    FILTER_ATTENDED_CHOICES = [('all', _('All')),
+    FILTER_ATTENDED_CHOICES = [('attended_or_paid', _('Attended or has paid')),
+                               ('all', _('All')),
                                ('only_attended', _('Only attended')),
                                ('not_attended', _('Not attended'))]
 
+    FILTER_DETAIL_CHOICES = [('over_and_under', _('List attendees (under- and over-paid only)')),
+                             ('all', _('List attendees')),
+                             ('none', _('Hide attendees'))]
+
     filter_attended = forms.ChoiceField(label=_('Filter attended'), choices=FILTER_ATTENDED_CHOICES)
-    show_each_user = forms.BooleanField(label=_('Show a detailed view of each attendee'), required=False)
+    show_each_user = forms.ChoiceField(label=_('List attendees'), choices=FILTER_DETAIL_CHOICES)
     exclude_lines = forms.MultipleChoiceField(choices=[], required=False)
 
-    helper = S2FormHelper()
+    helper = S2FormHelper(horizontal=True)
 
     layout = Layout(
         Fieldset(None,
                  S2Field('filter_attended'), S2Field('show_each_user'), S2Field('exclude_lines')))
 
-    submit = Submit('update', _('Update'))
+    submit = Submit('update', _('Generate Account'))
 
     helper.add_layout(layout)
     helper.add_input(submit)
@@ -99,87 +105,119 @@ class InvoiceFormattingForm(forms.Form):
 
         super(InvoiceFormattingForm, self).__init__(*args, **kwargs)
 
-        self.all_line_descriptions = []
+        self.distinct_lines = OrderedDict()
 
         for invoice in self.invoices:
             for line in invoice.line_set.all():
-                self.all_line_descriptions.append(line.description)
+                self.distinct_lines[self._get_distinct_line_name(line)] = (line.description, line.price)
 
-        self.all_line_descriptions = sorted(set(self.all_line_descriptions), key=lambda k: k)
+        self.fields['exclude_lines'].choices = [(line, line) for line in self.distinct_lines.keys()]
 
-        self.fields['exclude_lines'].choices = [(line, line) for line in self.all_line_descriptions]
+    def _get_distinct_line_name(self, line):
+        if line.price > 0:
+            return '%s (%s,-)' % (line.description, line.price)
+        else:
+            return line.description
 
     def clean(self):
-        self.all_line_descriptions = set(self.all_line_descriptions)\
-            .difference(set(self.cleaned_data.get('exclude_lines', [])))
+        for line in self.cleaned_data.get('exclude_lines', []):
+            del self.distinct_lines[line]
 
         return self.cleaned_data
 
     class LineGroup(object):
-        def __init__(self, name):
+        def __init__(self, name, price):
             self.name = name
-            self.lines = []
+            self.price = price
 
-            self.overpaid = []
-            self.overpaid_total = Decimal('0.00')
+            self.potential = []
+            self.potential_total = Decimal('0.00')
 
-            self.paid = []
-            self.paid_total = Decimal('0.00')
-
-            self.partial = []
-            self.partial_total = Decimal('0.00')
-
-            self.unpaid = []
-            self.unpaid_total = Decimal('0.00')
-
-            self.total = Decimal('0.00')
-
-        def add(self, line, invoice):
-            self.lines.append(line)
-
-            if invoice.is_overpaid():
-                self.overpaid_total += line.price
-                self.overpaid.append(line)
-            elif invoice.in_balance():
-                self.paid_total += line.price
-                self.paid.append(line)
-            elif invoice.is_partial():
-                self.partial_total += line.price
-                self.partial.append(line)
-            else:
-                self.unpaid_total += line.price
-                self.unpaid.append(line)
-
-            self.total = self.overpaid_total + self.paid_total + self.partial_total + self.unpaid_total
+        def add(self, line):
+            self.potential.append(line)
+            self.potential_total += self.price
 
     def format(self):
-        show_each_user = False
+
+        # Defaults
+
+        show_regular_attendees = False
+        show_irregular_attendees = True
+        attendee_filter_label = self.FILTER_ATTENDED_CHOICES[0][1]
 
         if hasattr(self, 'cleaned_data'):
-            if self.cleaned_data['filter_attended'] == 'only_attended':
+
+            attendee_filter = self.cleaned_data['filter_attended']
+
+            # set attendee label
+            for line in self.FILTER_ATTENDED_CHOICES:
+                if attendee_filter == line[0]:
+                    attendee_filter_label = line[1]
+
+            # filter invoice
+            if attendee_filter == 'only_attended':
                 self.invoices = self.invoices.filter(attend__state=AttendState.attended)
-            elif self.cleaned_data['filter_attended'] == 'not_attended':
+            elif attendee_filter == 'not_attended':
                 self.invoices = self.invoices.exclude(attend__state=AttendState.attended)
+            elif attendee_filter == 'attended_or_paid':
+                self.invoices = self.invoices.filter(attend__state=AttendState.attended).filter(paid__gt=0)
+            elif attendee_filter == 'all':
+                pass
+            else:
+                raise ValueError
 
-            show_each_user = self.cleaned_data.get('show_each_user', False)
+            show_each_user = self.cleaned_data.get('show_each_user', None)
 
-        line_groups = {}
+            if show_each_user == 'over_and_under':
+                show_regular_attendees = False
+                show_irregular_attendees = True
+            elif show_each_user == 'all':
+                show_regular_attendees = True
+                show_irregular_attendees = True
+            elif show_each_user == 'none':
+                show_regular_attendees = False
+                show_irregular_attendees = False
+            else:
+                raise ValueError
 
-        for description in self.all_line_descriptions:
-            line_groups[description] = self.LineGroup(description)
+        # Initialize empty line groups
+        line_groups = OrderedDict()
+
+        for key in self.distinct_lines:
+            line = self.distinct_lines[key]
+            line_groups[key] = self.LineGroup(line[0], line[1])
+
+        # Initialize base values for all totals
+        total = {'potential': 0, 'potential_total': 0,
+                 'overpaid': 0, 'overpaid_total': 0,
+                 'underpaid': 0, 'underpaid_total': 0,
+                 'unpaid': 0, 'unpaid_total': 0,
+                 'realised': 0, 'realised_total': 0}
 
         for invoice in self.invoices:
+
             for line in invoice.line_set.all():
-                if line.description in self.all_line_descriptions:
-                    line_groups[line.description].add(line, invoice)
+                key = self._get_distinct_line_name(line)
 
-        total = {'overpaid': 0, 'paid': 0, 'partial': 0, 'unpaid': 0, 'total': 0}
-        for key in line_groups:
-            line_group = line_groups[key]
-            total['overpaid'] += line_group.overpaid_total
-            total['paid'] += line_group.paid_total
-            total['partial'] += line_group.partial_total
-            total['unpaid'] += line_group.unpaid_total
-            total['total'] += line_group.total
+                if key in self.distinct_lines:
+                    line_groups[key].add(line)
 
-        return sorted([line_groups[key] for key in line_groups], key=lambda i: i.name), total, show_each_user
+            total['potential_total'] += invoice.total_price
+            total['potential'] += 1
+
+            if invoice.is_overpaid():
+                total['overpaid_total'] += invoice.overpaid
+                total['overpaid'] += 1
+
+            elif invoice.is_partial():
+                total['underpaid_total'] += invoice.unpaid
+                total['underpaid'] += 1
+
+            elif invoice.is_unpaid():
+                total['unpaid_total'] += invoice.unpaid
+                total['unpaid'] += 1
+
+            total['realised_total'] += invoice.paid
+            total['realised'] += 1 if not invoice.is_unpaid() else 0
+
+        return self.invoices, line_groups.values(), total, show_regular_attendees, show_irregular_attendees, attendee_filter_label
