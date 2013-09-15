@@ -3,6 +3,10 @@
  * Global
  */
 
+body {
+    padding-bottom: 4em;
+}
+
 .navbar-brand span {
     color: #FFFFFF;
 }

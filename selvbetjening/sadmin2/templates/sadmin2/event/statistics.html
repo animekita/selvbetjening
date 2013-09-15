@@ -1,6 +1,7 @@
 {% extends "sadmin2/site.html" %}
 
-{% block scripts %}{{ block.super }}
+{% block head %}
+{{ block.super }}
 
 {% if registrations_axis %}
 <script src="{{ STATIC_URL }}sadmin2/js/vendor/highcharts/highcharts.js" type="text/javascript"></script>
@@ -123,121 +124,127 @@ var checkinchart = new Highcharts.Chart({
 
 {% block content %}
 
-<h1><small><a href="{% url "sadmin2:events_list" %}">Arrangementer</a> / </small><br/>{{ event.title }}</h1>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Tilmeldinger</h3>
+  </div>
+  <div class="panel-body">
 
-{% include "sadmin2/events/partials/navigation.html" %}
+    <table class="table">
+        <tr>
+            <th>Type/Status</th>
+            <th>Tilmeldt (waiting)</th>
+            <th>Godkendt (accepted)</th>
+            <th>Deltaget (attended)</th>
+            <th>Total</th>
+        </tr>
+        <tbody>
+        <tr>
+            <th>Nye</th>
+            <td>{{waiting_new}}</td>
+            <td>{{accepted_new}}</td>
+            <td>{{attended_new}}</td>
+            <td>{{new_count}}</td>
+        </tr>
+        <tr>
+            <th>Alle</th>
+            <td>{{waiting_count}}</td>
+            <td>{{accepted_count}}</td>
+            <td>{{attended_count}}</td>
+            <td>{{attendees_count}}</td>
+        </tr>
+        </tbody>
+    </table>
 
-<div class="block">
+    {% if registrations_axis %}
+       <div id="registrationchart" style="width:800px; height: 400px;"></div>
+    {% endif %}
 
-<h3>Tilmeldinger</h3>
-
-<table class="table">
-    <tr>
-        <th>Type/Status</th>
-        <th>Tilmeldt (waiting)</th>
-        <th>Godkendt (accepted)</th>
-        <th>Deltaget (attended)</th>
-        <th>Total</th>
-    </tr>
-    <tbody>
-    <tr>
-        <th>Nye</th>
-        <td>{{waiting_new}}</td>
-        <td>{{accepted_new}}</td>
-        <td>{{attended_new}}</td>
-        <td>{{new_count}}</td>
-    </tr>
-    <tr>
-        <th>Alle</th>
-        <td>{{waiting_count}}</td>
-        <td>{{accepted_count}}</td>
-        <td>{{attended_count}}</td>
-        <td>{{attendees_count}}</td>
-    </tr>
-    </tbody>
-</table>
-
+  </div>
 </div>
-
-{% if registrations_axis %}
-<div class="block">
-
-   <div id="registrationchart" style="width:800px; height: 400px;"></div>
-
-</div>
-{% endif %}
 
 {% if checkin_axis %}
-<h3>Check-in</h3>
-<div class="block">
 
-   <div id="checkinchart" style="width:800px; height: 400px;"></div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Check-in</h3>
+  </div>
+  <div class="panel-body">
 
+      <div id="checkinchart" style="width:800px; height: 400px;"></div>
+
+  </div>
 </div>
+
 {% endif %}
 
-<div class="block">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Betalinger</h3>
+  </div>
+  <div class="panel-body">
 
-<h3>Betalinger</h3>
+    <p>Der er for {{invoice_payment_total}},- invoices hvoraf der er indbetalt {{invoice_paid}},-.</p>
+    <table class="table">
+        <tr>
+            <th>Status</th>
+            <th>Ikke betalte</th>
+            <th>Delvist betalt</th>
+            <th>Betalte</th>
+            <th>Over-betalte</th>
+            <th>Total</th>
+        </tr>
+        <tbody>
+        <tr>
+            <th>Antal</th>
+            <td>{{invoices_unpaid}}</td>
+            <td>{{invoices_partial}}</td>
+            <td>{{invoices_in_balance}}</td>
+            <td>{{invoices_overpaid}}</td>
+            <td>{{invoices_count}}</td>
+        </tr>
+        </tbody>
+    </table>
 
-<p>Der er for {{invoice_payment_total}},- invoices hvoraf der er indbetalt {{invoice_paid}},-.</p>
-
-<table class="table">
-    <tr>
-        <th>Status</th>
-        <th>Ikke betalte</th>
-        <th>Delvist betalt</th>
-        <th>Betalte</th>
-        <th>Over-betalte</th>
-        <th>Total</th>
-    </tr>
-    <tbody>
-    <tr>
-        <th>Antal</th>
-        <td>{{invoices_unpaid}}</td>
-        <td>{{invoices_partial}}</td>
-        <td>{{invoices_in_balance}}</td>
-        <td>{{invoices_overpaid}}</td>
-        <td>{{invoices_count}}</td>
-    </tr>
-    </tbody>
-</table>
-
+  </div>
 </div>
 
-<div class="block">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Tilvalg</h3>
+  </div>
+  <div class="panel-body">
 
-<h3>Tilvalg</h3>
+    <table class="table">
+         <tr>
+            <th>Gruppe</th>
+            <th>Tilvalg</th>
+            <th>Tilmeldt (waiting)</th>
+            <th>Godkendt (accepted)</th>
+            <th>Deltaget (attended)</th>
+            <th>Total</th>
+         </tr>
+         <tbody>
+         {% for optiongroup, options in optiongroups %}
+         {% for option, count, waiting, accepted, attended in options %}
+         <tr>
+           <td><a href="{% url "sadmin:events_optiongroup_change" optiongroup.event.pk optiongroup.pk %}">
+             {% if forloop.first %}{{ optiongroup.name }}{% endif %}
+           </a></td>
+           <td><a href="{% url "sadmin:events_option_change" optiongroup.event.pk optiongroup.pk option.pk %}">
+             {{ option.name }}
+           </a></td>
+           <td>{{waiting}}</td>
+           <td>{{accepted}}</td>
+           <td>{{attended}}</td>
+           <td>{{count}}</td>
+         </tr>
+         {% endfor %}
+         {% endfor %}
+         </tbody>
+    </table>
 
-<table class="table">
-     <tr>
-        <th>Gruppe</th>
-        <th>Tilvalg</th>
-        <th>Tilmeldt (waiting)</th>
-        <th>Godkendt (accepted)</th>
-        <th>Deltaget (attended)</th>
-        <th>Total</th>
-     </tr>
-     <tbody>
-     {% for optiongroup, options in optiongroups %}
-     {% for option, count, waiting, accepted, attended in options %}
-     <tr>
-       <td><a href="{% url "sadmin:events_optiongroup_change" optiongroup.event.pk optiongroup.pk %}">
-         {% if forloop.first %}{{ optiongroup.name }}{% endif %}
-       </a></td>
-       <td><a href="{% url "sadmin:events_option_change" optiongroup.event.pk optiongroup.pk option.pk %}">
-         {{ option.name }}
-       </a></td>
-       <td>{{waiting}}</td>
-       <td>{{accepted}}</td>
-       <td>{{attended}}</td>
-       <td>{{count}}</td>
-     </tr>
-     {% endfor %}
-     {% endfor %}
-     </tbody>
-</table>
-
+  </div>
 </div>
 
 

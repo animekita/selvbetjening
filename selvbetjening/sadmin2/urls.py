@@ -13,6 +13,7 @@ urlpatterns = patterns(
     url(r'^events/$', views.events.event_list, name='events_list'),
     url(r'^events/ajax/$', views.events.event_list, name='events_list_ajax', kwargs={'ajax': True}),
     url(r'^events/create/$', views.events.event_create, name='events_create'),
+    url(r'^events/register-payments/$', views.events.register_payments, name='events_register_payments'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/$', views.event.event_attendees, name='event_attendees'),
     url(r'^events/(?P<event_pk>[0-9]+)/ajax/$', views.event.event_attendees, name='event_attendees_ajax', kwargs={'ajax': True}),
