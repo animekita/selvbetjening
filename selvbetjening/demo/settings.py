@@ -20,7 +20,10 @@ INSTALLED_APPS.extend([
     'selvbetjening.sadmin.base',
     'selvbetjening.sadmin.members',
     'selvbetjening.sadmin.events',
-    'selvbetjening.sadmin.mailcenter'])
+    'selvbetjening.sadmin.mailcenter',
+
+    'selvbetjening.demo'
+])
 
 # import localsettings, a per deployment configuration file
 try:

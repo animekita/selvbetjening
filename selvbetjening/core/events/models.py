@@ -134,13 +134,6 @@ class Event(models.Model):
 
 
 class AttendManager(models.Manager):
-    def create(self, **kwargs):
-        if not kwargs.has_key('invoice'):
-            kwargs['invoice'] = Invoice.objects.create(
-                name=unicode(kwargs['event']),
-                user=kwargs['user'])
-
-        return super(AttendManager, self).create(**kwargs)
 
     def all_related(self):
         return self.all().select_related().\
@@ -222,6 +215,9 @@ class Attend(models.Model):
         return self.state == AttendState.attended
 
     def save(self, *args, **kwargs):
+
+        if self.invoice is None:
+            self.invoice = Invoice.objects.create(name=unicode(self.event), user=self.user)
 
         # TODO this mechanism does not seem to robust, do we ever update existing entries to have a correct value?
         if self.is_new is None:

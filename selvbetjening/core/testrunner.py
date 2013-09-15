@@ -3,6 +3,7 @@ from django.conf import settings
 
 INCLUDING_APPS = getattr(settings, 'TEST_INCLUDE', [])
 
+
 class IncludingTestSuiteRunner(DjangoTestSuiteRunner):
 
     def build_suite(self, *args, **kwargs):
