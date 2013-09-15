@@ -8,7 +8,6 @@ from django.template import Context, Template, RequestContext
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 
-from selvbetjening.core.translation.utility import translate_model
 from selvbetjening.core.invoice.decorators import disable_invoice_updates
 from selvbetjening.core.events.models import Event, Attend, attendes_event_source
 from selvbetjening.core.events import decorators as eventdecorators
