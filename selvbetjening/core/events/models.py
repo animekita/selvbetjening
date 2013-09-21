@@ -12,6 +12,7 @@ from selvbetjening.core.invoice.models import Invoice, Payment
 from selvbetjening.core.invoice.signals import populate_invoice
 from selvbetjening.core.mailcenter.sources import Source
 
+
 class AttendeeAcceptPolicy(object):
     manual = 'manual'
     always = 'always'
@@ -24,6 +25,7 @@ class AttendeeAcceptPolicy(object):
             ('on_payment', _(u'Move attendees when a payment have been made')),
             ('always', _(u'Always move to accepted list'))
         )
+
 
 class Group(models.Model):
     name = models.CharField(_(u'name'), max_length=255)
@@ -209,7 +211,12 @@ class Attend(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if self.invoice is None:
+        try:
+            invoice_set = self.invoice is not None
+        except Invoice.DoesNotExist:
+            invoice_set = False
+
+        if not invoice_set:
             self.invoice = Invoice.objects.create(name=unicode(self.event), user=self.user)
 
         # TODO this mechanism does not seem to robust, do we ever update existing entries to have a correct value?
@@ -385,6 +392,10 @@ class AttendStateChange(models.Model):
 
 
 class OptionGroup(models.Model):
+
+    class Meta:
+        ordering = ('order',)  # ordered by "order" ascending
+
     event = models.ForeignKey(Event)
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
@@ -440,6 +451,10 @@ class OptionGroup(models.Model):
 
 
 class Option(models.Model):
+
+    class Meta:
+        ordering = ('order',)
+
     group = models.ForeignKey(OptionGroup)
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)

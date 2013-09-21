@@ -7,7 +7,7 @@
 
 <div class="jumbotron hidden-print">
     <h1>Regnskab</h1>
-    <p>Vi anbefaler at du gemmer et detaljeret regnskab for dit arrangement som en del af dit bogføring. Som standard inkludere regnskabet alle personer som har <b>deltaget</b> eller har <b>minimum 1 betaling</b> registreret.</p>
+    <p>Vi anbefaler at du gemmer et detaljeret regnskab for dit arrangement som en del af din bogføring. Som standard inkludere regnskabet alle personer som har <b>deltaget</b> eller har <b>minimum 1 betaling</b> registreret.</p>
 
     <p><a class="btn btn-lg btn-primary" href="javascript:window.print()">Print regnskab</a></p>
 </div>
@@ -26,25 +26,7 @@
 
 <h2>Resultat</h2>
 
-<table class="table table-striped">
-    <tr>
-        <th><abbr title="Number of attendees (potential income if all attendees pays)."><i>Potential</i></abbr></th>
-        <th><abbr title="Attendees who have paid too much (pending refund).">Overpaid (+)</abbr></th>
-        <th><abbr title="Attendees who have paid too little (missing payments).">Underpaid (-)</abbr></th>
-        <th><abbr title="Attendees who have not paid anything (missing payments).">Unpaid (-)</abbr></th>
-        <th><abbr title="Number of attendees (the sum of all registered payments including pending refunds.">Realised (=)</abbr></th>
-    </tr>
-
-    <tr>
-        <td>{{ total.potential }} </br>({{ total.potential_total | intcomma }},-)</td>
-        <td>{{ total.overpaid }} </br>({{ total.overpaid_total | intcomma }},-)</td>
-        <td>{{ total.underpaid }} </br>({{ total.underpaid_total | intcomma }},-)</td>
-        <td>{{ total.unpaid }} </br>({{ total.unpaid_total | intcomma }},-)</td>
-        <td>{{ total.realised }} </br>({{ total.realised_total | intcomma }},-)</td>
-    </tr>
-
-</table>
-
+{% include "sadmin2/event/parts/payment-table.html" %}
 
 <h2>Linjeresultat</h2>
 

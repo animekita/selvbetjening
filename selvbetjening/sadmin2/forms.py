@@ -1,15 +1,17 @@
 
-from decimal import Decimal
+from decimal import Decimal, Context
 from collections import OrderedDict
 
 from django import forms
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django.forms.models import modelformset_factory, BaseModelFormSet, inlineformset_factory
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div
 
-from selvbetjening.core.events.models import Event, AttendState
-from selvbetjening.core.events.models import find_attendee_signal
+from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option
+from selvbetjening.core.invoice.utils import sum_invoices
 
 
 class S2FormHelper(FormHelper):
@@ -26,6 +28,17 @@ class S2FormHelper(FormHelper):
         self.html5_required = True
 
 
+class S2Layout(Layout):
+
+    template = "sadmin2/generic/parts/form_layout.html"
+
+    def render(self, *args, **kwargs):
+
+        fields = super(S2Layout, self).render(*args, **kwargs)
+
+        return render_to_string(self.template, {'layout': self, 'fields': fields})
+
+
 class S2Field(Field):
     def __init__(self, *args, **kwargs):
 
@@ -35,6 +48,16 @@ class S2Field(Field):
             kwargs['wrapper_class'] = kwargs.get('wrapper_class', '') + ' col-lg-%s' % kwargs.get('width')
 
         super(S2Field, self).__init__(*args, **kwargs)
+
+
+class S2Fieldset(Fieldset):
+
+    template = "sadmin2/generic/parts/form_fieldset.html"
+
+    def __init__(self, name, *args, **kwargs):
+
+        args = [(S2Field(arg) if isinstance(arg, str) else arg) for arg in args]
+        super(S2Fieldset, self).__init__(name, *args, **kwargs)
 
 
 class S2HorizontalRow(Row):
@@ -58,6 +81,18 @@ class S2Submit(Submit):
         super(S2Submit, self).__init__(*args, **kwargs)
 
 
+class S2SubmitCreate(S2Submit):
+
+    def __init__(self):
+        super(S2Submit, self).__init__('create', _('Create'))
+
+
+class S2SubmitUpdate(S2Submit):
+
+    def __init__(self):
+        super(S2Submit, self).__init__('update', _('Update'))
+
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
@@ -66,13 +101,13 @@ class EventForm(forms.ModelForm):
 
     helper = S2FormHelper(horizontal=True)
 
-    layout = Layout(
-        Fieldset(None,
-                 S2Field('title'), S2Field('description'), S2Field('group'),
-                 S2HorizontalRow(S2Field('startdate', width=6), S2Field('enddate', width=6)),
-                 S2Field('registration_open')),
-        Fieldset(_('Conditions'),
-                 S2Field('maximum_attendees'), S2Field('move_to_accepted_policy')))
+    layout = S2Layout(
+        S2Fieldset(None,
+                   'title', 'description', 'group',
+                   S2HorizontalRow(S2Field('startdate', width=6), S2Field('enddate', width=6)),
+                   'registration_open'),
+        S2Fieldset(_('Conditions'),
+                   'maximum_attendees', 'move_to_accepted_policy'))
 
     submit = S2Submit('save', _('Save'))
 
@@ -214,13 +249,6 @@ class InvoiceFormattingForm(forms.Form):
             line = self.distinct_lines[key]
             line_groups[key] = self.LineGroup(line[0], line[1])
 
-        # Initialize base values for all totals
-        total = {'potential': 0, 'potential_total': 0,
-                 'overpaid': 0, 'overpaid_total': 0,
-                 'underpaid': 0, 'underpaid_total': 0,
-                 'unpaid': 0, 'unpaid_total': 0,
-                 'realised': 0, 'realised_total': 0}
-
         for invoice in self.invoices:
 
             for line in invoice.line_set.all():
@@ -229,23 +257,7 @@ class InvoiceFormattingForm(forms.Form):
                 if key in self.distinct_lines:
                     line_groups[key].add(line)
 
-            total['potential_total'] += invoice.total_price
-            total['potential'] += 1
-
-            if invoice.is_overpaid():
-                total['overpaid_total'] += invoice.overpaid
-                total['overpaid'] += 1
-
-            elif invoice.is_partial():
-                total['underpaid_total'] += invoice.unpaid
-                total['underpaid'] += 1
-
-            elif invoice.is_unpaid():
-                total['unpaid_total'] += invoice.unpaid
-                total['unpaid'] += 1
-
-            total['realised_total'] += invoice.paid
-            total['realised'] += 1 if not invoice.is_unpaid() else 0
+        total = sum_invoices(self.invoices)
 
         return self.invoices, line_groups.values(), total, show_regular_attendees, show_irregular_attendees, attendee_filter_label
 
@@ -266,7 +278,7 @@ class RegisterPaymentForm(forms.Form):
         Fieldset(None,
                  S2Field('payment_key'), S2Field('payment')))
 
-    submit = Submit('update', _('Register payments'))
+    submit = Submit('update', _('Register'))
 
     helper.add_layout(layout)
     helper.add_input(submit)
@@ -287,3 +299,57 @@ class RegisterPaymentForm(forms.Form):
         self.cleaned_data['attendee'] = results[0][1]
 
         return payment_key
+
+
+class OptionGroupForm(forms.ModelForm):
+    class Meta:
+        model = OptionGroup
+        exclude = ('event', 'order')
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(OptionGroupForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       S2Field('name'), S2Field('description')),
+            S2Fieldset(_('Conditions'),
+                       'minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time', 'lock_selections_on_acceptance'),
+            S2Fieldset(_('Package'),
+                       'package_solution', 'package_price'),
+            S2Fieldset(_('Display'),
+                       'public_statistic'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+
+class OptionForm(forms.ModelForm):
+
+    class Meta:
+        model = Option
+        exclude = ('group', 'order')
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+
+        super(OptionForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'name', 'description', 'price'),
+            S2Fieldset(_('Conditions'),
+                       'freeze_time', 'maximum_attendees'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())

@@ -1,0 +1,11 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <form  class="form-horizontal" method="post">
+        {% crispy form %}
+        {% crispy forms %}
+    </form>
+
+{% endblock %}

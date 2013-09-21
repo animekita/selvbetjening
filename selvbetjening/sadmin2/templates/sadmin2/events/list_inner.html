@@ -1,5 +1,13 @@
 
-{% for event in events %}
+{% if invalid_fragments %}
+
+<tr>
+    <td colspan="4">{% include "sadmin2/generic/parts/search_invalid_fragments.html" %}</td>
+</tr>
+
+{% else %}
+
+{% for event in instances %}
 <tr onclick="document.location = '{% url "sadmin2:event_attendees" event.pk %}';" class="clickable">
     <td><a href="{% url "sadmin2:event_attendees" event.pk %}">{{ event.title }}</a></td>
     <td>{{ event.attendees.count }}</td>
@@ -7,3 +15,5 @@
     <td>{{ event.startdate }}</td>
 </tr>
 {% endfor %}
+
+{% endif %}

@@ -1,0 +1,7 @@
+{% for invalid_fragment in invalid_fragments %}
+
+    <div class="alert alert-danger">
+    <strong>Invalid search term</strong> The following term in your search is invalid <code>{{ invalid_fragment }}</code>
+    </div>
+
+{% endfor %}
