@@ -1,5 +1,7 @@
 {% extends "sadmin2/base.html" %}
 
+{% block body_attr %} class="login"{% endblock %}
+
 {% block head %}
 
     <style type="text/css">
@@ -7,6 +9,22 @@
             padding-top: 40px;
             padding-bottom: 40px;
             background-color: #eee;
+            padding-bottom: 4em;
+        }
+
+        .container {
+            padding-top: 10%;
+        }
+
+        form {
+            background: #FFFFFF;
+            border-radius: 15px;
+
+        }
+
+        form h2 {
+            margin: 0;
+            color: #000000;
         }
 
         .form-signin {

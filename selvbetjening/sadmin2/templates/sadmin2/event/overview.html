@@ -1,0 +1,50 @@
+{% extends "sadmin2/site.html" %}
+{% load i18n humanize %}
+
+{% block content %}
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Tilmeldinger</h3>
+        </div>
+        <div class="panel-body">
+
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Tilmeldt</th>
+                    <th>Godkendt</th>
+                    <th>Deltaget</th>
+                </tr>
+                <tbody>
+                <tr>
+                    <th>Total</th>
+                    <td>{{status.waiting|default:0}}</td>
+                    <td>{{status.accepted|default:0}}</td>
+                    <td>{{status.attended|default:0}}</td>
+                </tr>
+                <tr>
+                    <th><i><abbr title="Nye brugere er personer som ikke har deltaget i et tidligere arrangement (approximation).">Nye</abbr></i></th>
+                    <td>{{status.waiting_new|default:0}}</td>
+                    <td>{{status.accepted_new|default:0}}</td>
+                    <td>{{status.attended_new|default:0}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Betalinger</h3>
+        </div>
+        <div class="panel-body">
+
+        {% include "sadmin2/event/parts/payment-table.html" %}
+
+        </div>
+    </div>
+
+{% endblock %}

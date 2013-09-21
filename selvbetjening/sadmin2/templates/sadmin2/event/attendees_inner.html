@@ -1,10 +1,19 @@
-{% for attendee in attendees %}
+
+{% if invalid_fragments %}
+
+<tr>
+    <td colspan="4">{% include "sadmin2/generic/parts/search_invalid_fragments.html" %}</td>
+</tr>
+
+{% else %}
+
+{% for attendee in instances %}
 <tr onclick="document.location = '{% url "sadmin2:event_attendees" event.pk %}';" class="clickable">
     <td><a href="{% url "sadmin2:event_attendees" event.pk %}">{{ attendee.user.username }}</a></td>
     <td>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</td>
     <td>
         {% ifequal attendee.state "waiting" %}
-        <span class="label label-error">Venter</span>
+        <span class="label label-danger">Venter</span>
         {% endifequal %}
         {% ifequal attendee.state "accepted" %}
         <span class="label label-warning">Accepteret</span>
@@ -21,8 +30,10 @@
         {% elif attendee.invoice.is_partial %}
         <span class="label label-warning">Betalt for lidt</span>
         {% else %}
-        <span class="label label-error">Ubetalt</span>
+        <span class="label label-danger">Ubetalt</span>
         {% endif %}
     </td>
 </tr>
 {% endfor %}
+
+{% endif %}

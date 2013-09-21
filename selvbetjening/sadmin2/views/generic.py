@@ -1,39 +1,96 @@
-
-import operator
-
-from django.db.models import Q
-
-
-def apply_search_query(qs, query, columns):
-
-    if query is None:
-        return qs
-
-    or_groups = []
-
-    for term in [term.strip() for term in query.split()]:
-        or_group = [Q(**{'%s__icontains' % column: term}) for column in columns]
-        or_groups.append(reduce(operator.or_, or_group))
-
-    if len(or_groups) > 0:
-        return qs.filter(reduce(operator.and_, or_groups))
-
-    return qs.distinct()
+from django.contrib import messages
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render
+from selvbetjening.sadmin2 import filtering
 
 
-def get_search_url(request, base_url):
-    # Dynamically construct a search url based on the current url
-    # Ensure the query (q) is at the end of the url.
-    # We do this to maintain any filters et. al. that we could have added to the current url.
+def apply_search_query(qs, query, search_fields, condition_fields=None):
 
-    extra_params = request.GET.copy()
-    extra_params.pop('q', None)
+    if condition_fields is None:
+        condition_fields = []
 
-    search_url = base_url + '?' + extra_params.urlencode()
+    invalid_fragments = []
+    return filtering.filter_queryset(qs, query, search_fields, condition_fields, invalid_fragments=invalid_fragments), invalid_fragments
 
-    if len(extra_params) > 0:
-        search_url += '&q='
+
+def generic_create_view(request,
+                        form_class,
+                        redirect_success_url,
+                        message_success=None,
+                        context=None,
+                        instance=None,
+                        instance_save_callback=None):
+
+    instance_kwarg = {} if instance is None else {'instance': instance}
+
+    if request.method == 'POST':
+
+        form = form_class(request.POST, **instance_kwarg)
+
+        if form.is_valid():
+
+            if instance_save_callback is None:
+                form.save()
+
+            else:
+                instance = form.save(commit=False)
+                instance_save_callback(instance)
+
+            if message_success is not None:
+                messages.success(request, message_success)
+
+            return HttpResponseRedirect(redirect_success_url)
+
     else:
-        search_url += 'q='
+        form = form_class(**instance_kwarg)
 
-    return search_url
+    if context is None:
+        context = {}
+
+    context['form'] = form
+
+    return render(request,
+                  'sadmin2/generic/form.html',
+                  context)
+
+
+def search_view(request,
+                queryset,
+                template_page,
+                template_fragment,
+                search_columns=None,
+                search_conditions=None,
+                context=None):
+
+    if search_columns is None:
+        search_columns = []
+
+    if search_conditions is None:
+        search_conditions = []
+
+    if context is None:
+        context = {}
+
+    queryset, invalid_fragments = apply_search_query(queryset, request.GET.get('q', ''), search_columns, condition_fields=search_conditions)
+
+    paginator = Paginator(queryset, 30)
+    page = request.GET.get('page')
+
+    try:
+        instances = paginator.page(page)
+    except PageNotAnInteger:
+        instances = paginator.page(1)
+    except EmptyPage:
+        instances = paginator.page(paginator.num_pages)
+
+    context.update({
+        'instances': instances,
+        'invalid_fragments': invalid_fragments,
+
+        'search_url': request.path_info + '?q='
+    })
+
+    return render(request,
+                  template_page if not request.is_ajax() else template_fragment,
+                  context)

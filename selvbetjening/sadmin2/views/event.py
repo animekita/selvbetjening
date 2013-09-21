@@ -1,221 +1,261 @@
 
 import datetime
 import time
-from django.core.urlresolvers import reverse
 
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from django.db.models import Count
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice
+from selvbetjening.core.invoice.utils import sum_invoices
 from selvbetjening.sadmin.base import graph
 
-from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm
+from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
-from generic import apply_search_query, get_search_url
+from generic import generic_create_view, search_view
+
 
 @sadmin_prerequisites
-def event_attendees(request, event_pk, ajax=False):
+def event_overview(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    columns = ('user__username', 'user__first_name', 'user__last_name', 'user__email')
+    invoices = Invoice.objects.select_related().\
+        prefetch_related('payment_set').\
+        prefetch_related('line_set').\
+        filter(attend__in=event.attendees)
 
-    queryset = event.attendees.select_related('user', 'invoice').all()
-    queryset = apply_search_query(queryset, request.GET.get('q', ''), columns)
+    total = sum_invoices(invoices)
 
-    search_url = get_search_url(request, reverse('sadmin2:event_attendees_ajax', kwargs={'event_pk': event_pk}))
+    # returns a set of dictionaries with {'state': x, 'is_new': y, 'count': z}
+    status = Attend.objects.all().values('state', 'is_new').annotate(count=Count('pk'))
+    status_flat = {}
+
+    for item in status:
+        status_flat['%s_new' % item['state'] if item['is_new'] else item['state']] = item['count']
 
     return render(request,
-                  'sadmin2/event/attendees.html' if not ajax else 'sadmin2/event/attendees_inner.html',
+                  'sadmin2/event/overview.html',
                   {
                       'sadmin2_menu_main_active': 'events',
                       'sadmin2_breadcrumbs_active': 'event',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-                      'sadmin2_menu_tab_active': 'attendees',
-
-                      'search_url': mark_safe(search_url),
+                      'sadmin2_menu_tab_active': 'overview',
 
                       'event': event,
-                      'attendees': queryset
+                      'total': total,
+                      'status': status_flat
                   })
 
 @sadmin_prerequisites
-def event_statistics(request, event_pk):
+def event_attendees(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    statistics = {}
+    columns = ('user__username', 'user__first_name', 'user__last_name', 'user__email')
+    conditions = ('selection__option__pk', 'state')
 
-    # attendees
-    attendees = Attend.objects.all_related().filter(event=event_pk).prefetch_related('user__attend_set')
-    attendees_count = attendees.count()
+    queryset = event.attendees.select_related('user', 'invoice').all()
 
-    def attendee_statistics(state, identifier):
-        _attendees = attendees.filter(state=state)
-        _count = _attendees.count()
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'attendees',
 
-        new = 0
-        for attendee in _attendees:
-            if attendee.is_new:
-                new += 1
+        'event': event
+    }
 
-        statistics[identifier + '_count'] = _count
-        statistics[identifier + '_new'] = new
+    return search_view(request,
+                       queryset,
+                       'sadmin2/event/attendees.html',
+                       'sadmin2/event/attendees_inner.html',
+                       search_columns=columns,
+                       search_conditions=conditions,
+                       context=context)
 
-        return new
+@sadmin_prerequisites
+def event_selections(request, event_pk):
 
-    new_count = attendee_statistics(AttendState.waiting, 'waiting')
-    new_count += attendee_statistics(AttendState.accepted, 'accepted')
-    new_count += attendee_statistics(AttendState.attended, 'attended')
+    event = get_object_or_404(Event, pk=event_pk)
 
-    # check-in graph
+    if request.method == 'POST':
 
-    _attendees = attendees.filter(state=AttendState.attended)\
-        .filter(changed__gt=event.startdate)\
-        .filter(changed__lt=event.startdate + datetime.timedelta(days=1))
+        inline_action = request.POST.get('inline-action', '')
 
-    start = None
-    end = None
+        # Handle option group reordering
 
-    for attendee in _attendees:
-        if start is None or attendee.changed < start:
-            start = attendee.changed
+        if inline_action == 'move-group':
+            # We calculate the new order as follows:
+            # - Iterate over the current list of groups and reassign new order numbers.
+            # - The order starts with 0 and increments with 2 for each group.
+            # - The group being moved up or down is modified with a 3 or -3 modifier,
+            #   in practice moving it up and down the order
 
-        if end is None or attendee.changed > end:
-            end = attendee.changed
+            # by default order is ordered in ascending order
 
-    if start is not None:
+            modifier = 3 if 'down' in request.POST.get('direction', 'up') else -3
+            option_group_pk = int(request.POST.get('option_group_pk', 0))
 
-        normalized_start_unix = time.mktime(datetime.datetime(start.year, start.month, start.day, start.hour).timetuple())
-        end_unix = time.mktime(end.timetuple())
+            order = 0
+            for option_group in event.optiongroups:
+                modified_order = order if option_group.pk != option_group_pk else order + modifier
 
-        slot_size = (60 * 10)  # 10 minute slots
+                option_group.order = modified_order
+                option_group.save()
 
-        def get_slot(time_unix):
-            return int((time_unix - normalized_start_unix) / slot_size)
+                order += 2
 
-        slots = get_slot(end_unix) + 1
+        if inline_action == 'move-option':
 
-        checkin_times = [0] * slots
+            modifier = 3 if 'down' in request.POST.get('direction', 'up') else -3
+            option_group_pk = int(request.POST.get('option_group_pk', 0))
+            option_pk = int(request.POST.get('option_pk', 0))
 
-        for attendee in _attendees:
-            slot = get_slot(time.mktime(attendee.changed.timetuple()))
-            checkin_times[slot] += 1
+            option_group = get_object_or_404(event.optiongroups, pk=option_group_pk)
 
-        checkin_axis = [''] * (slots + 1)
+            order = 0
+            for option in option_group.options:
+                modified_order = order if option.pk != option_pk else order + modifier
 
-        for i in xrange(0, int(slots / 6) + 1):
-            slot_time = datetime.datetime(start.year, start.month, start.day, start.hour) + datetime.timedelta(hours=i)
-            checkin_axis[i * 6] = slot_time.strftime("%H:%M %x")
+                option.order = modified_order
+                option.save()
 
-        statistics['checkin_axis'] = checkin_axis
-        statistics['checkin_times'] = checkin_times
+                order += 2
 
-    else:
-        statistics['checkin_axis'] = None
-        statistics['checkin_times'] = None
+    # Statistics
 
-    # attendees graph
-
-    _attendees = attendees.filter(registration_date__isnull=False)
-
-    if _attendees.count() > 0:
-
-        first = _attendees.order_by('registration_date')[0].registration_date
-        last = _attendees.order_by('-registration_date')[0].registration_date
-
-        try:
-            last_changed = _attendees.exclude(state=AttendState.waiting).order_by('-change_timestamp')[0].change_timestamp
-
-            if last_changed > last:
-                last = last_changed
-        except IndexError:
-            pass
-
-        axis = graph.generate_week_axis(first, last)
-        registration_data = [0] * len(axis)
-        accepted_data = [0] * len(axis)
-
-        for attendee in _attendees:
-            week = graph.diff_in_weeks(first, attendee.registration_date)
-            registration_data[week] += 1
-
-            if attendee.state != AttendState.waiting:
-                week = graph.diff_in_weeks(first, attendee.change_timestamp)
-                accepted_data[week] += 1
-
-        statistics['registrations_data'] = graph.insert_prefix(registration_data)
-        statistics['registrations_data_acc'] = graph.accumulate(registration_data)
-        statistics['accepted_data'] = graph.insert_prefix(accepted_data)
-        statistics['accepted_data_acc'] = graph.accumulate(accepted_data)
-        statistics['registrations_axis'] = graph.insert_prefix(axis, axis=True)
-
-    # invoices
-    statistics['invoice_payment_total'] = 0
-    statistics['invoice_paid'] = 0
-
-    statistics['invoices_in_balance'] = 0
-    statistics['invoices_unpaid'] = 0
-    statistics['invoices_partial'] = 0
-    statistics['invoices_overpaid'] = 0
-    statistics['invoices_count'] = 0
-
-    invoices = Invoice.objects.select_related().\
-                    prefetch_related('payment_set').\
-                    prefetch_related('line_set').\
-                    filter(attend__in=event.attendees)
-
-    for invoice in invoices:
-        statistics['invoices_count'] += 1
-
-        if invoice.in_balance():
-            statistics['invoices_in_balance'] += 1
-
-        if invoice.is_unpaid():
-            statistics['invoices_unpaid'] += 1
-
-        if invoice.is_overpaid():
-            statistics['invoices_overpaid'] += 1
-
-        if invoice.is_partial():
-            statistics['invoices_partial'] += 1
-
-        statistics['invoice_payment_total'] += invoice.total_price
-        statistics['invoice_paid'] += invoice.paid
-
-    # tilvalg
-
-    optiongroups = []
-    for optiongroup in event.optiongroup_set.all():
+    option_groups = []
+    for option_group in event.optiongroups:
         options = []
-        for option in optiongroup.option_set.all():
+        for option in option_group.options:
             count = option.selections.count()
             waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
             accepted = option.selections.filter(attendee__state=AttendState.accepted).count()
             attended = option.selections.filter(attendee__state=AttendState.attended).count()
             options.append((option, count, waiting, accepted, attended))
 
-        optiongroups.append((optiongroup, options))
-
-    statistics.update({
-        'sadmin2_menu_main_active': 'events',
-        'sadmin2_breadcrumbs_active': 'event_statistics',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-        'sadmin2_menu_tab_active': 'statistics',
-
-        'event': event,
-
-        'attendees_count': attendees_count,
-        'new_count': new_count,
-        'optiongroups': optiongroups})
+        option_groups.append((option_group, options))
 
     return render(request,
-                  'sadmin2/event/statistics.html',
-                  statistics)
+                  'sadmin2/event/selections.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_selections',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+                      'sadmin2_menu_tab_active': 'selections',
+
+                      'event': event,
+
+                      'optiongroups': option_groups
+                  })
+
+@sadmin_prerequisites
+def event_selections_create_group(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_selections_create_group',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'selections',
+
+        'event': event
+    }
+
+    def save_callback(instance):
+        instance.event = event
+        instance.save()
+
+    return generic_create_view(request,
+                               OptionGroupForm,
+                               reverse('sadmin2:event_selections', kwargs={'event_pk': event.pk}),
+                               message_success=_('Option group created'),
+                               context=context,
+                               instance_save_callback=save_callback)
+
+@sadmin_prerequisites
+def event_selections_edit_group(request, event_pk, group_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    group = get_object_or_404(event.optiongroups, pk=group_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_selections_edit_group',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'selections',
+
+        'event': event,
+        'option_group': group
+    }
+
+    return generic_create_view(request,
+                               OptionGroupForm,
+                               reverse('sadmin2:event_selections', kwargs={'event_pk': event.pk}),
+                               message_success=_('Option group saved'),
+                               context=context,
+                               instance=group)
+
+@sadmin_prerequisites
+def event_selections_create_option(request, event_pk, group_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    group = get_object_or_404(event.optiongroups, pk=group_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_selections_create_option',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'selections',
+
+        'event': event,
+        'option_group': group
+    }
+
+    def save_callback(instance):
+        instance.group = group
+        instance.save()
+
+    return generic_create_view(request,
+                               OptionForm,
+                               reverse('sadmin2:event_selections', kwargs={'event_pk': event.pk}),
+                               message_success=_('Option created'),
+                               context=context,
+                               instance_save_callback=save_callback)
+
+
+@sadmin_prerequisites
+def event_selections_edit_option(request, event_pk, group_pk, option_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    group = get_object_or_404(event.optiongroups, pk=group_pk)
+    option = get_object_or_404(group.options, pk=option_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_selections_edit_option',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'selections',
+
+        'event': event,
+        'option_group': group,
+        'option': option
+    }
+
+    return generic_create_view(request,
+                               OptionForm,
+                               reverse('sadmin2:event_selections', kwargs={'event_pk': event.pk}),
+                               message_success=_('Option saved'),
+                               context=context,
+                               instance=option)
 
 @sadmin_prerequisites
 def event_account(request, event_pk):
@@ -257,18 +297,6 @@ def event_account(request, event_pk):
                   })
 
 @sadmin_prerequisites
-def event_settings_selections(request, event_pk):
-
-    event = get_object_or_404(Event, pk=event_pk)
-
-    return render(request,
-                  'sadmin2/event/selections.html',
-                  {
-                      'event': event,
-                      'sadmin2_menu_event_active': 'settings'
-                  })
-
-@sadmin_prerequisites
 def event_settings(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -296,3 +324,185 @@ def event_settings(request, event_pk):
                   })
 
 
+@sadmin_prerequisites
+def report_check_in(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendees = event.attendees
+
+    menu_decl = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_report_check_in',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'reports',
+
+        'event': event
+    }
+
+    if event.startdate is None or event.enddate is None:
+
+        menu_decl.update({
+            'subject': _('Event start and end time missing'),
+            'message': _('Please update the settings for this event.')
+        })
+
+        return render(request,
+                      'sadmin2/generic/error.html',
+                      menu_decl)
+
+    attendees = attendees.filter(state=AttendState.attended)\
+                         .filter(changed__gt=event.startdate)\
+                         .filter(changed__lt=event.startdate + datetime.timedelta(days=1))
+
+    if attendees.count() == 0:
+
+        menu_decl.update({
+            'subject': _('No attendees checked in'),
+            'message': _('Please wait until at least one attendee has checked in.')
+        })
+
+        return render(request,
+                      'sadmin2/generic/error.html',
+                      menu_decl)
+
+    # find first and last changed time
+
+    start = None
+    end = None
+
+    for attendee in attendees:
+        if start is None or attendee.changed < start:
+            start = attendee.changed
+
+        if end is None or attendee.changed > end:
+            end = attendee.changed
+
+    normalized_start_unix = time.mktime(datetime.datetime(start.year, start.month, start.day, start.hour).timetuple())
+    end_unix = time.mktime(end.timetuple())
+
+    slot_size = (60 * 10)  # 10 minute slots
+
+    def get_slot(time_unix):
+        return int((time_unix - normalized_start_unix) / slot_size)
+
+    slots = get_slot(end_unix) + 1
+
+    checkin_times = [0] * slots
+
+    for attendee in attendees:
+        slot = get_slot(time.mktime(attendee.changed.timetuple()))
+        checkin_times[slot] += 1
+
+    checkin_axis = [''] * (slots + 1)
+
+    for i in xrange(0, int(slots / 6) + 1):
+        slot_time = datetime.datetime(start.year, start.month, start.day, start.hour) + datetime.timedelta(hours=i)
+        checkin_axis[i * 6] = slot_time.strftime("%H:%M %x")
+
+    menu_decl.update({
+        'checkin_axis': checkin_axis,
+        'checkin_times':  checkin_times
+    })
+
+    return render(request,
+                  'sadmin2/event/report_check_in.html',
+                  menu_decl)
+
+
+@sadmin_prerequisites
+def report_registration(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    attendees = event.attendees
+    attendees = attendees.filter(registration_date__isnull=False)
+
+    menu_decl = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_report_registration',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'reports',
+
+        'event': event
+    }
+
+    if attendees.count() == 0:
+
+        menu_decl.update({
+            'subject': _('No attendees'),
+            'message': _('Wait until some people have registered for the event.')
+        })
+
+        return render(request,
+                      'sadmin2/generic/error.html',
+                      menu_decl)
+
+    first = attendees.order_by('registration_date')[0].registration_date
+    last = attendees.order_by('-registration_date')[0].registration_date
+
+    try:
+        last_changed = attendees.exclude(state=AttendState.waiting).order_by('-change_timestamp')[0].change_timestamp
+
+        if last_changed > last:
+            last = last_changed
+    except IndexError:
+        pass
+
+    axis = graph.generate_week_axis(first, last)
+    registration_data = [0] * len(axis)
+    accepted_data = [0] * len(axis)
+
+    for attendee in attendees:
+        week = graph.diff_in_weeks(first, attendee.registration_date)
+        registration_data[week] += 1
+
+        if attendee.state != AttendState.waiting:
+            week = graph.diff_in_weeks(first, attendee.change_timestamp)
+            accepted_data[week] += 1
+
+    menu_decl.update({
+        'registrations_data': graph.insert_prefix(registration_data),
+        'registrations_data_acc': graph.accumulate(registration_data),
+        'accepted_data': graph.insert_prefix(accepted_data),
+        'accepted_data_acc': graph.accumulate(accepted_data),
+        'registrations_axis': graph.insert_prefix(axis, axis=True)
+    })
+
+    return render(request,
+                  'sadmin2/event/report_registration.html',
+                  menu_decl)
+
+
+@sadmin_prerequisites
+def event_attendees_add(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    if request.method == 'POST':
+
+        user = get_object_or_404(User, pk=int(request.POST.get('user_pk', 0)))
+        event.add_attendee(user)
+
+        # TODO update this redirect to go directly to the attendee page when we have one
+        messages.success(request, _('User %s added to event') % user.username)
+        return HttpResponseRedirect(reverse('sadmin2:event_attendees', kwargs={'event_pk': event.pk}))
+
+    queryset = User.objects.exclude(attend__event__pk=event.pk)
+    columns = ('username', 'first_name', 'last_name', 'email')
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees_add',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'attendees',
+
+        'event': event,
+    }
+
+    return search_view(request,
+                       queryset,
+                       'sadmin2/event/attendees_add.html',
+                       'sadmin2/event/attendees_add_inner.html',
+                       search_columns=columns,
+                       context=context
+                       )

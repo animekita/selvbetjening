@@ -1,0 +1,7 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <p class="alert alert-danger">{% if subject %}<strong>{{ subject }}</strong> {% endif %}{{ message }}</p>
+
+{% endblock %}
