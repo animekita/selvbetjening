@@ -9,12 +9,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
+from core.invoice.models import Payment
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice
 from selvbetjening.core.invoice.utils import sum_invoices
-from selvbetjening.sadmin.base import graph
 
-from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm
+from selvbetjening.sadmin.base import graph
+from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm, PaymentForm, AttendeeCommentForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -267,7 +268,7 @@ def event_account(request, event_pk):
         prefetch_related('line_set'). \
         filter(attend__event=event)
 
-    if request.method == 'POST' or 'event' in request.GET:
+    if request.method == 'POST':
         formatting_form = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
         formatting_form.is_valid()
     else:
@@ -506,3 +507,121 @@ def event_attendees_add(request, event_pk):
                        search_columns=columns,
                        context=context
                        )
+
+@sadmin_prerequisites
+def event_attendee(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    if request.method == 'POST':
+
+        action = request.POST.get('action', '')
+
+        if action == 'to-state-waiting':
+            attendee.state = AttendState.waiting
+            attendee.save()
+
+        if action == 'to-state-accepted':
+            attendee.state = AttendState.accepted
+            attendee.save()
+
+        if action == 'to-state-attended':
+            attendee.state = AttendState.attended
+            attendee.save()
+
+        if action == 'pay':
+
+            Payment.objects.create(
+                amount=attendee.invoice.unpaid,
+                note='Manual payment',
+                signee=request.user,
+                invoice=attendee.invoice
+            )
+
+            return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}))
+
+    return render(request,
+                  'sadmin2/event/attendee.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_attendees_attendee',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+                      'sadmin2_menu_tab_active': 'registration',
+
+                      'event': event,
+                      'attendee': attendee
+                  })
+
+@sadmin_prerequisites
+def event_attendee_payments(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    payments = attendee.invoice.payment_set.all()
+
+    if request.method == 'POST':
+
+        form = PaymentForm(request.POST)
+
+        if form.is_valid():
+
+            payment = form.save(commit=False)
+            payment.note = 'Manual payment'
+            payment.signee = request.user
+            payment.invoice = attendee.invoice
+            payment.save()
+
+            messages.success(request, _('Payment registered'))
+            return HttpResponseRedirect(reverse('sadmin2:event_attendee_payments', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}))
+
+    else:
+        form = PaymentForm()
+
+    return render(request,
+                  'sadmin2/event/attendee_payments.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_attendees_attendee_payments',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+                      'sadmin2_menu_tab_active': 'payments',
+
+                      'event': event,
+                      'attendee': attendee,
+                      'payments': payments,
+
+                      'form': form
+                  })
+
+@sadmin_prerequisites
+def event_attendee_notes(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    notes = attendee.comments
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees_attendee_notes',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+        'sadmin2_menu_tab_active': 'notes',
+
+        'event': event,
+        'attendee': attendee,
+        'notes': notes.all()
+    }
+
+    def save_callback(instance):
+        instance.attendee = attendee
+        instance.author = request.user
+        instance.save()
+
+    return generic_create_view(request,
+                               AttendeeCommentForm,
+                               reverse('sadmin2:event_attendee_notes', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}),
+                               context=context,
+                               instance_save_callback=save_callback,
+                               template='sadmin2/event/attendee_notes.html'
+                               )

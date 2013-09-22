@@ -81,7 +81,7 @@
                     {% else %}
 
                         <li class="{{ item.class }}{% ifequal sadmin2_menu_tab_active item.id %} active{% endifequal %}">
-                            <a href="{% sadmin2_emit_url item %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
+                            <a href="{% sadmin2_emit_url item %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{% sadmin2_emit_name item %}</a>
                         </li>
 
                     {% endifnotequal %}
@@ -106,6 +106,14 @@
 
          </div>
     </div>
+
+    {% if search_url and instances and instances.has_next %}
+    <div class="row">
+        <div class="col-lg-12">
+            <p id="searchmore" class="alert alert-info text-center"><a href="#">More</a></p>
+        </div>
+    </div>
+    {% endif %}
 
 </div> <!-- /container -->
 

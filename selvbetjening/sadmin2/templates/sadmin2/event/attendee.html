@@ -1,0 +1,131 @@
+{% extends "sadmin2/site.html" %}
+
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-lg-6">
+
+    <form method="POST">
+    {% csrf_token %}
+
+        <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} <small>&lt;{{ attendee.user.username }}&gt;</small></h2>
+
+        <table class="table">
+
+        <tr>
+            <td>Status</td>
+            <td>
+
+                <div class="btn-group pull-right">
+                    <button type="submit"
+                            class="btn {% ifequal attendee.state "waiting" %}btn-danger{% else %}btn-default{% endifequal %}"
+                            name="action" value="to-state-waiting">Tilmeldt</button>
+
+                    <button type="submit"
+                            class="btn {% ifequal attendee.state "accepted" %}btn-danger{% else %}btn-default{% endifequal %}"
+                            name="action" value="to-state-accepted">Godkendt</button>
+                    <button type="submit"
+                            class="btn {% ifequal attendee.state "attended" %}btn-success{% else %}btn-default{% endifequal %}"
+                            name="action" value="to-state-attended">Deltaget</button>
+                </div>
+
+            </td>
+
+        </tr>
+
+        {% if attendee.invoice.in_balance %}
+        <tr class="success">
+            <td>Betaling</td>
+            <td><strong>Betalt</strong></td>
+        </tr>
+        {% else %}{% if attendee.invoice.is_paid %}
+        <tr class="danger">
+            <td>Betaling</td>
+            <td>
+                <button type="submit"
+                            class="btn btn-danger pull-right"
+                            name="action" value="pay">Beløb tilbagebetalt</button>
+
+                <strong>Til <strong>ud</strong>betaling ({{attendee.invoice.overpaid}},-)</strong>
+
+            </td>
+        </tr>
+        {% else %}
+        <tr class="danger">
+            <td>Betaling</td>
+            <td>
+                <button type="submit"
+                            class="btn btn-danger pull-right"
+                            name="action" value="pay">Beløb betalt</button>
+
+                <strong>Til betaling ({{attendee.invoice.unpaid}},-)</strong>
+            </td>
+        </tr>
+        {% endif %}{% endif %}
+        </table>
+
+    </form>
+
+    </div>
+
+
+    <div class="col-lg-6">
+
+        <h2>Kvittering</h2>
+
+    {% with attendee.invoice as invoice %}
+        <table class="table">
+
+            {% for line in invoice.line_set_ordered %}
+            {% ifchanged line.group_name %}
+            {% if line.group_name %}
+            <tr>
+                <th colspan="2">{{line.group_name}}</th>
+            </tr>
+            {% endif %}
+            {% endifchanged %}
+
+            <tr>
+                <td>{{line.description}}</td><td>{{line.price}},-</td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+            <td colspan="2"></td>
+            </tr>
+
+            <tr>
+                <th>Total:</th><th>{{invoice.total_price}},-</th>
+            </tr>
+            <tr>
+                <th>Heraf betalt:</th><th>{{invoice.paid}},-</th>
+            </tr>
+
+            {% if invoice.in_balance %}
+            <tr class="success">
+                <th colspan="2">Denne invoice er betalt</th>
+            </tr>
+            {% endif %}
+
+            {% if not invoice.is_paid %}
+            <tr class="danger">
+                <th>Total til betaling:</th><th>{{invoice.unpaid}},-</th>
+            </tr>
+            {% endif %}
+
+            {% if invoice.is_overpaid %}
+            <tr class="danger">
+                <th>Total til udbetaling:</th><th>{{invoice.overpaid}},-</th>
+            </tr>
+            {% endif %}
+
+        </table>
+    {% endwith %}
+
+    </div>
+
+</div>
+
+{% endblock %}

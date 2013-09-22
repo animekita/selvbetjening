@@ -2,6 +2,19 @@
 
 {% block content %}
 
+<div class="row">
+<div class="col-lg-12">
+
+    <div class="btn-group pull-right">
+        <a class="btn btn-success" href="{% url "sadmin2:events_create" %}">Opret arrangement</a>
+    </div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-12">
+
     <table class="table table-hover">
         <thead>
         <tr>
@@ -15,5 +28,8 @@
         {% include "sadmin2/events/list_inner.html" %}
         </tbody>
     </table>
+
+</div>
+</div>
 
 {% endblock %}

@@ -78,6 +78,24 @@ breadcrumbs = {
         'url_callback': url_callback('sadmin2:event_attendees', ('event_pk',)),
         'parent': 'event'},
 
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee':  {
+        'name_callback': lambda context: context['attendee'].user.username,
+        'url_callback': url_callback('sadmin2:event_attendee', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees'},
+
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee_payments':  {
+        'name': _('Payments'),
+        'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees_attendee'},
+
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee_notes':  {
+        'name': _('Notes'),
+        'url_callback': url_callback('sadmin2:event_attendee_notes', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees_attendee'},
+
     # Assumes: context[event], kwargs[event_pk]
     'event_attendees_add':  {
         'name': _('Add user'),
@@ -154,8 +172,38 @@ sadmin2_menu_main = (
 
 sadmin2_menu_tab_events = (
     {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
-    {'id': 'events_register_payments', 'name': _('Register Payment'), 'url': 'sadmin2:events_register_payments'},
-    {'id': 'events_create', 'name': _('Create '), 'url': 'sadmin2:events_create', 'icon': 'plus', 'class': 'pull-right'}
+    {'id': 'events_register_payments', 'name': _('Register Payment'), 'url': 'sadmin2:events_register_payments'}
+)
+
+sadmin2_menu_tab_attendee = (
+    {'id': 'registration',
+     'name': _('Registration'),
+     'url_callback': url_callback('sadmin2:event_attendee', ('event_pk', 'attendee_pk'))},
+
+    {'id': 'selections',
+     'name': _('Selections'),
+     'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk'))},
+
+    {'id': 'payments',
+     'name': _('Payments'),
+     'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk'))},
+
+    {'id': 'notes',
+     'name_callback': lambda context: _('Notes %s') % ('<span class="badge">%s<span>' % context['attendee'].comments.count()),
+     'url_callback': url_callback('sadmin2:event_attendee_notes', ('event_pk', 'attendee_pk'))},
+
+    {'id': 'back-to-event',
+     'name': _('Back to event'),
+     'url_callback': url_callback('sadmin2:event_attendees', ('event_pk',)),
+     'class': 'pull-right',
+     'icon': 'arrow-left'},
+
+    {'id': 'to-user-account',
+     'name': _('User account'),
+     'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk')),
+     'class': 'pull-right',
+     'icon': 'user'}
+
 )
 
 # Assumes kwargs[event_pk]

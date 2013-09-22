@@ -1,0 +1,14 @@
+
+{% if invalid_fragments %}
+
+    <tr>
+        <td colspan="4">{% include "sadmin2/generic/parts/search_invalid_fragments.html" %}</td>
+    </tr>
+
+    {% else %}
+
+    {% block rows %}{% endblock %}
+
+    {% if instances.has_next %}<!-- fragment-has-next -->{% endif %}
+
+{% endif %}

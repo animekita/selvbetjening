@@ -1,0 +1,49 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <table class="table">
+
+    <tr>
+        <th>Date</th>
+        <th>Signee</th>
+        <th>Note</th>
+        <th>Amount</th>
+    </tr>
+
+    {% for payment in payments %}
+    <tr>
+        <td>{{ payment.created_date }}</td>
+        <td>{{ payment.signee }}</td>
+        <td>{{ payment.note }}</td>
+        <td>{{ payment.amount }}</td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+        <td colspan="2"></td>
+        <td><strong>Total</strong></td>
+        <td><strong>{{ attendee.invoice.paid }}</strong></td>
+    </tr>
+
+    <tr>
+        <td colspan="2"></td>
+        <td>Beløb på kvittering</td>
+        <td>{{ attendee.invoice.total_price }}</td>
+    </tr>
+
+    {% if not attendee.invoice.in_balance %}
+    <tr {% if not attendee.invoice.in_balance %}class="danger"{% endif %}>
+        <td colspan="2"></td>
+        <td><strong>Til {% if attendee.invoice.is_overpaid %}ud{% endif %}betaling</strong></td>
+        <td><strong>{{ attendee.invoice.unpaid }}</strong></td>
+    </tr>
+    {% endif %}
+
+    </table>
+
+    <p class="alert alert-info"><strong>Bemærk</strong>, der bliver <strong>ikke</strong> sendt en bekræftelse på betaling til den pågældende bruger når du registrere betalinger her.</p>
+    {% crispy form form.helper %}
+
+{% endblock %}

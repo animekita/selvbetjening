@@ -1,16 +1,17 @@
 
-from decimal import Decimal, Context
+from decimal import Decimal
 from collections import OrderedDict
 
 from django import forms
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.forms.models import modelformset_factory, BaseModelFormSet, inlineformset_factory
+from django.forms.extras.widgets import SelectDateWidget
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div
+from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div, HTML
 
-from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option
+from selvbetjening.core.invoice.models import Payment
+from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, AttendeeComment
 from selvbetjening.core.invoice.utils import sum_invoices
 
 
@@ -93,48 +94,72 @@ class S2SubmitUpdate(S2Submit):
         super(S2Submit, self).__init__('update', _('Update'))
 
 
+from django.forms.widgets import TextInput
+
+
+class SplitDateWidget(SelectDateWidget):
+
+    def create_select(self, name, field, value, val, choices):
+        if 'id' in self.attrs:
+            id_ = self.attrs['id']
+        else:
+            id_ = 'id_%s' % name
+
+        #if not (self.required and val):
+
+        local_attrs = self.build_attrs(id=field % id_)
+        local_attrs['width'] = 2
+
+        s = TextInput()
+        select_html = s.render(field % name, val, local_attrs)
+
+        if 'day' in field:
+            label = 'dd'
+        elif 'month' in field:
+            label = 'mm'
+        else:
+            label = 'yyyy'
+
+        html = \
+            """
+            <div class="input-group col-lg-4">
+                <span class="input-group-addon">%s</span>
+                %s
+            </div>
+            """ % (label, select_html)
+
+        return html
+
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ('title', 'description', 'group', 'startdate', 'enddate', 'registration_open',
-                  'maximum_attendees', 'move_to_accepted_policy')
 
-    helper = S2FormHelper(horizontal=True)
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 2}),
+            'startdate': SplitDateWidget(),
+            'enddate': SplitDateWidget()
+        }
 
-    layout = S2Layout(
-        S2Fieldset(None,
-                   'title', 'description', 'group',
-                   S2HorizontalRow(S2Field('startdate', width=6), S2Field('enddate', width=6)),
-                   'registration_open'),
-        S2Fieldset(_('Conditions'),
-                   'maximum_attendees', 'move_to_accepted_policy'))
+    def __init__(self, *args, **kwargs):
+        super(EventForm, self).__init__(*args, **kwargs)
 
-    submit = S2Submit('save', _('Save'))
+        self.helper = S2FormHelper(horizontal=True)
 
-    helper.add_layout(layout)
-    helper.add_input(submit)
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'title', 'description', 'group',
+                       'startdate', 'enddate',
+                       'registration_open'),
+            S2Fieldset(_('Conditions'),
+                       'maximum_attendees', 'move_to_accepted_policy'),
+            S2Fieldset(_('Feedback'),
+                       'show_custom_signup_message', 'custom_signup_message',
+                       'show_custom_change_message', 'custom_change_message',
+                       'show_custom_status_page', 'custom_status_page'))
 
-
-class EventDisplayForm(forms.ModelForm):
-    class Meta:
-        model = Event
-        fields = ('show_custom_signup_message', 'custom_signup_message', 'show_custom_change_message',
-                  'custom_change_message', 'show_custom_status_page', 'custom_status_page')
-
-    helper = S2FormHelper()
-
-    layout = Layout(
-        Fieldset(_('Custom signup message'),
-                 S2Field('show_custom_signup_message'), S2Field('custom_signup_message')),
-        Fieldset(_('Custom change message'),
-                 S2Field('show_custom_change_message'), S2Field('custom_change_message')),
-        Fieldset(_('Custom status page'),
-                 S2Field('show_custom_status_page'), S2Field('custom_status_page')))
-
-    submit = Submit('save', _('Save'))
-
-    helper.add_layout(layout)
-    helper.add_input(submit)
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
 
 
 class InvoiceFormattingForm(forms.Form):
@@ -201,46 +226,44 @@ class InvoiceFormattingForm(forms.Form):
 
     def format(self):
 
+        if not hasattr(self, 'cleaned_data'):
+            self.cleaned_data = {}
+
         # Defaults
 
-        show_regular_attendees = False
-        show_irregular_attendees = True
         attendee_filter_label = self.FILTER_ATTENDED_CHOICES[0][1]
+        attendee_filter = self.cleaned_data.get('filter_attended', 'attended_or_paid')
 
-        if hasattr(self, 'cleaned_data'):
+        # set attendee label
+        for line in self.FILTER_ATTENDED_CHOICES:
+            if attendee_filter == line[0]:
+                attendee_filter_label = line[1]
 
-            attendee_filter = self.cleaned_data['filter_attended']
+        # filter invoice
+        if attendee_filter == 'only_attended':
+            self.invoices = self.invoices.filter(attend__state=AttendState.attended)
+        elif attendee_filter == 'not_attended':
+            self.invoices = self.invoices.exclude(attend__state=AttendState.attended)
+        elif attendee_filter == 'attended_or_paid':
+            self.invoices = self.invoices.filter(attend__state=AttendState.attended).filter(paid__gt=0)
+        elif attendee_filter == 'all':
+            pass
+        else:
+            raise ValueError
 
-            # set attendee label
-            for line in self.FILTER_ATTENDED_CHOICES:
-                if attendee_filter == line[0]:
-                    attendee_filter_label = line[1]
+        show_each_user = self.cleaned_data.get('show_each_user', 'over_and_under')
 
-            # filter invoice
-            if attendee_filter == 'only_attended':
-                self.invoices = self.invoices.filter(attend__state=AttendState.attended)
-            elif attendee_filter == 'not_attended':
-                self.invoices = self.invoices.exclude(attend__state=AttendState.attended)
-            elif attendee_filter == 'attended_or_paid':
-                self.invoices = self.invoices.filter(attend__state=AttendState.attended).filter(paid__gt=0)
-            elif attendee_filter == 'all':
-                pass
-            else:
-                raise ValueError
-
-            show_each_user = self.cleaned_data.get('show_each_user', None)
-
-            if show_each_user == 'over_and_under':
-                show_regular_attendees = False
-                show_irregular_attendees = True
-            elif show_each_user == 'all':
-                show_regular_attendees = True
-                show_irregular_attendees = True
-            elif show_each_user == 'none':
-                show_regular_attendees = False
-                show_irregular_attendees = False
-            else:
-                raise ValueError
+        if show_each_user == 'over_and_under':
+            show_regular_attendees = False
+            show_irregular_attendees = True
+        elif show_each_user == 'all':
+            show_regular_attendees = True
+            show_irregular_attendees = True
+        elif show_each_user == 'none':
+            show_regular_attendees = False
+            show_irregular_attendees = False
+        else:
+            raise ValueError
 
         # Initialize empty line groups
         line_groups = OrderedDict()
@@ -353,3 +376,37 @@ class OptionForm(forms.ModelForm):
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+
+class PaymentForm(forms.ModelForm):
+    class Meta:
+        model = Payment
+        fields = ('amount',)
+
+    helper = S2FormHelper(horizontal=True)
+
+    layout = S2Layout(
+        S2Fieldset(None, 'amount')
+    )
+
+    helper.add_layout(layout)
+    helper.add_input(S2Submit('pay', _('Pay')))
+
+
+class AttendeeCommentForm(forms.ModelForm):
+    class Meta:
+        model = AttendeeComment
+        fields = ('comment',)
+
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 2}),
+        }
+
+    helper = S2FormHelper(horizontal=True)
+
+    layout = S2Layout(
+        S2Fieldset(None, 'comment')
+    )
+
+    helper.add_layout(layout)
+    helper.add_input(S2SubmitCreate())
