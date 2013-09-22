@@ -1,15 +1,10 @@
+{% extends "sadmin2/generic/parts/search_inner.html" %}
 
-{% if invalid_fragments %}
-
-<tr>
-    <td colspan="4">{% include "sadmin2/generic/parts/search_invalid_fragments.html" %}</td>
-</tr>
-
-{% else %}
+{% block rows %}
 
 {% for attendee in instances %}
-<tr onclick="document.location = '{% url "sadmin2:event_attendees" event.pk %}';" class="clickable">
-    <td><a href="{% url "sadmin2:event_attendees" event.pk %}">{{ attendee.user.username }}</a></td>
+<tr onclick="document.location = '{% url "sadmin2:event_attendee" event_pk=event.pk attendee_pk=attendee.pk %}';" class="clickable">
+    <td><a href="{% url "sadmin2:event_attendee" event_pk=event.pk attendee_pk=attendee.pk %}">{{ attendee.user.username }}</a></td>
     <td>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</td>
     <td>
         {% ifequal attendee.state "waiting" %}
@@ -34,6 +29,9 @@
         {% endif %}
     </td>
 </tr>
+
 {% endfor %}
 
-{% endif %}
+{% endblock %}
+
+

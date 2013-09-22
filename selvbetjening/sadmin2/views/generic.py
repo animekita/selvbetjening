@@ -20,7 +20,8 @@ def generic_create_view(request,
                         message_success=None,
                         context=None,
                         instance=None,
-                        instance_save_callback=None):
+                        instance_save_callback=None,
+                        template=None):
 
     instance_kwarg = {} if instance is None else {'instance': instance}
 
@@ -51,7 +52,7 @@ def generic_create_view(request,
     context['form'] = form
 
     return render(request,
-                  'sadmin2/generic/form.html',
+                  'sadmin2/generic/form.html' if template is None else template,
                   context)
 
 
@@ -72,7 +73,9 @@ def search_view(request,
     if context is None:
         context = {}
 
-    queryset, invalid_fragments = apply_search_query(queryset, request.GET.get('q', ''), search_columns, condition_fields=search_conditions)
+    query = request.GET.get('q', '')
+
+    queryset, invalid_fragments = apply_search_query(queryset, query, search_columns, condition_fields=search_conditions)
 
     paginator = Paginator(queryset, 30)
     page = request.GET.get('page')
@@ -88,6 +91,7 @@ def search_view(request,
         'instances': instances,
         'invalid_fragments': invalid_fragments,
 
+        'query': query,
         'search_url': request.path_info + '?q='
     })
 

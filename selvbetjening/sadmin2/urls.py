@@ -16,6 +16,9 @@ urlpatterns = patterns(
 
     url(r'^events/(?P<event_pk>[0-9]+)/$', views.event.event_overview, name='event_overview'),
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/$', views.event.event_attendees, name='event_attendees'),
+    url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/$', views.event.event_attendee, name='event_attendee'),
+    url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/payments/$', views.event.event_attendee_payments, name='event_attendee_payments'),
+    url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/notes/$', views.event.event_attendee_notes, name='event_attendee_notes'),
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/add/$', views.event.event_attendees_add, name='event_attendees_add'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/selections/$', views.event.event_selections, name='event_selections'),

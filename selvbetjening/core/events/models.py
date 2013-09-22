@@ -190,6 +190,10 @@ class Attend(models.Model):
     def selections(self):
         return self.selection_set.all()
 
+    @property
+    def comments(self):
+        return self.comment_set.all()
+
     def select_option(self, option, suboption=None):
         try:
             selection = self.selection_set.get(option=option)
@@ -624,8 +628,9 @@ payment_registered_source = Source('payment_registered',
                                    _(u'Payment registered'),
                                    [Attend, Payment])
 
+
 class AttendeeComment(models.Model):
-    attendee = models.ForeignKey(Attend)
+    attendee = models.ForeignKey(Attend, related_name='comment_set')
 
     author = models.CharField(max_length=256)
     comment = models.TextField()

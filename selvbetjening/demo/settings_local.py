@@ -9,10 +9,14 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+import os
+
 DATABASES = {
     'default': {
-        'NAME': 'default',
-        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'svscon_selv',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'root',
+        'PASSWORD': ''
         },
     'ext_database1': {
         'NAME': 'ext_database1',

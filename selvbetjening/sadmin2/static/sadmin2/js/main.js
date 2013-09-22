@@ -32,7 +32,12 @@ function init_livesearch(search_url) {
                 current_request = jQuery.get(search_url + query, function(data) {
 
                     current_page = 1;
-                    $('#searchmore').show();
+
+                    if (data.indexOf('fragment-has-next') != -1) {
+                        $('#searchmore').show();
+                    } else {
+                        $('#searchmore').hide();
+                    }
 
                     $('#searchresult').html(data.length ? data : '');
                 });
@@ -55,10 +60,15 @@ function init_livesearch(search_url) {
         current_more_request = jQuery.get(search_url + query + "&page=" + requested_page, function(data) {
             current_page = requested_page;
 
-            if (data.trim() == '') {
-                $('#searchmore').hide();
-            } else {
+            if (data.trim() != '') {
                 $('#searchresult').append(data);
+            }
+
+            if (data.indexOf('fragment-has-next') != -1) {
+                console.log(data.contains('fragment-has-next'));
+                $('#searchmore').show();
+            } else {
+                $('#searchmore').hide();
             }
 
         });

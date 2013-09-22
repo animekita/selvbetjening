@@ -1,11 +1,6 @@
+{% extends "sadmin2/generic/parts/search_inner.html" %}
 
-{% if invalid_fragments %}
-
-<tr>
-    <td colspan="4">{% include "sadmin2/generic/parts/search_invalid_fragments.html" %}</td>
-</tr>
-
-{% else %}
+{% block rows %}
 
 {% for event in instances %}
 <tr onclick="document.location = '{% url "sadmin2:event_attendees" event.pk %}';" class="clickable">
@@ -16,4 +11,4 @@
 </tr>
 {% endfor %}
 
-{% endif %}
+{% endblock %}

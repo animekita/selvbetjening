@@ -1,0 +1,20 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <table class="table">
+
+    {% for note in notes %}
+    <tr>
+        <td>{{ note.author }}</td>
+        <td>{{ note.timestamp }}</td>
+        <td>{{ note.comment }}</td>
+    </tr>
+    {% endfor %}
+
+    </table>
+
+    {% crispy form form.helper %}
+
+{% endblock %}
