@@ -66,7 +66,7 @@ def signup(request, event,
 
         if form.is_valid() and optionforms.is_valid() and handler.is_valid():
 
-            attendee = event.add_attendee(request.user)
+            attendee = Attend.objects.create(event=event, user=request.user)
             optionforms.save(attendee=attendee)
 
             handler.save(attendee)

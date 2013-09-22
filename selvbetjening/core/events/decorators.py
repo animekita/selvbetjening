@@ -1,7 +1,8 @@
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 
-from models import Event
+from models import Event, Attend
+
 
 def get_event_from_id(view_func):
     def lookup_event_id(request, event_id, *args, **kwargs):
@@ -34,7 +35,7 @@ event_registration_open_required = event_registration_open_required_ext()
 
 def event_registration_allowed_required(view_func):
     def check_event_registration(request, event, *args, **kwargs):
-        if event.is_registration_allowed():
+        if Attend.objects.can_register_to_event(event):
             return view_func(request, event, *args, **kwargs)
         else:
             return render_to_response('events/signup_disallowed.html',

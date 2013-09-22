@@ -10,6 +10,7 @@ from selvbetjening.core.invoice.decorators import disable_invoice_updates
 
 import decorators
 import forms
+from models import Attend
 
 @decorators.event_registration_open_required
 @decorators.event_registration_allowed_required
@@ -35,7 +36,7 @@ def signup(request, event_id, template_name, template_cant_signup, template_regi
         if form.is_valid() and optionforms.is_valid() and signup_allowed:
             logger.info(request, 'client signed user_id %s up to event_id %s' % (request.user.id, event.id))
 
-            attendee = event.add_attendee(request.user)
+            Attend.objects.create(event=event, user=request.user)
             optionforms.save(attendee=attendee)
 
             for save_func in save_functions:
