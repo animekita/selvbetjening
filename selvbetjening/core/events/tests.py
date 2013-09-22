@@ -80,7 +80,7 @@ class EventModelTestCase(TestCase):
         self.userarray = []
         for i in range(30):
             self.userarray.append(User.objects.create_user('user%s' % i, 'user@example.org', ''))
-            event.add_attendee(self.userarray[i])
+            models.Attend.objects.create(event=event, user=self.userarray[i])
 
         for i in range(30):
             self.assertEqual(event.attendees[i].user, self.userarray[i])

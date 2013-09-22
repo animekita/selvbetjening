@@ -11,8 +11,9 @@ from django.utils.translation import ugettext as _
 from django.db.models import Count
 from core.invoice.models import Payment
 
-from selvbetjening.core.events.models import Event, Attend, AttendState, Invoice
+from selvbetjening.core.events.models import Event, Attend, AttendState
 from selvbetjening.core.invoice.utils import sum_invoices
+from selvbetjening.core.invoice.models import Invoice
 
 from selvbetjening.sadmin.base import graph
 from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm, PaymentForm, AttendeeCommentForm
@@ -482,7 +483,7 @@ def event_attendees_add(request, event_pk):
     if request.method == 'POST':
 
         user = get_object_or_404(User, pk=int(request.POST.get('user_pk', 0)))
-        event.add_attendee(user)
+        Attend.objects.create(event=event, user=user)
 
         # TODO update this redirect to go directly to the attendee page when we have one
         messages.success(request, _('User %s added to event') % user.username)
