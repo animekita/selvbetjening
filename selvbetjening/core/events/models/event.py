@@ -72,6 +72,13 @@ class Event(models.Model):
         help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee'
     )
 
+    # Special
+
+    @property
+    def has_special(self):
+        return self.optiongroups.filter(is_special=True).exists()
+
+
     @property
     def attendees(self):
         return self.attend_set.all().order_by('id')

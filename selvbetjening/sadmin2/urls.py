@@ -22,6 +22,7 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/add/$', views.event.event_attendees_add, name='event_attendees_add'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/selections/$', views.event.event_selections, name='event_selections'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/manage/$', views.event.event_selections_manage, name='event_selections_manage'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/selections/group/create/$', views.event.event_selections_create_group, name='event_selections_create_group'),
     url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/$', views.event.event_selections_edit_group, name='event_selections_edit_group'),

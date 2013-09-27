@@ -121,16 +121,22 @@ breadcrumbs = {
         'parent': 'event'},
 
     # Assumes: context[event], kwargs[event_pk]
+    'event_selections_manage':  {
+        'name': _('Settings'),
+        'url_callback': url_callback('sadmin2:event_selections_manage', ('event_pk',)),
+        'parent': 'event_selections'},
+
+    # Assumes: context[event], kwargs[event_pk]
     'event_selections_create_group':  {
         'name': _('Create Group'),
         'url_callback': url_callback('sadmin2:event_selections_create_group', ('event_pk',)),
-        'parent': 'event_selections'},
+        'parent': 'event_selections_manage'},
 
     # Assumes: context[event], context[option_group], kwargs[event_pk]
     'event_selections_group':  {
         'name_callback': lambda context: context['option_group'].name,
         'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
-        'parent': 'event_selections'},
+        'parent': 'event_selections_manage'},
 
     # Assumes: context[event], context[option_group], kwargs[event_pk], kwargs[group_pk]
     'event_selections_edit_group':  {
