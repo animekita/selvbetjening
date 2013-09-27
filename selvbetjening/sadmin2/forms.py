@@ -342,11 +342,9 @@ class OptionGroupForm(forms.ModelForm):
             S2Fieldset(None,
                        S2Field('name'), S2Field('description')),
             S2Fieldset(_('Conditions'),
-                       'minimum_selected', 'maximum_selected', 'maximum_attendees', 'freeze_time', 'lock_selections_on_acceptance'),
+                       'minimum_selected', 'maximum_selected'),
             S2Fieldset(_('Package'),
-                       'package_solution', 'package_price'),
-            S2Fieldset(_('Display'),
-                       'public_statistic'))
+                       'package_price'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
@@ -356,7 +354,6 @@ class OptionForm(forms.ModelForm):
 
     class Meta:
         model = Option
-        exclude = ('group', 'order')
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 2}),
@@ -364,21 +361,34 @@ class OptionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
 
+        if 'instance' in kwargs:
+            self.Meta.exclude = ('group', 'order')
+        else:
+            self.Meta.exclude = ('group', 'type', 'order')
+
         super(OptionForm, self).__init__(*args, **kwargs)
 
         self.helper = S2FormHelper(horizontal=True)
 
+        if 'instance' in kwargs:
+            type = kwargs['instance'].get_type_display()
+            fields = ('name',
+                      HTML('<div class="form-group"><label class="control-label col-lg-2">Type:</label><div class="controls col-lg-8">%s</div></div>' % type),
+                      'description',
+                      'price')
+        else:
+            fields = ('name', 'type', 'description', 'price')
+
         layout = S2Layout(
             S2Fieldset(None,
-                       'name', 'description', 'price'),
-            S2Fieldset(_('Conditions'),
-                       'freeze_time', 'maximum_attendees'))
+                       *fields))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
 
 
 class PaymentForm(forms.ModelForm):
+
     class Meta:
         model = Payment
         fields = ('amount',)
@@ -394,6 +404,7 @@ class PaymentForm(forms.ModelForm):
 
 
 class AttendeeCommentForm(forms.ModelForm):
+
     class Meta:
         model = AttendeeComment
         fields = ('comment',)

@@ -1,7 +1,7 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.utils.translation import ugettext as _
-from core.invoice.signals import populate_invoice
 
+from selvbetjening.core.invoice.signals import populate_invoice
 from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.mailcenter.sources import Source
 
@@ -26,6 +26,18 @@ payment_registered_source = Source('payment_registered',
 
 
 # signal handlers
+
+
+def update_invoice_handler(sender, **kwargs):
+    instance = kwargs['instance']
+
+    try:
+        instance.attendee.invoice.update()
+    except Attend.DoesNotExist:
+        pass
+
+post_delete.connect(update_invoice_handler, sender=Selection)
+post_save.connect(update_invoice_handler, sender=Selection)
 
 
 def update_invoice_with_attend_handler(sender, **kwargs):

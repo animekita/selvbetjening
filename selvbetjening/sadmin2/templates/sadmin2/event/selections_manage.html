@@ -1,0 +1,279 @@
+{% extends "sadmin2/site.html" %}
+
+{% block head %}
+
+    <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+
+        /** Prevent people from leaving this page if they have unsaved changes **/
+        /** Especially nice since many of the "edit" buttons are yet to be inlined **/
+
+        var exit_guard_loaded = false;
+
+        function form_mutated() {
+            if (exit_guard_loaded == true) {
+                return;
+            }
+
+            $(window).bind('beforeunload', function(){
+                return 'You have unsaved changes on this page!';
+            });
+
+            exit_guard_loaded = true;
+        }
+
+        function allow_exit() {
+            $(window).unbind('beforeunload');
+        }
+
+        $(function() {
+            $('input[type=checkbox]').change(form_mutated);
+        });
+
+        /** Preset buttons **/
+
+        var PRESETS = {
+            'enable': [false, true, true, true, true, true, true, false, false],
+            'disable': [false, false, false, false, false, false, false, false, false]
+        };
+
+        var SCOPES = [
+            'selected_by_default',
+            'in_scope_view_registration',
+            'in_scope_view_manage',
+            'in_scope_view_user_invoice',
+            'in_scope_view_system_invoice',
+            'in_scope_edit_registration',
+            'in_scope_edit_manage_waiting',
+            'in_scope_edit_manage_accepted',
+            'in_scope_edit_manage_attended',
+        ];
+
+        function preset(desired_preset, option_pk) {
+
+            var values = PRESETS[desired_preset];
+
+            for (var i = 0; i < SCOPES.length; i++) {
+                $('#' + SCOPES[i] + '__' + option_pk).prop('checked', values[i] ? 'checked' : '').change();
+            }
+        }
+
+        /** Move items around **/
+
+        function move(direction, row, row_selector, parent_selector, order_selector) {
+
+            if (direction == 'up') {
+                row.insertBefore(row.prev(row_selector));
+            } else {
+                row.insertAfter(row.next(row_selector));
+            }
+
+            row.effect('highlight', {}, 1000);
+
+            // update order
+            var i = 0;
+            row.parent(parent_selector).find(order_selector).each(function(index, element) {
+                element.value = i++;
+            });
+        }
+
+        function move_option(direction, option_pk) {
+            var row = $('#option__' + option_pk);
+            move(direction, row, 'tr', 'tbody', '.order');
+        }
+
+
+        function move_option_group(direction, option_group_pk) {
+            var panel = $('#option_group--' + option_group_pk);
+            move(direction, panel, '.panel-movable', 'form', '.group_order');
+        }
+
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <form method="POST">
+            {% csrf_token %}
+        <div class="pull-right">
+            {% if not event.has_special %}
+            <button type="submit" name="add-anon-group" class="btn btn-success">Tilføj anonym gruppe</button>
+            {% endif %}
+            <a href="{% url "sadmin2:event_selections_create_group" event_pk=event.pk %}" class="btn btn-success">Tilføj gruppe</a>
+        </div>
+        </form>
+    </div>
+</div>
+
+<br/>
+
+<div class="row">
+<div class="col-lg-12">
+
+<form method="POST">
+{% csrf_token %}
+
+{% for option_group in option_groups %}
+
+<div class="panel {% if option_group.is_special %} panel-fixed{% else %} panel-movable{% endif %} panel-default" id="option_group--{{ option_group.pk }}">
+
+    {% if not option_group.is_special %}
+    <input type="hidden" class="group_order"
+         name="order--{{ option_group.pk }}"
+         id="order--{{ option_group.pk }}"
+         value="{{ option_group.order }}" />
+    {% endif %}
+
+  <div class="panel-heading" style="overflow: auto;">
+
+      <div class="btn-group pull-right">
+
+          {% if not option_group.is_special %}
+          <a class="btn btn-default" onclick="move_option_group('up', {{ option_group.pk }});"><span class="glyphicon glyphicon-chevron-up"></span></a>
+          <a class="btn btn-default" onclick="move_option_group('down', {{ option_group.pk }});"><span class="glyphicon glyphicon-chevron-down"></span></a>
+
+          <a class="btn btn-default" href="{% url "sadmin2:event_selections_edit_group" event_pk=event.pk group_pk=option_group.pk %}">Edit</a>
+          {% endif %}
+
+          <a class="btn btn-success pull-right" href="{% url "sadmin2:event_selections_create_option" event_pk=event.pk group_pk=option_group.pk %}">Tilføj option</a>
+      </div>
+
+      <h3 class="panel-title">{{ option_group.name }}</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <table class="table">
+         <tr>
+            <th class="col-lg-3"></th>
+            <th class="col-lg-1 text-center">Preset</th>
+            <th class="text-center">Valgt</th>
+            <th class="text-center" colspan="4">Synlig</th>
+            <th class="text-center" colspan="4">Redigerbar</th>
+
+            <th></th>
+         </tr>
+         <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+
+            <th><small>Tilmelding</small></th>
+            <th><small>Deltaget</small></th>
+            <th><small>Kvittering</small></th>
+            <th style="border-right: solid 2px #EEEEEE;"><small>Check-in</small></th>
+
+            <th><small>Tilmelding</small></th>
+            <th><small>Tilmeldt</small></th>
+            <th><small>Godkendt</small></th>
+            <th><small>Deltaget</small></th>
+
+            <th></th>
+
+        </tr>
+
+        <tbody>
+
+         {% for option in option_group.options %}
+         <tr id="option__{{ option.pk }}">
+             <input type="hidden" class="order" name="order__{{ option.pk }}" id="order__{{ option.pk }}" value="{{ option.order }}" />
+
+             <td>{{ option.name }}</td>
+             <td>
+
+                 <div class="btn-group pull-right">
+                  <span class="btn btn-success btn-sm" onclick="preset('enable', {{ option.pk }});"><span class="glyphicon glyphicon-ok"></span></span>
+                  <span class="btn btn-danger btn-sm" onclick="preset('disable', {{ option.pk }});"><span class="glyphicon glyphicon-remove"></span></span>
+                 </div>
+
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="selected_by_default__{{ option.pk }}"
+                                            name="selected_by_default__{{ option.pk }}"
+                                            {% if option.selected_by_default %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_view_registration__{{ option.pk }}"
+                                            name="in_scope_view_registration__{{ option.pk }}"
+                                            {% if option.in_scope_view_registration %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_view_manage__{{ option.pk }}"
+                                            name="in_scope_view_manage__{{ option.pk }}"
+                                            {% if option.in_scope_view_manage %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_view_user_invoice__{{ option.pk }}"
+                                            name="in_scope_view_user_invoice__{{ option.pk }}"
+                                            {% if option.in_scope_view_user_invoice %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_view_system_invoice__{{ option.pk }}"
+                                            name="in_scope_view_system_invoice__{{ option.pk }}"
+                                            {% if option.in_scope_view_system_invoice %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_edit_registration__{{ option.pk }}"
+                                            name="in_scope_edit_registration__{{ option.pk }}"
+                                            {% if option.in_scope_edit_registration %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_edit_manage_waiting__{{ option.pk }}"
+                                            name="in_scope_edit_manage_waiting__{{ option.pk }}"
+                                            {% if option.in_scope_edit_manage_waiting %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_edit_manage_accepted__{{ option.pk }}"
+                                            name="in_scope_edit_manage_accepted__{{ option.pk }}"
+                                            {% if option.in_scope_edit_manage_accepted %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_edit_manage_attended__{{ option.pk }}"
+                                            name="in_scope_edit_manage_attended__{{ option.pk }}"
+                                            {% if option.in_scope_edit_manage_attended %}checked{% endif %} />
+             </td>
+
+             <td>
+                 <div class="btn-group pull-right">
+                     <span class="btn btn-sm btn-default" onclick="move_option('up', {{ option.pk }});"><span class="glyphicon glyphicon-chevron-up"></span></span>
+                     <span class="btn btn-sm btn-default" onclick="move_option('down', {{ option.pk }});"><span class="glyphicon glyphicon-chevron-down"></span></span>
+                     <a class="btn btn-sm btn-default" href="{% url "sadmin2:event_selections_edit_option" event_pk=event.pk group_pk=option_group.pk option_pk=option.pk %}">Edit</a>
+                 </div>
+
+             </td>
+
+         </tr>
+         {% endfor %}
+
+         </tbody>
+    </table>
+
+  </div>
+</div>
+
+{% empty %}
+    <div class="alert alert-info"><strong>Dette arrangement har ingen tilvalg.</strong></div>
+    <a href="{% url "sadmin2:event_selections" event_pk=event.pk %}" class="btn btn-lg btn-primary">Administrer tilvalg</a>
+{% endfor %}
+
+<div class="form-actions">
+    <input type="submit" onclick="allow_exit();" name="update" value="Opdater" class="btn btn-lg btn-primary" id="submit-id-create"/>
+</div>
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}
