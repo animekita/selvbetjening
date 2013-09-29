@@ -1,0 +1,19 @@
+<div {% if fieldset.css_id %}id="{{ fieldset.css_id }}"{% endif %}
+     class="panel panel-default {{ fieldset.css_class }} {{ form_style }}" {{ fieldset.flat_attrs|safe }}>
+
+    {% if legend %}
+    <div class="panel-heading">
+        <a class="accordion-toggle" data-parent="#form-group" data-toggle="collapse" href="#collapse{{ legend|safe }}">
+            <h4 class="panel-title">{{ legend|safe }}</h4>
+        </a>
+    </div>
+    {% endif %}
+
+    {% if legend %}<div id="collapse{{ legend|safe }}" class="panel-collapse collapse">{% endif %}
+
+    <div class="panel-body">
+      {{ fields|safe }}
+    </div>
+
+    {% if legend %}</div>{%  endif %}
+</div>

@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
+from core.events.dynamic_selections import dynamic_selections, SCOPE, dynamic_selections_form_factory, dynamic_selections_formset_factory
 
 from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup
@@ -16,7 +17,8 @@ from selvbetjening.core.invoice.utils import sum_invoices
 from selvbetjening.core.invoice.models import Invoice
 
 from selvbetjening.sadmin.base import graph
-from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm, PaymentForm, AttendeeCommentForm
+from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
+    AttendeeCommentForm, attendee_selection_helper_factory
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -571,6 +573,8 @@ def event_attendee(request, event_pk, attendee_pk):
     event = get_object_or_404(Event, pk=event_pk)
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
+    selections = dynamic_selections(SCOPE.VIEW_SYSTEM_INVOICE, event, attendee)
+
     if request.method == 'POST':
 
         action = request.POST.get('action', '')
@@ -607,7 +611,8 @@ def event_attendee(request, event_pk, attendee_pk):
                       'sadmin2_menu_tab_active': 'registration',
 
                       'event': event,
-                      'attendee': attendee
+                      'attendee': attendee,
+                      'selections': selections
                   })
 
 @sadmin_prerequisites
@@ -649,6 +654,43 @@ def event_attendee_payments(request, event_pk, attendee_pk):
                       'payments': payments,
 
                       'form': form
+                  })
+
+@sadmin_prerequisites
+def event_attendee_selections(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    DynamicSelectionsFormSet = dynamic_selections_formset_factory(
+        event,
+        helper_factory=attendee_selection_helper_factory)
+
+    if request.method == 'POST':
+        formset = DynamicSelectionsFormSet(request.POST, attendee=attendee)
+
+        if formset.is_valid():
+
+            formset.save()
+
+            messages.success(request, 'Saved selections')
+            return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk,
+                                                                                  'attendee_pk': attendee.pk}))
+    else:
+        formset = DynamicSelectionsFormSet(attendee=attendee)
+
+    return render(request,
+                  'sadmin2/event/attendee_selections.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_attendees_attendee_selections',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+                      'sadmin2_menu_tab_active': 'selections',
+
+                      'event': event,
+                      'attendee': attendee,
+
+                      'formset': formset
                   })
 
 @sadmin_prerequisites
