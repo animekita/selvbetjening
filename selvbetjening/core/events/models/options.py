@@ -239,6 +239,8 @@ class Selection(models.Model):
 
     attendee = models.ForeignKey(Attend)
     option = models.ForeignKey(Option)
+
+    text = models.CharField(max_length=255, blank=True)
     suboption = models.ForeignKey(SubOption, blank=True, null=True)
 
     @property

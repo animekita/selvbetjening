@@ -50,6 +50,9 @@ class Attend(models.Model):
 
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
+
+    # TODO add a new state such that deleted attendences still exist (such that we can pay people back)
+    # TODO remove invoices
     invoice = models.ForeignKey(Invoice, blank=True)
 
     state = models.CharField(max_length=32,
@@ -70,6 +73,14 @@ class Attend(models.Model):
     changed = models.DateTimeField(null=True, blank=True)
 
     objects = AttendManager()
+
+    @property
+    def price(self):
+        return self.invoice.total_price
+
+    @property
+    def paid(self):
+        return self.invoice.paid
 
     @property
     def selections(self):

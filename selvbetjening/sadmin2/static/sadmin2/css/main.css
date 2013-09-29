@@ -66,3 +66,8 @@ ol.breadcrumb li.active a {
     cursor: pointer;
 }
 
+/* Forms */
+
+.hide-help-block .help-block {
+    display: none;
+}

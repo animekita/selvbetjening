@@ -91,6 +91,12 @@ breadcrumbs = {
         'parent': 'event_attendees_attendee'},
 
     # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee_selections':  {
+        'name': _('Selections'),
+        'url_callback': url_callback('sadmin2:event_attendee_selections', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees_attendee'},
+
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
     'event_attendees_attendee_notes':  {
         'name': _('Notes'),
         'url_callback': url_callback('sadmin2:event_attendee_notes', ('event_pk', 'attendee_pk')),
@@ -188,7 +194,7 @@ sadmin2_menu_tab_attendee = (
 
     {'id': 'selections',
      'name': _('Selections'),
-     'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk'))},
+     'url_callback': url_callback('sadmin2:event_attendee_selections', ('event_pk', 'attendee_pk'))},
 
     {'id': 'payments',
      'name': _('Payments'),

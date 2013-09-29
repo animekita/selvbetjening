@@ -53,7 +53,7 @@ def update_invoice_with_attend_handler(sender, **kwargs):
         selected_options = set()
 
         for selection in selections:
-            if selection.option.group.package_solution:
+            if selection.option.group.package_price > 0:
                 selected_groups.add(selection.option.group)
                 selected_options.add(selection.option.pk)
 
@@ -72,7 +72,7 @@ def update_invoice_with_attend_handler(sender, **kwargs):
 
             if last_group is not None and \
                     last_group != selection.option.group and \
-                    last_group.package_solution and \
+                    last_group.package_price > 0 and \
                     last_group in selected_groups:
 
                 invoice.add_line(description=unicode(_(u'Package Discount')),

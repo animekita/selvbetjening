@@ -75,54 +75,56 @@
 
         <h2>Kvittering</h2>
 
-    {% with attendee.invoice as invoice %}
         <table class="table">
 
-            {% for line in invoice.line_set_ordered %}
-            {% ifchanged line.group_name %}
-            {% if line.group_name %}
+        {% for option, selection in selections %}
+        {% if selection %}
+
+            {% ifchanged option.group.name %}
+            {% if option.group.name %}
             <tr>
-                <th colspan="2">{{line.group_name}}</th>
+                <th colspan="2">{{ option.group.name }}</th>
             </tr>
             {% endif %}
             {% endifchanged %}
 
             <tr>
-                <td>{{line.description}}</td><td>{{line.price}},-</td>
+                <td>{{option.name}}</td><td>{{option.price}},-</td>
             </tr>
-            {% endfor %}
+
+        {% endif %}
+        {% endfor %}
 
             <tr>
             <td colspan="2"></td>
             </tr>
 
             <tr>
-                <th>Total:</th><th>{{invoice.total_price}},-</th>
+                <th>Total:</th><th>{{attendee.price}},-</th>
             </tr>
             <tr>
-                <th>Heraf betalt:</th><th>{{invoice.paid}},-</th>
+                <th>Heraf betalt:</th><th>{{attendee.paid}},-</th>
             </tr>
 
-            {% if invoice.in_balance %}
+            {% if attendee.invoice.in_balance %}
             <tr class="success">
                 <th colspan="2">Denne invoice er betalt</th>
             </tr>
             {% endif %}
 
-            {% if not invoice.is_paid %}
+            {% if not attendee.invoice.is_paid %}
             <tr class="danger">
-                <th>Total til betaling:</th><th>{{invoice.unpaid}},-</th>
+                <th>Total til betaling:</th><th>{{attendee.invoice.unpaid}},-</th>
             </tr>
             {% endif %}
 
-            {% if invoice.is_overpaid %}
+            {% if attendee.invoice.is_overpaid %}
             <tr class="danger">
-                <th>Total til udbetaling:</th><th>{{invoice.overpaid}},-</th>
+                <th>Total til udbetaling:</th><th>{{attendee.invoice.overpaid}},-</th>
             </tr>
             {% endif %}
 
         </table>
-    {% endwith %}
 
     </div>
 

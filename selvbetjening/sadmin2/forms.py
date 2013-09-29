@@ -35,9 +35,12 @@ class S2Layout(Layout):
 
     def render(self, *args, **kwargs):
 
+        form = args[0]
         fields = super(S2Layout, self).render(*args, **kwargs)
 
-        return render_to_string(self.template, {'layout': self, 'fields': fields})
+        return render_to_string(self.template, {'layout': self,
+                                                'fields': fields,
+                                                'form': form})
 
 
 class S2Field(Field):
@@ -53,9 +56,14 @@ class S2Field(Field):
 
 class S2Fieldset(Fieldset):
 
-    template = "sadmin2/generic/parts/form_fieldset.html"
-
     def __init__(self, name, *args, **kwargs):
+        collapse = kwargs.pop('collapse', True)
+        show_help_text = kwargs.pop('show_help_text', True)
+
+        if not show_help_text:
+            kwargs['css_class'] = ' '.join([kwargs.get('css_class', ''), 'hide-help-block'])
+
+        self.template = "sadmin2/generic/parts/form_fieldset_collapse.html" if collapse else "sadmin2/generic/parts/form_fieldset.html"
 
         args = [(S2Field(arg) if isinstance(arg, str) else arg) for arg in args]
         super(S2Fieldset, self).__init__(name, *args, **kwargs)
@@ -354,6 +362,7 @@ class OptionForm(forms.ModelForm):
 
     class Meta:
         model = Option
+        exclude = ('group', 'order')
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 2}),
@@ -361,12 +370,10 @@ class OptionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
 
-        if 'instance' in kwargs:
-            self.Meta.exclude = ('group', 'order')
-        else:
-            self.Meta.exclude = ('group', 'type', 'order')
-
         super(OptionForm, self).__init__(*args, **kwargs)
+
+        if 'instance' in kwargs:
+            del self.fields['type']
 
         self.helper = S2FormHelper(horizontal=True)
 
@@ -421,3 +428,16 @@ class AttendeeCommentForm(forms.ModelForm):
 
     helper.add_layout(layout)
     helper.add_input(S2SubmitCreate())
+
+
+def attendee_selection_helper_factory(option_group, visible_fields):
+
+    layout = S2Layout(
+        S2Fieldset(option_group.name, *visible_fields, collapse=False, show_help_text=False)
+    )
+
+    helper = S2FormHelper(horizontal=True)
+    helper.add_layout(layout)
+    helper.form_tag = False
+
+    return helper
