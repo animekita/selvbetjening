@@ -101,6 +101,7 @@
 
 
 """
+from django.core.exceptions import ValidationError
 
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -197,7 +198,8 @@ class Option(models.Model):
 
     # Effects
 
-    price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    price = models.DecimalField(default=0, max_digits=6, decimal_places=2,
+                                help_text=_('This option will automatically be visible in user invoices and at check-in if a non-zero price is set.<br/><strong>Updating the price will affect existing attendees, and you are strongly encuraged to inform all attendees of such a change by e-mail.</strong>'))
 
     @property
     def selections(self):
@@ -206,6 +208,28 @@ class Option(models.Model):
     @property
     def suboptions(self):
         return self.suboption_set.all()
+
+    def save(self, *args, **kwargs):
+
+        # Invariants - enforce a number of invariants, silently
+        # Yes that is bad, however some parts of the user interface is easier if this is silent
+
+        # Edit permission expects view permission
+        if self.in_scope_edit_registration:
+            self.in_scope_view_registration = True
+
+        if self.in_scope_edit_manage_waiting or \
+                self.in_scope_edit_manage_accepted or \
+                self.in_scope_edit_manage_attended:
+
+            self.in_scope_view_manage = True
+
+        # If the price is set then this MUST be visible on the user and system invoices (this one we apply silently)
+        if self.price > 0:
+            self.in_scope_view_user_invoice = True
+            self.in_scope_view_system_invoice = True
+
+        super(Option, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s: %s' % (self.group.event.title, self.name)
