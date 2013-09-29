@@ -56,8 +56,7 @@ breadcrumbs = {
                   'url': 'sadmin2:dashboard'},
 
     'events': {'name': _('Events'),
-               'url': 'sadmin2:events_list',
-               'parent': 'dashboard'},
+               'url': 'sadmin2:events_list'},
 
     'events_create': {'name': _('Create'),
                       'url': 'sadmin2:events_create',
