@@ -31,11 +31,15 @@ def event_overview(request, event_pk):
     total = sum_attendee_payment_status(event.attendees)
 
     # returns a set of dictionaries with {'state': x, 'is_new': y, 'count': z}
-    status = Attend.objects.all().values('state', 'is_new').annotate(count=Count('pk'))
+    status = Attend.objects.filter(event=event).values('state', 'is_new').annotate(count=Count('pk'))
     status_flat = {}
 
     for item in status:
         status_flat['%s_new' % item['state'] if item['is_new'] else item['state']] = item['count']
+
+    for item in status:
+        if item['is_new']:
+            status_flat[item['state']] += item['count']
 
     return render(request,
                   'sadmin2/event/overview.html',
