@@ -86,10 +86,12 @@ def event_selections(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
+    # TODO rewrite this to use annotations to reduce the number of db queries
+
     option_groups = []
-    for option_group in event.optiongroups:
+    for option_group in event.optiongroups.prefetch_related('option_set'):
         options = []
-        for option in option_group.options:
+        for option in option_group.option_set.all():
             count = option.selections.count()
             waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
             accepted = option.selections.filter(attendee__state=AttendState.accepted).count()

@@ -36,12 +36,12 @@ def dynamic_selections(scope, event, attendee, option_group=None, as_dict=False)
     If as_dict is True then it is returned as a dictionary with option.pk as key
     """
 
-    selections = Selection.objects.filter(attendee=attendee, option__group__event=event)
+    selections = Selection.objects.filter(attendee=attendee, option__group__event=event).select_related('option')
 
     if option_group is not None:
         selections = selections.filter(option__group=option_group)
 
-    options = Option.objects.filter(group__event=event).filter(**{scope: True})
+    options = Option.objects.filter(group__event=event).filter(**{scope: True}).select_related('group')
 
     if option_group is not None:
         options = options.filter(group=option_group)
@@ -67,10 +67,14 @@ def dynamic_selections_formset_factory(event, *args, **kwargs):
 
     form_classes = []
 
-    for option_group in event.optiongroups.all():
+    for option_group in event.optiongroups.all().prefetch_related('option_set'):
         form_classes.append(dynamic_selections_form_factory(option_group, *args, **kwargs))
 
     def init(self, *args, **kwargs):
+        if 'attendee' in kwargs:
+            # this is an optimization such that each group don't fetch this list again
+            kwargs['selections'] = kwargs['attendee'].selection_set.all().select_related('option')
+
         self.instances = [form_class(*args, **kwargs) for form_class in form_classes]
 
     def is_valid(self):
@@ -101,7 +105,12 @@ def dynamic_selections_form_factory(option_group_instance, helper_factory=None):
         if self.attendee is not None:
             initial = {}
 
-            for selection in Selection.objects.filter(attendee=self.attendee).select_related('option'):
+            selections = kwargs.pop('selections', None)
+
+            if selections is None:
+                selections = self.attendee.selection_set.all().select_related('option')
+
+            for selection in selections:
                 if selection.option.type == 'boolean':
                     initial[_pack_id('option', selection.option.pk)] = True
                 elif selection.option.type == 'text':
@@ -130,9 +139,9 @@ def dynamic_selections_form_factory(option_group_instance, helper_factory=None):
 
     if helper_factory is not None:
         fields['helper'] = helper_factory(option_group_instance,
-                                          [_pack_id('option', option.pk) for option in option_group_instance.options])
+                                          [_pack_id('option', option.pk) for option in option_group_instance.option_set.all()])
 
-    for option in option_group_instance.options:
+    for option in option_group_instance.option_set.all():
         field_id, field, clean_callback, save_callback = _option_field_builder(option)
 
         fields[field_id] = field
