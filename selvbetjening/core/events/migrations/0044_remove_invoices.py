@@ -3,77 +3,113 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+import pprint
+
 
 class Migration(DataMigration):
+
+    def does_line_match_selections(self, line, selections):
+
+        index = -1
+
+        for i in xrange(0, len(selections)):
+            if selections[i].option.name in line.description:
+                index = i
+                break
+
+        if index == -1:
+            return False
+        else:
+            del selections[index]
+            return True
+
+    def match_with_existing_options(self, line, options, attendee, orm):
+
+        for option in options:
+
+            if option.name in line.description and option.price == line.price:
+
+                instance, created = orm['events.Selection'].objects.get_or_create(
+                    attendee=attendee,
+                    option=option
+                )
+
+                assert created
+
+                return True
+
+        return False
 
     def forwards(self, orm):
 
         for event in orm['events.Event'].objects.all():
-
-            # For all legacy systems (pre Selvbetjening 8) we want to preserve any data available in the
-            # invoices not present in the selections
-
-            lines = set()  # (name, price)
-
-            for line in orm['invoice.InvoiceLine'].objects.filter(invoice__attend__event=event):
-
-                lines.add((line.description, line.price))
-
-            missing_lines = []
-
-            for description, price in lines:
-
-                # Sometimes we add prices and suboptions to the line,
-                # lets search using only the base name
-                description = description.split('(')[0].strip()
-
-                # we also have cases where we prefix with the event name
-                if event.title in description and ':' in description:
-                    description = description.split(':')[1].strip()
-
-                if not orm['events.Option'].objects.\
-                    filter(group__event=event).\
-                    filter(name__icontains=description).\
-                    filter(price=price):
-
-                    missing_lines.append((description, price))
 
             try:
                 option_group = orm['events.OptionGroup'].objects.get(event=event, is_special=True)
             except orm['events.OptionGroup'].DoesNotExist:
                 option_group = orm['events.OptionGroup'].objects.create(event=event, is_special=True, order=-100)
 
-            for description, price in missing_lines:
+            # For all legacy systems (pre Selvbetjening 8) we want to preserve any data available in the
+            # invoices not present in the selections
 
-                # add option
+            new_options = []
 
-                option = orm['events.Option'].objects.create(
-                    group=option_group,
-                    name=description,
-                    price=price,
+            for attendee in orm['events.Attend'].objects.filter(event=event).select_related():
 
-                    in_scope_view_registration=False,
-                    in_scope_view_manage=False,
-                    in_scope_view_user_invoice=True,
-                    in_scope_view_system_invoice=True,
+                selections = list(attendee.selection_set.all())
 
-                    in_scope_edit_registration=False,
-                    in_scope_edit_manage_waiting=False,
-                    in_scope_edit_manage_accepted=False,
-                    in_scope_edit_manage_attended=False
-                )
+                for line in attendee.invoice.line_set.all():
 
-                # select option for all attendees
+                    # for each line we
+                    # 1. match with a selection
 
-                for attendee in orm['events.Attend'].objects.\
-                    filter(event=event).\
-                    filter(invoice__line_set__description=description).\
-                    filter(invoice__line_set__price=price).distinct():
+                    if self.does_line_match_selections(line, selections):
+                        # match, just continue
+                        pass
 
-                    orm['events.selection'].objects.create(
-                        option=option,
-                        attendee=attendee
-                    )
+                    # 2. match with an existing option
+
+                    elif self.match_with_existing_options(line, new_options, attendee, orm):
+                        # match, just continue
+                        pass
+
+                    # 3. create a new option
+
+                    else:
+
+                        description = line.description
+
+                        # we also have cases where we prefix with the event name
+                        if event.title in description and ':' in description:
+                            description = description.split(':')[1].strip()
+
+                        option = orm['events.Option'].objects.create(
+                            group=option_group,
+                            name=description,
+                            price=line.price,
+
+                            in_scope_view_registration=False,
+                            in_scope_view_manage=False,
+                            in_scope_view_user_invoice=True,
+                            in_scope_view_system_invoice=True,
+
+                            in_scope_edit_registration=False,
+                            in_scope_edit_manage_waiting=False,
+                            in_scope_edit_manage_accepted=False,
+                            in_scope_edit_manage_attended=False
+                        )
+
+                        new_options.append(option)
+
+                        orm['events.Selection'].objects.create(
+                            option=option,
+                            attendee=attendee
+                        )
+
+                # check that all selections have been identified using lines, if not we have an error and should stop
+
+                assert len(selections) == 0
+
 
     def backwards(self, orm):
         "Write your backwards methods here."
