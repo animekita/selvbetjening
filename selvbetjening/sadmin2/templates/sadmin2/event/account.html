@@ -58,20 +58,20 @@
     <tr>
         <th>#</th>
         <th>Username</th>
-        <th>Invoice total</th>
+        <th>Price</th>
         <th>Paid</th>
         <th>+/-</th>
     </tr>
 
-    {% for invoice in invoices %}
+    {% for attendee in attendees %}
 
-    {% if show_regular_attendees or not invoice.is_paid %}
+    {% if show_regular_attendees or not attendee.is_paid %}
     <tr>
-        <td>{{ invoice.user.pk }}</td>
-        <td>{{ invoice.user.username }}</td>
-        <td>{{ invoice.total_price | intcomma }},-</td>
-        <td>{{ invoice.paid | intcomma }},-</td>
-        <td>{% if not invoice.is_paid %}{{ invoice.unpaid | intcomma }},-{% endif %}</td>
+        <td>{{ attendee.user.pk }}</td>
+        <td>{{ attendee.user.username }}</td>
+        <td>{{ attendee.price | intcomma }},-</td>
+        <td>{{ attendee.paid | intcomma }},-</td>
+        <td>{% if not attendee.is_paid %}{{ attendee.unpaid | intcomma }},-{% endif %}</td>
     </tr>
     {% endif %}
 

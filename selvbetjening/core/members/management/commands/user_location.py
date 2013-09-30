@@ -9,6 +9,7 @@ from selvbetjening.core.members.shortcuts import get_or_create_profile
 
 API_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?address=%s&sensor=false'
 
+
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         users = User.objects.filter(location=None)

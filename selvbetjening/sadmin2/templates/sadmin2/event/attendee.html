@@ -35,12 +35,12 @@
 
         </tr>
 
-        {% if attendee.invoice.in_balance %}
+        {% if attendee.in_balance %}
         <tr class="success">
             <td>Betaling</td>
             <td><strong>Betalt</strong></td>
         </tr>
-        {% else %}{% if attendee.invoice.is_paid %}
+        {% else %}{% if attendee.is_paid %}
         <tr class="danger">
             <td>Betaling</td>
             <td>
@@ -48,7 +48,7 @@
                             class="btn btn-danger pull-right"
                             name="action" value="pay">Beløb tilbagebetalt</button>
 
-                <strong>Til <strong>ud</strong>betaling ({{attendee.invoice.overpaid}},-)</strong>
+                <strong>Til <strong>ud</strong>betaling ({{attendee.overpaid}},-)</strong>
 
             </td>
         </tr>
@@ -60,7 +60,7 @@
                             class="btn btn-danger pull-right"
                             name="action" value="pay">Beløb betalt</button>
 
-                <strong>Til betaling ({{attendee.invoice.unpaid}},-)</strong>
+                <strong>Til betaling ({{attendee.unpaid}},-)</strong>
             </td>
         </tr>
         {% endif %}{% endif %}
@@ -106,21 +106,21 @@
                 <th>Heraf betalt:</th><th>{{attendee.paid}},-</th>
             </tr>
 
-            {% if attendee.invoice.in_balance %}
+            {% if attendee.in_balance %}
             <tr class="success">
                 <th colspan="2">Denne invoice er betalt</th>
             </tr>
             {% endif %}
 
-            {% if not attendee.invoice.is_paid %}
+            {% if not attendee.is_paid %}
             <tr class="danger">
-                <th>Total til betaling:</th><th>{{attendee.invoice.unpaid}},-</th>
+                <th>Total til betaling:</th><th>{{attendee.unpaid}},-</th>
             </tr>
             {% endif %}
 
-            {% if attendee.invoice.is_overpaid %}
+            {% if attendee.is_overpaid %}
             <tr class="danger">
-                <th>Total til udbetaling:</th><th>{{attendee.invoice.overpaid}},-</th>
+                <th>Total til udbetaling:</th><th>{{attendee.overpaid}},-</th>
             </tr>
             {% endif %}
 

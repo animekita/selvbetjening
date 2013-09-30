@@ -3,10 +3,9 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext as _
 from django.db import models
-
-from selvbetjening.core.invoice.models import Invoice
 
 from event import Event, AttendeeAcceptPolicy
 
@@ -29,10 +28,21 @@ class AttendState(object):
 
 class AttendManager(models.Manager):
 
-    def all_related(self):
-        return self.all().select_related().\
-            prefetch_related('invoice__payment_set').\
-            prefetch_related('invoice__line_set')
+    def recalculate_aggregations_price(self, attendees):
+
+        attendees = attendees.annotate(price_actual=Sum('selection__option__price'))
+
+        for attendee in attendees:
+            attendee.price = attendee.price_actual if attendee.price_actual is not None else 0
+            attendee.save()
+
+    def recalculate_aggregations_paid(self, attendees):
+
+        attendees = attendees.annotate(paid_actual=Sum('payment__amount'))
+
+        for attendee in attendees:
+            attendee.paid = attendee.paid_actual if attendee.paid_actual is not None else 0
+            attendee.save()
 
     def can_register_to_event(self, event):
 
@@ -51,10 +61,6 @@ class Attend(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(User)
 
-    # TODO add a new state such that deleted attendences still exist (such that we can pay people back)
-    # TODO remove invoices
-    invoice = models.ForeignKey(Invoice, blank=True)
-
     state = models.CharField(max_length=32,
                              choices=AttendState.get_choices(),
                              default=AttendState.waiting)
@@ -72,15 +78,42 @@ class Attend(models.Model):
 
     changed = models.DateTimeField(null=True, blank=True)
 
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    paid = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+
+    # Payment inspections
+
+    @property
+    def unpaid(self):
+        return self.price - self.paid
+
+    @property
+    def overpaid(self):
+        return self.paid - self.price
+
+    # TODO should we reduce the set of inspections a bit?
+    def is_paid(self):
+        return self.paid >= self.price
+
+    def in_balance(self):
+        return self.paid == self.price
+
+    def is_overpaid(self):
+        return self.paid > self.price
+
+    def is_partial(self):
+        return self.paid > 0 and not self.is_paid()
+
+    def is_unpaid(self):
+        return self.paid == 0 and not self.price == 0
+
+    def recalculate_price(self):
+        result = self.selections.aggregate(price=Sum('option__price'))
+
+        self.price = result['price']
+        self.save()
+
     objects = AttendManager()
-
-    @property
-    def price(self):
-        return self.invoice.total_price
-
-    @property
-    def paid(self):
-        return self.invoice.paid
 
     @property
     def selections(self):
@@ -106,14 +139,6 @@ class Attend(models.Model):
         self.selection_set.filter(option=option).delete()
 
     def save(self, *args, **kwargs):
-
-        try:
-            invoice_set = self.invoice is not None
-        except Invoice.DoesNotExist:
-            invoice_set = False
-
-        if not invoice_set:
-            self.invoice = Invoice.objects.create(name=unicode(self.event), user=self.user)
 
         # TODO this mechanism does not seem to robust, do we ever update existing entries to have a correct value?
         if self.is_new is None:

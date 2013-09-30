@@ -1,7 +1,13 @@
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 
-from models import Event, Attend
+from models import Event, Attend, suspend_price_updates, resume_price_updates
+
+__ALL__ = ('get_event_from_id',
+           'event_registration_open_required_ext',
+           'event_registration_allowed_required',
+           'event_attendance_required',
+           'suspend_automatic_attendee_price_updates')
 
 
 def get_event_from_id(view_func):
@@ -44,6 +50,7 @@ def event_registration_allowed_required(view_func):
 
     return check_event_registration
 
+
 def event_attendance_required(view_func):
     def check_event_attendance(request, event, *args, **kwargs):
         if event.is_attendee(request.user):
@@ -54,3 +61,18 @@ def event_attendance_required(view_func):
                                       context_instance=RequestContext(request))
 
     return check_event_attendance
+
+
+def suspend_automatic_attendee_price_updates(func):
+    def _disable_updates(*args, **kw):
+        try:
+            suspend_price_updates()
+
+            res = func(*args, **kw)
+            return res
+        except:
+            raise
+        finally:
+            resume_price_updates()
+
+    return _disable_updates

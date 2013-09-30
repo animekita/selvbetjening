@@ -58,7 +58,7 @@ Are you sure you want to do this?
         autofixture.create(OptionGroup, 10)
         autofixture.create(Option, 30)
 
-        autofixture.create(Attend, 300, generate_fk=['invoice'])
+        autofixture.create(Attend, 300)
         autofixture.create(Selection, 500)
 
 

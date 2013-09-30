@@ -18,11 +18,11 @@
         {% endifequal %}
     </td>
     <td>
-        {% if attendee.invoice.in_balance %}
+        {% if attendee.in_balance %}
         <span class="label label-success">Betalt</span>
-        {% elif attendee.invoice.is_overpaid %}
+        {% elif attendee.is_overpaid %}
         <span class="label label-warning">Betalt for meget</span>
-        {% elif attendee.invoice.is_partial %}
+        {% elif attendee.is_partial %}
         <span class="label label-warning">Betalt for lidt</span>
         {% else %}
         <span class="label label-danger">Ubetalt</span>

@@ -9,13 +9,11 @@ from django.views.defaults import RequestContext
 from django.core.urlresolvers import reverse
 from django.forms.formsets import formset_factory
 from django.conf import settings
-from django.contrib.auth.models import User
 
 from selvbetjening.core.members.models import UserLocation
 
 from selvbetjening.core.events.models import Event, AttendState,\
-     payment_registered_source, Attend
-from selvbetjening.core.invoice.models import Invoice, Payment
+     payment_registered_source, Attend, Payment
 
 from selvbetjening.sadmin.base import admin_formize_set, graph
 from selvbetjening.sadmin.base.sadmin import SModelAdmin, main_menu
@@ -26,6 +24,7 @@ from selvbetjening.sadmin.events.admins.attendee import AttendeeAdmin
 from selvbetjening.sadmin.events.admins.optiongroup import OptionGroupAdmin
 from selvbetjening.sadmin.events.admins.group import GroupAdmin
 from selvbetjening.sadmin.events.forms import InvoiceFormattingForm, RegisterPaymentForm
+
 
 class EventAdmin(SModelAdmin):
     class Meta:
@@ -190,7 +189,7 @@ class EventAdmin(SModelAdmin):
         statistics = {}
 
         # attendees
-        attendees = Attend.objects.all_related().filter(event=event_pk).prefetch_related('user__attend_set')
+        attendees = Attend.objects.all().select_related().filter(event=event_pk).prefetch_related('user__attend_set')
         attendees_count = attendees.count()
 
         def attendee_statistics(state, identifier):

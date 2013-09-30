@@ -1,18 +1,43 @@
+
+try:
+    import thread
+except ImportError:
+    import dummy_thread as thread
+
+from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core.invoice.signals import populate_invoice
-from selvbetjening.core.invoice.models import Payment
 from selvbetjening.core.mailcenter.sources import Source
 
 from event import Event, Group
 from attendee import Attend, AttendState, AttendeeComment, AttendStateChange, AttendeeAcceptPolicy
 from options import OptionGroup, Option, SubOption, Selection
+from payment import Payment
 from payment_keys import request_attendee_pks_signal, find_attendee_signal
 
 __ALL__ = ['Group', 'Event', 'Attend', 'OptionGroup', 'Option', 'SubOption', 'Selection', 'AttendComment',
-           'AttendState', 'AttendStateChange', 'request_attendee_pks_signal', 'find_attendee_signal']
+           'AttendState', 'AttendStateChange', 'request_attendee_pks_signal', 'find_attendee_signal',
+           'suspend_price_updates', 'resume_price_updates']
 
+# Global update modes
+# This is used to disable automatic updates of attendee prices
+# through selection and deselection of options.
+# Only use these through the disable/enable provided in decorators.
+
+_disable_automatic_price_updates = {}
+
+
+def is_price_updates_suspended():
+    return _disable_automatic_price_updates.get(thread.get_ident(), False)
+
+
+def suspend_price_updates():
+    _disable_automatic_price_updates[thread.get_ident()] = True
+
+
+def resume_price_updates():
+    _disable_automatic_price_updates.pop(thread.get_ident(), None)
 
 # email sources
 
@@ -27,81 +52,61 @@ payment_registered_source = Source('payment_registered',
 
 # signal handlers
 
+@receiver(post_save, sender=Selection, dispatch_uid='increase_price_on_selection')
+def increase_price_on_selection(sender, **kwargs):
+    selection = kwargs['instance']
 
-def update_invoice_handler(sender, **kwargs):
-    instance = kwargs['instance']
+    if is_price_updates_suspended():
+        return
 
-    try:
-        instance.attendee.invoice.update()
-    except Attend.DoesNotExist:
-        pass
-
-post_delete.connect(update_invoice_handler, sender=Selection)
-post_save.connect(update_invoice_handler, sender=Selection)
-
-
-def update_invoice_with_attend_handler(sender, **kwargs):
-    invoice = kwargs['invoice']
-
-    for attendee in Attend.objects.filter(invoice=invoice):
-
-        selections = attendee.selections.order_by('option__group__order',
-                                                  'option__order',
-                                                  'option__pk')
-
-        selected_groups = set()
-        selected_options = set()
-
-        for selection in selections:
-            if selection.option.group.package_price > 0:
-                selected_groups.add(selection.option.group)
-                selected_options.add(selection.option.pk)
-
-        unselected_options = Option.objects.filter(group__in=selected_groups).\
-                                            exclude(pk__in=selected_options)
-
-        for option in unselected_options:
-            try:
-                selected_groups.remove(option.group)
-            except KeyError:
-                pass
-
-        last_group = None
-
-        for selection in selections:
-
-            if last_group is not None and \
-                    last_group != selection.option.group and \
-                    last_group.package_price > 0 and \
-                    last_group in selected_groups:
-
-                invoice.add_line(description=unicode(_(u'Package Discount')),
-                                 group_name=unicode(last_group.name),
-                                 price=last_group.package_price,
-                                 managed=True)
-
-            invoice.add_line(description=unicode(selection.option.name),
-                             group_name=unicode(selection.option.group.name),
-                             price=selection.price,
-                             managed=True)
-
-            last_group = selection.option.group
-
-populate_invoice.connect(update_invoice_with_attend_handler)
+    if selection.price != 0:
+        selection.attendee.price += selection.price
+        selection.attendee.save()
 
 
-def update_state_on_payment(sender, **kwargs):
+@receiver(post_delete, sender=Selection, dispatch_uid='decrease_price_on_deselect')
+def decrease_price_on_deselect(sender, **kwargs):
+    selection = kwargs['instance']
+
+    if is_price_updates_suspended():
+        return
+
+    if selection.price != 0:
+        selection.attendee.price -= selection.price
+        selection.attendee.save()
+
+
+@receiver(post_save, sender=Payment, dispatch_uid='update_paid_and_update_state_on_payment')
+def update_paid_and_update_state_on_payment(sender, **kwargs):
     payment = kwargs['instance']
     created = kwargs['created']
 
+    if payment.attendee is None:
+        return
+
     if created:
-        attends = Attend.objects.filter(invoice=payment.invoice)
-        attends = attends.filter(event__move_to_accepted_policy=AttendeeAcceptPolicy.on_payment)
-        attends = attends.filter(state=AttendState.waiting)
+        attendee = payment.attendee
 
-        for attend in attends:
-            attend.state = AttendState.accepted
-            attend.save()
+        attendee.paid += payment.amount
+        attendee.save()
 
-post_save.connect(update_state_on_payment, sender=Payment)
+        if attendee.event.move_to_accepted_policy == AttendeeAcceptPolicy.on_payment and \
+            attendee.state == AttendState.waiting:
+
+            attendee.state = AttendState.accepted
+            attendee.save()
+
+
+@receiver(post_save, sender=Option, dispatch_uid='update_prices_on_price_change')
+def update_prices_on_price_change(self, **kwargs):
+    option = kwargs['instance']
+    created = kwargs['created']
+
+    if created:
+        return
+
+    Attend.objects.recalculate_aggregations_price(
+        Attend.objects.filter(selection__option=option)
+    )
+
 

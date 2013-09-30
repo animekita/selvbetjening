@@ -9,15 +9,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
-from core.events.dynamic_selections import dynamic_selections, SCOPE, dynamic_selections_form_factory, dynamic_selections_formset_factory
+from core.events.dynamic_selections import dynamic_selections, SCOPE, dynamic_selections_formset_factory
+from core.events.utils import sum_attendee_payment_status
 
-from selvbetjening.core.invoice.models import Payment
-from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup
-from selvbetjening.core.invoice.utils import sum_invoices
-from selvbetjening.core.invoice.models import Invoice
+from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment
 
 from selvbetjening.sadmin.base import graph
-from selvbetjening.sadmin2.forms import EventForm, InvoiceFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
+from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
     AttendeeCommentForm, attendee_selection_helper_factory
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
@@ -30,12 +28,7 @@ def event_overview(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    invoices = Invoice.objects.select_related().\
-        prefetch_related('payment_set').\
-        prefetch_related('line_set').\
-        filter(attend__in=event.attendees)
-
-    total = sum_invoices(invoices)
+    total = sum_attendee_payment_status(event.attendees)
 
     # returns a set of dictionaries with {'state': x, 'is_new': y, 'count': z}
     status = Attend.objects.all().values('state', 'is_new').annotate(count=Count('pk'))
@@ -65,7 +58,7 @@ def event_attendees(request, event_pk):
     columns = ('user__username', 'user__first_name', 'user__last_name', 'user__email')
     conditions = ('selection__option__pk', 'state')
 
-    queryset = event.attendees.select_related('user', 'invoice').all()
+    queryset = event.attendees.select_related('user').all()
 
     context = {
         'sadmin2_menu_main_active': 'events',
@@ -322,18 +315,13 @@ def event_account(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
 
-    invoice_queryset = Invoice.objects.select_related(). \
-        prefetch_related('payment_set'). \
-        prefetch_related('line_set'). \
-        filter(attend__event=event)
-
     if request.method == 'POST':
-        formatting_form = InvoiceFormattingForm(request.REQUEST, invoices=invoice_queryset)
+        formatting_form = AttendeeFormattingForm(request.REQUEST, event=event, attendees=event.attendees)
         formatting_form.is_valid()
     else:
-        formatting_form = InvoiceFormattingForm(invoices=invoice_queryset)
+        formatting_form = AttendeeFormattingForm(event=event, attendees=event.attendees)
 
-    invoices, line_groups, total, show_regular_attendees, show_irregular_attendees, attendee_filter_label = formatting_form.format()
+    attendees, line_groups, total, show_regular_attendees, show_irregular_attendees, attendee_filter_label = formatting_form.format()
 
     return render(request,
                   'sadmin2/event/account.html',
@@ -344,7 +332,7 @@ def event_account(request, event_pk):
                       'sadmin2_menu_tab_active': 'account',
 
                       'event': event,
-                      'invoices': invoices.order_by('user__username'),
+                      'attendees': attendees.order_by('user__username'),
 
                       'line_groups': line_groups,
                       'total': total,
@@ -594,10 +582,11 @@ def event_attendee(request, event_pk, attendee_pk):
         if action == 'pay':
 
             Payment.objects.create(
-                amount=attendee.invoice.unpaid,
+                user=attendee.user,
+                attendee=attendee,
+                amount=attendee.unpaid,
                 note='Manual payment',
-                signee=request.user,
-                invoice=attendee.invoice
+                signee=request.user
             )
 
             return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}))
@@ -621,7 +610,7 @@ def event_attendee_payments(request, event_pk, attendee_pk):
     event = get_object_or_404(Event, pk=event_pk)
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
-    payments = attendee.invoice.payment_set.all()
+    payments = attendee.payment_set.all()
 
     if request.method == 'POST':
 
@@ -632,7 +621,8 @@ def event_attendee_payments(request, event_pk, attendee_pk):
             payment = form.save(commit=False)
             payment.note = 'Manual payment'
             payment.signee = request.user
-            payment.invoice = attendee.invoice
+            payment.attendee = attendee
+            payment.user = attendee.user
             payment.save()
 
             messages.success(request, _('Payment registered'))

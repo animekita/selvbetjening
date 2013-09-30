@@ -46,7 +46,7 @@ def dynamic_selections(scope, event, attendee, option_group=None, as_dict=False)
     if option_group is not None:
         options = options.filter(group=option_group)
 
-    options = options.order_by('group__order', 'order')
+    options = options.order_by('-group__is_special', 'group__order', 'order')
 
     result = OrderedDict()
 

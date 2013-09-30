@@ -5,11 +5,10 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout
 
-from selvbetjening.core.invoice.models import Payment
-
 from selvbetjening.viewbase.forms.helpers import SFieldset
 
-from models import AttendState
+from models import AttendState, Payment
+
 
 class OptionGroupForm(forms.Form):
     def __init__(self, optiongroup, *args,  **kwargs):
