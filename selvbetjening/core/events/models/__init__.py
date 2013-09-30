@@ -98,7 +98,7 @@ def update_paid_and_update_state_on_payment(sender, **kwargs):
 
 
 @receiver(post_save, sender=Option, dispatch_uid='update_prices_on_price_change')
-def update_prices_on_price_change(self, **kwargs):
+def update_prices_on_price_change(sender, **kwargs):
     option = kwargs['instance']
     created = kwargs['created']
 
