@@ -101,7 +101,6 @@
 
 
 """
-from django.core.exceptions import ValidationError
 
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -114,7 +113,7 @@ from attendee import Attend
 class OptionGroup(models.Model):
 
     class Meta:
-        ordering = ('order',)  # ordered by "order" ascending
+        ordering = ('-is_special', 'order',)  # ordered by "order" ascending (and always place specials first)
         app_label = 'events'
 
     event = models.ForeignKey(Event)

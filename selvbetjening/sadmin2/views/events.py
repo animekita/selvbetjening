@@ -22,10 +22,8 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
-from django.utils.safestring import mark_safe
 
-from selvbetjening.core.events.models import Event, payment_registered_source
-from selvbetjening.core.invoice.models import Payment
+from selvbetjening.core.events.models import Event, payment_registered_source, Payment
 
 from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
@@ -102,7 +100,7 @@ def register_payments(request):
 
             result = form.cleaned_data
 
-            payment = Payment.objects.create(invoice=result['attendee'].invoice,
+            payment = Payment.objects.create(attendee=result['attendee'],
                                              amount=result['payment'],
                                              signee=request.user)
 
@@ -114,7 +112,7 @@ def register_payments(request):
 
             messages.success(request, _('Payment for %s has been registered successfully') % attendee.user.username)
 
-            if not attendee.invoice.in_balance():
+            if not attendee.in_balance():
                 # TODO Add a link to the attendee overview
                 messages.warning(request, _('Payment did match the payment due. Please review the status of this person <a href="%s">here</a>') % '#')
 

@@ -9,10 +9,11 @@ from django.forms.extras.widgets import SelectDateWidget
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div, HTML
+from core.events.models import Selection
+from core.events.utils import sum_attendee_payment_status
 
-from selvbetjening.core.invoice.models import Payment
-from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, AttendeeComment
-from selvbetjening.core.invoice.utils import sum_invoices
+from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
+    AttendeeComment, Payment
 
 
 class S2FormHelper(FormHelper):
@@ -170,7 +171,7 @@ class EventForm(forms.ModelForm):
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
 
 
-class InvoiceFormattingForm(forms.Form):
+class AttendeeFormattingForm(forms.Form):
     FILTER_ATTENDED_CHOICES = [('attended_or_paid', _('Attended or has paid')),
                                ('all', _('All')),
                                ('only_attended', _('Only attended')),
@@ -196,29 +197,13 @@ class InvoiceFormattingForm(forms.Form):
     helper.add_input(submit)
 
     def __init__(self, *args, **kwargs):
-        self.invoices = kwargs.pop('invoices', [])
+        self.event = kwargs.pop('event')
+        self.attendees = kwargs.pop('attendees').select_related('user')
+        self.options = Option.objects.filter(group__event=self.event).order_by('-group__is_special', 'group__order', 'order')
 
-        super(InvoiceFormattingForm, self).__init__(*args, **kwargs)
+        super(AttendeeFormattingForm, self).__init__(*args, **kwargs)
 
-        self.distinct_lines = OrderedDict()
-
-        for invoice in self.invoices:
-            for line in invoice.line_set.all():
-                self.distinct_lines[self._get_distinct_line_name(line)] = (line.description, line.price)
-
-        self.fields['exclude_lines'].choices = [(line, line) for line in self.distinct_lines.keys()]
-
-    def _get_distinct_line_name(self, line):
-        if line.price > 0:
-            return '%s (%s,-)' % (line.description, line.price)
-        else:
-            return line.description
-
-    def clean(self):
-        for line in self.cleaned_data.get('exclude_lines', []):
-            del self.distinct_lines[line]
-
-        return self.cleaned_data
+        self.fields['exclude_lines'].choices = [(option.pk, '%s: %s' % (option.group.name, option.name)) for option in self.options]
 
     class LineGroup(object):
         def __init__(self, name, price):
@@ -249,11 +234,11 @@ class InvoiceFormattingForm(forms.Form):
 
         # filter invoice
         if attendee_filter == 'only_attended':
-            self.invoices = self.invoices.filter(attend__state=AttendState.attended)
+            self.attendees = self.attendees.filter(state=AttendState.attended)
         elif attendee_filter == 'not_attended':
-            self.invoices = self.invoices.exclude(attend__state=AttendState.attended)
+            self.attendees = self.attendees.exclude(state=AttendState.attended)
         elif attendee_filter == 'attended_or_paid':
-            self.invoices = self.invoices.filter(attend__state=AttendState.attended).filter(paid__gt=0)
+            self.attendees = self.attendees.filter(state=AttendState.attended).filter(paid__gt=0)
         elif attendee_filter == 'all':
             pass
         else:
@@ -275,22 +260,25 @@ class InvoiceFormattingForm(forms.Form):
 
         # Initialize empty line groups
         line_groups = OrderedDict()
+        excluded_options = self.cleaned_data.get('exclude_lines', [])
 
-        for key in self.distinct_lines:
-            line = self.distinct_lines[key]
-            line_groups[key] = self.LineGroup(line[0], line[1])
+        for option in self.options:
 
-        for invoice in self.invoices:
+            if option.pk in excluded_options:
+                continue
 
-            for line in invoice.line_set.all():
-                key = self._get_distinct_line_name(line)
+            line_groups[option.pk] = self.LineGroup(option.name, option.price)
 
-                if key in self.distinct_lines:
-                    line_groups[key].add(line)
+        pks = [attendee.pk for attendee in self.attendees.all()]
 
-        total = sum_invoices(self.invoices)
+        for selection in Selection.objects.filter(attendee__pk__in=pks).select_related('option', 'attendee'):
+            if selection.option.pk in line_groups:
+                line_groups[selection.option.pk].add(selection.attendee)
 
-        return self.invoices, line_groups.values(), total, show_regular_attendees, show_irregular_attendees, attendee_filter_label
+        total = sum_attendee_payment_status(self.attendees)
+
+        return self.attendees, line_groups.values(), total, \
+               show_regular_attendees, show_irregular_attendees, attendee_filter_label
 
 
 class RegisterPaymentForm(forms.Form):

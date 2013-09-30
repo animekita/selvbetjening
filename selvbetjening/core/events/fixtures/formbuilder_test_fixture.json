@@ -37,33 +37,14 @@
     },
     {
         "pk": 1,
-        "model": "invoice.invoice",
-        "fields": {
-            "name": "",
-            "user": 1,
-            "created_date": "2013-03-16 17:41:28",
-            "updated_date": "2013-03-16 17:41:28"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "invoice.invoice",
-        "fields": {
-            "name": "",
-            "user": 2,
-            "created_date": "2013-03-16 17:41:28",
-            "updated_date": "2013-03-16 17:41:28"
-        }
-    },
-    {
-        "pk": 1,
         "model": "events.attend",
         "fields": {
             "event": 1,
             "user": 1,
-            "invoice": 1,
             "state": "waiting",
-            "is_new": false
+            "is_new": false,
+            "paid": 0,
+            "price": 0
         }
     },
     {
@@ -72,9 +53,10 @@
         "fields": {
             "event": 1,
             "user": 2,
-            "invoice": 2,
             "state": "waiting",
-            "is_new": false
+            "is_new": false,
+            "paid": 0,
+            "price": 0
         }
     },
     {

@@ -57,19 +57,19 @@ class Event(models.Model):
     show_custom_signup_message = models.BooleanField(default=False)
     custom_signup_message = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee'
+        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
     )
 
     show_custom_change_message = models.BooleanField(default=False)
     custom_change_message = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee'
+        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
     )
 
     show_custom_status_page = models.BooleanField(default=False)
     custom_status_page = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, invoice_rev, attendee'
+        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
     )
 
     # Special

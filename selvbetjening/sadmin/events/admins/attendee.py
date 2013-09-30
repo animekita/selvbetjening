@@ -11,7 +11,7 @@ from selvbetjening.core.events.models import Event, Attend, AttendState, \
     request_attendee_pks_signal, attendes_event_source
 from selvbetjening.core.events.processor_handlers import change_selection_processors
 from selvbetjening.core.events.forms import OptionForms
-from selvbetjening.core.invoice.models import Payment
+
 
 from selvbetjening.sadmin.base.sadmin import SBoundModelAdmin
 from selvbetjening.sadmin.base.nav import LeafSPage, RemoteSPage

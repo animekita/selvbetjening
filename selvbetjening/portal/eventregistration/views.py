@@ -9,9 +9,9 @@ from django.template import Context, Template, RequestContext
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 
-from selvbetjening.core.invoice.decorators import disable_invoice_updates
 from selvbetjening.core.events.models import Event, Attend, attendes_event_source
 from selvbetjening.core.events import decorators as eventdecorators
+from selvbetjening.core.events.decorators import suspend_automatic_attendee_price_updates
 
 from forms import SignupForm, SignoffForm, OptionForms
 from processor_handlers import signup_processors, change_processors
@@ -51,7 +51,7 @@ def attendees(request, event,
 @eventdecorators.get_event_from_id
 @eventdecorators.event_registration_open_required
 @eventdecorators.event_registration_allowed_required
-@disable_invoice_updates
+@suspend_automatic_attendee_price_updates
 def signup(request, event,
            template_name='eventregistration/signup.html',
            form_class=SignupForm,
@@ -87,7 +87,7 @@ def signup(request, event,
 
             handler.save(attendee)
 
-            attendee.invoice.update(force=True)
+            attendee.recalculate_price()
 
             attendes_event_source.trigger(request.user, attendee=attendee)
 
@@ -109,7 +109,7 @@ def signup(request, event,
 @eventdecorators.get_event_from_id
 @eventdecorators.event_registration_open_required
 @eventdecorators.event_attendance_required
-@disable_invoice_updates
+@suspend_automatic_attendee_price_updates
 def signoff(request, event,
             template_name='eventregistration/signoff.html',
             success_page='eventregistration_information',
@@ -123,8 +123,6 @@ def signoff(request, event,
         if form.is_valid():
 
             attendee.delete()
-
-            attendee.invoice.update(force=True)
 
             messages.add_message(request, messages.INFO, _(u'You are now removed from the event.'))
 
@@ -140,7 +138,7 @@ def signoff(request, event,
 @eventdecorators.get_event_from_id
 @eventdecorators.event_registration_open_required
 @eventdecorators.event_attendance_required
-@disable_invoice_updates
+@suspend_automatic_attendee_price_updates
 def change_options(request, event,
                    success_page='eventregistration_status',
                    omit_event_id_on_success=False,
@@ -158,7 +156,7 @@ def change_options(request, event,
 
             handler.save()
 
-            attendee.invoice.update(force=True)
+            attendee.update()
 
             handler.postsave()
 
@@ -188,9 +186,7 @@ def view_invoice(request, event,
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    template_vars = {'invoice_rev':  attendee.invoice,
-                     'invoice': attendee.invoice,
-                     'event': event,
+    template_vars = {'event': event,
                      'user': attendee.user,
                      'attendee': attendee}
 

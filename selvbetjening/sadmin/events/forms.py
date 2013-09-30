@@ -3,8 +3,7 @@ from decimal import Decimal
 from django import forms
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core.events.models import AttendState, find_attendee_signal
-from selvbetjening.core.invoice.models import Payment
+from selvbetjening.core.events.models import AttendState, find_attendee_signal, Payment
 
 
 class InvoiceFormattingForm(forms.Form):
