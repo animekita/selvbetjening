@@ -122,7 +122,6 @@ INSTALLED_APPS = [
     'selvbetjening.core.database',
     'selvbetjening.core.events',
     'selvbetjening.core.members',
-    'selvbetjening.core.invoice',
     'selvbetjening.core.mailcenter',
 
     'selvbetjening.sadmin2',
