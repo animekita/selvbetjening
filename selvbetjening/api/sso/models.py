@@ -4,12 +4,14 @@ from django.utils.importlib import import_module
 from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, load_backend
 from django.contrib.auth.models import Group
 
+
 class Service(models.Model):
     id = models.CharField(max_length=16, primary_key=True)
     visible_groups = models.ManyToManyField(Group)
 
     def __unicode__(self):
         return unicode(self.id)
+
 
 def get_user_from_token(auth_token):
     engine = import_module(settings.SESSION_ENGINE)
@@ -25,6 +27,7 @@ def get_user_from_token(auth_token):
         return None
 
     return user
+
 
 def get_new_user_session(user):
     engine = import_module(settings.SESSION_ENGINE)
