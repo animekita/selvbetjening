@@ -12,11 +12,6 @@ INSTALLED_APPS.extend([
     'selvbetjening.portal.profile',
     'selvbetjening.portal.eventregistration',
 
-    'selvbetjening.sadmin.base',
-    'selvbetjening.sadmin.members',
-    'selvbetjening.sadmin.events',
-    'selvbetjening.sadmin.mailcenter',
-
     'selvbetjening.demo'
 ])
 

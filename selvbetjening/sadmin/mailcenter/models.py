@@ -1,4 +1,0 @@
-
-from admins.emailspecification import EmailSpecificationAdmin
-
-MailcenterRootAdmin = EmailSpecificationAdmin

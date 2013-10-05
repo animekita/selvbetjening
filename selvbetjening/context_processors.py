@@ -1,5 +1,4 @@
 from selvbetjening.core.members import messaging
-from selvbetjening.sadmin.base import sadmin
 
 
 def site_urls(request):
@@ -8,5 +7,4 @@ def site_urls(request):
             'DEBUG': settings.DEBUG,
             'VERSION': settings.VERSION,
             'session_message': messaging.read(request),
-            'sadmin_main_menu': sadmin.main_menu,
             'request': request}
