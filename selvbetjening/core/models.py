@@ -33,4 +33,4 @@ class ListField(models.TextField):
             for value in values:
                 super(ListField, self).validate(value, model_instance)
         else:
-            raise exceptions.ValidationError(self.error_messages['invalid_choice'] % value)
+            raise exceptions.ValidationError(self.error_messages['invalid_choice'] % values)
