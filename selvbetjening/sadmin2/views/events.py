@@ -63,6 +63,7 @@ def event_list_ajax(self, request, extra_context=None):
 
     return response
 
+
 @sadmin_prerequisites
 def event_create(request):
 

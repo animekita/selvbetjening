@@ -3,6 +3,7 @@ from decimal import Decimal
 from collections import OrderedDict
 
 from django import forms
+from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
@@ -11,6 +12,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div, HTML
 from core.events.models import Selection
 from core.events.utils import sum_attendee_payment_status
+from core.members.models import UserProfile
 
 from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
     AttendeeComment, Payment
@@ -429,3 +431,88 @@ def attendee_selection_helper_factory(option_group, visible_fields):
     helper.form_tag = False
 
     return helper
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+
+        widgets = {
+            'dateofbirth': SplitDateWidget(),
+        }
+
+        exclude = ('date_joined', 'last_login', 'password', 'user')
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'username'),
+            S2Fieldset(_('Personal info'),
+                       'first_name', 'last_name', 'sex', 'dateofbirth', collapse=False),
+            S2Fieldset(_('Contact'),
+                       'email', 'phonenumber', collapse=False),
+            S2Fieldset(_('Address'),
+                       'street', 'postalcode', 'city', 'country'),
+            S2Fieldset(_('Other'),
+                       'send_me_email', 'picture'),
+            S2Fieldset(_('Access'),
+                       'is_active', 'is_staff', 'is_superuser', 'groups'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+
+class PasswordForm(forms.Form):
+
+    password1 = forms.CharField(label=_("Password"),
+                                widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_("Password (again)"),
+                                widget=forms.PasswordInput)
+
+    helper = S2FormHelper(horizontal=True)
+
+    layout = S2Layout(
+        S2Fieldset(None,
+                   'password1', 'password2'))
+
+    helper.add_layout(layout)
+    helper.add_input(S2SubmitUpdate())
+
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop('instance')
+
+        super(PasswordForm, self).__init__(*args, **kwargs)
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1', None)
+        password2 = self.cleaned_data.get('password2', None)
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(_('The two password fields didn\'t match.'))
+
+        return password2
+
+    def save(self):
+        self.instance.set_password(self.cleaned_data['password1'])
+        self.instance.save()
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+
+    def __init__(self, *args, **kwargs):
+        super(GroupForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'name', 'permissions'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())

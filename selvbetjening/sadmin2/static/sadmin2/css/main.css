@@ -71,3 +71,7 @@ ol.breadcrumb li.active a {
 .hide-help-block .help-block {
     display: none;
 }
+.selectmultiple {
+    height: auto !important;
+    max-height: 8em !important;
+}

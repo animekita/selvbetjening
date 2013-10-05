@@ -1,0 +1,12 @@
+{% extends "sadmin2/generic/parts/search_inner.html" %}
+
+{% block rows %}
+
+{% for user in instances %}
+<tr onclick="document.location = '{% url "sadmin2:user" user.pk %}';" class="clickable">
+    <td><a href="{% url "sadmin2:user" user.pk %}">{{ user.username }}</a></td>
+    <td>{{ user.first_name }} {{ user.last_name }}</td>
+</tr>
+{% endfor %}
+
+{% endblock %}

@@ -55,6 +55,47 @@ breadcrumbs = {
     'dashboard': {'name': _('Dashboard'),
                   'url': 'sadmin2:dashboard'},
 
+    'users': {'name': _('Users'),
+              'url': 'sadmin2:users_list'},
+
+    'users_create': {'name': _('Create'),
+                     'url': 'sadmin2:users_create',
+                     'parent': 'users'},
+
+    'users_groups': {'name': _('Groups'),
+                     'url': 'sadmin2:users_groups_list',
+                     'parent': 'users'},
+
+    'users_groups_create': {'name': _('Create'),
+                            'url': 'sadmin2:users_groups_create',
+                            'parent': 'users_groups'},
+
+    'users_reports': {'name': _('Reports'),
+                      'parent': 'users'},
+
+    'users_reports_age': {'name': _('Age'),
+                          'url': 'sadmin2:users_reports_age',
+                          'parent': 'users_reports'},
+
+    'users_reports_address': {'name': _('Address'),
+                              'url': 'sadmin2:users_reports_address',
+                              'parent': 'users_reports'},
+
+    # Assumes: context[group], kwargs[group_pk]
+    'users_group': {'name_callback': lambda context: context['group'].name,
+                    'url_callback': url_callback('sadmin2:users_group', ('group_pk',)),
+                    'parent': 'users_groups'},
+
+    # Assumes: context[user], kwargs[user_pk]
+    'user': {'name_callback': lambda context: context['user'].username,
+             'url_callback': url_callback('sadmin2:user', ('user_pk',)),
+             'parent': 'users'},
+
+    # Assumes: context[user], kwargs[user_pk]
+    'user_password': {'name': _('Password'),
+                      'url_callback': url_callback('sadmin2:user_password', ('user_pk',)),
+                      'parent': 'user'},
+
     'events': {'name': _('Events'),
                'url': 'sadmin2:events_list'},
 
@@ -177,13 +218,39 @@ breadcrumbs = {
 
 sadmin2_menu_main = (
     {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
-    {'id': 'users', 'name': _('Users'), 'url': 'sadmin:auth_user_changelist'},
+    {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
     {'id': 'emails', 'name': _('Newsletters'), 'url': 'sadmin:mailcenter_emailspecification_changelist'}
 )
 
 sadmin2_menu_tab_events = (
     {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
     {'id': 'events_register_payments', 'name': _('Register Payment'), 'url': 'sadmin2:events_register_payments'}
+)
+
+sadmin2_menu_tab_users = (
+    {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
+    {'id': 'groups', 'name': _('Groups'), 'url': 'sadmin2:users_groups_list'},
+
+    {'id': 'reports',
+     'name': _('Reports'),
+     'dropdown': (
+         {'id': 'reports-age',
+          'name': _('Alder'),
+          'url_callback': url_callback('sadmin2:users_reports_age', ())},
+
+         {'id': 'reports-address',
+          'name': _('Address'),
+          'url_callback': url_callback('sadmin2:users_reports_address', ())},
+     )}
+)
+
+sadmin2_menu_tab_user = (
+    {'id': 'user',
+     'name': _('User'),
+     'url_callback': url_callback('sadmin2:user', ('user_pk', ))},
+    {'id': 'password',
+     'name': _('Password'),
+     'url_callback': url_callback('sadmin2:user_password', ('user_pk', ))}
 )
 
 sadmin2_menu_tab_attendee = (
