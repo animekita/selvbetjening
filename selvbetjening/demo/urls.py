@@ -15,7 +15,6 @@ sadmin.site.register('mailcenter', MailcenterRootAdmin)
 urlpatterns = patterns('',
     url(r'^$', profile_redirect, name='home'),
 
-    (r'^profil/opdater/forum/', include('selvbetjening.notify.vanillaforum.urls')),
     (r'^profil/', include('selvbetjening.portal.profile.urls')),
 
     (r'^bliv-medlem/', include('selvbetjening.portal.quickregistration.urls')),

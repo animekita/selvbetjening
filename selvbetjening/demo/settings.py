@@ -12,11 +12,6 @@ INSTALLED_APPS.extend([
     'selvbetjening.portal.profile',
     'selvbetjening.portal.eventregistration',
 
-    'selvbetjening.notify',
-    'selvbetjening.notify.concrete5',
-    'selvbetjening.notify.externaldjango',
-    'selvbetjening.notify.vanillaforum',
-
     'selvbetjening.sadmin.base',
     'selvbetjening.sadmin.members',
     'selvbetjening.sadmin.events',

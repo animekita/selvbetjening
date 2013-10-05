@@ -58,25 +58,3 @@ ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 # Remember to change this!
 SECRET_KEY = 'lic-@(-)mi^b&amp;**h1ggnbyya2qiivaop-@c#3@m3w%m1o73j8@'
 
-
-# Notify configurations
-
-"""
-NOTIFY_CONCRETE5['example'] = {'database_id' : 'DATABASE_ID'}
-"""
-NOTIFY_CONCRETE5 = []
-
-"""
-NOTIFY_PROFTPD['example'] = {'database_id' : 'DATABASE_ID',
-                             'default_gid' : 1,
-                             'default_uid' : 1,
-                             'ftp_dir' : '/var/ftp/',
-                             'username_format' : '%s@domain.tld'}
-"""
-NOTIFY_PROFTPD = []
-
-"""
-NOTIFY_VANILLAFORUM['example'] = {'database_id' : 'DATABASE_ID',
-                                  'default_role_id' : 'default_ROLE_ID'}
-"""
-NOTIFY_VANILLAFORUM = []
