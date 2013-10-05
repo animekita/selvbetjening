@@ -119,7 +119,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    'selvbetjening.core.database',
     'selvbetjening.core.events',
     'selvbetjening.core.members',
     'selvbetjening.core.mailcenter',
@@ -157,10 +156,6 @@ LOGGING = {
             },
         }
 }
-
-if not 'test' in sys.argv:
-    # disable database routers under test conditions
-    DATABASE_ROUTERS = ['selvbetjening.core.database.dbrouter.DatabaseRouter',]
 
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False

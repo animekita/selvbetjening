@@ -4,12 +4,10 @@ STATIC_DEBUG = DEBUG
 CRISPY_FAIL_SILENTLY = not DEBUG
 
 ADMINS = (
-# ('Your Name', 'your_email@example.com'),
+    # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
-
-import os
 
 DATABASES = {
     'default': {
@@ -17,15 +15,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'USER': 'root',
         'PASSWORD': ''
-        },
-    'ext_database1': {
-        'NAME': 'ext_database1',
-        'ENGINE': 'django.db.backends.sqlite3',
-        },
-    'ext_database2': {
-        'NAME': 'ext_database2',
-        'ENGINE': 'django.db.backends.sqlite3',
-        }
+    }
 }
 
 # Site url (no trailing slash)
