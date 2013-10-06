@@ -1,11 +1,5 @@
 {% extends "events/base_event.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Tilmelding stoppet' %}
-{% endblock %}
-
 {% block contenthead %}Tilmelding stoppet{% endblock %}
 
 {% block content %}

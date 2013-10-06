@@ -1,5 +1,0 @@
-Hej {{ user.first_name }} {{ user.last_name }}
-
-Du har bedt os om at skifte den tilknyttede email for din bruger {{user.username}} til at være {{ new_email }}. Hvis du ikke ønsker at skifte email alligevel så ignorer venligst denne email.
-
-Følg dette link for at skifte email: {{ site_url }}{% url "members_change_email_confirm" key %}

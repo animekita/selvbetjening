@@ -7,9 +7,10 @@ user_changed_username = Signal(providing_args=['old_username', 'new_username'])
 user_changed_password = Signal(providing_args=['instance', 'clear_text_password'])
 user_created = Signal(providing_args=['instance', 'clear_text_password'])
 
-# hijack the django set_password function for users
+# hijack the django set_password function for userportal
 # origin: http://www.djangosnippets.org/snippets/397/
 real_set_password = User.set_password
+
 
 def set_password(self, raw_password):
     if self.id is None:
@@ -22,6 +23,7 @@ def set_password(self, raw_password):
 
 # replace the method
 User.set_password = set_password
+
 
 # listen er changed username
 def username_changed_listener(sender, **kwargs):
@@ -36,6 +38,6 @@ def username_changed_listener(sender, **kwargs):
                                        new_username=new_user.username)
 
     except User.DoesNotExist:
-        pass # the user was created
+        pass  # the user was created
 
 pre_save.connect(username_changed_listener, sender=User)

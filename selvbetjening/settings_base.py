@@ -1,10 +1,8 @@
 # Base settings for all Selvbetjening installations, overrride this with a
 # per. instance settings.py file.
 
-# pre setup
 import selvbetjening
 import os
-import sys
 
 SELV_DIRNAME = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,8 +19,6 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 # Application settings
 AUTH_PROFILE_MODULE = 'members.UserProfile'
-LOGIN_REDIRECT_URL = '/profil/'
-LOGIN_URL = '/profil/login/'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -104,11 +100,8 @@ INSTALLED_APPS = [
     'mailer',
     'crispy_forms',
     'sorl.thumbnail',
-    'crumbs',
     'debug_toolbar',
     'django_extensions',
-    'navtree',
-    'django_assets',
 
     'django.contrib.sites',
     'django.contrib.auth',
@@ -123,9 +116,9 @@ INSTALLED_APPS = [
     'selvbetjening.core.members',
     'selvbetjening.core.mailcenter',
 
-    'selvbetjening.sadmin2',
+    'selvbetjening.businesslogic.members',
 
-    'selvbetjening.viewbase.branding'
+    'selvbetjening.sadmin2'
 ]
 
 # A sample logging configuration. The only tangible logging

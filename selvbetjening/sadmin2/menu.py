@@ -55,23 +55,23 @@ breadcrumbs = {
     'dashboard': {'name': _('Dashboard'),
                   'url': 'sadmin2:dashboard'},
 
-    'users': {'name': _('Users'),
+    'userportal': {'name': _('Users'),
               'url': 'sadmin2:users_list'},
 
     'users_create': {'name': _('Create'),
                      'url': 'sadmin2:users_create',
-                     'parent': 'users'},
+                     'parent': 'userportal'},
 
     'users_groups': {'name': _('Groups'),
                      'url': 'sadmin2:users_groups_list',
-                     'parent': 'users'},
+                     'parent': 'userportal'},
 
     'users_groups_create': {'name': _('Create'),
                             'url': 'sadmin2:users_groups_create',
                             'parent': 'users_groups'},
 
     'users_reports': {'name': _('Reports'),
-                      'parent': 'users'},
+                      'parent': 'userportal'},
 
     'users_reports_age': {'name': _('Age'),
                           'url': 'sadmin2:users_reports_age',
@@ -89,7 +89,7 @@ breadcrumbs = {
     # Assumes: context[user], kwargs[user_pk]
     'user': {'name_callback': lambda context: context['user'].username,
              'url_callback': url_callback('sadmin2:user', ('user_pk',)),
-             'parent': 'users'},
+             'parent': 'userportal'},
 
     # Assumes: context[user], kwargs[user_pk]
     'user_password': {'name': _('Password'),
@@ -217,9 +217,15 @@ breadcrumbs = {
 }
 
 sadmin2_menu_main = (
-    {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
-    {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
-    {'id': 'emails', 'name': _('Newsletters'), 'url': 'sadmin:mailcenter_emailspecification_changelist'}
+    {'id': 'events',
+     'name': _('Events'),
+     'url': 'sadmin2:events_list'},
+    {'id': 'userportal',
+     'name': _('Users'),
+     'url': 'sadmin2:users_list'},
+    {'id': 'emails',
+     'name': _('Newsletters'),
+     'url': 'sadmin2:users_list'}
 )
 
 sadmin2_menu_tab_events = (
@@ -228,7 +234,7 @@ sadmin2_menu_tab_events = (
 )
 
 sadmin2_menu_tab_users = (
-    {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
+    {'id': 'userportal', 'name': _('Users'), 'url': 'sadmin2:users_list'},
     {'id': 'groups', 'name': _('Groups'), 'url': 'sadmin2:users_groups_list'},
 
     {'id': 'reports',

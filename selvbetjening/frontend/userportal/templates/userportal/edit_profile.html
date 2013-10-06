@@ -1,0 +1,26 @@
+{% extends "userportal/profile.html" %}
+{% load crispy_forms_tags %}
+
+{% block contenthead %}Opdater dine personoplysninger{% endblock %}
+
+{% block content %}
+
+<p>Som udgangspunkt er dine personoplysninger <b>kun</b> tilgænglige af foreningens ledelse, og bruges hvis de skal i kontakt med dig.</p>
+
+<p>Du kan også vise disse oplysninger på din profil som kun kan ses af andre medlemmer af foreningen. Du kan kontrollerer hvilke oplysninger der er synlige, på privacy siden.</p>
+
+    <form class="form-horizontal" method="post" >
+    {% csrf_token %}
+
+    {% crispy form %}
+
+    <h2>Websites</h2>
+    {% crispy website_form %}
+
+    <div class="form-actions">
+        <input type="submit" name="update" value="Update" class="btn btn-primary" id="submit-id-update" />
+    </div>
+
+    </form>
+
+{% endblock %}

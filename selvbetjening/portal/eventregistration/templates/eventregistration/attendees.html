@@ -1,11 +1,5 @@
 {% extends "events/base_event.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Tilmeldte' 'eventregistration_attendees' event.pk %}
-{% endblock %}
-
 {% block contenthead %}Tilmeldte{% endblock %}
 
 {% block content %}

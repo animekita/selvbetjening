@@ -1,0 +1,8 @@
+
+UPGRADING FROM 1.x.x to 2.0.0
+=============================
+
+1. Update your reversion to tag "pre-1.8.0-database" - 1
+2. manage.py migrate
+3. Update to the release revision
+4. manage.py migrate

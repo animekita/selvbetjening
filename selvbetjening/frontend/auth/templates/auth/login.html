@@ -1,0 +1,20 @@
+{% extends "selvbetjening/sitebase.html" %}
+{% load crispy_forms_tags %}
+
+{% block contenthead %}Log ind{% endblock %}
+
+{% block content %}
+
+
+<div class="row">
+<div class="col-lg-4">
+
+    {% crispy form %}
+
+    <br/>
+    <p><a href="{% url "auth_password_reset" %}">Glemt dit kodeord?</a></p>
+
+</div></div>
+
+
+{% endblock %}

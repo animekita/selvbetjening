@@ -28,22 +28,8 @@ def to_age(dateofbirth, reference_date=None):
 class UserWebsite(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u'user'), db_column='user_id')
 
-    name = models.CharField(max_length=32)
-    url = models.URLField()
-
-
-class UserCommunication(models.Model):
-    METHOD_CHOICES = (('skype', 'skype'),
-                      ('msn', 'MSN'),
-                      ('jabber', 'Jabber'),)
-
-    user = models.ForeignKey(User, verbose_name=_(u'user'), db_column='user_id')
-
-    method = models.CharField(max_length=12, choices=METHOD_CHOICES)
-    identification = models.CharField(max_length=255)
-
-    class Meta:
-        unique_together = ('method', 'user')
+    name = models.CharField(max_length=32, blank=True)
+    url = models.URLField(blank=True)
 
 
 class UserProfile(User):
@@ -59,6 +45,10 @@ class UserProfile(User):
     country = models.ForeignKey(Country, default='DK', blank=True, null=True)
 
     phonenumber = models.CharField(_(u'phonenumber'), max_length=32, blank=True, null=True)
+
+    skype = models.CharField(max_length=255, blank=True)
+    jabber = models.CharField(max_length=255, blank=True)
+    msn = models.CharField(max_length=255, blank=True)
 
     send_me_email = models.BooleanField(_(u'Send me emails'))
 

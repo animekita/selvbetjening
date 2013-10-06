@@ -1,0 +1,78 @@
+{% extends "selvbetjening/styledbase.html" %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/demo.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="navbar-wrapper">
+    <div class="container">
+
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url "home" %}">Selvbetjening</a>
+                </div>
+
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Auth <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url "auth_login" %}">Log-in</a></li>
+                            <li><a href="{% url "auth_logout" %}">Log-out</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">User Portal <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url "userportal_register" %}">New user</a></li>
+                            <li><a href="{% url "userportal_profile" %}">View profile</a></li>
+                            <li><a href="{% url "userportal_edit_profile" %}">Edit profile</a></li>
+                            <li><a href="{% url "userportal_edit_privacy" %}">Edit privacy</a></li>
+                            <li><a href="{% url "userportal_edit_picture" %}">Edit picture</a></li>
+                            <li><a href="{% url "userportal_edit_username" %}">Edit username</a></li>
+                            <li><a href="{% url "userportal_edit_password" %}">Edit password</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Event Portal <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Event Single <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+
+                        </ul>
+                    </li>
+
+                    <li><a href="{% url "sadmin2:dashboard" %}">sadmin<sup>2</sup></a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.is_authenticated %}
+                    <li><a href="{% url "auth_logout" %}">Logged in as {{ request.user.username }} | Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url "auth_login" %}">Log ind</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+
+<h1>{% block contenthead %}{% endblock %}</h1>
+
+{% block content %}{% endblock %}
+</div>
+
+{% endblock %}

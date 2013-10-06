@@ -1,11 +1,5 @@
 {% extends "events/base_event.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Tilmelding status' 'eventregistration_status' event.pk %}
-{% endblock %}
-
 {% block contenthead %}Tilmelding status{% endblock %}
 
 {% block content %}

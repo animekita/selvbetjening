@@ -1,0 +1,9 @@
+{% extends "selvbetjening/sitebase.html" %}
+
+{% block contenthead %}Du er nu logget ud{% endblock %}
+
+{% block content %}
+
+<p><a href="{% url "auth_login" %}">Tryk her for at logge ind igen.</a></p>
+
+{% endblock %}

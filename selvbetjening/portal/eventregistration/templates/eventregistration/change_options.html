@@ -1,17 +1,6 @@
 {% extends "events/base_event.html" %}
 {% load crispy_forms_tags i18n %}
 
-{% block extrastyle %}
-{{ block.super }}
-{% include "form_includes.html" %}
-{% endblock %}
-
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Ændre tilvalg' 'eventregistration_change_options' event.pk %}
-{% endblock %}
-
 {% block contenthead %}Ændre tilvalg{% endblock %}
 
 {% block content %}

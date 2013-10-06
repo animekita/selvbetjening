@@ -1,11 +1,5 @@
 {% extends "events/base.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Arrangementer' 'eventregistration_view_all' %}
-{% endblock %}
-
 {% block contenthead %}Arrangementer{% endblock %}
 
 {% block content %}

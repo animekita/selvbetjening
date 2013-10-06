@@ -31,10 +31,10 @@ def users_list(request):
     columns = ('username',)
 
     context = {
-        'sadmin2_menu_main_active': 'users',
-        'sadmin2_breadcrumbs_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
+        'sadmin2_breadcrumbs_active': 'userportal',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-        'sadmin2_menu_tab_active': 'users',
+        'sadmin2_menu_tab_active': 'userportal',
     }
 
     return search_view(request,
@@ -62,7 +62,7 @@ def users_create(request):
     return render(request,
                   'sadmin2/generic/form.html',
                   {
-                      'sadmin2_menu_main_active': 'users',
+                      'sadmin2_menu_main_active': 'userportal',
                       'sadmin2_breadcrumbs_active': 'users_create',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
                       'sadmin2_menu_tab_active': 'users_create',
@@ -78,7 +78,7 @@ def users_groups_list(request):
     columns = ('name',)
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'users_groups',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
         'sadmin2_menu_tab_active': 'groups',
@@ -96,7 +96,7 @@ def users_groups_list(request):
 def users_groups_create(request):
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'users_groups_create',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
         'sadmin2_menu_tab_active': 'groups',
@@ -114,7 +114,7 @@ def users_group(request, group_pk):
     group = get_object_or_404(Group, pk=group_pk)
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'users_group',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
         'sadmin2_menu_tab_active': 'groups',
@@ -211,7 +211,7 @@ def users_reports_age(request):
         age_data = {}
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'users_reports_age',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
         'sadmin2_menu_tab_active': 'reports'
@@ -236,7 +236,7 @@ def users_reports_address(request):
 
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'users_reports_address',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
         'sadmin2_menu_tab_active': 'reports',

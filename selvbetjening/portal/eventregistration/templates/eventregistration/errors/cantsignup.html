@@ -1,9 +1,5 @@
 {% extends "eventregistration/base.html" %}
 
-{% block breadcrumbs %}
-<li><a href="{% url "eventregistration_view_all" %}">arrangementer</a>&nbsp;&gt;&nbsp;</li>
-<li><a href="{% url "eventregistration_signup" event.id %}">tilmeld</a></li>
-{% endblock %}
 
 {% block contenthead %}Du er allerede tilmeldt dette arrangement{% endblock %}
 

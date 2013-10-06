@@ -5,7 +5,7 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout
 
-from selvbetjening.viewbase.forms.helpers import SFieldset
+from frontend.base.forms import SFieldset
 
 from models import AttendState, Payment
 

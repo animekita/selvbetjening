@@ -1,0 +1,20 @@
+{% extends "userportal/profile.html" %}
+{% load crispy_forms_tags %}
+
+{% block contenthead %}Opdater dit billede{% endblock %}
+
+{% block content %}
+
+    {% crispy form %}
+
+<h2>Dit nuværende billede</h2>
+
+<div id="profile-image">
+    {% if user.picture %}
+    <img src="{{MEDIA_URL}}{{user.picture}}">
+    {% else %}
+    <img src="{{STATIC_URL}}no_account_picture.jpg">
+    {% endif %}
+</div>
+
+{% endblock %}

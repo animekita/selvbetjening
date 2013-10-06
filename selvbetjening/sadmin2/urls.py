@@ -1,9 +1,9 @@
 from django.conf.urls import *
 from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import AuthenticationForm
 
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
-from selvbetjening.portal.profile.forms import LoginForm
 
 import views.events
 import views.event
@@ -13,19 +13,19 @@ import views.user
 urlpatterns = patterns(
     '',
 
-    url(r'users/$', views.users.users_list, name='users_list'),
-    url(r'users/create/$', views.users.users_create, name='users_create'),
+    url(r'userportal/$', views.users.users_list, name='users_list'),
+    url(r'userportal/create/$', views.users.users_create, name='users_create'),
 
-    url(r'users/groups/$', views.users.users_groups_list, name='users_groups_list'),
-    url(r'users/groups/create/$', views.users.users_groups_create, name='users_groups_create'),
+    url(r'userportal/groups/$', views.users.users_groups_list, name='users_groups_list'),
+    url(r'userportal/groups/create/$', views.users.users_groups_create, name='users_groups_create'),
 
-    url(r'users/groups/(?P<group_pk>[0-9]+)/$', views.users.users_group, name='users_group'),
+    url(r'userportal/groups/(?P<group_pk>[0-9]+)/$', views.users.users_group, name='users_group'),
 
-    url(r'users/reports/age/$', views.users.users_reports_age, name='users_reports_age'),
-    url(r'users/reports/address/$', views.users.users_reports_address, name='users_reports_address'),
+    url(r'userportal/reports/age/$', views.users.users_reports_age, name='users_reports_age'),
+    url(r'userportal/reports/address/$', views.users.users_reports_address, name='users_reports_address'),
 
-    url(r'users/(?P<user_pk>[0-9]+)/$', views.user.user_change, name='user'),
-    url(r'users/(?P<user_pk>[0-9]+)/password/$', views.user.user_password, name='user_password'),
+    url(r'userportal/(?P<user_pk>[0-9]+)/$', views.user.user_change, name='user'),
+    url(r'userportal/(?P<user_pk>[0-9]+)/password/$', views.user.user_password, name='user_password'),
 
     url(r'^events/$', views.events.event_list, name='events_list'),
     url(r'^events/create/$', views.events.event_create, name='events_create'),
@@ -56,7 +56,7 @@ urlpatterns = patterns(
     url(r'^login/$', auth_views.login, name='login', kwargs=
         {
             'template_name': 'sadmin2/login.html',
-            'authentication_form': LoginForm
+            'authentication_form': AuthenticationForm
         }),
 
     url(r'^logout/$', auth_views.logout_then_login, name='logout', kwargs=

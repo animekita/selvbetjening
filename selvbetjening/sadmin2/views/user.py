@@ -14,7 +14,7 @@ def user_change(request, user_pk):
     user = get_object_or_404(UserProfile, pk=user_pk)
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'user',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_user,
         'sadmin2_menu_tab_active': 'user',
@@ -35,7 +35,7 @@ def user_password(request, user_pk):
     user = get_object_or_404(UserProfile, pk=user_pk)
 
     context = {
-        'sadmin2_menu_main_active': 'users',
+        'sadmin2_menu_main_active': 'userportal',
         'sadmin2_breadcrumbs_active': 'user_password',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_user,
         'sadmin2_menu_tab_active': 'password',

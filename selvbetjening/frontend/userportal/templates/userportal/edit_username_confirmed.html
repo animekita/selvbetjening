@@ -1,0 +1,24 @@
+{% extends "userportal/edit_username.html" %}
+{% load crispy_forms_tags %}
+
+{% block contenthead %}Bekræft ændring af dit brugernavn{% endblock %}
+
+{% block content %}
+
+<p>Er du sikker på at du vil skifte dit brugernavn til <b>{{new_username}}</b>?</p>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {% for field in form %}{{ field.as_hidden }}{% endfor %}
+
+    <input type="hidden" name="{{ stage_field }}" value="2" />
+    <input type="hidden" name="{{ hash_field }}" value="{{ hash_value }}" />
+
+ <div class="buttonHolder">
+    <span><a href="{% url "userportal_profile" %}">Fortryd ændring</a></span>
+    <input type="submit" class="btn btn-danger" value="Ja, ændre mit brugernavn"  />
+</div>
+
+</form>
+
+{% endblock %}

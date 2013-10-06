@@ -1,0 +1,134 @@
+<div class="row">
+<div class="col-lg-8" id="profile-info">
+
+    <table class="table" id="profile-matrix">
+        {% if privacy.public_name %}
+            <tr>
+                <th>Navn:</th>
+                <td>{{viewed_user.first_name}} {{viewed_user.last_name}}</td>
+            </tr>
+        {% endif %}
+        {% if privacy.public_age %}
+            <tr>
+                <th>Fødselsdato:</th>
+                <td>{{viewed_user.dateofbirth|date:"d/m - Y"}} ({{viewed_user.get_age}} år)</td>
+            </tr>
+        {% endif %}
+        {% if privacy.public_sex %}
+            <tr>
+                <th>Køn:</th>
+                <td>{{viewed_user.get_sex_display}}</td>
+            </tr>
+        {% endif %}
+
+        {% if privacy.public_town %}
+            <tr>
+                <th>Adresse:</th>
+                <td>
+                    {% if viewed_user.postalcode %}{{viewed_user.postalcode}}{% endif %} {{viewed_user.city}}<br/>
+                    {{viewed_user.country}}
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if privacy.public_name or privacy.public_age or privacy.public_town %}
+            <tr class="pause">
+                <td colspan="2"></td>
+            </tr>
+        {% endif %}
+
+        {% if privacy.public_join_date %}
+            <tr>
+                <th>Medlem siden:</th>
+                <td>
+                    {{viewed_user.date_joined|date:"d/m - Y"}}
+                </td>
+            </tr>
+
+            <tr class="pause">
+                <td colspan="2"></td>
+            </tr>
+        {% endif %}
+
+        {% if privacy.public_phonenumber %}
+            <tr>
+                <th>Telefon:</th>
+                <td >{% if viewed_user.phonenumber %}{{viewed_user.phonenumber}}{% endif %}</td>
+            </tr>
+        {% endif %}
+        {% if privacy.public_email %}
+            <tr>
+                <th>Email:</th>
+                <td><a href="mailto:{{viewed_user.email}}">{{viewed_user.email}}</a></td>
+            </tr>
+        {% endif %}
+
+        {% if privacy.public_contact %}
+            {% if viewed_user.skype %}
+            <tr>
+                <th>Skype:</th>
+                <td>{{viewed_user.skype}}</td>
+            </tr>
+            {% endif %}
+            {% if viewed_user.msn %}
+            <tr>
+                <th>Msn:</th>
+                <td>{{viewed_user.msn}}</td>
+            </tr>
+            {% endif %}
+            {% if viewed_user.jabber %}
+            <tr>
+                <th>Jabber:</th>
+                <td>{{viewed_user.jabber}}</td>
+            </tr>
+            {% endif %}
+        {% endif %}
+
+        {% if privacy.public_websites %}
+            {% for website in viewed_user.userwebsite_set.all %}
+
+                {% if forloop.first %}
+                    <tr class="pause">
+                        <td colspan="2"></td>
+                    </tr>
+                {% endif %}
+
+                <tr>
+                    {% if forloop.first %}<th>Hjemmesider</th>{% else %}<th>&nbsp;</th>{% endif %}
+                    <td><a href="{{website.url}}">{{website.name}}</a></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+
+    </table>
+
+</div>
+<div class="col-lg-4">
+
+    <div id="profile-image">
+        {% if viewed_user.picture %}
+            <img src="{{viewed_user.picture.url}}">
+        {% else %}
+            <img src="http://placekitten.com/300/300">
+        {% endif %}
+    </div>
+
+    <div id="profile-groups">
+        {% if viewed_user.groups.all %}
+        <h4>Grupper</h4>
+
+        <table class="table">
+        {% for group in viewed_user.groups.all %}
+            <tr>
+                <td>{{ group.name }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+
+        {% endif %}
+    </div>
+
+</div>
+</div>
+
+{{ add_to_profile|safe }}

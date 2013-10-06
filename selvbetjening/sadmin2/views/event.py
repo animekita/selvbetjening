@@ -14,7 +14,7 @@ from core.events.utils import sum_attendee_payment_status
 
 from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment
 
-from selvbetjening.sadmin.base import graph
+from selvbetjening.sadmin2 import graph
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
     AttendeeCommentForm, attendee_selection_helper_factory
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites

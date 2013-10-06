@@ -4,16 +4,16 @@ ROOT_URLCONF = 'selvbetjening.demo.urls'
 
 # installed applications
 INSTALLED_APPS.extend([
-    'selvbetjening.viewbase.forms',
-    'selvbetjening.viewbase.googleanalytics',
-    'selvbetjening.viewbase.copyright',
 
-    'selvbetjening.portal.quickregistration',
-    'selvbetjening.portal.profile',
-    'selvbetjening.portal.eventregistration',
+    'selvbetjening.frontend.base',
+    'selvbetjening.frontend.auth',
+    'selvbetjening.frontend.userportal',
 
     'selvbetjening.demo'
 ])
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/auth/log-in/'
 
 # import localsettings, a per deployment configuration file
 try:

@@ -1,0 +1,26 @@
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+
+body {
+    padding-bottom: 40px;
+}
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Navbar positioning foo */
+.navbar-wrapper {
+    margin-top: 20px;
+}
+
+/* The navbar becomes detached from the top, so we round the corners */
+.navbar-wrapper .navbar {
+    border-radius: 4px;
+}
+
+a.navbar-brand {
+    color: #FFFFFF !important;
+}
+
+

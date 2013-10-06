@@ -1,0 +1,16 @@
+{% extends "userportal/profile.html" %}
+{% load crispy_forms_tags %}
+
+{% block contenthead %}Opdater dine privacy-indstillinger{% endblock %}
+
+{% block content %}
+
+<p>Som standard er din profil ikke synlig for andre medlemmer af foreningen. Ved at afkrydse feltet nedenfor accepterer du at foreningens andre medlemmer kan se din profil.</p>
+
+<p>Hvis du sætter din profil til at være offentlig vil du få yderligere mulighed for at vælge hvilke informationer, såsom navn, alder og email der er synlig for foreningens medlemmer.</p>
+
+{% with form.helper as helper %}
+    {% crispy form helper %}
+{% endwith %}
+
+{% endblock %}

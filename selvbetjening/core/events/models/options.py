@@ -55,7 +55,7 @@
     ===================
 
     A number of invariants can be stated on option group and option level. These invariants are enforced for
-    end-users (sadmin can bypass these).
+    end-userportal (sadmin can bypass these).
 
     All option types has a notion of being selected. Booleans are selected when true, text inputs are selected
     if non-empty, and choices are selected when any value is selected.
@@ -71,7 +71,7 @@
     Effects
     =======
 
-    It is possible to define prices associated with selection various items. The prices are added to the users
+    It is possible to define prices associated with selection various items. The prices are added to the userportal
     invoice.
 
     Important: All options with a price must be visible on user invoices, otherwise the price will not be added

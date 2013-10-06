@@ -1,0 +1,15 @@
+{% extends "selvbetjening/sitebase.html" %}
+
+{% block contenthead %}{{viewed_user.username}}{% endblock %}
+
+{% block content %}
+
+    {% if not own_privacy.public_profile %}
+    <div class="alert alert-info">
+        <p>Din profil er ikke offentlig og kan derfor ikke ses af foreningens medlemmer.<br/><a href="{% url "userportal_edit_privacy" %}">Du skal ændre dine privacy indstillinger for at gøre din profil synlig.</a></p>
+    </div>
+    {% endif %}
+
+{% include "userportal/parts/profile.html" %}
+
+{% endblock %}

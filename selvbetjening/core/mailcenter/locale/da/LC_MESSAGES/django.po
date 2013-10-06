@@ -32,7 +32,7 @@ msgid "Recipient group"
 msgstr "Modtager gruppe"
 
 #: forms.py:17
-msgid "All users"
+msgid "All userportal"
 msgstr "Alle brugere"
 
 #: forms.py:20

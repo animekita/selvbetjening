@@ -1,0 +1,9 @@
+{% extends "selvbetjening/sitebase.html" %}
+
+{% block contenthead %}{{viewed_user.username}}{% endblock %}
+
+{% block content %}
+
+{% include "userportal/parts/profile.html" %}
+
+{% endblock %}

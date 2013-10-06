@@ -1,11 +1,5 @@
 {% extends "events/base_event.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Tilmelding kræves' %}
-{% endblock %}
-
 {% block contenthead %}Tilmelding påkrævet{% endblock %}
 
 {% block content %}

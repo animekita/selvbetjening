@@ -1,11 +1,5 @@
 {% extends "events/base_event.html" %}
 
-{% block breadcrumb %}
-    {{ block.super }}
-    {% load breadcrumb_tags %}
-    {% add_crumb 'Tilmelding lukket' %}
-{% endblock %}
-
 {% block contenthead %}Tilmelding og afmelding fra dette arrangement er lukket{% endblock %}
 
 {% block content %}
