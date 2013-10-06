@@ -17,7 +17,7 @@ class Database(object):
         return str(cls._id)
 
     @classmethod
-    def new_event(cls, maximum_attendees=0,
+    def new_event(cls,
                   move_to_accepted_policy=None):
 
         kwargs = {}
@@ -29,7 +29,6 @@ class Database(object):
                                            startdate=date.today(),
                                            enddate=date.today(),
                                            registration_open=True,
-                                           maximum_attendees=maximum_attendees,
                                            **kwargs)
 
     @classmethod
@@ -43,18 +42,17 @@ class Database(object):
         return models.Attend.objects.create(user=user, event=event)
 
     @classmethod
-    def new_optiongroup(cls, event, min_select=0, max_select=0, max_attend=0, freeze_time=None):
+    def new_optiongroup(cls, event, min_select=0, max_select=0, freeze_time=None):
         if freeze_time is None:
             freeze_time = datetime.now() + timedelta(days=1)
         return models.OptionGroup.objects.create(event=event,
                                                  name=cls.new_id(),
                                                  minimum_selected=min_select,
                                                  maximum_selected=max_select,
-                                                 maximum_attendees=max_attend,
                                                  freeze_time=freeze_time)
 
     @classmethod
-    def new_option(cls, optiongroup, name=None, order=0, id=None, maximum_attendees=0):
+    def new_option(cls, optiongroup, name=None, order=0, id=None):
         if name is None:
             name = cls.new_id()
 
@@ -63,7 +61,7 @@ class Database(object):
         if id is not None:
             kwargs['id'] = id
 
-        return models.Option.objects.create(maximum_attendees=maximum_attendees, **kwargs)
+        return models.Option.objects.create(**kwargs)
 
 
 class AttendModelTestCase(TestCase):

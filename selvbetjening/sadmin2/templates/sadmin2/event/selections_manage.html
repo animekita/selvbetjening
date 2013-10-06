@@ -32,12 +32,13 @@
         /** Preset buttons **/
 
         var PRESETS = {
-            'enable': [false, true, true, true, true, true, true, false, false],
-            'disable': [false, false, false, false, false, false, false, false, false]
+            'enable': [false, false, true, true, true, true, true, true, false, false],
+            'disable': [false, false, false, false, false, false, false, false, false, false]
         };
 
         var SCOPES = [
             'selected_by_default',
+            'in_scope_view_public',
             'in_scope_view_registration',
             'in_scope_view_manage',
             'in_scope_view_user_invoice',
@@ -147,10 +148,10 @@
 
     <table class="table">
          <tr>
-            <th class="col-lg-3"></th>
+            <th class="col-lg-2"></th>
             <th class="col-lg-1 text-center">Preset</th>
             <th class="text-center">Valgt</th>
-            <th class="text-center" colspan="4">Synlig</th>
+            <th class="text-center" colspan="5">Synlig</th>
             <th class="text-center" colspan="4">Redigerbar</th>
 
             <th></th>
@@ -160,6 +161,7 @@
             <th></th>
             <th></th>
 
+            <th><small>Statistik</small></th>
             <th><small>Tilmelding</small></th>
             <th><small>Deltaget</small></th>
             <th><small>Kvittering</small></th>
@@ -194,6 +196,12 @@
                                             id="selected_by_default__{{ option.pk }}"
                                             name="selected_by_default__{{ option.pk }}"
                                             {% if option.selected_by_default %}checked{% endif %} />
+             </td>
+
+             <td class="text-center"><input type="checkbox"
+                                            id="in_scope_view_public__{{ option.pk }}"
+                                            name="in_scope_view_public__{{ option.pk }}"
+                                            {% if option.in_scope_view_public %}checked{% endif %} />
              </td>
 
              <td class="text-center"><input type="checkbox"

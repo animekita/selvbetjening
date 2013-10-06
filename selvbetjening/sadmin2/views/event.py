@@ -113,11 +113,13 @@ def event_selections(request, event_pk):
                       'optiongroups': option_groups
                   })
 
+
 @sadmin_prerequisites
 def event_selections_manage(request, event_pk):
 
     FIELDS = (
         'selected_by_default',
+        'in_scope_view_public',
         'in_scope_view_registration',
         'in_scope_view_manage',
         'in_scope_view_user_invoice',

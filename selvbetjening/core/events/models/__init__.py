@@ -105,8 +105,9 @@ def update_prices_on_price_change(sender, **kwargs):
     if created:
         return
 
-    Attend.objects.recalculate_aggregations_price(
-        Attend.objects.filter(selection__option=option)
-    )
+    # TODO enable this somewhere, we can't do this on every option save - that would crash the manage options page
 
+    ##Attend.objects.recalculate_aggregations_price(
+    ##    Attend.objects.filter(selection__option=option)
+    ##)
 

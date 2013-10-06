@@ -2,8 +2,9 @@
 from collections import OrderedDict
 
 from django import forms
+from django.db.models import Count
 
-from models import Selection, Option
+from models import Selection, Option, AttendState
 
 
 class SCOPE:
@@ -19,6 +20,19 @@ class SCOPE:
     EDIT_MANAGE_WAITING = 'in_scope_edit_manage_waiting'
     EDIT_MANAGE_ACCEPTED = 'in_scope_edit_manage_accepted'
     EDIT_MANAGE_ATTENDED = 'in_scope_edit_manage_attended'
+
+
+def dynamic_statistics(event):
+    """
+    Returns public statistics for all options where in_scope_view_public == True
+    """
+
+    options = Option.objects.filter(group__event=event).filter(in_scope_view_public=True).\
+        exclude(selection__attendee__state=AttendState.waiting).distinct().\
+        annotate(confirmed_selections_count=Count('selection__pk')).\
+        order_by('-group__is_special', 'group__order', 'order')
+
+    return options
 
 
 def dynamic_selections(scope, event, attendee, option_group=None, as_dict=False):

@@ -44,13 +44,6 @@ class AttendManager(models.Manager):
             attendee.paid = attendee.paid_actual if attendee.paid_actual is not None else 0
             attendee.save()
 
-    def can_register_to_event(self, event):
-
-        max_attendees_reached = event.maximum_attendees != 0 and \
-            event.maximum_attendees <= event.attendees.exclude(state=AttendState.waiting).count()
-
-        return event.is_registration_open() and not max_attendees_reached
-
 
 class Attend(models.Model):
 

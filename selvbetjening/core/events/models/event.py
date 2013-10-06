@@ -38,11 +38,19 @@ class Event(models.Model):
 
     group = models.ForeignKey(Group, blank=True, null=True)
 
+    # presentation
+
     title = models.CharField(_(u'title'), max_length=255)
+    tagline = models.TextField(_(u'tagline'), blank=True)
     description = models.TextField(_(u'description'), blank=True)
+
+    location = models.CharField(_('location'), max_length=255, blank=True)
+    location_link = models.URLField(_('location map url'), blank=True)
 
     startdate = models.DateField(_(u'start date'), blank=True, null=True)
     enddate = models.DateField(_(u'end date'), blank=True, null=True)
+
+    maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
 
     # constraints and effects
     move_to_accepted_policy = \
@@ -50,7 +58,6 @@ class Event(models.Model):
                          default=AttendeeAcceptPolicy.always,
                          choices=AttendeeAcceptPolicy.get_choices())
 
-    maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
     registration_open = models.BooleanField(_(u'registration open'))
 
     # display

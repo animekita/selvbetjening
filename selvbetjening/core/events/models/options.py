@@ -44,6 +44,7 @@
     - Edit registration
     - User invoice
     - System invoice (invoice in sadmin)
+    - Public statistics (show aggregated values for accepted attendees publicly)
 
     Edit scopes: (Edit automatically implies view rights)
     - Registration
@@ -180,6 +181,8 @@ class Option(models.Model):
     type = models.CharField(_('Type'), max_length=32, choices=TYPE_CHOICES, default='boolean')
 
     # Scopes, default settings equals to the "disabled" preset
+
+    in_scope_view_public = models.BooleanField(default=False)
 
     in_scope_view_registration = models.BooleanField(default=False)
     in_scope_view_manage = models.BooleanField(default=False)

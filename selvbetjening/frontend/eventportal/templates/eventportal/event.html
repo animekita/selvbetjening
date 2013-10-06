@@ -1,0 +1,65 @@
+{% extends "selvbetjening/sitebase.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+  <div class="container">
+      <h1>{{event.title}}</h1>
+
+      {% if event.tagline %}<h2>{{ event.tagline|safe }}</h2>{% endif %}
+      {% if event.startdate %}<p><strong>Tid:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
+      {% if event.location %}<p><strong>Sted:</strong> Huset {% if event.location_link %}(<a href="{{ event.location_link }}">kort</a>){% endif %}</p>{% endif %}
+      {% if event.maximum_attendees %}<p><strong>Pladser:</strong> {{ event.maximum_attendees }} pladser</p>{% endif %}
+
+  </div>
+</div>
+
+{% if not event.is_registration_open %}
+    <p class="alert alert-danger">Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
+{% endif %}
+
+<div class="row">
+<div class="col-lg-8">
+
+    {{event.description|safe}}
+
+    {% if event.is_registration_open %}
+        <p><a href="" class="btn btn-primary btn-lg">Tilmeld dig</a></p>
+    {% endif %}
+</div>
+
+<div class="col-lg-4">
+
+    <table class="table">
+        <tr>
+            <th colspan="2">Tilmeldte</th>
+        </tr>
+        <tr>
+            <td>Venter på godkendelse</td>
+            <td>{{ attendee_stats.waiting }}</td>
+        </tr>
+        <tr>
+            <td>Godkendte tilmeldinger</td>
+            <td>{{ attendee_stats.accepted }}</td>
+        </tr>
+
+        {% for option in public_options %}
+            {% ifchanged option.group.name %}
+                <tr>
+                    <th colspan="2">{{option.group.name}}</th>
+                </tr>
+            {% endifchanged %}
+
+            <tr>
+                <td>{{option.name}}</td>
+                <td>{{option.confirmed_selections_count}}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+
+</div>
+</div>
+
+
+{% endblock %}

@@ -150,8 +150,7 @@ class EventOptionsFormUsageTestCase(TestCase):
 
 class EventOptionsFormValidationOnlyLimitAccepted(TestCase):
     def test_event_limit_reached(self):
-        event = Database.new_event(maximum_attendees=1,
-                                   move_to_accepted_policy=models.AttendeeAcceptPolicy.manual)
+        event = Database.new_event(move_to_accepted_policy=models.AttendeeAcceptPolicy.manual)
 
         attend1 = Database.attend(Database.new_user(), event)
         attend2 = Database.attend(Database.new_user(), event)
@@ -176,7 +175,7 @@ class EventOptionsFormValidationOnlyLimitAccepted(TestCase):
     def test_event_limit_reached_option(self):
         event = Database.new_event(move_to_accepted_policy=models.AttendeeAcceptPolicy.manual)
         optiongroup = Database.new_optiongroup(event)
-        option = Database.new_option(optiongroup, maximum_attendees=1)
+        option = Database.new_option(optiongroup)
 
         attendee1 = Database.attend(Database.new_user(), event)
         attendee1.select_option(option)

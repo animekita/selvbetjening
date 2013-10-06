@@ -22,6 +22,7 @@ class EventForm(forms.ModelForm):
         model = Event
 
         widgets = {
+            'tagline': forms.Textarea(attrs={'rows': 2}),
             'description': forms.Textarea(attrs={'rows': 2}),
             'startdate': SplitDateWidget(),
             'enddate': SplitDateWidget()
@@ -34,11 +35,13 @@ class EventForm(forms.ModelForm):
 
         layout = S2Layout(
             S2Fieldset(None,
-                       'title', 'description', 'group',
+                       'title', 'tagline', 'description', 'group',
                        'startdate', 'enddate',
+                       'location', 'location_link',
+                       'maximum_attendees',
                        'registration_open'),
             S2Fieldset(_('Conditions'),
-                       'maximum_attendees', 'move_to_accepted_policy'),
+                       'move_to_accepted_policy'),
             S2Fieldset(_('Feedback'),
                        'show_custom_signup_message', 'custom_signup_message',
                        'show_custom_change_message', 'custom_change_message',

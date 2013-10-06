@@ -13,7 +13,6 @@
         "registration_open": true,
         "custom_status_page": "",
         "custom_change_message": "",
-        "maximum_attendees": 0,
         "enddate": null,
         "show_custom_status_page": false,
         "custom_signup_message": ""
