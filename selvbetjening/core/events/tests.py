@@ -104,15 +104,15 @@ class DynamicSelectionsTestCase(TestCase):
         event = Event.objects.get(pk=1)
         attendee = Attend.objects.all()[0]
 
-        self.assertEqual(len(dynamic_selections(SCOPE.VIEW_REGISTRATION, event, attendee)), 4)
-        self.assertEqual(len(dynamic_selections(SCOPE.EDIT_REGISTRATION, event, attendee)), 3)
+        self.assertEqual(len(dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee)), 4)
+        self.assertEqual(len(dynamic_selections(SCOPE.EDIT_REGISTRATION, attendee)), 3)
 
     def test_ordering(self):
 
         event = Event.objects.get(pk=1)
         attendee = Attend.objects.get(pk=1)
 
-        selections = dynamic_selections(SCOPE.VIEW_REGISTRATION, event, attendee)
+        selections = dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee)
 
         # correct ordering
         # option group 1
@@ -138,7 +138,7 @@ class FormBuilderTestCase(TestCase):
 
         instance = OptionGroup.objects.all()[0]
 
-        form_class = dynamic_selections_form_factory(instance)
+        form_class = dynamic_selections_form_factory(SCOPE.SADMIN, instance)
         form = form_class()
 
         self.assertEqual(len(form.fields), 2)
@@ -148,7 +148,7 @@ class FormBuilderTestCase(TestCase):
         option_group = OptionGroup.objects.all()[0]
         attendee = Attend.objects.all()[0]
 
-        OptionGroupSelectionsForm = dynamic_selections_form_factory(option_group)
+        OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
         form = OptionGroupSelectionsForm({}, attendee=attendee)
 
         self.assertTrue(form.is_valid())
@@ -156,7 +156,7 @@ class FormBuilderTestCase(TestCase):
 
         form.save()
 
-        for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION, option_group, attendee):
+        for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee, option_group=option_group):
             self.assertFalse(selected)
 
         post = {
@@ -175,7 +175,6 @@ class FormBuilderTestCase(TestCase):
         form.save()
 
         for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION,
-                                                   option_group.event,
                                                    attendee,
                                                    option_group=option_group):
             self.assertTrue(selected)
@@ -185,7 +184,7 @@ class FormBuilderTestCase(TestCase):
         option_group = OptionGroup.objects.all()[0]
         attendee = Attend.objects.all()[0]
 
-        OptionGroupSelectionsForm = dynamic_selections_form_factory(option_group)
+        OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
 
         post = {
             _pack_id('option', 1): "1",
@@ -203,7 +202,6 @@ class FormBuilderTestCase(TestCase):
         form.save(attendee=attendee)
 
         for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION,
-                                                   option_group.event,
                                                    attendee,
                                                    option_group=option_group):
             self.assertTrue(selected)
@@ -214,12 +212,11 @@ class FormBuilderTestCase(TestCase):
         attendee = Attend.objects.get(pk=2)
 
         for option, selection in dynamic_selections(SCOPE.VIEW_REGISTRATION,
-                                                    option_group.event,
                                                     attendee,
                                                     option_group=option_group):
             self.assertIsNotNone(selection)
 
-        OptionGroupSelectionsForm = dynamic_selections_form_factory(option_group)
+        OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
 
         form = OptionGroupSelectionsForm({})
 
@@ -231,7 +228,7 @@ class FormBuilderTestCase(TestCase):
 
         form.save(attendee=attendee)
 
-        for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION, option_group, attendee):
+        for option, selected in dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee, option_group=option_group):
             self.assertFalse(selected)
 
     def test_text_option_type(self):
@@ -243,7 +240,7 @@ class FormBuilderTestCase(TestCase):
             _pack_id("option", 3): "some text",
         }
 
-        OptionGroupSelectionsForm = dynamic_selections_form_factory(option_group)
+        OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
         form = OptionGroupSelectionsForm(post, attendee=attendee)
 
         self.assertTrue(form.is_valid())
@@ -252,7 +249,6 @@ class FormBuilderTestCase(TestCase):
         form.save()
 
         selections = dynamic_selections(SCOPE.VIEW_REGISTRATION,
-                                        option_group.event,
                                         attendee,
                                         option_group=option_group,
                                         as_dict=True)
@@ -270,7 +266,7 @@ class FormBuilderTestCase(TestCase):
             _pack_id("option", 4): "suboption_1",
         }
 
-        OptionGroupSelectionsForm = dynamic_selections_form_factory(option_group)
+        OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
         form = OptionGroupSelectionsForm(post, attendee=attendee)
 
         self.assertTrue(form.is_valid())
@@ -278,7 +274,7 @@ class FormBuilderTestCase(TestCase):
 
         form.save()
 
-        selections = dynamic_selections(SCOPE.VIEW_REGISTRATION, option_group.event, attendee,
+        selections = dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee,
                                         option_group=option_group,
                                         as_dict=True)
         option, selection = selections[4]

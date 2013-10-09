@@ -1,9 +1,0 @@
-{% load crispy_forms_tags %}
-
-{% for optiongroupform in optionforms %}
-
-{% with optiongroupform.helper as helper %}
-    {% crispy optiongroupform helper %}
-{% endwith %}
-
-{% endfor %}

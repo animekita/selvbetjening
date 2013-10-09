@@ -6,3 +6,7 @@ UPGRADING FROM 1.x.x to 2.0.0
 2. manage.py migrate
 3. Update to the release revision
 4. manage.py migrate
+
+ALTER TABLE events_attend DROP FOREIGN KEY invoice_id_refs_id_37257a5e
+ALTER TABLE events_attend DROP KEY events_attend_59f72b12;
+alter table events_attend drop column invoice_id;

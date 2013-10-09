@@ -8,8 +8,11 @@ from models import Selection, Option, AttendState
 
 
 class SCOPE:
+
     def __init__(self):
         raise Exception
+
+    SADMIN = None
 
     VIEW_REGISTRATION = 'in_scope_view_registration'
     VIEW_MANAGE = 'in_scope_view_manage'
@@ -35,32 +38,53 @@ def dynamic_statistics(event):
     return options
 
 
-def dynamic_selections(scope, event, attendee, option_group=None, as_dict=False):
+def dynamic_selections(scope, attendee, option_group=None, as_dict=False, as_group_dict=False):
+    return _dynamic_selections(scope, attendee.event, attendee=attendee, option_group=option_group, as_dict=as_dict, as_group_dict=as_group_dict)
+
+
+def dynamic_options(scope, event, option_group=None, as_dict=False, as_group_dict=False):
+    return _dynamic_selections(scope, event, option_group=option_group, as_dict=as_dict, as_group_dict=as_group_dict)
+
+
+def _dynamic_selections(scope, event, attendee=None, option_group=None, as_dict=False, as_group_dict=False):
     """
-    Generates a list of options and attendee selections for an event.
+    Generates a list of options and selections for an event.
 
     This function respects scoping.
 
-    Returns tuples of (option, selection)
-      where selection can be None
+    Returns a list of (option, selection) tuples clustered in option groups and
+    ordered according to option group and option ordering.
 
-    The tuples are clustered according to their option groups, and respects ordering of
-    option groups and options.
+    If attendee is None then selection is always None
 
-    If as_dict is True then it is returned as a dictionary with option.pk as key
+    If as_dict is True then it is returned as an ordered dictionary with option.pk as key.
+    If as_group_dict is True then it is returned as an ordered dictionary with option_group.pk as key.
     """
 
-    selections = Selection.objects.filter(attendee=attendee, option__group__event=event).select_related('option')
+    assert not (as_dict and as_group_dict)
 
-    if option_group is not None:
-        selections = selections.filter(option__group=option_group)
+    # get options
 
-    options = Option.objects.filter(group__event=event).filter(**{scope: True}).select_related('group')
+    options = Option.objects.filter(group__event=event).select_related('group')
+
+    if not scope == SCOPE.SADMIN:
+        options = options.filter(**{scope: True})
 
     if option_group is not None:
         options = options.filter(group=option_group)
 
     options = options.order_by('-group__is_special', 'group__order', 'order')
+
+    # append selections
+
+    if attendee is not None:
+        selections = Selection.objects.filter(attendee=attendee)\
+            .filter(option__in=options)\
+            .select_related('option', 'option__group')
+    else:
+        selections = []
+
+    # format result
 
     result = OrderedDict()
 
@@ -68,25 +92,39 @@ def dynamic_selections(scope, event, attendee, option_group=None, as_dict=False)
         result[option.pk] = [option, None]
 
     for selection in selections:
-        if selection.option.pk in result:
-            result[selection.option.pk][1] = selection
+        result[selection.option.pk][1] = selection
 
     if as_dict:
         return result
 
-    return result.values()
+    elif as_group_dict:
+
+        group_result = OrderedDict()
+
+        for item in result.values():
+            group_result.setdefault(item[0].group.pk, [])
+            group_result[item[0].group.pk].append(item)
+
+        return group_result
+
+    else:
+        return result.values()
 
 
-def dynamic_selections_formset_factory(event, *args, **kwargs):
+def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
+
+    # TODO view and edit scopes should be taken into account
 
     form_classes = []
 
-    for option_group in event.optiongroups.all().prefetch_related('option_set'):
-        form_classes.append(dynamic_selections_form_factory(option_group, *args, **kwargs))
+    for option_group_pk, options in dynamic_options(scope, event, as_group_dict=True).items():
+        form_classes.append(dynamic_selections_form_factory(scope, options[0][0].group, *args,
+                                                            options=[option[0] for option in options],
+                                                            **kwargs))
 
     def init(self, *args, **kwargs):
         if 'attendee' in kwargs:
-            # this is an optimization such that each group don't fetch this list again
+            # prefetch
             kwargs['selections'] = kwargs['attendee'].selection_set.all().select_related('option')
 
         self.instances = [form_class(*args, **kwargs) for form_class in form_classes]
@@ -111,7 +149,13 @@ def dynamic_selections_formset_factory(event, *args, **kwargs):
     return type('OptionGroupSelectionsFormSet', (object,), fields)
 
 
-def dynamic_selections_form_factory(option_group_instance, helper_factory=None):
+def dynamic_selections_form_factory(scope, option_group_instance, helper_factory=None, options=None):
+
+    if options is None:
+        options = dynamic_options(scope, option_group_instance.event, option_group=option_group_instance)
+        options = [option[0] for option in options]
+
+    # TODO use selections from dynamic options
 
     def init(self, *args, **kwargs):
         self.attendee = kwargs.pop('attendee', None)
@@ -153,9 +197,9 @@ def dynamic_selections_form_factory(option_group_instance, helper_factory=None):
 
     if helper_factory is not None:
         fields['helper'] = helper_factory(option_group_instance,
-                                          [_pack_id('option', option.pk) for option in option_group_instance.option_set.all()])
+                                          [_pack_id('option', option.pk) for option in options])
 
-    for option in option_group_instance.option_set.all():
+    for option in options:
         field_id, field, clean_callback, save_callback = _option_field_builder(option)
 
         fields[field_id] = field

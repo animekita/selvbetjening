@@ -104,6 +104,10 @@ class Attend(models.Model):
         result = self.selections.aggregate(price=Sum('option__price'))
 
         self.price = result['price']
+
+        if self.price is None:
+            self.price = 0
+
         self.save()
 
     objects = AttendManager()

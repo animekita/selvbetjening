@@ -1,0 +1,16 @@
+{% extends "selvbetjening/sitebase.html" %}
+
+{% block content %}
+
+   <h1>Afmeld arrangement</h1>
+
+    <p>Ved at afmelde dig arrangementet vil du blive fjernet fra vores deltagerliste, du vil til have mulighed
+        for at tilmelde dig arrangementet igen hvis du ombestemmer dig.</p>
+
+    <form method="POST">
+    {% csrf_token %}
+
+        <input type="submit" class="btn btn-primary btn-lg" name="unregister" value="Afmeld mig" />
+
+    </form>
+{% endblock %}

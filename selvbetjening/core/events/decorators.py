@@ -11,12 +11,12 @@ __ALL__ = ('get_event_from_id',
 
 
 def get_event_from_id(view_func):
-    def lookup_event_id(request, event_id, *args, **kwargs):
-        event = get_object_or_404(Event, id=event_id)
+    def lookup_event_pk(request, event_pk, *args, **kwargs):
+        event = get_object_or_404(Event, id=event_pk)
 
         return view_func(request, event, *args, **kwargs)
 
-    return lookup_event_id
+    return lookup_event_pk
 
 
 def event_registration_open_required_ext(template_name=None):

@@ -10,12 +10,8 @@ urlpatterns = patterns(
         name='eventportal_events'),
 
     url(r'^(?P<event_pk>[0-9]+)/$',
-        views.event,
+        views.event_detail,
         name='eventportal_event'),
-
-    url(r'^(?P<event_pk>[0-9]+)/attendees/$',
-        views.event_attendees,
-        name='eventportal_event_attendees'),
 
     url(r'^(?P<event_pk>[0-9]+)/register/$',
         views.event_register,

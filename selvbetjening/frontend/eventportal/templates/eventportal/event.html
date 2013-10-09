@@ -23,9 +23,18 @@
 
     {{event.description|safe}}
 
+{% if is_attendee %}
+<h3>Du er tilmeldt</h3>
+
+    <a class="btn btn-primary" href="{% url "eventportal_event_status" event.pk %}">Se din status</a>
+    <a class="btn btn-primary" href="{% url "eventportal_event_status_update" event.pk %}">Opdater din status</a>
+    <a class="btn btn-danger" href="{% url "eventportal_event_unregister" event.pk %}">Fjern din tilmelding</a>
+
+{% else %}
     {% if event.is_registration_open %}
-        <p><a href="" class="btn btn-primary btn-lg">Tilmeld dig</a></p>
+        <p><a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a></p>
     {% endif %}
+{% endif %}
 </div>
 
 <div class="col-lg-4">
@@ -61,5 +70,64 @@
 </div>
 </div>
 
+<div class="row">
+<div class="col-lg-12">
+
+<h2>Deltagerliste</h2>
+
+<table class="table">
+    <tr>
+        <th>#</th>
+        <th>Navn</th>
+        <th>Brugernavn</th>
+        <th>&nbsp;</th>
+    </tr>
+
+    {% for attendee in confirmed_attendees %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{attendee.user.first_name}} {{attendee.user.last_name}}</td>
+            <td>{{attendee.user.username}}</td>
+            <td>
+            {% if event.has_been_held and attendee.state == "waiting" %}
+                Deltog ikke
+            {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+
+    {% if confirmed_attendees and waiting_attendees %}
+    <tr>
+        <td colspan="4"><center>---</center></td>
+    </tr>
+    {% endif %}
+
+    {% for attendee in waiting_attendees %}
+        <tr>
+            <td></td>
+            <td>{{attendee.user.first_name}} {{attendee.user.last_name}}</td>
+            <td>{{attendee.user.username}}</td>
+            <td>
+                {% ifequal event.move_to_accepted_policy "on_payment" %}
+                Venter på betaling
+                {% else %}
+                Venter på godkendelse
+                {% endifequal %}
+            </td>
+        </tr>
+    {% endfor %}
+
+    {% if not confirmed_attendees and not waiting_attendees %}
+    <tr>
+        <td colspan="4">Ingen tilmeldte</td>
+    </tr>
+    {% endif %}
+
+
+
+</table>
+
+</div>
+</div>
 
 {% endblock %}

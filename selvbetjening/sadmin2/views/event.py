@@ -569,7 +569,7 @@ def event_attendee(request, event_pk, attendee_pk):
     event = get_object_or_404(Event, pk=event_pk)
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
-    selections = dynamic_selections(SCOPE.VIEW_SYSTEM_INVOICE, event, attendee)
+    selections = dynamic_selections(SCOPE.VIEW_SYSTEM_INVOICE, attendee)
 
     if request.method == 'POST':
 
@@ -661,6 +661,7 @@ def event_attendee_selections(request, event_pk, attendee_pk):
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
     DynamicSelectionsFormSet = dynamic_selections_formset_factory(
+        SCOPE.SADMIN,
         event,
         helper_factory=attendee_selection_helper_factory)
 
