@@ -11,9 +11,9 @@
 
 <div id="profile-image">
     {% if user.picture %}
-    <img src="{{MEDIA_URL}}{{user.picture}}">
+        <img src="{{MEDIA_URL}}{{user.picture}}">
     {% else %}
-    <img src="{{STATIC_URL}}no_account_picture.jpg">
+        <img src="http://placekitten.com/300/300">
     {% endif %}
 </div>
 

@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 
-from models import Event, Attend, suspend_price_updates, resume_price_updates
+from selvbetjening.core.events.models import Event, Attend, suspend_price_updates, resume_price_updates
 
 __ALL__ = ('get_event_from_id',
            'event_registration_open_required_ext',

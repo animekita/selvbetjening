@@ -189,7 +189,7 @@ def user_join_chart():
     join_span_acc = []
     acc = 0
     for item in join_span:
-        acc = acc + item
+        acc += item
         join_span_acc.append(acc)
 
     labels = graph.generate_month_axis(join_stats['min'], join_stats['max'])

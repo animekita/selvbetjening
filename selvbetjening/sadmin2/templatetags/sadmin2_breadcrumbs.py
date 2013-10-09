@@ -8,8 +8,8 @@ register = template.Library()
 
 class breadcrumb_iterator(object):
 
-    def __init__(self, id):
-        self.current = breadcrumbs.get(id, None)
+    def __init__(self, breadcrumb_id):
+        self.current = breadcrumbs.get(breadcrumb_id, None)
 
     def __iter__(self):
         return self

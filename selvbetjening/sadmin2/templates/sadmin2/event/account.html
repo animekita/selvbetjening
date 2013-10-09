@@ -40,8 +40,8 @@
     {% for line_group in line_groups %}
     <tr>
         <td class="col-lg-9">{{line_group.name}}</td>
-        <td> &nbsp; </br> {{line_group.price | intcomma}},-</td>
-        <td>{{line_group.potential|length}} </br> ({{line_group.potential_total | intcomma}},-)</td>
+        <td> &nbsp; <br/> {{line_group.price | intcomma}},-</td>
+        <td>{{line_group.potential|length}} <br/> ({{line_group.potential_total | intcomma}},-)</td>
     </tr>
     {% endfor %}
 

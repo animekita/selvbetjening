@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'selvbetjening.core.mailcenter',
 
     'selvbetjening.businesslogic.members',
+    'selvbetjening.businesslogic.events',
 
     'selvbetjening.sadmin2'
 ]

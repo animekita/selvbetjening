@@ -9,7 +9,7 @@ $(function() {
 
         var items = $('.in_' + this.name);
 
-        for (i = 0; i < items.length; i++) {
+        for (var i = 0; i < items.length; i++) {
             items[i].checked = this.checked;
             $(items[i]).trigger('change');
         }

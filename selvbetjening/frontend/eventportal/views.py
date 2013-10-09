@@ -5,16 +5,15 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.aggregates import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.template import Context, Template, RequestContext
+from django.template import Context, Template
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from businesslogic.events import decorators as eventdecorators
 from core.events.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE
-from portal.eventregistration.processor_handlers import signup_processors
 from sadmin2.forms import attendee_selection_helper_factory
 
 from selvbetjening.core.events.models import Event, Attend, attendes_event_source, AttendState
-from selvbetjening.core.events import decorators as eventdecorators
-from selvbetjening.core.events.decorators import suspend_automatic_attendee_price_updates
+from businesslogic.events.decorators import suspend_automatic_attendee_price_updates
 
 
 def events_list(request,

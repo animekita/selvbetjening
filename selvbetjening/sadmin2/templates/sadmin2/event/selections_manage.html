@@ -46,7 +46,7 @@
             'in_scope_edit_registration',
             'in_scope_edit_manage_waiting',
             'in_scope_edit_manage_accepted',
-            'in_scope_edit_manage_attended',
+            'in_scope_edit_manage_attended'
         ];
 
         function preset(desired_preset, option_pk) {
@@ -179,8 +179,9 @@
         <tbody>
 
          {% for option in option_group.options %}
+         <input type="hidden" class="order" name="order__{{ option.pk }}" id="order__{{ option.pk }}" value="{{ option.order }}" />
          <tr id="option__{{ option.pk }}">
-             <input type="hidden" class="order" name="order__{{ option.pk }}" id="order__{{ option.pk }}" value="{{ option.order }}" />
+
 
              <td>{{ option.name }}</td>
              <td>
