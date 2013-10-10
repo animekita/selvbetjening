@@ -1,0 +1,15 @@
+{% extends "sadmin2/generic/parts/search_inner.html" %}
+
+{% block rows %}
+
+{% for email in instances %}
+<tr>
+    <td>{{ email.last_attempt }}</td>
+    <td>{{ email.app }}</td>
+    <td>{{ email.subject }}</td>
+    <td>{{ email.to_address }}</td>
+    <td>{% if email.sent %}OK{% elif not email.sent and email.last_attemt %}ERROR{% endif %}</td>
+</tr>
+{% endfor %}
+
+{% endblock %}

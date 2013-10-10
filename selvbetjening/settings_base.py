@@ -97,7 +97,7 @@ TEMPLATE_DIRS = [
 INSTALLED_APPS = [
     'countries',
     'south',
-    'mailer',
+    'mailqueue',
     'crispy_forms',
     'sorl.thumbnail',
     'debug_toolbar',
@@ -178,3 +178,7 @@ DEBUG_TOOLBAR_PANELS = (
 
 POLICY = dict()
 POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] = False
+
+# E-mail
+
+MAILQUEUE_LIMIT = 50

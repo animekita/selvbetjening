@@ -1,11 +1,5 @@
 #!/bin/sh
 
-WORKON_PATH=/PATH/TO/.virtualenvs/PROJECT
-PROJECT_ROOT=/PATH/TO/PROJECT/ROOT/
-MAIL_LOG=$PROJECT_ROOT/logs/cron_mail.log
+## Assumes that DJANGO_SETTINGS_MODULE is set and django-admin.py is on the path.
 
-# activate virtual environment
-. $WORKON_PATH/bin/activate
-
-cd $PROJECT_ROOT
-python manage.py send_mail >> $MAIL_LOG 2>&1
+django-admin.py send_queued_messages

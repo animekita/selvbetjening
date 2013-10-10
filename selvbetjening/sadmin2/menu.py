@@ -55,23 +55,23 @@ breadcrumbs = {
     'dashboard': {'name': _('Dashboard'),
                   'url': 'sadmin2:dashboard'},
 
-    'userportal': {'name': _('Users'),
+    'users': {'name': _('Users'),
               'url': 'sadmin2:users_list'},
 
     'users_create': {'name': _('Create'),
                      'url': 'sadmin2:users_create',
-                     'parent': 'userportal'},
+                     'parent': 'users'},
 
     'users_groups': {'name': _('Groups'),
                      'url': 'sadmin2:users_groups_list',
-                     'parent': 'userportal'},
+                     'parent': 'users'},
 
     'users_groups_create': {'name': _('Create'),
                             'url': 'sadmin2:users_groups_create',
                             'parent': 'users_groups'},
 
     'users_reports': {'name': _('Reports'),
-                      'parent': 'userportal'},
+                      'parent': 'users'},
 
     'users_reports_age': {'name': _('Age'),
                           'url': 'sadmin2:users_reports_age',
@@ -89,7 +89,7 @@ breadcrumbs = {
     # Assumes: context[user], kwargs[user_pk]
     'user': {'name_callback': lambda context: context['user'].username,
              'url_callback': url_callback('sadmin2:user', ('user_pk',)),
-             'parent': 'userportal'},
+             'parent': 'users'},
 
     # Assumes: context[user], kwargs[user_pk]
     'user_password': {'name': _('Password'),
@@ -214,18 +214,28 @@ breadcrumbs = {
         'name': _('Check-in history'),
         'url_callback': url_callback('sadmin2:event_report_check_in', ('event_pk',)),
         'parent': 'event'},
+
+    'emails': {
+        'name': _('E-mails')
+    },
+
+    'emails_queue': {
+        'name': _('Delivery Log'),
+        'url': 'sadmin2:emails_queue',
+        'parent': 'emails'
+    }
 }
 
 sadmin2_menu_main = (
     {'id': 'events',
      'name': _('Events'),
      'url': 'sadmin2:events_list'},
-    {'id': 'userportal',
+    {'id': 'users',
      'name': _('Users'),
      'url': 'sadmin2:users_list'},
     {'id': 'emails',
-     'name': _('Newsletters'),
-     'url': 'sadmin2:users_list'}
+     'name': _('E-mails'),
+     'url': 'sadmin2:emails_queue'}
 )
 
 sadmin2_menu_tab_events = (
@@ -234,7 +244,7 @@ sadmin2_menu_tab_events = (
 )
 
 sadmin2_menu_tab_users = (
-    {'id': 'userportal', 'name': _('Users'), 'url': 'sadmin2:users_list'},
+    {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
     {'id': 'groups', 'name': _('Groups'), 'url': 'sadmin2:users_groups_list'},
 
     {'id': 'reports',
@@ -327,6 +337,11 @@ sadmin2_menu_tab_event = (
      }
 )
 
+sadmin2_menu_tab_emails = (
+    {'id': 'queue',
+     'name': _('Delivery Log'),
+     'url': 'sadmin2:emails_queue'},
+)
 
 sadmin2_menu_manifest = {
     'sadmin2_menu_main': sadmin2_menu_main

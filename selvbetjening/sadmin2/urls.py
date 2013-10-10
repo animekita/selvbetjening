@@ -9,6 +9,7 @@ import views.events
 import views.event
 import views.users
 import views.user
+import views.emails
 
 urlpatterns = patterns(
     '',
@@ -52,6 +53,8 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/settings/$', views.event.event_settings, name='event_settings'),
     url(r'^events/(?P<event_pk>[0-9]+)/reports/checkin/$', views.event.report_check_in, name='event_report_check_in'),
     url(r'^events/(?P<event_pk>[0-9]+)/reports/registration/$', views.event.report_registration, name='event_report_registration'),
+
+    url(r'^emails/queue/$', views.emails.queue, name='emails_queue'),
 
     url(r'^login/$', auth_views.login, name='login', kwargs=
         {
