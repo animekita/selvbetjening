@@ -231,6 +231,12 @@ breadcrumbs = {
         'parent': 'emails'
     },
 
+    'emails_templates_create': {
+        'name': _('Create'),
+        'url': 'sadmin2:emails_templates_create',
+        'parent': 'emails_templates'
+    },
+
     # Assuems: context[template], kwargs[template_pk]
     'emails_template': {
         'name_callback': lambda context: context['template'].subject,

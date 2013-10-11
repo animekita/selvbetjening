@@ -47,7 +47,7 @@ def templates(request):
         'sadmin2_menu_main_active': 'emails',
         'sadmin2_breadcrumbs_active': 'emails_templates',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_emails,
-        'sadmin2_menu_tab_active': 'templates',
+        'sadmin2_menu_tab_active': 'templates'
     }
 
     return search_view(request,
@@ -76,3 +76,20 @@ def template(request, template_pk):
                                message_success=_('Template saved'),
                                context=context,
                                instance=instance)
+
+
+@sadmin_prerequisites
+def templates_create(request):
+
+    context = {
+        'sadmin2_menu_main_active': 'emails',
+        'sadmin2_breadcrumbs_active': 'emails_templates_create',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_emails,
+        'sadmin2_menu_tab_active': 'templates'
+    }
+
+    return generic_create_view(request,
+                               TemplateForm,
+                               reverse('sadmin2:emails_templates'),
+                               message_success=_('Template created'),
+                               context=context)
