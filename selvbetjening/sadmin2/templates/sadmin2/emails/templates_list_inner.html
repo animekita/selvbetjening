@@ -1,0 +1,11 @@
+{% extends "sadmin2/generic/parts/search_inner.html" %}
+
+{% block rows %}
+
+{% for template in instances %}
+<tr onclick="document.location = '{% url "sadmin2:emails_template" template.pk %}';" class="clickable">
+    <td><a href="{% url "sadmin2:emails_template" template.pk %}">{{ template.subject }}</a></td>
+</tr>
+{% endfor %}
+
+{% endblock %}

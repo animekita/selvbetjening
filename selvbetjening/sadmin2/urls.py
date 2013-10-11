@@ -55,6 +55,8 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/reports/registration/$', views.event.report_registration, name='event_report_registration'),
 
     url(r'^emails/queue/$', views.emails.queue, name='emails_queue'),
+    url(r'^emails/templates/$', views.emails.templates, name='emails_templates'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/$', views.emails.template, name='emails_template'),
 
     url(r'^login/$', auth_views.login, name='login', kwargs=
         {

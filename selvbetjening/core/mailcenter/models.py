@@ -13,7 +13,9 @@ from selvbetjening.core.models import ListField
 
 import sources
 
+
 class EmailSpecification(models.Model):
+
     # source
     event = models.CharField(max_length=64, default='', blank=True,
                              choices=sources.registry)

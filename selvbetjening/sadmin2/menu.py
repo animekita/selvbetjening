@@ -223,6 +223,19 @@ breadcrumbs = {
         'name': _('Delivery Log'),
         'url': 'sadmin2:emails_queue',
         'parent': 'emails'
+    },
+
+    'emails_templates': {
+        'name': _('Templates'),
+        'url': 'sadmin2:emails_templates',
+        'parent': 'emails'
+    },
+
+    # Assuems: context[template], kwargs[template_pk]
+    'emails_template': {
+        'name_callback': lambda context: context['template'].subject,
+        'url_callback': url_callback('sadmin2:emails_template', ('template_pk',)),
+        'parent': 'emails_templates'
     }
 }
 
@@ -338,9 +351,17 @@ sadmin2_menu_tab_event = (
 )
 
 sadmin2_menu_tab_emails = (
-    {'id': 'queue',
-     'name': _('Delivery Log'),
-     'url': 'sadmin2:emails_queue'},
+    {
+        'id': 'queue',
+        'name': _('Delivery Log'),
+        'url': 'sadmin2:emails_queue'
+    },
+
+    {
+        'id': 'templates',
+        'name': _('Templates'),
+        'url': 'sadmin2:emails_templates'
+    }
 )
 
 sadmin2_menu_manifest = {

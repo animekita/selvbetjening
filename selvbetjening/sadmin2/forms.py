@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.layout import Submit, Layout, Fieldset, HTML
 from core.events.models import Selection
 from core.events.utils import sum_attendee_payment_status
+from core.mailcenter.models import EmailSpecification
 from core.members.models import UserProfile
 
 from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
@@ -391,6 +392,24 @@ class GroupForm(forms.ModelForm):
         layout = S2Layout(
             S2Fieldset(None,
                        'name', 'permissions'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = EmailSpecification
+        fields = ('subject', 'body')
+
+    def __init__(self, *args, **kwargs):
+        super(TemplateForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'subject', 'body'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
