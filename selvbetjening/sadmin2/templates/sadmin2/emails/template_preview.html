@@ -1,0 +1,36 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{{ block.super }}
+
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">Preview User</div>
+  <div class="panel-body">
+      {% crispy form %}
+  </div>
+</div>
+
+<div class="well well-lg">
+
+    <h1>{{ subject }}</h1>
+
+    {{ email.body_html|safe }}
+
+</div>
+
+<h2>Text-only version</h2>
+
+<pre>
+{{ email.subject }}
+
+{{ email.body_plain }}
+</pre>
+
+{% endblock %}

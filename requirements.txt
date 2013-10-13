@@ -1,5 +1,7 @@
 PIL
 
+markdown
+
 Django==1.5.3
 South==0.8.2
 

@@ -242,6 +242,20 @@ breadcrumbs = {
         'name_callback': lambda context: context['template'].subject,
         'url_callback': url_callback('sadmin2:emails_template', ('template_pk',)),
         'parent': 'emails_templates'
+    },
+
+    # Assuems: context[template], kwargs[template_pk]
+    'emails_template_preview': {
+        'name': _('Preview'),
+        'url_callback': url_callback('sadmin2:emails_template_preview', ('template_pk',)),
+        'parent': 'emails_template'
+    },
+
+    # Assuems: context[template], kwargs[template_pk]
+    'emails_template_send': {
+        'name': _('Send'),
+        'url_callback': url_callback('sadmin2:emails_template_send', ('template_pk',)),
+        'parent': 'emails_template'
     }
 }
 
@@ -254,7 +268,7 @@ sadmin2_menu_main = (
      'url': 'sadmin2:users_list'},
     {'id': 'emails',
      'name': _('E-mails'),
-     'url': 'sadmin2:emails_queue'}
+     'url': 'sadmin2:emails_templates'}
 )
 
 sadmin2_menu_tab_events = (
@@ -358,15 +372,36 @@ sadmin2_menu_tab_event = (
 
 sadmin2_menu_tab_emails = (
     {
-        'id': 'queue',
-        'name': _('Delivery Log'),
-        'url': 'sadmin2:emails_queue'
-    },
-
-    {
         'id': 'templates',
         'name': _('Templates'),
         'url': 'sadmin2:emails_templates'
+    },
+
+    {
+        'id': 'queue',
+        'name': _('Delivery Log'),
+        'url': 'sadmin2:emails_queue'
+    }
+
+)
+
+sadmin2_menu_tab_template = (
+    {
+        'id': 'template',
+        'name': _('Template'),
+        'url_callback': url_callback('sadmin2:emails_template', ('template_pk',))
+    },
+
+    {
+        'id': 'preview',
+        'name': _('Preview'),
+        'url_callback': url_callback('sadmin2:emails_template_preview', ('template_pk',))
+    },
+
+    {
+        'id': 'send',
+        'name': _('Send'),
+        'url_callback': url_callback('sadmin2:emails_template_send', ('template_pk',))
     }
 )
 

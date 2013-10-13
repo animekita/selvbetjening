@@ -6,13 +6,35 @@
     {{ block.super }}
     <script src="{{STATIC_URL}}sadmin2/js/main.js"></script>
 
-    {% if search_url %}
     <script type="text/javascript">
+    {% if search_url %}
         $(function() {
             init_livesearch('{{search_url}}');
         });
-    </script>
     {% endif %}
+
+        $(function() {
+
+            $('.userselector').autocomplete({
+                "paramName": "q",
+                "serviceUrl": "{% url "sadmin2:autocomplete_users" %}",
+                "autoSelectFirst": true//,
+                //"onSelect": function(suggestion) {
+                //    this.parents('form').submit();
+                //}
+            });
+
+            $('.attendeeselector').autocomplete({
+                "paramName": "q",
+                "serviceUrl": "{% url "sadmin2:autocomplete_attendees" %}",
+                "autoSelectFirst": true//,
+                //"onSelect": function(suggestion) {
+                //    this.parents('form').submit();
+                //}
+            });
+
+        });
+    </script>
 
 {% endblock %}
 

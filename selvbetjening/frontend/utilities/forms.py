@@ -112,6 +112,7 @@ class S2HorizontalRow(Row):
 
 
 class S2Submit(Submit):
+
     def __init__(self, *args, **kwargs):
         kwargs['css_class'] = kwargs.get('css_class', '') + ' btn-lg'
         super(S2Submit, self).__init__(*args, **kwargs)
@@ -120,13 +121,20 @@ class S2Submit(Submit):
 class S2SubmitCreate(S2Submit):
 
     def __init__(self):
-        super(S2Submit, self).__init__('create', _('Create'))
+        super(S2SubmitCreate, self).__init__('create', _('Create'))
 
 
 class S2SubmitUpdate(S2Submit):
 
     def __init__(self):
-        super(S2Submit, self).__init__('update', _('Update'))
+        super(S2SubmitUpdate, self).__init__('update', _('Update'))
+
+
+class S2JavaScriptButton(S2Submit):
+    input_type = 'button'
+
+    def __init__(self, label, href):
+        super(S2JavaScriptButton, self).__init__('action', label, onclick=href)
 
 
 from django.forms.widgets import TextInput

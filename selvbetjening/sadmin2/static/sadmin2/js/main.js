@@ -78,3 +78,11 @@ function init_livesearch(search_url) {
 $(document).ready(function(){
     $('textarea').autosize();
 });
+
+function popup(url, name, height, width) {
+	var newwindow = window.open(url, name, 'height=' + height + ',width=' + width);
+	if (window.focus) { newwindow.focus() }
+
+    return false;
+}
+

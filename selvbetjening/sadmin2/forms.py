@@ -4,10 +4,11 @@ from collections import OrderedDict
 
 from django import forms
 from django.contrib.auth.models import Group
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.layout import Submit, Layout, Fieldset, HTML
-from core.events.models import Selection
+from core.events.models import Selection, Attend
 from core.events.utils import sum_attendee_payment_status
 from core.mailcenter.models import EmailSpecification
 from core.members.models import UserProfile
@@ -400,16 +401,87 @@ class GroupForm(forms.ModelForm):
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = EmailSpecification
-        fields = ('subject', 'body')
+        fields = ('subject', 'body', 'body_format', 'template_context')
 
     def __init__(self, *args, **kwargs):
         super(TemplateForm, self).__init__(*args, **kwargs)
 
         self.helper = S2FormHelper(horizontal=True)
 
+        # TODO add help text on possible params
+
         layout = S2Layout(
             S2Fieldset(None,
-                       'subject', 'body'))
+                       'template_context',
+                       'subject',
+                       'body_format', 'body'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+
+class UserSelectorForm(forms.Form):
+
+    user_selector = forms.CharField(label=_('User Selector'))
+
+    helper = S2FormHelper(horizontal=False)
+
+    layout = S2Layout(
+        S2Fieldset(None,
+                   S2Field('user_selector', css_class='userselector', autocomplete="off")))
+
+    helper.add_layout(layout)
+    helper.add_input(S2Submit('select', _('Select')))
+
+    def clean_user_selector(self):
+
+        data = self.cleaned_data.get('user_selector', '')
+        fragments = data.split('-')
+
+        if len(fragments) == 0:
+            return forms.ValidationError('Invalid user')
+
+        try:
+            user = User.objects.get(username=fragments[0].strip())
+        except User.DoesNotExist:
+            raise forms.ValidationError('Invalid user')
+
+        return user
+
+    def get_instance(self):
+        return self.cleaned_data['user_selector']
+
+
+class AttendeeSelectorForm(forms.Form):
+
+    attendee_selector = forms.CharField(label=_('Attendee Selector'))
+
+    helper = S2FormHelper(horizontal=False)
+
+    layout = S2Layout(
+        S2Fieldset(None,
+                   S2Field('attendee_selector', css_class='attendeeselector', autocomplete="off")))
+
+    helper.add_layout(layout)
+    helper.add_input(S2Submit('select', _('Select')))
+
+    def clean_attendee_selector(self):
+
+        data = self.cleaned_data.get('attendee_selector', '')
+        fragments = data.split('-')
+
+        if len(fragments) < 2:
+            return forms.ValidationError('Invalid attendee')
+
+        event_title = fragments[0].strip()
+        username = fragments[1].strip()
+
+        try:
+            attendee = Attend.objects.get(event__title=event_title, user__username=username)
+        except Attend.DoesNotExist:
+            raise forms.ValidationError('Invalid attendee')
+
+        return attendee
+
+    def get_instance(self):
+        return self.cleaned_data['attendee_selector']

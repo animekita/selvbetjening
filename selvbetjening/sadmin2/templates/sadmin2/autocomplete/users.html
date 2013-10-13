@@ -1,0 +1,7 @@
+{
+    "suggestions": [
+        {% for user in instances %}
+        "{{ user.username }} - {{ user.first_name }} {{ user.last_name }} ({{ user.email }})"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+}

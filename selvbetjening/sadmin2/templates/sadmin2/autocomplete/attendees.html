@@ -1,0 +1,7 @@
+{
+    "suggestions": [
+        {% for attendee in instances %}
+        "{{ attendee.event.title }} - {{ attendee.user.username }} - {{ attendee.user.first_name }} {{ attendee.user.last_name }} ({{ attendee.user.email }})"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+}

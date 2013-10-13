@@ -10,6 +10,7 @@ import views.event
 import views.users
 import views.user
 import views.emails
+import views.autocomplete
 
 urlpatterns = patterns(
     '',
@@ -58,6 +59,11 @@ urlpatterns = patterns(
     url(r'^emails/templates/$', views.emails.templates, name='emails_templates'),
     url(r'^emails/templates/create/$', views.emails.templates_create, name='emails_templates_create'),
     url(r'^emails/templates/(?P<template_pk>[0-9]+)/$', views.emails.template, name='emails_template'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/preview/$', views.emails.template_preview, name='emails_template_preview'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/send/$', views.emails.template_send, name='emails_template_send'),
+
+    url(r'autocomplete/users/', views.autocomplete.users, name='autocomplete_users'),
+    url(r'autocomplete/attendees/', views.autocomplete.attendees, name='autocomplete_attendees'),
 
     url(r'^login/$', auth_views.login, name='login', kwargs=
         {
