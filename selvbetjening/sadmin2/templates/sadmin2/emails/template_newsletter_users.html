@@ -1,0 +1,42 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+    <script type="text/javascript">
+        function updateState() {
+            if ($('#newsletter-enabler').prop('checked')) {
+                $('#newsletter-submit').removeAttr('disabled');
+            } else {
+                $('#newsletter-submit').attr('disabled', 'disabled');
+            }
+        }
+
+        $(function() {
+            $('#newsletter-enabler').change(updateState);
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>Send e-mails to all users</h1>
+    <p>Send e-mails to all of <strong>{{ user_email_count }}</strong> users who have accepted to receive e-mail.</p>
+
+    <form method="POST" class="form-inline">
+        <input id="newsletter-submit" type="submit" disabled="disabled" class="btn btn-danger btn-lg" value="Send e-mails now" />
+
+        <div class="checkbox">
+            <label>
+                <input id="newsletter-enabler" type="checkbox"> Yes, I'm aware that this will send e-mails to {{ user_email_count }} people
+            </label>
+        </div>
+
+    </form>
+</div>
+
+
+
+{% endblock %}

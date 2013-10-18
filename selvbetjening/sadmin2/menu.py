@@ -237,24 +237,38 @@ breadcrumbs = {
         'parent': 'emails_templates'
     },
 
-    # Assuems: context[template], kwargs[template_pk]
+    # Assumes: context[template], kwargs[template_pk]
     'emails_template': {
         'name_callback': lambda context: context['template'].subject,
         'url_callback': url_callback('sadmin2:emails_template', ('template_pk',)),
         'parent': 'emails_templates'
     },
 
-    # Assuems: context[template], kwargs[template_pk]
+    # Assumes: context[template], kwargs[template_pk]
     'emails_template_preview': {
         'name': _('Preview'),
         'url_callback': url_callback('sadmin2:emails_template_preview', ('template_pk',)),
         'parent': 'emails_template'
     },
 
-    # Assuems: context[template], kwargs[template_pk]
+    # Assumes: context[template], kwargs[template_pk]
     'emails_template_send': {
         'name': _('Send'),
         'url_callback': url_callback('sadmin2:emails_template_send', ('template_pk',)),
+        'parent': 'emails_template'
+    },
+
+    # Assumes: context[template], kwargs[template_pk]
+    'emails_template_newsletter_users': {
+        'name': _('User Newsletter'),
+        'url_callback': url_callback('sadmin2:emails_template_newsletter_users', ('template_pk',)),
+        'parent': 'emails_template'
+    },
+
+    # Assumes: context[template], kwargs[template_pk]
+    'emails_template_newsletter_attendees': {
+        'name': _('Event Newsletter'),
+        'url_callback': url_callback('sadmin2:emails_template_newsletter_attendees', ('template_pk',)),
         'parent': 'emails_template'
     }
 }
@@ -401,7 +415,25 @@ sadmin2_menu_tab_template = (
     {
         'id': 'send',
         'name': _('Send'),
-        'url_callback': url_callback('sadmin2:emails_template_send', ('template_pk',))
+        'dropdown': (
+            {
+                'id': 'send-single',
+                'name': _('Direct to User'),
+                'url_callback': url_callback('sadmin2:emails_template_send', ('template_pk',))
+            },
+
+            {
+                'id': 'send-newsletter-user',
+                'name': _('User Newsletter'),
+                'url_callback': url_callback('sadmin2:emails_template_newsletter_users', ('template_pk',))
+            },
+
+            {
+                'id': 'send-newsletter-attendees',
+                'name': _('Event Newsletter'),
+                'url_callback': url_callback('sadmin2:emails_template_newsletter_attendees', ('template_pk',))
+            }
+        )
     }
 )
 

@@ -1,0 +1,56 @@
+{% extends "sadmin2/site.html" %}
+
+{% block head %}
+
+    <script type="text/javascript">
+        function updateState() {
+            if ($('#newsletter-enabler').prop('checked')) {
+                $('#newsletter-submit').removeAttr('disabled');
+            } else {
+                $('#newsletter-submit').attr('disabled', 'disabled');
+            }
+        }
+
+        $(function() {
+            $('#newsletter-enabler').change(updateState);
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>{{ event.title }}</h1>
+    <p><strong>Step 3:</strong> Confirm</p>
+
+    <p>Send e-mails to all of <strong>{{ attendees_count }}</strong> attendees matching the following filters.</p>
+    <ul>
+        <li>Status: {% for status in filter_status %}{{ status }}{% if not forloop.last %}, {% endif %}{% empty %}All{% endfor %}</li>
+        <li>Options:
+            {% for option in filter_options %}
+                {% if forloop.first %}<ul>{% endif %}
+                <li>{{ option.name }}</li>
+                {% if forloop.last %}</ul>{% endif %}
+            {% empty %}
+                All
+            {% endfor %}
+        </li>
+    </ul>
+
+    <form method="POST" class="form-inline" action="">
+        {% csrf_token %}
+        {{ form }}
+
+        <input id="newsletter-submit" type="submit" name="commit" disabled="disabled" class="btn btn-danger btn-lg" value="Send e-mails now" />
+
+        <div class="checkbox">
+            <label>
+                <input id="newsletter-enabler" type="checkbox"> Yes, I'm aware that this will send e-mails to {{ user_email_count }} people
+            </label>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

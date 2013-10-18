@@ -1,0 +1,46 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+    <script type="text/javascript">
+    $(function() {
+
+        $('.eventselector').autocomplete({
+            "lookup": [{% for event in events %}
+                { "value": "{{ event.title }}", "data": "{% url "sadmin2:emails_template_newsletter_attendees_step2" template_pk=template.pk event_pk=event.pk %}" }{% if not forloop.last %},{% endif %}
+            {% endfor %}],
+            "autoSelectFirst": true,
+            "onSelect": function(suggestion) {
+                window.location = suggestion['data'];
+            }
+        });
+
+    });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>Send e-mails to attendees</h1>
+
+    <p><strong>Step 1:</strong> Select the event</p>
+
+    <form  method="post" >
+        <div id="div_id_user_selector" class="form-group">
+            <label for="id_user_selector" class="control-label  requiredField">
+				Search by event title
+            </label>
+            <div class="controls ">
+                <input autocomplete="off" class="eventselector input-lg form-control" id="id_event_selector" name="event_selector" required="required" type="text" />
+            </div>
+        </div>
+    </form>
+
+
+
+
+</div>
+{% endblock %}

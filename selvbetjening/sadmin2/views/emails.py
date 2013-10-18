@@ -4,22 +4,25 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 from mailqueue.models import MailerMessage
 
+from selvbetjening.core.events.models import Event, Attend, Option
+from selvbetjening.core.members.models import UserProfile
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from selvbetjening.sadmin2.views.generic import search_view, generic_create_view
 from selvbetjening.sadmin2 import menu
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
-from selvbetjening.sadmin2.forms import TemplateForm, UserSelectorForm, AttendeeSelectorForm
+from selvbetjening.sadmin2.forms import TemplateForm, UserSelectorForm, AttendeeSelectorForm, AttendeesNewsletterFilter, AttendeesNewsletterFilterHidden
 
 
 @sadmin_prerequisites
 def queue(request):
 
     queryset = MailerMessage.objects.all().\
-        order_by('subject', 'last_attempt', '-pk')
+        order_by('sent', '-last_attempt', '-pk')
 
     columns = ('subject', 'app', 'to_address')
 
@@ -165,6 +168,131 @@ def template_send(request, template_pk):
 
                       'form': form
                   })
+
+
+@sadmin_prerequisites
+def template_newsletter_users(request, template_pk):
+
+    template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
+
+    users = UserProfile.objects.filter(send_me_email=True)
+
+    if request.method == 'POST':
+
+        for user in users:
+            template_instance.send_email_user(user, 'sadmin2.emails.newsletter.users')
+
+        messages.success(request, _('E-mails queued for dispatch'))
+        return HttpResponseRedirect(reverse('sadmin2:emails_template_newsletter_users',
+                                            kwargs={'template_pk': template_instance.pk}))
+
+    return render(request,
+                  'sadmin2/emails/template_newsletter_users.html',
+                  {
+                      'sadmin2_menu_main_active': 'emails',
+                      'sadmin2_breadcrumbs_active': 'emails_template_newsletter_users',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_template,
+                      'sadmin2_menu_tab_active': 'mass_send',
+
+                      'template': template_instance,
+
+                      'user_email_count': users.count()
+                  })
+
+
+@sadmin_prerequisites
+def template_newsletter_attendees(request, template_pk):
+
+    template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
+
+    events = Event.objects.all()
+
+    return render(request,
+                  'sadmin2/emails/template_newsletter_attendees.html',
+                  {
+                      'sadmin2_menu_main_active': 'emails',
+                      'sadmin2_breadcrumbs_active': 'emails_template_newsletter_attendees',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_template,
+                      'sadmin2_menu_tab_active': 'mass_send',
+
+                      'template': template_instance,
+
+                      'events': events
+                  })
+
+
+@sadmin_prerequisites
+def template_newsletter_attendees_step2(request, template_pk, event_pk):
+
+    template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
+    event = get_object_or_404(Event, pk=event_pk)
+
+    form = AttendeesNewsletterFilter(event=event)
+
+    return render(request,
+                  'sadmin2/emails/template_newsletter_attendees_step2.html',
+                  {
+                      'sadmin2_menu_main_active': 'emails',
+                      'sadmin2_breadcrumbs_active': 'emails_template_newsletter_attendees',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_template,
+                      'sadmin2_menu_tab_active': 'mass_send',
+
+                      'template': template_instance,
+
+                      'event': event,
+
+                      'form': form
+                  })
+
+
+@sadmin_prerequisites
+@require_POST
+def template_newsletter_attendees_step3(request, template_pk, event_pk):
+
+    template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
+    event = get_object_or_404(Event, pk=event_pk)
+
+    form = AttendeesNewsletterFilterHidden(request.POST, event=event)
+    assert form.is_valid()
+
+    attendees = Attend.objects.filter(event=event)
+
+    if len(form.cleaned_data['status']) > 0:
+        attendees = attendees.filter(state__in=form.cleaned_data['status'])
+
+    if len(form.cleaned_data['options']):
+        attendees = attendees.filter(selection__option__in=form.cleaned_data['options'])
+
+    attendees = attendees.distinct()
+
+    if request.POST.get('commit', False):  # commit is added by a second post on this page
+
+        for attendee in attendees:
+            template_instance.send_email_attendee(attendee, 'sadmin2.emails.newsletter.users')
+
+        messages.success(request, _('%s e-mails queued for dispatch') % len(attendees))
+        return HttpResponseRedirect(reverse('sadmin2:emails_template_newsletter_attendees',
+                                            kwargs={'template_pk': template_instance.pk}))
+
+    return render(request,
+                  'sadmin2/emails/template_newsletter_attendees_step3.html',
+                  {
+                      'sadmin2_menu_main_active': 'emails',
+                      'sadmin2_breadcrumbs_active': 'emails_template_newsletter_attendees',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_template,
+                      'sadmin2_menu_tab_active': 'mass_send',
+
+                      'template': template_instance,
+                      'event': event,
+
+                      'filter_status': form.cleaned_data['status'],
+                      'filter_options': Option.objects.filter(pk__in=form.cleaned_data['options']),
+
+                      'attendees_count': attendees.count(),
+
+                      'form': form
+                  })
+
 
 @sadmin_prerequisites
 def templates_create(request):

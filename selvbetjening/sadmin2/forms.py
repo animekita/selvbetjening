@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.layout import Submit, Layout, Fieldset, HTML
+from core.events.dynamic_selections import dynamic_options, SCOPE
 from core.events.models import Selection, Attend
 from core.events.utils import sum_attendee_payment_status
 from core.mailcenter.models import EmailSpecification
@@ -485,3 +486,60 @@ class AttendeeSelectorForm(forms.Form):
 
     def get_instance(self):
         return self.cleaned_data['attendee_selector']
+
+
+class AttendeesNewsletterFilter(forms.Form):
+    STATUS_CHOICE = AttendState.get_choices()
+
+    status = forms.MultipleChoiceField(
+        label=_(u'Attendance status'),
+        choices=STATUS_CHOICE,
+        help_text=_(u'Only send to recipients with this status. Leave blank to skip this filter.'),
+        required=False)
+
+    options = forms.MultipleChoiceField(
+        label=_(u'Option selections'),
+        help_text=_(u'Only send to recipients who have selected one or more of these options. Leave blank to skip this filter.'),
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event')
+        super(AttendeesNewsletterFilter, self).__init__(*args, **kwargs)
+
+        groups = dynamic_options(SCOPE.SADMIN, event, as_group_dict=True)
+        choices = []
+
+        for group_pk, options in groups.items():
+
+            group_choices = []
+
+            for option, selection in options:
+                group_choices.append((option.pk, option.name))
+
+            choices.append((options[0][0].group.name, group_choices))
+
+        self.fields['options'].choices = choices
+
+    helper = S2FormHelper(horizontal=False)
+
+    layout = S2Layout(
+        S2Fieldset(None,
+                   'status', 'options'))
+
+    helper.add_layout(layout)
+    helper.add_input(S2Submit('filter', _('Filter')))
+    helper.form_tag = False
+
+
+class AttendeesNewsletterFilterHidden(AttendeesNewsletterFilter):
+
+    def __init__(self, *args, **kwargs):
+        super(AttendeesNewsletterFilterHidden, self).__init__(*args, **kwargs)
+
+        self.fields['status'].widget = forms.MultipleHiddenInput()
+        self.fields['options'].widget = forms.MultipleHiddenInput()
+
+
+
+
+

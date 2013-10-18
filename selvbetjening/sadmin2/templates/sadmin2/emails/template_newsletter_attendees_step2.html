@@ -1,0 +1,21 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>{{ event.title }}</h1>
+
+    <p><strong>Step 2:</strong> Filter recipients</p>
+
+    <form method="POST" action="{% url "sadmin2:emails_template_newsletter_attendees_step3" template_pk=template.pk event_pk=event.pk %}">
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+
+</div>
+{% endblock %}

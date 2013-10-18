@@ -61,7 +61,10 @@ urlpatterns = patterns(
     url(r'^emails/templates/(?P<template_pk>[0-9]+)/$', views.emails.template, name='emails_template'),
     url(r'^emails/templates/(?P<template_pk>[0-9]+)/preview/$', views.emails.template_preview, name='emails_template_preview'),
     url(r'^emails/templates/(?P<template_pk>[0-9]+)/send/$', views.emails.template_send, name='emails_template_send'),
-
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/newsletter/users/$', views.emails.template_newsletter_users, name='emails_template_newsletter_users'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/newsletter/attendees/$', views.emails.template_newsletter_attendees, name='emails_template_newsletter_attendees'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/newsletter/attendees/(?P<event_pk>[0-9]+)$', views.emails.template_newsletter_attendees_step2, name='emails_template_newsletter_attendees_step2'),
+    url(r'^emails/templates/(?P<template_pk>[0-9]+)/newsletter/attendees/(?P<event_pk>[0-9]+)/confirm/$', views.emails.template_newsletter_attendees_step3, name='emails_template_newsletter_attendees_step3'),
     url(r'autocomplete/users/', views.autocomplete.users, name='autocomplete_users'),
     url(r'autocomplete/attendees/', views.autocomplete.attendees, name='autocomplete_attendees'),
 
