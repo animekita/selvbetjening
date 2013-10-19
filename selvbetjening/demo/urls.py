@@ -12,9 +12,7 @@ urlpatterns = patterns(
     (r'^eventportal/', include('selvbetjening.frontend.eventportal.urls')),
     (r'^eventsingle/', include('selvbetjening.frontend.eventsingle.urls')),
 
-    #(r'^profil/', include('selvbetjening.frontend.userportal.urls')),
-
-    (r'^sadmin2/', include('selvbetjening.sadmin2.urls', namespace='sadmin2')),
+    (r'^%s/' % settings.SADMIN2_BASE_URL, include('selvbetjening.sadmin2.urls', namespace='sadmin2')),
 
     (r'^api/sso/', include('selvbetjening.api.sso.urls')),
 

@@ -70,6 +70,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'selvbetjening.sadmin2.middleware.RequireLoginMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
@@ -179,6 +180,10 @@ DEBUG_TOOLBAR_PANELS = (
 
 POLICY = dict()
 POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] = False
+
+# SAdmin2
+
+SADMIN2_BASE_URL = 'sadmin2'  # don't add a trailing slash
 
 # E-mail
 
