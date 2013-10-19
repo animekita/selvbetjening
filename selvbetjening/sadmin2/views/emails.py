@@ -1,6 +1,6 @@
 
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -200,10 +200,25 @@ def template_newsletter_users(request, template_pk):
                   })
 
 
+def _check_template_context(request, template_instance):
+    if not template_instance.template_context == 'attendee':
+        return render(request, 'sadmin2/generic/error.html',
+                      {
+                          'subject': _('Can\'t send event newsletter'),
+                          'message': _('This template is not using the attendee template context required by the event newsletter')
+                      })
+
+    return None
+
+
 @sadmin_prerequisites
 def template_newsletter_attendees(request, template_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
+
+    error = _check_template_context(request, template_instance)
+    if error is not None:
+        return error
 
     events = Event.objects.all()
 
@@ -226,6 +241,10 @@ def template_newsletter_attendees_step2(request, template_pk, event_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
     event = get_object_or_404(Event, pk=event_pk)
+
+    error = _check_template_context(request, template_instance)
+    if error is not None:
+        return error
 
     form = AttendeesNewsletterFilter(event=event)
 
@@ -251,6 +270,10 @@ def template_newsletter_attendees_step3(request, template_pk, event_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
     event = get_object_or_404(Event, pk=event_pk)
+
+    error = _check_template_context(request, template_instance)
+    if error is not None:
+        return error
 
     form = AttendeesNewsletterFilterHidden(request.POST, event=event)
     assert form.is_valid()

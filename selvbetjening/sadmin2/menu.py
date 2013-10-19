@@ -21,6 +21,7 @@
     url_callback (optional): A function returning a full url. The current context is given as the first argument.
     parent (optional): A string pointing to an existing parent entry.
                        The traversal stops if this value is None or omitted.
+    hide (optional): callback taking the context as an argument. If it returns true then the item will not be rendered.
 
 
 """
@@ -431,7 +432,8 @@ sadmin2_menu_tab_template = (
             {
                 'id': 'send-newsletter-attendees',
                 'name': _('Event Newsletter'),
-                'url_callback': url_callback('sadmin2:emails_template_newsletter_attendees', ('template_pk',))
+                'url_callback': url_callback('sadmin2:emails_template_newsletter_attendees', ('template_pk',)),
+                'hide': lambda context: context['template'].template_context != 'attendee'
             }
         )
     }

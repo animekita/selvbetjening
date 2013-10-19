@@ -24,3 +24,9 @@ def sadmin2_emit_url(context, menu_item):
         return menu_item['url_callback'](context)
 
     return '#'
+
+
+@register.assignment_tag(takes_context=True)
+def sadmin2_hide_item(context, menu_item):
+
+    return 'hide' in menu_item and menu_item['hide'](context)

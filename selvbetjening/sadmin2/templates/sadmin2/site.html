@@ -93,9 +93,12 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">{% if item.icon %}<i class="icon-fixed-width icon-{{ item.icon }}"></i>{% endif %}{{ item.name }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for item in item.dropdown %}
+                                    {% sadmin2_hide_item item as hide %}
+                                    {% if not hide %}
                                     <li class="{{ item.class }}{% ifequal sadmin2_menu_tab_active item.id %} active{% endifequal %}">
                                         <a href="{% sadmin2_emit_url item %}">{% if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}"></i> {% endif %}{{ item.name }}</a>
                                     </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </li>
