@@ -10,7 +10,8 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Deleting model 'UserProfile'
         db.delete_table(u'members_userprofile')
-        db.delete_table(u'auth_user')
+
+        #db.delete_table(u'auth_user')
 
         # Changing field 'UserWebsite.user'
         db.alter_column(u'members_userwebsite', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['user.SUser'], db_column='user_id'))
