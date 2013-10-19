@@ -21,7 +21,6 @@
         <div class="col-lg-2{% if step == 2 %} state-current{% endif %}">
             <span>
                 {% if step > 2 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 2 %}badge-important{% endif %}">3</span>{% endif %} Vælg tilvalg
-                {% if step == 3 and event.registration_open %} (<a href="{% url "svscon_tilvalg" %}">redigér</a>){% endif %}
             </span>
         </div>
 
@@ -38,4 +37,5 @@
         </div>
     </div>
 
+</div>
 </div>
