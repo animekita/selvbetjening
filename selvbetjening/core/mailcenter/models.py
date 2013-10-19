@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.template import Template, Context
 import markdown
+from core.events.dynamic_selections import dynamic_selections, SCOPE
 
 from selvbetjening.core.mail import send_mail
 
@@ -80,7 +81,8 @@ class EmailSpecification(models.Model):
             'email': 'johndoe@example.org',
 
             # attendee.event context
-            'event_title': 'Dummy Event'
+            'event_title': 'Dummy Event',
+            'invoice': []
         }
 
         return self._render(context)
@@ -97,7 +99,8 @@ class EmailSpecification(models.Model):
         if attendee is not None:
             context.update({
                 # attendee.event context
-                'event_title': attendee.event.title
+                'event_title': attendee.event.title,
+                'invoice': dynamic_selections(SCOPE.VIEW_USER_INVOICE, attendee)
             })
 
         return context
