@@ -9,6 +9,7 @@ INSTALLED_APPS.extend([
     'selvbetjening.frontend.auth',
     'selvbetjening.frontend.userportal',
     'selvbetjening.frontend.eventportal',
+    'selvbetjening.frontend.eventsingle',
 
     'selvbetjening.demo'
 ])

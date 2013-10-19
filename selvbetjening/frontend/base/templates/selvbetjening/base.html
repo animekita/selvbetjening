@@ -15,11 +15,16 @@
 
         <script type="text/javascript">
             $(function() {
-                setTimeout(function() { $.scrollTo($("div.error")); }, 1);
+                setTimeout(function() {
+                    var errors = $(".error");
+
+                    if (errors.length > 0) {
+                        $.scrollTo(errors);
+                    }
+                }, 1);
             });
         </script>
 
-        <script src="{{ STATIC_URL }}js/selvbetjening.core.resources.js" type="text/javascript"></script>
         <script src="{{ STATIC_URL }}js/selvbetjening.core.events.js" type="text/javascript"></script>
 
         {% block head %}{% endblock %}

@@ -271,14 +271,15 @@
   </div>
 </div>
 
-{% empty %}
-    <div class="alert alert-info"><strong>Dette arrangement har ingen tilvalg.</strong></div>
-    <a href="{% url "sadmin2:event_selections" event_pk=event.pk %}" class="btn btn-lg btn-primary">Administrer tilvalg</a>
 {% endfor %}
 
-<div class="form-actions">
-    <input type="submit" onclick="allow_exit();" name="update" value="Opdater" class="btn btn-lg btn-primary" id="submit-id-create"/>
-</div>
+{% if option_groups %}
+    <div class="form-actions">
+        <input type="submit" onclick="allow_exit();" name="update" value="Opdater" class="btn btn-lg btn-primary" id="submit-id-create"/>
+    </div>
+{% else %}
+    <div class="alert alert-info"><strong>Dette arrangement har ingen tilvalg.</strong></div>
+{% endif %}
 
 </form>
 

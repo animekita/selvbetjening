@@ -1,0 +1,81 @@
+{% extends "selvbetjening/sitebase.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+    $(function() {
+
+        var form = $('.profile-form');
+        var summary = $('.profile-summary');
+        var updateButton = $('.profile-update');
+
+        {% if show_summary %}
+        form.hide();
+        summary.show();
+        updateButton.show();
+
+        updateButton.click(function(e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            form.show();
+            summary.hide();
+            updateButton.hide();
+        });
+        {% endif %}
+
+
+    });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    {% block sub_content_head %}
+        {% include "eventsingle/parts/steps.html" %}
+    {% endblock %}
+
+<div class="row">
+<div class="col-lg-12">
+
+    <h2>Kontroller din konto</h2>
+
+    <p class="lead">Der er gået lidt under et år siden, vi så dig sidst. Er dine kontooplysninger stadig opdatéret? </p>
+
+    <form class="form-horizontal" method="post" >
+
+        <div class="profile-form">
+            {% crispy form %}
+        </div>
+
+        <table class="table profile-summary" style="display: none;">
+            <tr>
+                <th>Navn</th><td>{{ user.first_name }} {{ user.last_name }}</td>
+            </tr>
+            <tr>
+                <th>Køn</th><td>{% ifequal profile.sex "male" %}Mand{% endifequal %}{% ifequal profile.sex "female" %}Kvinde{% endifequal %}</td>
+            </tr>
+            <tr>
+                <th>Fødselsdag</th><td>{{ profile.dateofbirth }}</td>
+            </tr>
+            <tr>
+                <th>E-mail</th><td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th><td>{{ profile.street }}<br/>{{ profile.postalcode }} {{ profile.city }}<br/>{{ profile.country }}</td>
+            </tr>
+        </table>
+
+        <div class="form-actions">
+            <a href="#" class="btn btn-primary profile-update" style="display: none;"><span class="glyphicon glyphicon-refresh"></span> Opdatér mine oplysninger</a>
+            <button type="submit" name="userdata" value="ok" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Alt er korrekt</button>
+        </div>
+    </form>
+
+</div>
+</div>
+
+{% endblock %}

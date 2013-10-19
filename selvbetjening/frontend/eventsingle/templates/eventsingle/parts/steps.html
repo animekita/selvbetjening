@@ -1,0 +1,41 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Status for din tilmelding</h3>
+        </div>
+
+    <div class="row">
+        <div class="col-lg-2{% if step == 0 %} state-current{% endif %}">
+            <span>
+                {% if step > 0 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 0 %}badge-important{% endif %}">1</span>{% endif %} Log ind
+            </span>
+        </div>
+
+        <div class="col-lg-2{% if step == 1 %} state-current{% endif %}">
+            <span>
+                {% if step > 1 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 1 %}badge-important{% endif %}">2</span>{% endif %} Opdater profil
+            </span>
+        </div>
+
+        <div class="col-lg-2{% if step == 2 %} state-current{% endif %}">
+            <span>
+                {% if step > 2 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 2 %}badge-important{% endif %}">3</span>{% endif %} Vælg tilvalg
+                {% if step == 3 and event.registration_open %} (<a href="{% url "svscon_tilvalg" %}">redigér</a>){% endif %}
+            </span>
+        </div>
+
+        <div class="col-lg-2{% if step == 3 %} state-current{% endif %}">
+            <span>
+                {% if step > 3 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 3 %}badge-important{% endif %}">4</span>{% endif %} Betal
+            </span>
+        </div>
+
+        <div class="col-lg-2{% if step == 4 %} state-current{% endif %}">
+            <span>
+                {% if step == 4 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge">5</span>{% endif %} Tilmelding godkendt
+            </span>
+        </div>
+    </div>
+
+</div>

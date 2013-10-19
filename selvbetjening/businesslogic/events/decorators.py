@@ -39,18 +39,6 @@ def event_registration_open_required_ext(template_name=None):
 event_registration_open_required = event_registration_open_required_ext()
 
 
-def event_registration_allowed_required(view_func):
-    def check_event_registration(request, event, *args, **kwargs):
-        if Attend.objects.can_register_to_event(event):
-            return view_func(request, event, *args, **kwargs)
-        else:
-            return render_to_response('events/signup_disallowed.html',
-                                      {'event' : event},
-                                      context_instance=RequestContext(request))
-
-    return check_event_registration
-
-
 def event_attendance_required(view_func):
     def check_event_attendance(request, event, *args, **kwargs):
         if event.is_attendee(request.user):

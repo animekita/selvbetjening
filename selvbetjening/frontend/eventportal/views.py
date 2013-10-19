@@ -9,7 +9,7 @@ from django.template import Context, Template
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from businesslogic.events import decorators as eventdecorators
-from core.events.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE
+from core.events.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
 from sadmin2.forms import attendee_selection_helper_factory
 
 from selvbetjening.core.events.models import Event, Attend, AttendState
@@ -66,7 +66,12 @@ def event_detail(request,
 @eventdecorators.event_registration_open_required
 @suspend_automatic_attendee_price_updates
 def event_register(request,
-                   event):
+                   event,
+                   template='eventportal/event_register.html',
+                   extra_context=None):
+
+    if extra_context is None:
+        extra_context = {}
 
     EventSelectionFormSet = dynamic_selections_formset_factory(
         SCOPE.VIEW_REGISTRATION,
@@ -97,11 +102,14 @@ def event_register(request,
     else:
         options_form = EventSelectionFormSet()
 
+    context = {
+        'formset': options_form,
+    }
+    context.update(extra_context)
+
     return render(request,
-                  'eventportal/event_register.html',
-                  {
-                      'formset': options_form,
-                  })
+                  template,
+                  context)
 
 @login_required
 @eventdecorators.get_event_from_id
@@ -165,15 +173,26 @@ def event_status_update(request, event):
 @login_required
 @eventdecorators.get_event_from_id
 @eventdecorators.event_attendance_required
-def event_status(request, event):
+def event_status(request,
+                 event,
+                 template_name='eventportal/status.html',
+                 extra_context=None):
+
+    if extra_context is None:
+        extra_context = {}
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    context = {'event': event,
-                     'user': attendee.user,
-                     'attendee': attendee}
+    context = {
+        'event': event,
+        'user': attendee.user,
+        'attendee': attendee,
+        'invoice': dynamic_selections(SCOPE.VIEW_USER_INVOICE, attendee)
+    }
 
     context = Context(context)
+
+    # status text
 
     custom_status_page = None
     if event.show_custom_status_page:
@@ -197,6 +216,8 @@ def event_status(request, event):
     context['show_signup_message'] = request.GET.get('signup', False)
     context['show_change_message'] = request.GET.get('change', False)
 
+    context.update(extra_context)
+
     return render(request,
-                  'eventportal/status.html',
+                  template_name,
                   context)

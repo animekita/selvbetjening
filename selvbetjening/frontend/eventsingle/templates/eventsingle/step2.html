@@ -1,0 +1,21 @@
+{% extends "selvbetjening/sitebase.html" %}
+{% load crispy_forms_tags i18n %}
+
+{% block content %}
+
+    {% include "eventsingle/parts/steps.html" %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for form in formset %}
+            {% crispy form %}
+        {% endfor %}
+
+        <div class="form-actions">
+            <input type="submit" name="register" value="Tilmeld dig" class="btn btn-primary  btn-lg" />
+        </div>
+
+    </form>
+
+{% endblock %}

@@ -42,4 +42,8 @@
 
     <p><a href="{% url "eventportal_event_unregister" event_pk=event.pk %}">Du kan afmelde dig fra dette arrangement igen her.</a></p>
 
+    <h2>Kvittering</h2>
+
+    {% include "events/parts/invoice.html" with invoice=invoice %}
+
 {% endblock %}

@@ -6,6 +6,7 @@ $(function() {
 
     // select or deselect all items if package is selected or deselected
     $('input.package').live('change', function() {
+    $('.package').delegate('change', function() {
 
         var items = $('.in_' + this.name);
 
@@ -17,7 +18,7 @@ $(function() {
     });
 
     // deselect package if item is deselected
-    $('input.in_package').live('change', function() {
+    $('input.in_package').delegate('change', function() {
 
         if (this.checked == true) {
             return;

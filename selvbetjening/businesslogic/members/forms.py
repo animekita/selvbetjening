@@ -9,7 +9,58 @@ from selvbetjening.core.members.models import UserProfile, UserWebsite
 from selvbetjening.frontend.utilities.forms import *
 
 
-class UserRegistrationForm(forms.ModelForm):
+class MinimalUserRegistrationForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ('username',)
+
+    username = UsernameField()
+
+    password = forms.CharField(widget=forms.PasswordInput(),
+                               label=_(u"Password"),
+                               required=True)
+    password2 = forms.CharField(widget=forms.PasswordInput(),
+                                label=_(u"Verify password"),
+                                required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(MinimalUserRegistrationForm, self).__init__(*args, **kwargs)
+
+        self.helper = S2FormHelper(horizontal=True)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                       'username',
+                       'password', 'password2'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+    def clean_password2(self):
+
+        if 'password' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password'] != self.cleaned_data['password2']:
+                raise forms.ValidationError(_(u"You must type the same password each time"))
+
+        return self.cleaned_data.get('password2', None)
+
+    def save(self, *args, **kwargs):
+
+        user = super(MinimalUserRegistrationForm, self).save(*args, **kwargs)
+
+        user.set_password(self.cleaned_data['password'])
+        user.is_active = True
+        user.save()
+
+        signals.user_created.send(sender=self,
+                                  instance=user,
+                                  clear_text_password=smart_str(self.cleaned_data['password']))
+
+        return user
+
+
+class UserRegistrationForm(MinimalUserRegistrationForm):
 
     class Meta:
         model = UserProfile
@@ -20,17 +71,6 @@ class UserRegistrationForm(forms.ModelForm):
 
         fields = ('username', 'first_name', 'last_name', 'sex', 'dateofbirth', 'email',
                   'phonenumber', 'street', 'postalcode', 'city', 'country', 'send_me_email')
-
-
-
-    username = UsernameField()
-
-    password = forms.CharField(widget=forms.PasswordInput(),
-                               label=_(u"Password"),
-                               required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput(),
-                                label=_(u"Verify password"),
-                                required=True)
 
     first_name = forms.CharField(max_length=50,
                                  widget=forms.TextInput(),
@@ -55,14 +95,6 @@ class UserRegistrationForm(forms.ModelForm):
                              label=_(u"I allow the storage of my personal information on this site."),
                              required=True)
 
-    def clean_password2(self):
-
-        if 'password' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(_(u"You must type the same password each time"))
-
-        return self.cleaned_data.get('password2', None)
-
     def __init__(self, *args, **kwargs):
         super(UserRegistrationForm, self).__init__(*args, **kwargs)
 
@@ -83,20 +115,6 @@ class UserRegistrationForm(forms.ModelForm):
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
-
-    def save(self, *args, **kwargs):
-
-        user = super(UserRegistrationForm, self).save(*args, **kwargs)
-
-        user.set_password(self.cleaned_data['password'])
-        user.is_active = True
-        user.save()
-
-        signals.user_created.send(sender=self,
-                                  instance=user,
-                                  clear_text_password=smart_str(self.cleaned_data['password']))
-
-        return user
 
 
 class ProfileEditForm(forms.ModelForm):

@@ -10,6 +10,7 @@ urlpatterns = patterns(
     (r'^auth/', include('selvbetjening.frontend.auth.urls')),
     (r'^userportal/', include('selvbetjening.frontend.userportal.urls')),
     (r'^eventportal/', include('selvbetjening.frontend.eventportal.urls')),
+    (r'^eventsingle/', include('selvbetjening.frontend.eventsingle.urls')),
 
     #(r'^profil/', include('selvbetjening.frontend.userportal.urls')),
 
