@@ -225,6 +225,7 @@ def users_reports_age(request):
                   context)
 
 
+@sadmin_prerequisites
 def users_reports_address(request):
 
     locations = UserLocation.objects.exclude(lat=None, lng=None).exclude(expired=True).select_related()

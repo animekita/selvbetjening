@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import filtering
 
 
@@ -14,6 +15,7 @@ def apply_search_query(qs, query, search_fields, condition_fields=None):
     return filtering.filter_queryset(qs, query, search_fields, condition_fields, invalid_fragments=invalid_fragments), invalid_fragments
 
 
+@sadmin_prerequisites
 def generic_create_view(request,
                         form_class,
                         redirect_success_url,
@@ -56,6 +58,7 @@ def generic_create_view(request,
                   context)
 
 
+@sadmin_prerequisites
 def search_view(request,
                 queryset,
                 template_page,

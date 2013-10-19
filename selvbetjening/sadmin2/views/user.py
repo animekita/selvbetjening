@@ -4,11 +4,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from core.members.models import UserProfile
 from sadmin2 import menu
+from sadmin2.decorators import sadmin_prerequisites
 from sadmin2.forms import UserForm, PasswordForm
 
 from selvbetjening.sadmin2.views.generic import generic_create_view
 
 
+@sadmin_prerequisites
 def user_change(request, user_pk):
 
     user = get_object_or_404(UserProfile, pk=user_pk)
@@ -30,6 +32,7 @@ def user_change(request, user_pk):
                                instance=user)
 
 
+@sadmin_prerequisites
 def user_password(request, user_pk):
 
     user = get_object_or_404(UserProfile, pk=user_pk)
