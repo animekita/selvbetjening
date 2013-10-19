@@ -2,7 +2,7 @@
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
@@ -11,7 +11,7 @@ from django.contrib.formtools.preview import FormPreview
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
-from selvbetjening.core.members.models import UserProfile
+from selvbetjening.core.user.models import SUser
 
 from selvbetjening.businesslogic.members.forms import UserRegistrationForm, ProfileEditForm, UserWebsiteFormSet
 
@@ -34,7 +34,7 @@ def public_profile_page(request,
                         template_name='userportal/public_profile.html',
                         template_no_access_name='userportal/profile_no_access.html'):
 
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(SUser, username=username)
     privacy, created = UserPrivacy.objects.get_or_create(user=user)
 
     own_profile = False
@@ -62,7 +62,7 @@ def public_profile_page(request,
 def profile(request,
             template_name='userportal/profile.html'):
 
-    user, created = UserProfile.objects.get_or_create(user_ptr=request.user)
+    user = request.user
     privacy = UserPrivacy.full_access()
 
     own_profile = True
@@ -87,7 +87,7 @@ def edit_profile(request,
                  success_page='userportal_profile',
                  form_class=ProfileEditForm):
 
-    user, created = UserProfile.objects.get_or_create(user_ptr=request.user)
+    user = request.user
 
     if request.method == 'POST':
         form = form_class(request.POST, instance=user)
@@ -144,7 +144,7 @@ def edit_picture(request,
                  success_page='userportal_profile',
                  template_name='userportal/edit_picture.html'):
 
-    profile, created = UserProfile.objects.get_or_create(user_ptr=request.user)
+    profile = request.user
 
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)

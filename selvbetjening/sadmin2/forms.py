@@ -11,7 +11,7 @@ from selvbetjening.core.events.dynamic_selections import dynamic_options, SCOPE
 from selvbetjening.core.events.models import Selection, Attend
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.mailcenter.models import EmailSpecification
-from selvbetjening.core.members.models import UserProfile
+from selvbetjening.core.user.models import SUser
 
 from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
     AttendeeComment, Payment
@@ -319,7 +319,7 @@ def attendee_selection_helper_factory(option_group, visible_fields):
 
 class UserForm(forms.ModelForm):
     class Meta:
-        model = UserProfile
+        model = SUser
 
         widgets = {
             'dateofbirth': SplitDateWidget(),

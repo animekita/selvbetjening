@@ -16,8 +16,9 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from core.members.models import UserProfile
-from frontend.eventportal.views import event_register
+
+from selvbetjening.core.user.models import SUser
+from selvbetjening.frontend.eventportal.views import event_register
 
 from selvbetjening.core.events.models import Attend, AttendState
 
@@ -135,7 +136,7 @@ def step1(request,
           event,
           form_class=ProfileEditForm):
 
-    user, created = UserProfile.objects.get_or_create(user_ptr=request.user)
+    user = request.user
 
     if request.method == 'POST':
         form = form_class(request.POST, instance=user)

@@ -1,5 +1,5 @@
 import re
-from django.contrib.auth.models import User
+
 from django.core import validators
 from django import forms
 from django.template.loader import render_to_string
@@ -9,6 +9,8 @@ from django.forms.extras.widgets import SelectDateWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div
 
+from selvbetjening.core.user.models import SUser
+
 __ALL__ = ('S2FormHelper', 'S2Layout', 'S2Field', 'S2Fieldset', 'S2HorizontalRow', 'S2Submit',
            'S2SubmitCreate', 'S2SubmitUpdate', 'SplitDateWidget')
 
@@ -17,8 +19,8 @@ __ALL__ = ('S2FormHelper', 'S2Layout', 'S2Field', 'S2Fieldset', 'S2HorizontalRow
 def username_available_validator(username):
 
     try:
-        User.objects.get(username__exact=username)
-    except User.DoesNotExist:
+        SUser.objects.get(username__exact=username)
+    except SUser.DoesNotExist:
         return
 
     raise forms.ValidationError(_(u'This username is already taken.'))

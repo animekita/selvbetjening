@@ -1,6 +1,6 @@
 
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseBadRequest
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -8,8 +8,8 @@ from django.views.decorators.http import require_POST
 
 from mailqueue.models import MailerMessage
 
+from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.models import Event, Attend, Option
-from selvbetjening.core.members.models import UserProfile
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from selvbetjening.sadmin2.views.generic import search_view, generic_create_view
@@ -175,7 +175,7 @@ def template_newsletter_users(request, template_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
 
-    users = UserProfile.objects.filter(send_me_email=True)
+    users = SUser.objects.filter(send_me_email=True)
 
     if request.method == 'POST':
 

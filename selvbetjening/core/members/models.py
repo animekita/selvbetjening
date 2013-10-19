@@ -1,14 +1,15 @@
 # coding=UTF-8
 
 import datetime
+from django.contrib.auth import get_user_model
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 
 from countries.models import Country
-from sorl.thumbnail.fields import ThumbnailField
+
+from selvbetjening.core.user.models import SUser
 
 import signals
 
@@ -26,84 +27,29 @@ def to_age(dateofbirth, reference_date=None):
 
 
 class UserWebsite(models.Model):
-    user = models.ForeignKey(User, verbose_name=_(u'user'), db_column='user_id')
+    user = models.ForeignKey(get_user_model(), verbose_name=_(u'user'), db_column='user_id')
 
     name = models.CharField(max_length=32, blank=True)
     url = models.URLField(blank=True)
 
 
-class UserProfile(User):
-    SEX = (('male', _('male')), ('female', _('female')))
-
-    dateofbirth = models.DateField(_(u'date of birth'), blank=True, null=True)
-
-    sex = models.CharField(_(u'sex'), blank=True, max_length=6, choices=SEX, default='')
-
-    street = models.CharField(_(u'street'), max_length=255, blank=True)
-    postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
-    city = models.CharField(_(u'city'), max_length=255, blank=True)
-    country = models.ForeignKey(Country, default='DK', blank=True, null=True)
-
-    phonenumber = models.CharField(_(u'phonenumber'), max_length=32, blank=True, null=True)
-
-    skype = models.CharField(max_length=255, blank=True)
-    jabber = models.CharField(max_length=255, blank=True)
-    msn = models.CharField(max_length=255, blank=True)
-
-    send_me_email = models.BooleanField(_(u'Send me emails'))
-
-    picture = ThumbnailField(_(u'Picture'),
-                             upload_to='pictures/', 
-                             blank=True, size=(260,260), quality=100)
-
-    class Meta:
-        verbose_name = _(u'user profile')
-        verbose_name_plural = _(u'user profiles')
-
-    @property
-    def user(self):
-        """
-        Backwards compatibility for when we did not use inheritance for the user profile
-        """
-        return self.user_ptr
-
-    def get_age(self, at_date=None):
-        return to_age(self.dateofbirth, at_date)
-    get_age.admin_order_field = 'dateofbirth'
-
-    def __unicode__(self):
-        return _(u'Registration profile for %s') % self.user
-
-    def save(self, *args, **kwargs):
-        picture = None
-
-        try:
-            old = UserProfile.objects.get(pk=self.pk)
-            if old.picture != self.picture:
-                old.picture.delete()
-        except:
-            pass
-
-        super(UserProfile, self).save(*args, **kwargs)
-
-
 class UserLocation(models.Model):
-    user = models.OneToOneField(User, related_name='location')
+    user = models.OneToOneField(get_user_model(), related_name='location')
     lat = models.FloatField(blank=True, null=True, default=None)
     lng = models.FloatField(blank=True, null=True, default=None)
     expired = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now=True)
 
 
-def profile_saved(sender, **kwargs):
-    profile = kwargs['instance']
+def user_saved(sender, **kwargs):
+    user = kwargs['instance']
 
     try:
-        location = UserLocation.objects.get(user=profile.user)
+        location = UserLocation.objects.get(user=user)
         location.expired = True
         location.save()
 
     except UserLocation.DoesNotExist:
-        UserLocation.objects.create(user=profile.user, expired=True)
+        UserLocation.objects.create(user=user, expired=True)
 
-post_save.connect(profile_saved, sender=UserProfile)
+post_save.connect(user_saved, sender=SUser)

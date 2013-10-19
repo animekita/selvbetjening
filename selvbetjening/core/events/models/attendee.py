@@ -1,8 +1,8 @@
 # coding=UTF-8
 
 from datetime import datetime
+from django.contrib.auth import get_user_model
 
-from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -52,7 +52,7 @@ class Attend(models.Model):
         app_label = 'events'
 
     event = models.ForeignKey(Event)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(get_user_model())
 
     state = models.CharField(max_length=32,
                              choices=AttendState.get_choices(),

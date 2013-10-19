@@ -2,7 +2,7 @@
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
-from django.contrib.auth.models import User
+from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.models import Event, Group, Attend, OptionGroup, Option, Selection
 
 import autofixture
@@ -51,7 +51,7 @@ Are you sure you want to do this?
 
     def populate_database(self):
 
-        autofixture.create(User, 200)
+        autofixture.create(SUser, 200)
 
         autofixture.create(Group, 1)
         autofixture.create(Event, 3)

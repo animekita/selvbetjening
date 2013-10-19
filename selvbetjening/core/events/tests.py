@@ -1,7 +1,8 @@
 from datetime import datetime, date, timedelta
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+
+from selvbetjening.core.user.models import SUser
 
 from models import Attend, Event, OptionGroup
 from dynamic_selections import dynamic_selections_form_factory, dynamic_selections, _pack_id, SCOPE
@@ -35,7 +36,7 @@ class Database(object):
     def new_user(cls, id=None):
         if id is None:
             id = cls.new_id()
-        return User.objects.create_user(id, '%s@example.org' % id, id)
+        return SUser.objects.create_user(id, '%s@example.org' % id, id)
 
     @classmethod
     def attend(cls, user, event):
@@ -80,7 +81,7 @@ class EventModelTestCase(TestCase):
 
         self.userarray = []
         for i in range(30):
-            self.userarray.append(User.objects.create_user('user%s' % i, 'user@example.org', ''))
+            self.userarray.append(SUser.objects.create_user('user%s' % i, 'user@example.org', ''))
             models.Attend.objects.create(event=event, user=self.userarray[i])
 
         for i in range(30):

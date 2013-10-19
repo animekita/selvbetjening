@@ -18,7 +18,7 @@ STATIC_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 
 # Application settings
-AUTH_PROFILE_MODULE = 'members.UserProfile'
+AUTH_USER_MODEL = 'user.SUser'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -112,8 +112,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    'selvbetjening.core.events',
+    'selvbetjening.core.user',
     'selvbetjening.core.members',
+    'selvbetjening.core.events',
     'selvbetjening.core.mailcenter',
 
     'selvbetjening.businesslogic.members',

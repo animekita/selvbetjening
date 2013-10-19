@@ -4,15 +4,15 @@ from xml.etree import ElementTree
 from django.core.management.base import NoArgsCommand
 from django.utils.http import urlquote
 
-from selvbetjening.core.members.models import User, UserLocation, UserProfile
-from selvbetjening.core.members.shortcuts import get_or_create_profile
+from selvbetjening.core.members.models import UserLocation
+from selvbetjening.core.user.models import SUser
 
 API_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?address=%s&sensor=false'
 
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
-        users = UserProfile.objects.filter(location=None)
+        users = SUser.objects.filter(location=None)
 
         for user in users:
             UserLocation.objects.create(user=user, expired=True)
@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
         for location in locations:
             location.expired = False
 
-            profile, created = UserProfile.objects.get(pk=location.user.pk)
+            profile, created = SUser.objects.get(pk=location.user.pk)
 
             if profile.street == '' or \
                (profile.postalcode is None or profile.city == ''):

@@ -7,14 +7,15 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.db.models import Max, Min
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from selvbetjening.core.members.models import UserProfile, to_age, UserLocation
+from selvbetjening.core.members.models import to_age, UserLocation
+from selvbetjening.core.user.models import SUser
 
 from selvbetjening.sadmin2 import graph
 from selvbetjening.sadmin2.forms import UserForm, GroupForm
@@ -27,7 +28,7 @@ from generic import search_view, generic_create_view
 @sadmin_prerequisites
 def users_list(request):
 
-    queryset = User.objects.all()
+    queryset = SUser.objects.all()
     columns = ('username',)
 
     context = {
@@ -136,9 +137,9 @@ def user_age_chart(min_age=5, max_age=80):
     # The graph looks stupid if we allow ages 0 and 100 et al.
     # Enforce sane limitations, lets say min 5 and max 80 years of age
 
-    usersprofiles = UserProfile.objects.select_related()\
-                                       .filter(dateofbirth__lt=date(cur_year-min_age, 1, 1))\
-                                       .filter(dateofbirth__gt=date(cur_year-max_age, 1, 1))
+    usersprofiles = SUser.objects.select_related()\
+        .filter(dateofbirth__lt=date(cur_year-min_age, 1, 1))\
+        .filter(dateofbirth__gt=date(cur_year-max_age, 1, 1))
 
     if usersprofiles.count() == 0:
         return None
@@ -169,7 +170,7 @@ def user_age_chart(min_age=5, max_age=80):
 
 
 def user_join_chart():
-    users = User.objects.all()
+    users = SUser.objects.all()
 
     if users.count() == 0:
         return None

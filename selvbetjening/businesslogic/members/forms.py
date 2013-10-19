@@ -1,18 +1,19 @@
 
-from django import forms
+from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_str
-from django.utils.translation import ugettext as _
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.utils.translation import ugettext as _
 
 from selvbetjening.core.members import signals
-from selvbetjening.core.members.models import UserProfile, UserWebsite
+from selvbetjening.core.members.models import UserWebsite
+from selvbetjening.core.user.models import SUser
 from selvbetjening.frontend.utilities.forms import *
 
 
 class MinimalUserRegistrationForm(forms.ModelForm):
 
     class Meta:
-        model = UserProfile
+        model = SUser
         fields = ('username',)
 
     username = UsernameField()
@@ -63,7 +64,7 @@ class MinimalUserRegistrationForm(forms.ModelForm):
 class UserRegistrationForm(MinimalUserRegistrationForm):
 
     class Meta:
-        model = UserProfile
+        model = SUser
 
         widgets = {
             'dateofbirth': SplitDateWidget(),
@@ -120,7 +121,7 @@ class UserRegistrationForm(MinimalUserRegistrationForm):
 class ProfileEditForm(forms.ModelForm):
 
     class Meta:
-        model = UserProfile
+        model = SUser
 
         widgets = {
             'dateofbirth': SplitDateWidget(),
@@ -181,6 +182,6 @@ class UserWebsiteFormSet(BaseInlineFormSet):
     helper.add_layout(layout)
     helper.form_tag = False
 
-UserWebsiteFormSet = inlineformset_factory(User, UserWebsite, formset=UserWebsiteFormSet, extra=2)
+UserWebsiteFormSet = inlineformset_factory(get_user_model(), UserWebsite, formset=UserWebsiteFormSet, extra=2)
 
 

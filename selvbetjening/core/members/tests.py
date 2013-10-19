@@ -1,7 +1,7 @@
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
-from django.contrib.auth.models import User
 
+from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.tests import Database as EventDatabase
 
 import signals
@@ -20,11 +20,11 @@ def get_user_data():
 
 def test_user_created(testcase, username):
     try:
-        user = User.objects.get(username__exact=username)
+        user = SUser.objects.get(username__exact=username)
 
         if user.get_profile() is None:
             testcase.fail('User profile not created')
-    except User.DoesNotExist:
+    except SUser.DoesNotExist:
         testcase.fail('User object not created')
 
 class RegistrationFormTestCase(TestCase):
