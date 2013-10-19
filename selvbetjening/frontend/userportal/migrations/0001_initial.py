@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             ('public_websites', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('public_join_date', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal(u'profile', ['UserPrivacy'])
+        db.send_create_signal(u'userportal', ['UserPrivacy'])
 
 
     def backwards(self, orm):
@@ -68,7 +68,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'profile.userprivacy': {
+        u'userportal.userprivacy': {
             'Meta': {'object_name': 'UserPrivacy'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'public_age': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -85,4 +85,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['profile']
+    complete_apps = ['userportal']
