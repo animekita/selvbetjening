@@ -1,10 +1,9 @@
 import re
+import markdown
 
 from django.conf import settings
 from django.db import models
 from django.template import Template, Context
-import markdown
-from core.events.dynamic_selections import dynamic_selections, SCOPE
 
 from selvbetjening.core.mail import send_mail
 
@@ -88,6 +87,8 @@ class EmailSpecification(models.Model):
         return self._render(context)
 
     def _get_context(self, user, attendee=None):
+        # lazy import, prevent circular import in core.events
+        from selvbetjening.core.events.dynamic_selections import dynamic_selections, SCOPE
 
         context = {
             # user context
