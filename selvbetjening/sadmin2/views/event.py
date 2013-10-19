@@ -12,7 +12,7 @@ from django.db.models import Count
 from core.events.dynamic_selections import dynamic_selections, SCOPE, dynamic_selections_formset_factory
 from core.events.utils import sum_attendee_payment_status
 
-from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment
+from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment, request_attendee_pks_signal
 
 from selvbetjening.sadmin2 import graph
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
@@ -618,6 +618,7 @@ def event_attendee_payments(request, event_pk, attendee_pk):
     event = get_object_or_404(Event, pk=event_pk)
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
+    payment_keys = request_attendee_pks_signal.send(None, attendee=attendee)
     payments = attendee.payment_set.all()
 
     if request.method == 'POST':
@@ -649,6 +650,7 @@ def event_attendee_payments(request, event_pk, attendee_pk):
 
                       'event': event,
                       'attendee': attendee,
+                      'payment_keys': payment_keys,
                       'payments': payments,
 
                       'form': form

@@ -3,6 +3,9 @@
 
 {% block content %}
 
+<div class="row">
+<div class="col-lg-8">
+    <h2>Betalinger</h2>
     <table class="table">
 
     <tr>
@@ -42,6 +45,27 @@
     {% endif %}
 
     </table>
+</div>
+<div class="col-lg-4">
+    <h2>Betalingsnøgler</h2>
+
+    <table class="table">
+
+        <tr>
+            <th>Format</th>
+            <th>Nøgle</th>
+        </tr>
+        {% for payment_key in payment_keys %}
+
+            <tr>
+                <td>{{ payment_key.1.0 }}</td>
+                <td>{{ payment_key.1.1 }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+</div>
+</div>
 
     <p class="alert alert-info"><strong>Bemærk</strong>, der bliver <strong>ikke</strong> sendt en bekræftelse på betaling til den pågældende bruger når du registrere betalinger her.</p>
     {% crispy form form.helper %}

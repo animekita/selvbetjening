@@ -89,6 +89,7 @@ def event_create(request):
                       'form': form
                   })
 
+
 @sadmin_prerequisites
 def register_payments(request):
 
@@ -100,14 +101,15 @@ def register_payments(request):
         if form.is_valid():
 
             result = form.cleaned_data
+            attendee = result['attendee']
 
             Payment.objects.create(
-                attendee=result['attendee'],
+                user=attendee.user,
+                attendee=attendee,
                 amount=result['payment'],
                 signee=request.user
             )
 
-            attendee = result['attendee']
             attendee.event.send_notification_on_payment(attendee)
 
             messages.success(request, _('Payment for %s has been registered successfully') % attendee.user.username)
@@ -116,7 +118,7 @@ def register_payments(request):
                 # TODO Add a link to the attendee overview
                 messages.warning(request, _('Payment did match the payment due. Please review the status of this person <a href="%s">here</a>') % '#')
 
-            return HttpResponseRedirect(reverse('events_register_payments'))
+            return HttpResponseRedirect(reverse('sadmin2:events_register_payments'))
 
     else:
         form = RegisterPaymentForm()
