@@ -12,7 +12,7 @@ from businesslogic.events import decorators as eventdecorators
 from core.events.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE
 from sadmin2.forms import attendee_selection_helper_factory
 
-from selvbetjening.core.events.models import Event, Attend, attendes_event_source, AttendState
+from selvbetjening.core.events.models import Event, Attend, AttendState
 from businesslogic.events.decorators import suspend_automatic_attendee_price_updates
 
 
@@ -39,8 +39,11 @@ def event_detail(request,
     for item in instance.attendees.values('state').annotate(count=Count('pk')):
         attendee_stats[item['state']] = item['count']
 
-    attendee_stats['accepted'] = attendee_stats['accepted'] + attendee_stats['attended']
-    del attendee_stats['attended']
+    attendee_stats['accepted'] = attendee_stats.get('accepted', 0) + attendee_stats.get('attended', 0)
+    attendee_stats.setdefault('waiting', 0)
+
+    if 'attended' in attendee_stats:
+        del attendee_stats['attended']
 
     # Options stats
 
@@ -86,7 +89,7 @@ def event_register(request,
 
             attendee.recalculate_price()
 
-            attendes_event_source.trigger(request.user, attendee=attendee)
+            attendee.event.send_notification_on_registration(attendee)
 
             return HttpResponseRedirect(
                 reverse('eventportal_event', kwargs={'event_pk': event.pk}) + '?signup=1')
@@ -130,7 +133,7 @@ def event_status_update(request, event):
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    # TODO select an appropiate scope
+    # TODO select an appropriate scope
     EventSelectionFormSet = dynamic_selections_formset_factory(
         SCOPE.VIEW_MANAGE,
         event,
@@ -144,6 +147,7 @@ def event_status_update(request, event):
         if form.is_valid():
             form.save()
             attendee.recalculate_price()
+            attendee.event.send_notification_on_registration_update(attendee)
 
             return HttpResponseRedirect(
                 reverse('eventportal_event_status',

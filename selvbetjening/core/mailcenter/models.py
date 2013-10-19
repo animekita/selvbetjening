@@ -131,3 +131,6 @@ class EmailSpecification(models.Model):
             body = self.body
 
         return Template(body).render(context)
+
+    def __str__(self):
+        return self.subject

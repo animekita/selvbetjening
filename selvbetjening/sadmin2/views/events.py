@@ -23,7 +23,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 
-from selvbetjening.core.events.models import Event, payment_registered_source, Payment
+from selvbetjening.core.events.models import Event, Payment
 
 from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
@@ -101,15 +101,14 @@ def register_payments(request):
 
             result = form.cleaned_data
 
-            payment = Payment.objects.create(attendee=result['attendee'],
-                                             amount=result['payment'],
-                                             signee=request.user)
-
-            payment_registered_source.trigger(result['attendee'].user,
-                                              attendee=result['attendee'],
-                                              payment=payment)
+            Payment.objects.create(
+                attendee=result['attendee'],
+                amount=result['payment'],
+                signee=request.user
+            )
 
             attendee = result['attendee']
+            attendee.event.send_notification_on_payment(attendee)
 
             messages.success(request, _('Payment for %s has been registered successfully') % attendee.user.username)
 

@@ -6,9 +6,6 @@ except ImportError:
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
-from django.utils.translation import ugettext as _
-
-from selvbetjening.core.mailcenter.sources import Source
 
 from event import Event, Group
 from attendee import Attend, AttendState, AttendeeComment, AttendStateChange, AttendeeAcceptPolicy
@@ -39,18 +36,9 @@ def suspend_price_updates():
 def resume_price_updates():
     _disable_automatic_price_updates.pop(thread.get_ident(), None)
 
-# email sources
-
-attendes_event_source = Source('attends_event_signal',
-                               _(u'User registers for event'),
-                               [Attend])
-
-payment_registered_source = Source('payment_registered',
-                                   _(u'Payment registered'),
-                                   [Attend, Payment])
-
 
 # signal handlers
+
 
 @receiver(post_save, sender=Selection, dispatch_uid='increase_price_on_selection')
 def increase_price_on_selection(sender, **kwargs):
@@ -110,4 +98,3 @@ def update_prices_on_price_change(sender, **kwargs):
     ##Attend.objects.recalculate_aggregations_price(
     ##    Attend.objects.filter(selection__option=option)
     ##)
-

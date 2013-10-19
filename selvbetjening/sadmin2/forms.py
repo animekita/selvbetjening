@@ -2,17 +2,16 @@
 from decimal import Decimal
 from collections import OrderedDict
 
-from django import forms
 from django.contrib.auth.models import Group
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
-from crispy_forms.layout import Submit, Layout, Fieldset, HTML
-from core.events.dynamic_selections import dynamic_options, SCOPE
-from core.events.models import Selection, Attend
-from core.events.utils import sum_attendee_payment_status
-from core.mailcenter.models import EmailSpecification
-from core.members.models import UserProfile
+from crispy_forms.layout import HTML
+
+from selvbetjening.core.events.dynamic_selections import dynamic_options, SCOPE
+from selvbetjening.core.events.models import Selection, Attend
+from selvbetjening.core.events.utils import sum_attendee_payment_status
+from selvbetjening.core.mailcenter.models import EmailSpecification
+from selvbetjening.core.members.models import UserProfile
 
 from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
     AttendeeComment, Payment
@@ -48,7 +47,11 @@ class EventForm(forms.ModelForm):
             S2Fieldset(_('Feedback'),
                        'show_custom_signup_message', 'custom_signup_message',
                        'show_custom_change_message', 'custom_change_message',
-                       'show_custom_status_page', 'custom_status_page'))
+                       'show_custom_status_page', 'custom_status_page'),
+            S2Fieldset(_('Notifications'),
+                       'notify_on_registration',
+                       'notify_on_registration_update',
+                       'notify_on_payment'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())

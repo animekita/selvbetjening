@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext as _
 
+from selvbetjening.core.mailcenter.models import EmailSpecification
+
 
 class Group(models.Model):
 
@@ -79,12 +81,32 @@ class Event(models.Model):
         help_text=_('The following variables are available: %s.') % u'event, user, attendee'
     )
 
+    # E-mail notifications
+
+    notify_on_registration = \
+        models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_event_on_registration')
+    notify_on_registration_update = \
+        models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_event_on_registration_update')
+    notify_on_payment = \
+        models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_event_on_payment_registration')
+
+    def send_notification_on_registration(self, attendee):
+        if self.notify_on_registration is not None:
+            self.notify_on_registration.send_email_attendee(attendee, 'event.notify.on_registration')
+
+    def send_notification_on_registration_update(self, attendee):
+        if self.notify_on_registration_update is not None:
+            self.notify_on_registration_update.send_email_attendee(attendee, 'event.notify.on_registration_update')
+
+    def send_notification_on_payment(self, attendee):
+        if self.notify_on_payment is not None:
+            self.notify_on_payment.send_email_attendee(attendee, 'event.notify.on_payment')
+
     # Special
 
     @property
     def has_special(self):
         return self.optiongroups.filter(is_special=True).exists()
-
 
     @property
     def attendees(self):
