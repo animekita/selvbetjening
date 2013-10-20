@@ -187,6 +187,28 @@ class AutoSelectTypeManager(BooleanTypeManager):
             return AutoSelectBooleanWidget(option)
 
 
+class AutoSelectChoiceWidget(ChoiceWidget):
+
+    def get_field(self):
+
+        return forms.ChoiceField(
+            required=False,
+            widget=forms.HiddenInput(),
+            choices=self.choices)
+
+    def save_callback(self, attendee, value):
+
+        autoselect = AutoSelectChoiceOption.objects.get(option_ptr=self.option)
+
+        selection, created = Selection.objects.get_or_create(
+            option_id=self.option.pk,
+            attendee=attendee
+        )
+
+        selection.suboption = autoselect.auto_select_suboption
+        selection.save()
+
+
 class AutoSelectChoiceTypeManager(BooleanTypeManager):
 
     @staticmethod
@@ -202,7 +224,7 @@ class AutoSelectChoiceTypeManager(BooleanTypeManager):
         if scope == SCOPE.SADMIN:
             return ChoiceWidget(option)
         else:
-            return AutoSelectBooleanWidget(option)
+            return AutoSelectChoiceWidget(option)
 
 
 _type_manager_register = {
