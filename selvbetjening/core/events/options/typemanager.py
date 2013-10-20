@@ -2,7 +2,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
-from core.events.models.options import AutoSelectChoiceOption
+from core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
 
 from selvbetjening.core.events.options.scope import SCOPE
 from selvbetjening.core.events.models import Selection, Option
@@ -19,7 +19,13 @@ class BaseTypeManager(object):
         return 'name', 'description', 'price', 'auto_select_suboption'
 
 
-class BooleanWidget(object):
+class BaseWidget(object):
+
+    def is_editable(self, attendee):
+        return True
+
+
+class BooleanWidget(BaseWidget):
 
     def __init__(self, option):
         self.option = option
@@ -59,7 +65,7 @@ class BooleanTypeManager(BaseTypeManager):
         return BooleanWidget(option)
 
 
-class TextWidget(object):
+class TextWidget(BaseWidget):
 
     def __init__(self, option):
         self.option = option
@@ -102,7 +108,7 @@ class TextTypeManager(BaseTypeManager):
         return TextWidget(option)
 
 
-class ChoiceWidget(object):
+class ChoiceWidget(BaseWidget):
 
     def __init__(self, option):
         self.option = option
@@ -209,7 +215,7 @@ class AutoSelectChoiceWidget(ChoiceWidget):
         selection.save()
 
 
-class AutoSelectChoiceTypeManager(BooleanTypeManager):
+class AutoSelectChoiceTypeManager(ChoiceTypeManager):
 
     @staticmethod
     def get_model():
@@ -227,12 +233,78 @@ class AutoSelectChoiceTypeManager(BooleanTypeManager):
             return AutoSelectChoiceWidget(option)
 
 
+class DiscountWidget(TextWidget):
+
+    def __init__(self, option):
+        super(DiscountWidget, self).__init__(option)
+        self.discount_option = DiscountOption.objects.get(option_ptr=option)
+
+    def is_editable(self, attendee):
+        return not Selection.objects.filter(option=self.option, attendee=attendee).exists()
+
+    def save_callback(self, attendee, value):
+
+        if value is not None:
+
+            selection, created = Selection.objects.get_or_create(
+                option_id=self.option.pk,
+                attendee=attendee
+            )
+
+            # TODO select the correct suboption
+
+            value.selection = selection
+            value.save()
+
+    def clean_callback(self, value):
+
+        if value is None or len(value) == 0:
+            return None
+
+        try:
+            code = DiscountCode.objects.get(
+                code=value,
+                selection=None
+            )
+
+            return code
+
+        except DiscountCode.DoesNotExist:
+            raise ValidationError(_('Discount code not valid'))
+
+    def initial_value(self, selection):
+
+        try:
+            code = DiscountCode.objects.get(selection=selection)
+            return code.code
+        except DiscountCode.DoesNotExist:
+            return ''
+
+
+class DiscountTypeManager(ChoiceTypeManager):
+
+    @staticmethod
+    def get_model():
+        return DiscountOption
+
+    @staticmethod
+    def get_model_fields():
+        return 'name', 'mirror_option'
+
+    @staticmethod
+    def get_widget(scope, option):
+        if scope == SCOPE.SADMIN:
+            return ChoiceWidget(option)
+        else:
+            return DiscountWidget(option)
+
 _type_manager_register = {
     'boolean': BooleanTypeManager,
     'text': TextTypeManager,
     'choices': ChoiceTypeManager,
     'autoselect': AutoSelectTypeManager,
-    'autoselectchoice': AutoSelectChoiceTypeManager
+    'autoselectchoice': AutoSelectChoiceTypeManager,
+    'discount': DiscountTypeManager
 }
 
 

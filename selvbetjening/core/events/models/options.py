@@ -178,7 +178,8 @@ class Option(models.Model):
         ('choices', _('Choices')),
         ('text', _('Text')),
         ('autoselect', _('Auto Select')),
-        ('autoselectchoice', _('Auto Select Choice'))
+        ('autoselectchoice', _('Auto Select Choice')),
+        ('discount', _('Discount Option'))
     )
 
     group = models.ForeignKey(OptionGroup)
@@ -299,3 +300,22 @@ class Selection(models.Model):
         else:
             return u'%s' % self.option
 
+
+class DiscountOption(Option):
+
+    class Meta:
+        app_label = 'events'
+
+    mirror_option = models.ForeignKey(Option, blank=True, null=True, default=None,
+                                      related_name='discount_options_mirroring')
+
+
+class DiscountCode(models.Model):
+
+    class Meta:
+        app_label = 'events'
+
+    discount_option = models.ForeignKey(DiscountOption)
+
+    code = models.CharField(max_length=64, primary_key=True)
+    selection = models.ForeignKey(Selection, blank=True, null=True)

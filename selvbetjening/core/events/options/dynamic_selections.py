@@ -170,6 +170,12 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
         super(forms.Form, self).__init__(*args, **kwargs)
 
+        if self.attendee is not None:
+            for field_id, type_widget in self.type_widgets.items():
+
+                if not self.type_widgets[field_id].is_editable(self.attendee):
+                    self.fields[field_id].widget.attrs['readonly'] = True
+
     def save(self, *args, **kwargs):
         attendee = kwargs.pop('attendee', self.attendee)
         assert attendee is not None
