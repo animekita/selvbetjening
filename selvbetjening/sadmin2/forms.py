@@ -3,15 +3,15 @@ from decimal import Decimal
 from collections import OrderedDict
 
 from django.contrib.auth.models import Group
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
 from crispy_forms.layout import HTML
 
-from selvbetjening.core.events.dynamic_selections import dynamic_options, SCOPE
-from selvbetjening.core.events.models import Selection, Attend
+from core.events.options.dynamic_selections import dynamic_options, SCOPE
+from selvbetjening.core.events.models import Selection, Attend, SubOption
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.mailcenter.models import EmailSpecification
-from selvbetjening.core.user.models import SUser
 
 from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
     AttendeeComment, Payment
@@ -236,7 +236,7 @@ class OptionForm(forms.ModelForm):
 
     class Meta:
         model = Option
-        exclude = ('group', 'order')
+        fields = ('name', 'description', 'price', 'type')
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 2}),
@@ -265,7 +265,30 @@ class OptionForm(forms.ModelForm):
                        *fields))
 
         self.helper.add_layout(layout)
-        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+
+        if 'instance' not in kwargs:
+            self.helper.add_input(S2SubmitCreate())
+
+        self.helper.form_tag = False
+
+
+class SubOptionForm(forms.ModelForm):
+
+    name = forms.CharField(max_length=255, required=False)
+
+
+class SubOptionInlineFormset(BaseInlineFormSet):
+
+    helper = S2FormHelper(horizontal=True)
+
+    layout = S2Layout(
+        S2Fieldset(None,
+                   'name', 'price', 'DELETE'))
+
+    helper.add_layout(layout)
+    helper.add_input(S2SubmitUpdate())
+
+SubOptionFormset = inlineformset_factory(Option, SubOption, formset=SubOptionInlineFormset, form=SubOptionForm)
 
 
 class PaymentForm(forms.ModelForm):
@@ -446,8 +469,8 @@ class UserSelectorForm(forms.Form):
             return forms.ValidationError('Invalid user')
 
         try:
-            user = User.objects.get(username=fragments[0].strip())
-        except User.DoesNotExist:
+            user = SUser.objects.get(username=fragments[0].strip())
+        except SUser.DoesNotExist:
             raise forms.ValidationError('Invalid user')
 
         return user

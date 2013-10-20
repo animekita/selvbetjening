@@ -28,14 +28,6 @@ class AttendState(object):
 
 class AttendManager(models.Manager):
 
-    def recalculate_aggregations_price(self, attendees):
-
-        attendees = attendees.annotate(price_actual=Sum('selection__option__price'))
-
-        for attendee in attendees:
-            attendee.price = attendee.price_actual if attendee.price_actual is not None else 0
-            attendee.save()
-
     def recalculate_aggregations_paid(self, attendees):
 
         attendees = attendees.annotate(paid_actual=Sum('payment__amount'))
@@ -101,12 +93,9 @@ class Attend(models.Model):
         return self.paid == 0 and not self.price == 0
 
     def recalculate_price(self):
-        result = self.selections.aggregate(price=Sum('option__price'))
-
-        self.price = result['price']
-
-        if self.price is None:
-            self.price = 0
+        self.price = 0
+        for selection in self.selections.select_related('option', 'suboption'):
+            self.price += selection.price
 
         self.save()
 

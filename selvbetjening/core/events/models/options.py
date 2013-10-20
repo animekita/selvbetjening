@@ -106,12 +106,8 @@
 
     The type manager is allowed to decide the following:
 
-    - Edit interface with the user and sadmin (widget) and how the widget translates into the available backing store
-    - Select editable scopes (the type can restrict the available visibility rules)
-    - Initialization/update of suboptions (self management?)
-    - Self selection?
-
-    Some of the above would require some dependency management.
+    - Edit interface with the user and sadmin (widget)
+      - And saving values into the backing store from said widget
 
 
 """
@@ -179,7 +175,8 @@ class Option(models.Model):
     TYPE_CHOICES = (
         ('boolean', _('Boolean')),
         ('choices', _('Choices')),
-        ('text', _('Text'))
+        ('text', _('Text')),
+        ('autoselect', _('Auto Select'))
     )
 
     group = models.ForeignKey(OptionGroup)
@@ -206,10 +203,6 @@ class Option(models.Model):
     in_scope_edit_manage_waiting = models.BooleanField(default=False)
     in_scope_edit_manage_accepted = models.BooleanField(default=False)
     in_scope_edit_manage_attended = models.BooleanField(default=False)
-
-    # Selected by default
-
-    selected_by_default = models.BooleanField(default=False)
 
     # Effects
 

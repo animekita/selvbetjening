@@ -9,14 +9,14 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
-from core.events.dynamic_selections import dynamic_selections, SCOPE, dynamic_selections_formset_factory
-from core.events.utils import sum_attendee_payment_status
 
+from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
+from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment, request_attendee_pks_signal
 
 from selvbetjening.sadmin2 import graph
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
-    AttendeeCommentForm, attendee_selection_helper_factory
+    AttendeeCommentForm, attendee_selection_helper_factory, SubOptionFormset
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -39,6 +39,7 @@ def event_overview(request, event_pk):
 
     for item in status:
         if item['is_new']:
+            status_flat.setdefault(item['state'], 0)
             status_flat[item['state']] += item['count']
 
     return render(request,
@@ -118,7 +119,6 @@ def event_selections(request, event_pk):
 def event_selections_manage(request, event_pk):
 
     FIELDS = (
-        'selected_by_default',
         'in_scope_view_public',
         'in_scope_view_registration',
         'in_scope_view_manage',
@@ -300,23 +300,41 @@ def event_selections_edit_option(request, event_pk, group_pk, option_pk):
     group = get_object_or_404(event.optiongroups, pk=group_pk)
     option = get_object_or_404(group.options, pk=option_pk)
 
-    context = {
-        'sadmin2_menu_main_active': 'events',
-        'sadmin2_breadcrumbs_active': 'event_selections_edit_option',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-        'sadmin2_menu_tab_active': 'selections',
+    if request.method == 'POST':
 
-        'event': event,
-        'option_group': group,
-        'option': option
-    }
+        form = OptionForm(request.POST, instance=option)
+        formset = SubOptionFormset(request.POST, instance=option)
 
-    return generic_create_view(request,
-                               OptionForm,
-                               reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}),
-                               message_success=_('Option saved'),
-                               context=context,
-                               instance=option)
+        if form.is_valid() and formset.is_valid():
+
+            form.save()
+            formset.save()
+            messages.success(request, _('Option saved'))
+
+            return HttpResponseRedirect(
+                reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk})
+            )
+    else:
+        form = OptionForm(instance=option)
+        formset = SubOptionFormset(instance=option)
+
+    return render(
+        request,
+        'sadmin2/event/selection_option_update.html',
+        {
+            'sadmin2_menu_main_active': 'events',
+            'sadmin2_breadcrumbs_active': 'event_selections_edit_option',
+            'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+            'sadmin2_menu_tab_active': 'selections',
+
+            'form': form,
+            'formset': formset,
+
+            'event': event,
+            'option_group': group,
+            'option': option
+        })
+
 
 @sadmin_prerequisites
 def event_account(request, event_pk):

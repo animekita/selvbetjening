@@ -3,13 +3,11 @@
 
 {% block content %}
 
-    {% if form.helper and not form.helper.form_tag %}
     <form method="POST" class="form-horizontal">
-    {% endif %}
-
         {% crispy form %}
-
-    {% if form.helper and not form.helper.form_tag %}
+        <h2>Suboptions</h2>
+        {% crispy formset %}
     </form>
-    {% endif %}
+
+
 {% endblock %}

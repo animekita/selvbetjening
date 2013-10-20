@@ -1,11 +1,12 @@
 from datetime import datetime, date, timedelta
 
 from django.test import TestCase
+from core.events.options import dynamic_selections
 
 from selvbetjening.core.user.models import SUser
 
 from models import Attend, Event, OptionGroup
-from dynamic_selections import dynamic_selections_form_factory, dynamic_selections, _pack_id, SCOPE
+from core.events.options.dynamic_selections import dynamic_selections_form_factory, _pack_id, SCOPE
 
 import models
 

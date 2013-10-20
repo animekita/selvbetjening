@@ -9,7 +9,7 @@ from django.template import Context, Template
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from businesslogic.events import decorators as eventdecorators
-from core.events.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
+from core.events.options.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
 from sadmin2.forms import attendee_selection_helper_factory
 
 from selvbetjening.core.events.models import Event, Attend, AttendState

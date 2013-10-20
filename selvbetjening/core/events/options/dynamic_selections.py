@@ -4,25 +4,9 @@ from collections import OrderedDict
 from django import forms
 from django.db.models import Count
 
-from models import Selection, Option, AttendState
-
-
-class SCOPE:
-
-    def __init__(self):
-        raise Exception
-
-    SADMIN = None
-
-    VIEW_REGISTRATION = 'in_scope_view_registration'
-    VIEW_MANAGE = 'in_scope_view_manage'
-    VIEW_USER_INVOICE = 'in_scope_view_user_invoice'
-    VIEW_SYSTEM_INVOICE = 'in_scope_view_system_invoice'
-
-    EDIT_REGISTRATION = 'in_scope_edit_registration'
-    EDIT_MANAGE_WAITING = 'in_scope_edit_manage_waiting'
-    EDIT_MANAGE_ACCEPTED = 'in_scope_edit_manage_accepted'
-    EDIT_MANAGE_ATTENDED = 'in_scope_edit_manage_attended'
+from selvbetjening.core.events.options.scope import SCOPE
+from selvbetjening.core.events.options.typemanager import type_manager_factory
+from selvbetjening.core.events.models import Selection, Option, AttendState
 
 
 def dynamic_statistics(event):
@@ -111,6 +95,14 @@ def _dynamic_selections(scope, event, attendee=None, option_group=None, as_dict=
         return result.values()
 
 
+def _pack_id(namespace, id):
+    return '%s_%s' % (namespace, id)
+
+
+def _unpack_id(packed_id):
+    return packed_id.split('_')
+
+
 def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
 
     # TODO view and edit scopes should be taken into account
@@ -169,14 +161,10 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
                 selections = self.attendee.selection_set.all().select_related('option')
 
             for selection in selections:
-                if selection.option.type == 'boolean':
-                    initial[_pack_id('option', selection.option.pk)] = True
-                elif selection.option.type == 'text':
-                    initial[_pack_id('option', selection.option.pk)] = selection.text
-                elif selection.option.type == 'choices':
-                    initial[_pack_id('option', selection.option.pk)] = _pack_id('suboption', selection.suboption.pk)
-                else:
-                    raise ValueError
+                field_id = _pack_id('option', selection.option.pk)
+
+                if field_id in self.type_widgets:
+                    initial[field_id] = self.type_widgets[field_id].initial_value(selection)
 
             kwargs['initial'] = initial
 
@@ -189,10 +177,17 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         for key, save_callback in self.save_callbacks.items():
             save_callback(attendee, self.cleaned_data.get(key, None))
 
+    def clean_callback(field_id, type_manager_callback):
+        def inner(self):
+            return type_manager_callback(self.cleaned_data.get(field_id, None))
+
+        return inner
+
     fields = {
         'save_callbacks': {},
         '__init__': init,
-        'save': save
+        'save': save,
+        'type_widgets': {}
     }
 
     if helper_factory is not None:
@@ -200,141 +195,16 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
                                           [_pack_id('option', option.pk) for option in options])
 
     for option in options:
-        field_id, field, clean_callback, save_callback = _option_field_builder(option)
+        widget = type_manager_factory(option).get_widget(scope, option)
+        field_id = _pack_id('option', option.pk)
 
-        fields[field_id] = field
-        fields['clean_%s' % field_id] = clean_callback
-        fields['save_callbacks'][field_id] = save_callback
+        fields[field_id] = widget.get_field()
+        fields['clean_%s' % field_id] = clean_callback(field_id, widget.clean_callback)
+        fields['save_callbacks'][field_id] = widget.save_callback
+
+        fields['type_widgets'][field_id] = widget
 
     return type('OptionGroupSelectionsForm', (forms.Form,), fields)
 
 
-def _pack_id(namespace, id):
-    return '%s_%s' % (namespace, id)
 
-
-def _unpack_id(packed_id):
-    return packed_id.split('_')
-
-
-def _option_field_builder(option):
-    """
-    Returns a forms.Field instance and a save callback
-
-    (field_id, field, save_callback)
-    """
-
-    if option.type == 'boolean':
-        return _option_field_builder_checkbox(option)
-    elif option.type == 'text':
-        return _option_field_builder_text(option)
-    elif option.type == 'choices':
-        return _option_field_builder_choices(option)
-    else:
-        raise ValueError
-
-
-def _option_field_builder_checkbox(option):
-    option_pk = option.pk
-
-    field = forms.BooleanField(label=option.name,
-                               required=False,
-                               help_text=option.description,
-                               widget=forms.CheckboxInput())
-
-    def noop_save_callback(attendee, value):
-        if value is not None and value:
-            Selection.objects.get_or_create(
-                option_id=option_pk,
-                attendee=attendee
-            )
-        else:
-            Selection.objects.filter(
-                option_id=option_pk,
-                attendee=attendee
-            ).delete()
-
-    def noop_clean_callback(self):
-        return self.cleaned_data.get(_pack_id('option', option_pk), False)
-
-    return (
-        _pack_id('option', option.pk),
-        field,
-        noop_clean_callback,
-        noop_save_callback
-    )
-
-
-def _option_field_builder_text(option):
-    option_pk = option.pk
-
-    field = forms.CharField(label=option.name,
-                            required=False,
-                            help_text=option.description,
-                            widget=forms.TextInput())
-
-    def noop_save_callback(attendee, value):
-        if value is not None and len(value.strip()) > 0:
-            selection, created = Selection.objects.get_or_create(
-                option_id=option_pk,
-                attendee=attendee
-            )
-
-            selection.text = value.strip()
-            selection.save()
-        else:
-            Selection.objects.filter(
-                option_id=option_pk,
-                attendee=attendee
-            ).delete()
-
-    def noop_clean_callback(self):
-        return self.cleaned_data.get(_pack_id('option', option_pk), False)
-
-    return (
-        _pack_id('option', option.pk),
-        field,
-        noop_clean_callback,
-        noop_save_callback
-    )
-
-
-def _option_field_builder_choices(option):
-    option_pk = option.pk
-
-    choices = [('', '')] + [('suboption_%s' % suboption.pk, suboption.name)
-                            for suboption in option.suboptions.all()]
-
-    field = forms.ChoiceField(label=option.name,
-                              required=False,
-                              help_text=option.description,
-                              widget=forms.Select(),
-                              choices=choices)
-
-    def noop_save_callback(attendee, value):
-        if value is not None and len(value) > 0:
-            selection, created = Selection.objects.get_or_create(
-                option_id=option_pk,
-                attendee=attendee
-            )
-
-            namespace, pk = _unpack_id(value)
-            assert namespace == 'suboption'
-
-            selection.suboption_id = pk
-            selection.save()
-        else:
-            Selection.objects.filter(
-                option_id=option_pk,
-                attendee=attendee
-            ).delete()
-
-    def noop_clean_callback(self):
-        return self.cleaned_data.get(_pack_id('option', option_pk), False)
-
-    return (
-        _pack_id('option', option.pk),
-        field,
-        noop_clean_callback,
-        noop_save_callback
-    )

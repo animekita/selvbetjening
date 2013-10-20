@@ -39,29 +39,18 @@ def resume_price_updates():
 
 # signal handlers
 
-
-@receiver(post_save, sender=Selection, dispatch_uid='increase_price_on_selection')
-def increase_price_on_selection(sender, **kwargs):
+def update_attendee_price(sender, **kwargs):
     selection = kwargs['instance']
 
     if is_price_updates_suspended():
         return
 
-    if selection.price != 0:
-        selection.attendee.price += selection.price
-        selection.attendee.save()
+    # We should avoid this at all costs if more than one selection is changed at any time
+    # In that case the automatic updates should be suspended and the recalculate_price called explicitly
+    selection.attendee.recalculate_price()
 
-
-@receiver(post_delete, sender=Selection, dispatch_uid='decrease_price_on_deselect')
-def decrease_price_on_deselect(sender, **kwargs):
-    selection = kwargs['instance']
-
-    if is_price_updates_suspended():
-        return
-
-    if selection.price != 0:
-        selection.attendee.price -= selection.price
-        selection.attendee.save()
+post_save.connect(update_attendee_price, sender=Selection, dispatch_uid='update_attendee_price_save')
+post_delete.connect(update_attendee_price, sender=Selection, dispatch_uid='update_attendee_price_delete')
 
 
 @receiver(post_save, sender=Payment, dispatch_uid='update_paid_and_update_state_on_payment')
