@@ -111,6 +111,7 @@
 
 
 """
+from django.db.models import F
 
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -176,7 +177,8 @@ class Option(models.Model):
         ('boolean', _('Boolean')),
         ('choices', _('Choices')),
         ('text', _('Text')),
-        ('autoselect', _('Auto Select'))
+        ('autoselect', _('Auto Select')),
+        ('autoselectchoice', _('Auto Select Choice'))
     )
 
     group = models.ForeignKey(OptionGroup)
@@ -261,6 +263,14 @@ class SubOption(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
+
+class AutoSelectChoiceOption(Option):
+
+    class Meta:
+        app_label = 'events'
+
+    auto_select_suboption = models.ForeignKey(SubOption, blank=True, null=True, default=None)
 
 
 class Selection(models.Model):

@@ -7,8 +7,10 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
 from crispy_forms.layout import HTML
+from core.events.models.options import AutoSelectChoiceOption
 
 from core.events.options.dynamic_selections import dynamic_options, SCOPE
+from core.events.options.typemanager import type_manager_factory
 from selvbetjening.core.events.models import Selection, Attend, SubOption
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.mailcenter.models import EmailSpecification
@@ -232,44 +234,46 @@ class OptionGroupForm(forms.ModelForm):
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
 
 
-class OptionForm(forms.ModelForm):
+class CreateOptionForm(forms.Form):
 
-    class Meta:
-        model = Option
-        fields = ('name', 'description', 'price', 'type')
+    name = forms.CharField(max_length=255, required=True)
+    type = forms.ChoiceField(required=True, choices=Option.TYPE_CHOICES)
 
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 2}),
-        }
+    helper = S2FormHelper(horizontal=True)
 
-    def __init__(self, *args, **kwargs):
+    layout = S2Layout(
+        S2Fieldset(None,
+                   'name', 'type'))
 
-        super(OptionForm, self).__init__(*args, **kwargs)
+    helper.add_layout(layout)
+    helper.add_input(S2SubmitCreate())
 
-        if 'instance' in kwargs:
-            del self.fields['type']
 
-        self.helper = S2FormHelper(horizontal=True)
+def option_form_factory(type_manager):
 
-        if 'instance' in kwargs:
-            type = kwargs['instance'].get_type_display()
-            fields = ('name',
-                      HTML('<div class="form-group"><label class="control-label col-lg-2">Type:</label><div class="controls col-lg-8">%s</div></div>' % type),
-                      'description',
-                      'price')
-        else:
-            fields = ('name', 'type', 'description', 'price')
+    class OptionForm(forms.ModelForm):
 
-        layout = S2Layout(
-            S2Fieldset(None,
-                       *fields))
+        class Meta:
+            model = type_manager.get_model()
+            fields = type_manager.get_model_fields()
 
-        self.helper.add_layout(layout)
+            widgets = {
+                'description': forms.Textarea(attrs={'rows': 2}),
+            }
 
-        if 'instance' not in kwargs:
-            self.helper.add_input(S2SubmitCreate())
+        def __init__(self, *args, **kwargs):
 
-        self.helper.form_tag = False
+            super(OptionForm, self).__init__(*args, **kwargs)
+
+            self.helper = S2FormHelper(horizontal=True)
+
+            fields = list(type_manager.get_model_fields())
+            layout = S2Layout(S2Fieldset(None, *fields))
+
+            self.helper.add_layout(layout)
+            self.helper.form_tag = False
+
+    return OptionForm
 
 
 class SubOptionForm(forms.ModelForm):

@@ -108,8 +108,6 @@
             "in_scope_edit_manage_accepted": true,
             "in_scope_edit_manage_attended": true,
 
-            "selected_by_default": false,
-
             "price": 0
         }
     },
@@ -132,8 +130,6 @@
             "in_scope_edit_manage_waiting": true,
             "in_scope_edit_manage_accepted": true,
             "in_scope_edit_manage_attended": true,
-
-            "selected_by_default": false,
 
             "price": 0
         }
@@ -158,8 +154,6 @@
             "in_scope_edit_manage_accepted": true,
             "in_scope_edit_manage_attended": true,
 
-            "selected_by_default": false,
-
             "price": 0
         }
     },
@@ -182,8 +176,6 @@
             "in_scope_edit_manage_waiting": true,
             "in_scope_edit_manage_accepted": true,
             "in_scope_edit_manage_attended": true,
-
-            "selected_by_default": false,
 
             "price": 0
         }

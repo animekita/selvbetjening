@@ -2,9 +2,21 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from core.events.models.options import AutoSelectChoiceOption
 
 from selvbetjening.core.events.options.scope import SCOPE
-from selvbetjening.core.events.models import Selection
+from selvbetjening.core.events.models import Selection, Option
+
+
+class BaseTypeManager(object):
+
+    @staticmethod
+    def get_model():
+        return Option
+
+    @staticmethod
+    def get_model_fields():
+        return 'name', 'description', 'price', 'auto_select_suboption'
 
 
 class BooleanWidget(object):
@@ -40,7 +52,7 @@ class BooleanWidget(object):
         return True
 
 
-class BooleanTypeManager(object):
+class BooleanTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
@@ -83,7 +95,7 @@ class TextWidget(object):
         return selection.text
 
 
-class TextTypeManager(object):
+class TextTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
@@ -138,10 +150,13 @@ class ChoiceWidget(object):
         raise ValidationError(_('Choice %s is not allowed') % value)
 
     def initial_value(self, selection):
-        return 'suboption_%s' % selection.suboption.pk
+        if selection.suboption is not None:
+            return 'suboption_%s' % selection.suboption.pk
+        else:
+            return None
 
 
-class ChoiceTypeManager(object):
+class ChoiceTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
@@ -172,17 +187,36 @@ class AutoSelectTypeManager(BooleanTypeManager):
             return AutoSelectBooleanWidget(option)
 
 
+class AutoSelectChoiceTypeManager(BooleanTypeManager):
+
+    @staticmethod
+    def get_model():
+        return AutoSelectChoiceOption
+
+    @staticmethod
+    def get_model_fields():
+        return 'name', 'price', 'auto_select_suboption'
+
+    @staticmethod
+    def get_widget(scope, option):
+        if scope == SCOPE.SADMIN:
+            return ChoiceWidget(option)
+        else:
+            return AutoSelectBooleanWidget(option)
+
+
 _type_manager_register = {
     'boolean': BooleanTypeManager,
     'text': TextTypeManager,
     'choices': ChoiceTypeManager,
-    'autoselect': AutoSelectTypeManager
+    'autoselect': AutoSelectTypeManager,
+    'autoselectchoice': AutoSelectChoiceTypeManager
 }
 
 
-def type_manager_factory(option):
+def type_manager_factory(option_or_type):
     """
     Returns a type manager based on the options type
     """
 
-    return _type_manager_register[option.type]
+    return _type_manager_register[option_or_type.type if hasattr(option_or_type, 'type') else option_or_type]

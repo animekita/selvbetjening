@@ -2,21 +2,22 @@
 import datetime
 import time
 
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
+from core.events.options.typemanager import type_manager_factory
 
+from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.events.models import Event, Attend, AttendState, OptionGroup, Payment, request_attendee_pks_signal
 
 from selvbetjening.sadmin2 import graph
-from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, OptionForm, PaymentForm, \
-    AttendeeCommentForm, attendee_selection_helper_factory, SubOptionFormset
+from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, OptionGroupForm, PaymentForm, \
+    AttendeeCommentForm, attendee_selection_helper_factory, SubOptionFormset, CreateOptionForm, option_form_factory
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -271,26 +272,41 @@ def event_selections_create_option(request, event_pk, group_pk):
     event = get_object_or_404(Event, pk=event_pk)
     group = get_object_or_404(event.optiongroups, pk=group_pk)
 
-    context = {
-        'sadmin2_menu_main_active': 'events',
-        'sadmin2_breadcrumbs_active': 'event_selections_create_option',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-        'sadmin2_menu_tab_active': 'selections',
+    if request.method == 'POST':
 
-        'event': event,
-        'option_group': group
-    }
+        form = CreateOptionForm(request.POST)
 
-    def save_callback(instance):
-        instance.group = group
-        instance.save()
+        if form.is_valid():
 
-    return generic_create_view(request,
-                               OptionForm,
-                               reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}),
-                               message_success=_('Option created'),
-                               context=context,
-                               instance_save_callback=save_callback)
+            type_manager = type_manager_factory(form.cleaned_data['type'])
+            type_manager.get_model().objects.create(
+                name=form.cleaned_data['name'],
+                type=form.cleaned_data['type'],
+                group=group,
+                price=0
+            )
+
+            messages.success(request, _('Option created'))
+            return HttpResponseRedirect(reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}))
+
+    else:
+        form = CreateOptionForm()
+
+    return render(
+        request,
+        'sadmin2/generic/form.html',
+        {
+            'sadmin2_menu_main_active': 'events',
+            'sadmin2_breadcrumbs_active': 'event_selections_create_option',
+            'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+            'sadmin2_menu_tab_active': 'selections',
+
+            'event': event,
+            'option_group': group,
+
+            'form': form
+        }
+    )
 
 
 @sadmin_prerequisites
@@ -298,7 +314,12 @@ def event_selections_edit_option(request, event_pk, group_pk, option_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
     group = get_object_or_404(event.optiongroups, pk=group_pk)
-    option = get_object_or_404(group.options, pk=option_pk)
+    _option = get_object_or_404(group.options, pk=option_pk)
+
+    type_manager = type_manager_factory(_option)
+    OptionForm = option_form_factory(type_manager)
+
+    option = type_manager.get_model().objects.get(option_ptr=_option)
 
     if request.method == 'POST':
 
@@ -554,14 +575,14 @@ def event_attendees_add(request, event_pk):
 
     if request.method == 'POST':
 
-        user = get_object_or_404(User, pk=int(request.POST.get('user_pk', 0)))
+        user = get_object_or_404(SUser, pk=int(request.POST.get('user_pk', 0)))
         Attend.objects.create(event=event, user=user)
 
         # TODO update this redirect to go directly to the attendee page when we have one
         messages.success(request, _('User %s added to event') % user.username)
         return HttpResponseRedirect(reverse('sadmin2:event_attendees', kwargs={'event_pk': event.pk}))
 
-    queryset = User.objects.exclude(attend__event__pk=event.pk)
+    queryset = SUser.objects.exclude(attend__event__pk=event.pk)
     columns = ('username', 'first_name', 'last_name', 'email')
 
     context = {
