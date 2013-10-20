@@ -17,10 +17,8 @@
     you could add an option such as "Wants to help with the event" with a boolean type. Each attendee can then
     provide either a true or a false value for this option.
 
-    We support the following types:
-    - Boolean values (checkbox)
-    - Text
-    - Choices (selector)
+    The type of the input changes its behaviour in different contests. These behavioural changes are decided by
+    a Type Manager, for which there is exactly one Type Manager associated with each type.
 
     An option group is a logical cluster of options used for displaying options in logical groups and to apply
     scopes, and invariants collectively to a group of options.
@@ -30,7 +28,8 @@
 
     This system is not 100% flexible, however it should be sufficient in most cases.
 
-    All fields can be set to be "selected by default at registration".
+    All option types has a notion of being selected. Booleans are selected when true, text inputs are selected
+    if non-empty, and choices are selected when any value is selected.
 
     Scope (who can see and who can edit what)
     =========================================
@@ -56,10 +55,7 @@
     ===================
 
     A number of invariants can be stated on option group and option level. These invariants are enforced for
-    end-userportal (sadmin can bypass these).
-
-    All option types has a notion of being selected. Booleans are selected when true, text inputs are selected
-    if non-empty, and choices are selected when any value is selected.
+    the users only (read, sadmin bypasses these).
 
     Option Group
     ------------
@@ -69,18 +65,14 @@
     - Minimum selected
 
 
-    Effects
-    =======
+    Effects (price)
+    ===============
 
-    It is possible to define prices associated with selection various items. The prices are added to the userportal
-    invoice.
+    An option can have a price. If the option is selected then that price will be added as a cost to the user's invoice.
+    Suboptions also have prices that can modify the base price of the option.
 
     Important: All options with a price must be visible on user invoices, otherwise the price will not be added
     to the invoice!
-
-    - Each option has a price that is added if the option is selected.
-    - Each option group has a package price (modifier) applied if all items in a package is selected.
-    - Each suboption (choices) has a price (modifier) applied if chosen.
 
     Change management
     =================
@@ -93,12 +85,33 @@
     - Renaming titles and descriptions is allowed and will result in updates to existing invoices
     - Changing prices is allowed and will result in updates to existing invoices
 
-    The following is allowed, hover it can possibly violate invariants (and those violations will not be acted upon)
+    One particular challenging problem is price calculation, since the total price for an attendee is cached
+    in the database. This cached value is updated in three different ways:
 
-    - Deleting options is allowed and will result in updates to existing invoices
+    1. By a global recalculation of all attendee prices
+    2. By a local recalculation of a single attendee (if the attendee changes her selections)
+    3. By a global recalculation of attendee prices for a single option (if the price of an option is changed)
 
-    Tools are provided for mass changes to existing selections.
 
+    TypeManagers
+    ============
+
+    A type manager encodes a set of rules for a type, mostly related to the display and interaction with a type.
+
+    In general, all types are represented with the same set of basic building blocks
+    - option with a price,
+    - suboptions with individual prices
+    - visibilty rules
+    - a bit of text associated with each selection
+
+    The type manager is allowed to decide the following:
+
+    - Edit interface with the user and sadmin (widget) and how the widget translates into the available backing store
+    - Select editable scopes (the type can restrict the available visibility rules)
+    - Initialization/update of suboptions (self management?)
+    - Self selection?
+
+    Some of the above would require some dependency management.
 
 
 """
