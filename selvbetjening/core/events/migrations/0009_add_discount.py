@@ -19,7 +19,7 @@ class Migration(SchemaMigration):
         # Adding model 'DiscountOption'
         db.create_table(u'events_discountoption', (
             (u'option_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['events.Option'], unique=True, primary_key=True)),
-            ('mirror_option', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='discount_options_mirroring', null=True, blank=True, to=orm['events.Option'])),
+            ('discount_suboption', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.SubOption'], null=True, blank=True)),
         ))
         db.send_create_signal('events', ['DiscountOption'])
 
@@ -102,7 +102,7 @@ class Migration(SchemaMigration):
         },
         'events.discountoption': {
             'Meta': {'ordering': "('order',)", 'object_name': 'DiscountOption', '_ormbases': ['events.Option']},
-            'mirror_option': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'discount_options_mirroring'", 'null': 'True', 'blank': 'True', 'to': "orm['events.Option']"}),
+            'discount_suboption': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['events.SubOption']", 'null': 'True', 'blank': 'True'}),
             u'option_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['events.Option']", 'unique': 'True', 'primary_key': 'True'})
         },
         'events.event': {

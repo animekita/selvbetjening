@@ -5,8 +5,15 @@
 
     <form method="POST" class="form-horizontal">
         {% crispy form %}
-        <h2>Suboptions</h2>
-        {% crispy formset %}
+
+        {% if formset %}
+            {% crispy formset %}
+        {% endif %}
+
+    <div class="form-actions">
+        <input type="submit" name="create" value="Create" class="btn btn-primary  btn-lg" id="submit-id-create"/>
+    </div>
+
     </form>
 
 

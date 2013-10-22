@@ -69,7 +69,8 @@
     ===============
 
     An option can have a price. If the option is selected then that price will be added as a cost to the user's invoice.
-    Suboptions also have prices that can modify the base price of the option.
+    Suboptions also have prices that modify the base price. That is, the actual price of a suboption is
+    base price + suboption price.
 
     Important: All options with a price must be visible on user invoices, otherwise the price will not be added
     to the invoice!
@@ -112,6 +113,7 @@
 
 """
 from django.db.models import F
+from django.db.models.signals import post_save
 
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -306,8 +308,7 @@ class DiscountOption(Option):
     class Meta:
         app_label = 'events'
 
-    mirror_option = models.ForeignKey(Option, blank=True, null=True, default=None,
-                                      related_name='discount_options_mirroring')
+    discount_suboption = models.ForeignKey(SubOption, blank=True, null=True, default=None)
 
 
 class DiscountCode(models.Model):

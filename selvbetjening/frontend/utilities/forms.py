@@ -122,14 +122,14 @@ class S2Submit(Submit):
 
 class S2SubmitCreate(S2Submit):
 
-    def __init__(self):
-        super(S2SubmitCreate, self).__init__('create', _('Create'))
+    def __init__(self, name=None):
+        super(S2SubmitCreate, self).__init__('create' if name is None else name, _('Create'))
 
 
 class S2SubmitUpdate(S2Submit):
 
-    def __init__(self):
-        super(S2SubmitUpdate, self).__init__('update', _('Update'))
+    def __init__(self, name=None):
+        super(S2SubmitUpdate, self).__init__('update' if name is None else name, _('Update'))
 
 
 class S2JavaScriptButton(S2Submit):

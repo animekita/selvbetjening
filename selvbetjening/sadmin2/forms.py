@@ -234,65 +234,18 @@ class OptionGroupForm(forms.ModelForm):
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
 
 
-class CreateOptionForm(forms.Form):
+class SelectOptionType(forms.Form):
 
-    name = forms.CharField(max_length=255, required=True)
     type = forms.ChoiceField(required=True, choices=Option.TYPE_CHOICES)
 
     helper = S2FormHelper(horizontal=True)
 
     layout = S2Layout(
         S2Fieldset(None,
-                   'name', 'type'))
+                   'type'))
 
     helper.add_layout(layout)
     helper.add_input(S2SubmitCreate())
-
-
-def option_form_factory(type_manager):
-
-    class OptionForm(forms.ModelForm):
-
-        class Meta:
-            model = type_manager.get_model()
-            fields = type_manager.get_model_fields()
-
-            widgets = {
-                'description': forms.Textarea(attrs={'rows': 2}),
-            }
-
-        def __init__(self, *args, **kwargs):
-
-            super(OptionForm, self).__init__(*args, **kwargs)
-
-            self.helper = S2FormHelper(horizontal=True)
-
-            fields = list(type_manager.get_model_fields())
-            layout = S2Layout(S2Fieldset(None, *fields))
-
-            self.helper.add_layout(layout)
-            self.helper.form_tag = False
-
-    return OptionForm
-
-
-class SubOptionForm(forms.ModelForm):
-
-    name = forms.CharField(max_length=255, required=False)
-
-
-class SubOptionInlineFormset(BaseInlineFormSet):
-
-    helper = S2FormHelper(horizontal=True)
-
-    layout = S2Layout(
-        S2Fieldset(None,
-                   'name', 'price', 'DELETE'))
-
-    helper.add_layout(layout)
-    helper.add_input(S2SubmitUpdate())
-
-SubOptionFormset = inlineformset_factory(Option, SubOption, formset=SubOptionInlineFormset, form=SubOptionForm)
 
 
 class PaymentForm(forms.ModelForm):
@@ -568,8 +521,5 @@ class AttendeesNewsletterFilterHidden(AttendeesNewsletterFilter):
 
         self.fields['status'].widget = forms.MultipleHiddenInput()
         self.fields['options'].widget = forms.MultipleHiddenInput()
-
-
-
 
 

@@ -11,6 +11,7 @@ import views.users
 import views.user
 import views.emails
 import views.autocomplete
+import views.options
 
 urlpatterns = patterns(
     '',
@@ -41,14 +42,15 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/notes/$', views.event.event_attendee_notes, name='event_attendee_notes'),
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/add/$', views.event.event_attendees_add, name='event_attendees_add'),
 
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/$', views.event.event_selections, name='event_selections'),
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/manage/$', views.event.event_selections_manage, name='event_selections_manage'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/$', views.options.event_selections, name='event_selections'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/manage/$', views.options.event_selections_manage, name='event_selections_manage'),
 
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/create/$', views.event.event_selections_create_group, name='event_selections_create_group'),
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/$', views.event.event_selections_edit_group, name='event_selections_edit_group'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/create/$', views.options.event_selections_create_group, name='event_selections_create_group'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/$', views.options.event_selections_edit_group, name='event_selections_edit_group'),
 
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/options/create/$', views.event.event_selections_create_option, name='event_selections_create_option'),
-    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/options/(?P<option_pk>[0-9]+)/$', views.event.event_selections_edit_option, name='event_selections_edit_option'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/options/create/$', views.options.event_selections_create_option, name='event_selections_create_option'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/options/create/(?P<type_raw>[a-z]+)/$', views.options.event_selections_create_option_step2, name='event_selections_create_option_step2'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/group/(?P<group_pk>[0-9]+)/options/(?P<option_pk>[0-9]+)/$', views.options.event_selections_edit_option, name='event_selections_edit_option'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/account/$', views.event.event_account, name='event_account'),
     url(r'^events/(?P<event_pk>[0-9]+)/settings/$', views.event.event_settings, name='event_settings'),

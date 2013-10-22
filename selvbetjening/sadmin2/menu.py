@@ -181,7 +181,7 @@ breadcrumbs = {
 
     # Assumes: context[event], context[option_group], kwargs[event_pk]
     'event_selections_group':  {
-        'name_callback': lambda context: context['option_group'].name,
+        'name_callback': lambda context: context['option_group'].name if context['option_group'].name != '' else 'anon',
         'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
         'parent': 'event_selections_manage'},
 
