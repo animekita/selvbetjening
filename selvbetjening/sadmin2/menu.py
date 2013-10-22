@@ -342,7 +342,7 @@ sadmin2_menu_tab_attendee = (
 
     {'id': 'to-user-account',
      'name': _('User account'),
-     'url_callback': url_callback('sadmin2:event_attendee_payments', ('event_pk', 'attendee_pk')),
+     'url_callback': lambda context: reverse('sadmin2:user', kwargs={'user_pk': context['attendee'].user.pk}),
      'class': 'pull-right',
      'icon': 'user'}
 
