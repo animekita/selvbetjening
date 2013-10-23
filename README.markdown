@@ -1,6 +1,8 @@
 Selvbetjening (Self Service)
 ============================
 
+[![Build Status](https://travis-ci.org/animekita/selvbetjening.png?branch=master)](https://travis-ci.org/animekita/selvbetjening)
+
 Selvbetjening (danish for self service) is a collection of Django apps for event and member management. These are used by a number of small clubs and medium sized conferences to build event registration applications. Each Selvbetjening installation consist of a mixture of Selvbetjening apps and installation-specific apps - depending on the desired features.
 
 The core principles of Selvbetjening is to provide a common set of required models defining events, user profiles, ect. with a large collection of optional apps such as an admin interface, member and event registration pages, public profiles. The aim is to be flexible, in the sense that each installation can select a specific set of apps they want to use, and build their own.
