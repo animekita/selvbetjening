@@ -11,9 +11,9 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'NAME': 'svscon_selv',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
+        'NAME': 'sdemo.db',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'USER': '',
         'PASSWORD': ''
     }
 }

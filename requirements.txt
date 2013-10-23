@@ -1,5 +1,4 @@
 PIL
-MySQL-python
 
 markdown
 
