@@ -1,6 +1,6 @@
 from selvbetjening.settings_base import *
 
-ROOT_URLCONF = 'selvbetjening.demo.urls'
+ROOT_URLCONF = 'sdemo.urls'
 
 # installed applications
 INSTALLED_APPS.extend([
@@ -11,7 +11,7 @@ INSTALLED_APPS.extend([
     'selvbetjening.frontend.eventportal',
     'selvbetjening.frontend.eventsingle',
 
-    'selvbetjening.demo'
+    'sdemo'
 ])
 
 LOGIN_REDIRECT_URL = '/'

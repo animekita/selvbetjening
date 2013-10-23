@@ -245,7 +245,7 @@ Highcharts.theme = {
 		trackBorderColor: '#666'
 	},
 
-	// special colors for some of the demo examples
+	// special colors for some of the sdemo examples
 	legendBackgroundColor: 'rgba(48, 48, 48, 0.8)',
 	legendBackgroundColorSolid: 'rgb(70, 70, 70)',
 	dataLabelsColor: '#444',

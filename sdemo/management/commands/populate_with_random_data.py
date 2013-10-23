@@ -35,7 +35,7 @@ class Command(NoArgsCommand):
                   'Please set settings.DEBUG to True"""
             return
 
-        confirmation = raw_input("""You have requested the demo site to populate your database with random data.
+        confirmation = raw_input("""You have requested the sdemo site to populate your database with random data.
 
 You should NEVER do this on a production site.
 

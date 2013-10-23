@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = patterns(
     '',
-    url(r'^$', TemplateView.as_view(template_name='demo/index.html'), name='home'),
+    url(r'^$', TemplateView.as_view(template_name='sdemo/index.html'), name='home'),
 
     (r'^auth/', include('selvbetjening.frontend.auth.urls')),
     (r'^userportal/', include('selvbetjening.frontend.userportal.urls')),
