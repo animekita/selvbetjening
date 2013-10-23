@@ -4,11 +4,11 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from core.events.options.typemanager import type_manager_factory
-from sadmin2.options.stypemanager import stype_manager_factory
 
+from selvbetjening.core.events.options.typemanager import type_manager_factory
 from selvbetjening.core.events.models import Event, AttendState, OptionGroup
 
+from selvbetjening.sadmin2.options.stypemanager import stype_manager_factory
 from selvbetjening.sadmin2.forms import OptionGroupForm, SelectOptionType
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu

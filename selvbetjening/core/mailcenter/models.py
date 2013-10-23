@@ -88,7 +88,7 @@ class EmailSpecification(models.Model):
 
     def _get_context(self, user, attendee=None):
         # lazy import, prevent circular import in core.events
-        from core.events.options.dynamic_selections import SCOPE, dynamic_selections
+        from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections
 
         context = {
             # user context

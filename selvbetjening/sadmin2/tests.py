@@ -27,7 +27,7 @@ class FilteringTestCase(TestCase):
         fragments = filtering.query_parser(':description="Another event"', ['description'])
         assert len(fragments) == 1
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(filtering.FilterException):
             filtering.query_parser(':description="Another event"', [])
 
     def test_fragment_construction(self):
@@ -94,18 +94,6 @@ class FilteringTestCase(TestCase):
                                       condition_fields=['description'])
         assert e.count() == 1
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(filtering.FilterException):
             filtering.filter_queryset(events, ':description="Another event"',
                                       search_fields=['title', 'description'])
-
-
-
-
-
-
-
-
-
-
-
-

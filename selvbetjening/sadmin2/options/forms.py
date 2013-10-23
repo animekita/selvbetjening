@@ -1,8 +1,8 @@
 from crispy_forms.layout import HTML
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
-from core.events.models.options import AutoSelectChoiceOption, DiscountOption
 
+from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption
 from selvbetjening.core.events.models import SubOption, Option
 
 from selvbetjening.frontend.utilities.forms import *

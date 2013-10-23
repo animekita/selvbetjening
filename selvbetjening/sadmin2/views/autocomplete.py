@@ -1,8 +1,9 @@
 
 from django.contrib.auth.models import User
-from core.events.models import Attend
-from sadmin2.decorators import sadmin_prerequisites
-from sadmin2.views.generic import search_view
+
+from selvbetjening.core.events.models import Attend
+from selvbetjening.sadmin2.decorators import sadmin_prerequisites
+from selvbetjening.sadmin2.views.generic import search_view
 
 
 @sadmin_prerequisites

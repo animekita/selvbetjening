@@ -20,7 +20,7 @@
     },
     {
         "pk": 1,
-        "model": "auth.user",
+        "model": "user.suser",
         "fields": {
             "username": "user1",
             "password": "password"
@@ -28,7 +28,7 @@
     },
     {
         "pk": 2,
-        "model": "auth.user",
+        "model": "user.suser",
         "fields": {
             "username": "user2",
             "password": "password"

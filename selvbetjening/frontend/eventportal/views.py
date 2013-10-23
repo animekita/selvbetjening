@@ -8,12 +8,14 @@ from django.shortcuts import render, get_object_or_404
 from django.template import Context, Template
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from businesslogic.events import decorators as eventdecorators
-from core.events.options.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
-from sadmin2.forms import attendee_selection_helper_factory
 
+from selvbetjening.core.events.options.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
 from selvbetjening.core.events.models import Event, Attend, AttendState
-from businesslogic.events.decorators import suspend_automatic_attendee_price_updates
+
+from selvbetjening.businesslogic.events import decorators as eventdecorators
+from selvbetjening.businesslogic.events.decorators import suspend_automatic_attendee_price_updates
+
+from selvbetjening.sadmin2.forms import attendee_selection_helper_factory
 
 
 def events_list(request,

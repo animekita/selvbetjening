@@ -4,8 +4,8 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from core.events.models.options import DiscountCode
 
+from selvbetjening.core.events.models.options import DiscountCode
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 

@@ -7,10 +7,10 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
 from crispy_forms.layout import HTML
-from core.events.models.options import AutoSelectChoiceOption
 
-from core.events.options.dynamic_selections import dynamic_options, SCOPE
-from core.events.options.typemanager import type_manager_factory
+from selvbetjening.core.events.models.options import AutoSelectChoiceOption
+from selvbetjening.core.events.options.dynamic_selections import dynamic_options, SCOPE
+from selvbetjening.core.events.options.typemanager import type_manager_factory
 from selvbetjening.core.events.models import Selection, Attend, SubOption
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.mailcenter.models import EmailSpecification
