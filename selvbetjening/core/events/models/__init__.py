@@ -73,17 +73,3 @@ def update_paid_and_update_state_on_payment(sender, **kwargs):
             attendee.state = AttendState.accepted
             attendee.save()
 
-
-@receiver(post_save, sender=Option, dispatch_uid='update_prices_on_price_change')
-def update_prices_on_price_change(sender, **kwargs):
-    option = kwargs['instance']
-    created = kwargs['created']
-
-    if created:
-        return
-
-    # TODO enable this somewhere, we can't do this on every option save - that would crash the manage options page
-
-    ##Attend.objects.recalculate_aggregations_price(
-    ##    Attend.objects.filter(selection__option=option)
-    ##)

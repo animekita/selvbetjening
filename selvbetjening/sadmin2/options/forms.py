@@ -16,92 +16,116 @@ def _get_type_html(type_raw):
 </div>""" % unicode(type_raw).title()
 
 
-class OptionForm(forms.ModelForm):
-
-    class Meta:
-        model = Option
-        fields = ('name', 'description', 'price')
-
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 2}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        type = kwargs.pop('type')
-
-        super(OptionForm, self).__init__(*args, **kwargs)
-
-        self.helper = S2FormHelper(horizontal=True)
-
-        layout = S2Layout(S2Fieldset(
-            None,
-            'name',
-            HTML(_get_type_html(type)),
-            'description',
-            'price'))
-
-        self.helper.add_layout(layout)
-        self.helper.form_tag = False
+def _get_price_html(price):
+    return """
+<div class="form-group">
+<label class="control-label col-lg-2">Price</label>
+<div class="controls col-lg-8">%s</div>
+</div>""" % price
 
 
-class AutoSelectChoiceOptionForm(forms.ModelForm):
+def _field_filter(field, type_raw, instance):
+    if field == 'type':
+        return HTML(_get_type_html(type_raw))
 
-    class Meta:
-        model = AutoSelectChoiceOption
-        fields = ('name', 'description', 'price', 'auto_select_suboption')
+    if field == 'price' and instance is not None:
+        return HTML(_get_price_html(instance.price))
 
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 2}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        type = kwargs.pop('type')
-
-        super(AutoSelectChoiceOptionForm, self).__init__(*args, **kwargs)
-
-        if 'instance' in kwargs:
-            option_pk = kwargs['instance'].pk
-        else:
-            option_pk = 0
-
-        self.fields['auto_select_suboption'].queryset = SubOption.objects.filter(option__pk=option_pk)
-
-        self.helper = S2FormHelper(horizontal=True)
-
-        layout = S2Layout(S2Fieldset(
-            None,
-            'name',
-            HTML(_get_type_html(type)),
-            'description',
-            'price',
-            'auto_select_suboption'))
-
-        self.helper.add_layout(layout)
-        self.helper.form_tag = False
+    return field
 
 
-class DiscountOptionForm(forms.ModelForm):
+def option_form_factory(db_model, db_fields, layout_fields, type_raw, post_super_callback=None):
 
-    class Meta:
-        model = DiscountOption
-        fields = 'name', 'discount_suboption'
+    class OptionForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(DiscountOptionForm, self).__init__(*args, **kwargs)
+        class Meta:
+            model = db_model
+            fields = db_fields
 
-        if 'instance' in kwargs:
-            option_pk = kwargs['instance'].pk
-        else:
-            option_pk = 0
+            widgets = {
+                'description': forms.Textarea(attrs={'rows': 2}),
+            }
 
-        self.fields['discount_suboption'].queryset = SubOption.objects.filter(option__pk=option_pk)
+        def __init__(self, *args, **kwargs):
+            super(OptionForm, self).__init__(*args, **kwargs)
 
-        self.helper = S2FormHelper(horizontal=True)
+            if post_super_callback is not None:
+                post_super_callback(self, *args, **kwargs)
 
-        layout = S2Layout(S2Fieldset(None, 'name', HTML(_get_type_html('discount')), 'discount_suboption'))
+            instance = kwargs.get('instance', None)
+            fields = [_field_filter(field, type_raw, instance) for field in layout_fields]
 
-        self.helper.add_layout(layout)
-        self.helper.form_tag = False
+            self.helper = S2FormHelper(horizontal=True)
+
+            layout = S2Layout(S2Fieldset(
+                None,
+                *fields))
+
+            self.helper.add_layout(layout)
+            self.helper.form_tag = False
+
+        def save(self, *args, **kwargs):
+            commit = kwargs.get('commit', True)
+            kwargs['commit'] = False
+
+            instance = super(OptionForm, self).save(*args, **kwargs)
+            instance.type = type_raw
+
+            if commit:
+                instance.save()
+
+            return instance
+
+    return OptionForm
+
+
+def _auto_select_choice_post_super_callback(form, *args, **kwargs):
+    if 'instance' in kwargs:
+        option_pk = kwargs['instance'].pk
+    else:
+        option_pk = 0
+
+    form.fields['auto_select_suboption'].queryset = SubOption.objects.filter(option__pk=option_pk)
+
+UpdateAutoSelectChoiceOptionForm = option_form_factory(
+    AutoSelectChoiceOption,
+    ('name', 'description', 'auto_select_suboption'),
+    ('name', 'type', 'description', 'price', 'auto_select_suboption'),
+    'autoselectchoice',
+    post_super_callback=_auto_select_choice_post_super_callback
+)
+
+CreateAutoSelectChoiceOptionForm = option_form_factory(
+    AutoSelectChoiceOption,
+    ('name', 'description', 'price'),
+    ('name', 'type', 'description', 'price'),
+    'autoselectchoice',
+)
+
+
+def _discount_post_super_callback(form, *args, **kwargs):
+    if 'instance' in kwargs:
+        option_pk = kwargs['instance'].pk
+    else:
+        option_pk = 0
+
+    form.fields['discount_suboption'].queryset = SubOption.objects.filter(option__pk=option_pk)
+
+
+UpdateDiscountOptionForm = option_form_factory(
+    DiscountOption,
+    ('name', 'description', 'discount_suboption'),
+    ('name', 'type', 'description', 'discount_suboption'),
+    'discount',
+    post_super_callback=_discount_post_super_callback
+)
+
+CreateDiscountOptionForm = option_form_factory(
+    DiscountOption,
+    ('name', 'description'),
+    ('name', 'type', 'description'),
+    'discount'
+)
 
 
 class SubOptionForm(forms.ModelForm):
@@ -115,7 +139,7 @@ class SubOptionInlineFormset(BaseInlineFormSet):
 
     layout = S2Layout(
         S2Fieldset(None,
-                   'name', 'price', 'DELETE'))
+                   'name', 'price'))
 
     helper.add_layout(layout)
     helper.form_tag = False

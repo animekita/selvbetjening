@@ -1,10 +1,7 @@
 # coding=UTF-8
 
 """
-
-    Options
-    - A dynamic data model for events
-
+    Options - A dynamic data model for events
 
     The options system is used to extend an event with a data model unique to that event.
 
@@ -84,36 +81,43 @@
     In general, the rules are as follows:
 
     - Renaming titles and descriptions is allowed and will result in updates to existing invoices
-    - Changing prices is allowed and will result in updates to existing invoices
+    - The type can never be changed.
+    - The price can never be changed.
 
-    One particular challenging problem is price calculation, since the total price for an attendee is cached
-    in the database. This cached value is updated in three different ways:
+    Entire options can't be deleted.
+
+    One particular challenging problem is price calculation, since the total price for an attendee is aggregated
+    in the database. This aggregated value is updated in the following ways:
 
     1. By a global recalculation of all attendee prices
     2. By a local recalculation of a single attendee (if the attendee changes her selections)
-    3. By a global recalculation of attendee prices for a single option (if the price of an option is changed)
 
 
     TypeManagers
     ============
 
-    A type manager encodes a set of rules for a type, mostly related to the display and interaction with a type.
+    A type manager decides how a specific type is modified by the user. The type manager selects the widgets
+    used to modify the value in different scopes, and in turn how the interaction with those widgets translate
+    into values stored in the database.
 
-    In general, all types are represented with the same set of basic building blocks
-    - option with a price,
-    - suboptions with individual prices
-    - visibilty rules
-    - a bit of text associated with each selection
+    Isolation
+    =========
 
-    The type manager is allowed to decide the following:
+    In general, it is greatly encouraged to isolate each option. That is, avoid constructing options that rely on
+    other options. This is in principle possible, however one must take into account many processes modifying options
+    and the selection of options.
 
-    - Edit interface with the user and sadmin (widget)
-      - And saving values into the backing store from said widget
+    Isolating options makes it easier to reason about the effects of most actions.
+
+    In some cases it is necessary to have some inter-dependencies between options. It is suggested that such
+    inter-dependencies are enforced on a policy level for the event. E.g. if two options (an event-price and a
+    discount) needs to be the same, then the administrators must themselves ensure that the two are changed at the
+    same time.
+
+    TODO: Improve the infrastructure and processes to have clear guidelines/support for inter-dependencies.
 
 
 """
-from django.db.models import F
-from django.db.models.signals import post_save
 
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -212,7 +216,7 @@ class Option(models.Model):
     # Effects
 
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2,
-                                help_text=_('This option will automatically be visible in user invoices and at check-in if a non-zero price is set.<br/><strong>Updating the price will affect existing attendees, and you are strongly encuraged to inform all attendees of such a change by e-mail.</strong>'))
+                                help_text=_('This option will automatically be visible in user invoices and at check-in if a non-zero price is set. You can not modify the price if the option has been selected by an attendee.'))
 
     @property
     def selections(self):

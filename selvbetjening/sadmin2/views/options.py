@@ -151,6 +151,7 @@ def event_selections_manage(request, event_pk):
                       'option_groups': option_groups
                   })
 
+
 @sadmin_prerequisites
 def event_selections_create_group(request, event_pk):
 
@@ -176,6 +177,7 @@ def event_selections_create_group(request, event_pk):
                                context=context,
                                instance_save_callback=save_callback)
 
+
 @sadmin_prerequisites
 def event_selections_edit_group(request, event_pk, group_pk):
 
@@ -198,6 +200,7 @@ def event_selections_edit_group(request, event_pk, group_pk):
                                message_success=_('Option group saved'),
                                context=context,
                                instance=group)
+
 
 @sadmin_prerequisites
 def event_selections_create_option(request, event_pk, group_pk):

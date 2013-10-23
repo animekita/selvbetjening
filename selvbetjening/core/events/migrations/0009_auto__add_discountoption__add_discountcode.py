@@ -8,6 +8,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'DiscountOption'
+        db.create_table(u'events_discountoption', (
+            (u'option_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['events.Option'], unique=True, primary_key=True)),
+            ('discount_suboption', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.SubOption'], null=True, blank=True)),
+        ))
+        db.send_create_signal('events', ['DiscountOption'])
+
         # Adding model 'DiscountCode'
         db.create_table(u'events_discountcode', (
             ('discount_option', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['events.DiscountOption'])),
@@ -16,20 +23,13 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('events', ['DiscountCode'])
 
-        # Adding model 'DiscountOption'
-        db.create_table(u'events_discountoption', (
-            (u'option_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['events.Option'], unique=True, primary_key=True)),
-            ('discount_suboption', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['events.SubOption'], null=True, blank=True)),
-        ))
-        db.send_create_signal('events', ['DiscountOption'])
-
 
     def backwards(self, orm):
-        # Deleting model 'DiscountCode'
-        db.delete_table(u'events_discountcode')
-
         # Deleting model 'DiscountOption'
         db.delete_table(u'events_discountoption')
+
+        # Deleting model 'DiscountCode'
+        db.delete_table(u'events_discountcode')
 
 
     models = {

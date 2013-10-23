@@ -6,12 +6,8 @@
     <form method="POST" class="form-horizontal">
         {% crispy form %}
 
-        {% if formset %}
-            {% crispy formset %}
-        {% endif %}
-
     <div class="form-actions">
-        <input type="submit" name="update" value="Update" class="btn btn-primary  btn-lg" id="submit-id-update"/>
+        <input type="submit" name="create" value="Create" class="btn btn-primary  btn-lg" id="submit-id-create"/>
     </div>
 
     </form>
