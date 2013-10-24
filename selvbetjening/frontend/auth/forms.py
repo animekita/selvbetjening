@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout
 
-from frontend.base.forms import SFieldset
+from selvbetjening.frontend.base.forms import SFieldset
 
 
 class AuthenticationForm(BaseAuthenticationForm):

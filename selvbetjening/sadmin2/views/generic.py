@@ -2,7 +2,8 @@ from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from sadmin2.decorators import sadmin_prerequisites
+
+from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import filtering
 
 

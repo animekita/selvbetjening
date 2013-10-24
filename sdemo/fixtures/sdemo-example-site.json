@@ -1,0 +1,43 @@
+[
+{
+  "pk": 1, 
+  "model": "user.suser", 
+  "fields": {
+    "last_name": "", 
+    "is_superuser": true, 
+    "sex": "", 
+    "street": "", 
+    "phonenumber": null, 
+    "skype": "", 
+    "user_permissions": [], 
+    "jabber": "", 
+    "date_joined": "2013-10-24T13:33:47.626", 
+    "city": "", 
+    "first_name": "", 
+    "msn": "", 
+    "dateofbirth": null, 
+    "last_login": "2013-10-24T14:23:54.930", 
+    "send_me_email": false, 
+    "email": "example@example.org", 
+    "username": "admin", 
+    "picture": "", 
+    "is_active": true, 
+    "groups": [], 
+    "postalcode": null, 
+    "password": "pbkdf2_sha256$10000$TPtSj0boeqym$zYr/FPS1QMqwv03p3BE8JRE5REIF1Ge36lmVS2zG6+c=", 
+    "country": "DK", 
+    "is_staff": true
+  }
+},
+{
+  "pk": 1, 
+  "model": "members.userlocation", 
+  "fields": {
+    "lat": null, 
+    "timestamp": "2013-10-24T14:23:54.945", 
+    "lng": null, 
+    "expired": true, 
+    "user": 1
+  }
+}
+]

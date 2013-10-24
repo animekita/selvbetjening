@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from selvbetjening.core.events.models import Event
 
-import filtering
+from selvbetjening.sadmin2 import filtering
 
 
 class FilteringTestCase(TestCase):

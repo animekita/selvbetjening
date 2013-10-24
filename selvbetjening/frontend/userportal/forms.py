@@ -7,11 +7,11 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, HTML, Fieldset
 
-from frontend.base.forms import SFieldset
+from selvbetjening.frontend.base.forms import SFieldset
 
-from frontend.userportal.processor_handlers import extended_privacy_processors
-from frontend.userportal.models import UserPrivacy
-from frontend.utilities.forms import UsernameField
+from selvbetjening.frontend.userportal.processor_handlers import extended_privacy_processors
+from selvbetjening.frontend.userportal.models import UserPrivacy
+from selvbetjening.frontend.utilities.forms import UsernameField
 
 
 class ChangePasswordForm(BasePasswordChangeForm):

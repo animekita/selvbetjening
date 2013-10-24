@@ -14,6 +14,14 @@ INSTALLED_APPS.extend([
     'sdemo'
 ])
 
+# Fix, the sdemo fixtures dir is missing from the fixtures list? lets add it manually
+
+import os
+
+FIXTURE_DIRS = (
+    os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fixtures'),
+)
+
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/auth/log-in/'
 

@@ -17,7 +17,7 @@ class VerifyTestCase(TestCase):
 
     def test_valid_sessionid(self):
         user = EventDatabase.new_user(id='test')
-        self.client.login(username='test', password='test')
+        self.client.login_admin(username='test', password='test')
 
         auth_token = self.client.cookies.get(settings.SESSION_COOKIE_NAME).value
 
@@ -42,7 +42,7 @@ class InfoTestCase(TestCase):
 
     def test_info(self):
         user = EventDatabase.new_user(id='test')
-        self.client.login(username='test', password='test')
+        self.client.login_admin(username='test', password='test')
 
         auth_token = self.client.cookies.get(settings.SESSION_COOKIE_NAME).value
 
