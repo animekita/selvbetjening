@@ -1,4 +1,4 @@
-
+from selenium.common.exceptions import WebDriverException
 from splinter import Browser
 import urlparse
 
@@ -10,7 +10,11 @@ class UITestCase(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.wd = Browser()
+        try:
+            cls.wd = Browser('phantomjs')
+        except WebDriverException:
+            cls.wd = Browser()  # fall back to the default (firefox) if phantomjs is unavailable
+
         super(UITestCase, cls).setUpClass()
 
     @classmethod
