@@ -4,16 +4,17 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from selvbetjening.businesslogic.events.decorators import suspend_automatic_attendee_price_updates
 
 from selvbetjening.core.events.options.typemanager import type_manager_factory
-from selvbetjening.core.events.models import Event, AttendState, OptionGroup
+from selvbetjening.core.events.models import Event, AttendState, OptionGroup, Attend, Selection
 
 from selvbetjening.sadmin2.options.stypemanager import stype_manager_factory
-from selvbetjening.sadmin2.forms import OptionGroupForm, SelectOptionType
+from selvbetjening.sadmin2.forms import OptionGroupForm, SelectOptionType, SelectionTransferForm, SelectionTransferVerificationForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
-from generic import generic_create_view
+from generic import generic_create_view, apply_search_query
 
 
 @sadmin_prerequisites
@@ -277,3 +278,91 @@ def event_selections_edit_option(request, event_pk, group_pk, option_pk):
     view = stype_manager.get_update_view()
 
     return view(request, event, group, instance=option)
+
+
+@sadmin_prerequisites
+@suspend_automatic_attendee_price_updates
+def event_selections_transfer(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    verification_mode = False
+    selections = None
+
+    if request.method == 'POST':
+        form = SelectionTransferForm(request.POST, event=event)
+
+        if form.is_valid():
+
+            selections = Selection.objects.filter(option=form.cleaned_data['from_option'])
+
+            if len(form.cleaned_data['status']) > 0:
+                selections = selections.filter(attendee__state__in=form.cleaned_data['status'])
+
+            if form.cleaned_data['from_suboption'] is not None:
+                selections = selections.filter(suboption=form.cleaned_data['from_suboption'])
+
+            if 'verify' in request.POST:
+
+                attendees = []
+                to_option = form.cleaned_data['to_option']
+                to_suboption = form.cleaned_data['to_suboption']
+
+                for selection in selections:
+                    attendee = selection.attendee
+                    attendees.append(attendee)
+
+                    # delete old selection
+                    selection.delete()
+
+                    # select new selection
+                    new_selection, created = Selection.objects.get_or_create(
+                        attendee=attendee,
+                        option=to_option,
+                        suboption=to_suboption,
+                        defaults={
+                            'text': selection.text
+                        }
+                    )
+
+                    # update price
+                    attendee.price -= selection.price
+                    if created:
+                        attendee.price += new_selection.price
+                    attendee.save()
+
+                email = form.cleaned_data['email']
+
+                if email is not None:
+                    for attendee in attendees:
+                        email.send_email_attendee(attendee, 'sadmin.selections.transfer')
+
+                messages.success(request, _('Selections transferred'))
+                return HttpResponseRedirect(reverse('sadmin2:event_selections', kwargs={'event_pk': event.pk}))
+
+            else:
+                # show verification form
+                form = SelectionTransferVerificationForm(request.POST, event=event)
+                verification_mode = True
+
+    else:
+        form = SelectionTransferForm(event=event)
+
+    return render(
+        request,
+        'sadmin2/event/selections_transfer_step1.html',
+        {
+            'sadmin2_menu_main_active': 'events',
+            'sadmin2_breadcrumbs_active': 'event_selections_transfer',
+            'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+            'sadmin2_menu_tab_active': 'selections',
+
+            'event': event,
+            'selections': selections,
+            'verification_mode': verification_mode,
+
+            'form': form
+        }
+    )
+
+

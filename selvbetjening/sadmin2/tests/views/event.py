@@ -173,6 +173,17 @@ class EventTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_event_selections_transfer(self):
+
+        # TODO add much more detailed tests for selection transfer
+
+        url = reverse('sadmin2:event_selections_transfer', kwargs={
+            'event_pk': 2
+        })
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
     def test_event_selections_manage(self):
 
         # TODO test create anon group

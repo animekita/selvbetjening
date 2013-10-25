@@ -1,0 +1,52 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+    <script type="text/javascript">
+        function updateState() {
+            if ($('#transfer-enabler').prop('checked')) {
+                $('#transfer-submit').removeAttr('disabled');
+            } else {
+                $('#transfer-submit').attr('disabled', 'disabled');
+            }
+        }
+
+        $(function() {
+            $('#transfer-enabler').change(updateState);
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    {% if verification_mode %}
+        <form method="POST" class="form-inline">
+
+        <div class="jumbotron">
+            <h1>Transfer selections</h1>
+            <p>Transfer the selections of <strong>{{ selections.count }}</strong> attendees.</p>
+
+                <input id="transfer-submit" type="submit" disabled="disabled" class="btn btn-danger btn-lg" name="verify" value="Transfer selections" />
+                <div class="checkbox">
+                    <label>
+                        <input id="transfer-enabler" type="checkbox"> Yes, transfer the selections
+                    </label>
+                </div>
+        </div>
+
+            <div style="display: none;">
+            {% crispy form %}
+            </div>
+        </form>
+
+    {% else %}
+
+        {% crispy form %}
+
+    {% endif %}
+
+
+
+{% endblock %}

@@ -257,7 +257,7 @@ class SubOption(models.Model):
     class Meta:
         app_label = 'events'
 
-    option = models.ForeignKey(Option)
+    option = models.ForeignKey(Option, related_name='suboption_set')
 
     # Data model
 

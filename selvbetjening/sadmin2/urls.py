@@ -96,6 +96,9 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/selections/manage/$',
         views.options.event_selections_manage,
         name='event_selections_manage'),
+    url(r'^events/(?P<event_pk>[0-9]+)/selections/transfer/$',
+        views.options.event_selections_transfer,
+        name='event_selections_transfer'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/selections/group/create/$',
         views.options.event_selections_create_group,

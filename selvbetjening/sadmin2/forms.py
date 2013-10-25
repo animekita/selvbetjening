@@ -3,6 +3,7 @@ from decimal import Decimal
 from collections import OrderedDict
 
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
@@ -538,3 +539,92 @@ class AttendeesNewsletterFilterHidden(AttendeesNewsletterFilter):
         self.fields['options'].widget = forms.MultipleHiddenInput()
 
 
+class SelectionTransferForm(forms.Form):
+    STATUS_CHOICE = AttendState.get_choices()
+
+    status = forms.MultipleChoiceField(
+        label=_(u'Attendance status'),
+        choices=STATUS_CHOICE,
+        help_text=_(u'Only transfer attendees with this state. If blank then all attendees will be transferred regardless of their state.'),
+        required=False)
+
+    from_option = forms.ChoiceField(
+        label=_(u'From option'),
+        required=True)
+
+    to_option = forms.ChoiceField(
+        label=_(u'To option'),
+        required=True)
+
+    email = forms.ModelChoiceField(
+        EmailSpecification.objects.all(),
+        label=_(u'Notification e-mail to all attendees'),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event')
+        super(SelectionTransferForm, self).__init__(*args, **kwargs)
+
+        choices = []
+
+        for option in Option.objects.filter(group__event=event):
+
+            choices.append((option.pk, '%s - %s,-' % (option.name, option.price)))
+
+            for suboption in option.suboption_set.all():
+                choices.append((
+                    '%s-%s' % (option.pk, suboption.pk),
+                    '%s (%s) - %s,-' % (option.name, suboption.name, option.price + suboption.price))
+                )
+
+        self.fields['from_option'].choices = choices
+        self.fields['to_option'].choices = choices
+
+        self.helper = S2FormHelper(horizontal=False)
+
+        layout = S2Layout(
+            S2Fieldset(None,
+                'status', 'from_option', 'to_option', 'email'))
+
+        self.helper.add_layout(layout)
+        self.helper.add_input(S2Submit('transfer', _('Transfer')))
+
+    def clean_to_option(self):
+        pk = self.cleaned_data.get('to_option', None)
+
+        if pk is None:
+            raise ValidationError('Invalid choice selected')
+        elif '-' in pk:
+            option_pk, suboption_pk = pk.split('-')
+            self.cleaned_data['to_suboption'] = SubOption.objects.get(pk=suboption_pk)
+            return Option.objects.get(pk=option_pk)
+        else:
+            self.cleaned_data['to_suboption'] = None
+            return Option.objects.get(pk=pk)
+
+    def clean_from_option(self):
+        pk = self.cleaned_data.get('from_option', None)
+
+        if pk is None:
+            raise ValidationError('Invalid choice selected')
+        elif '-' in pk:
+            option_pk, suboption_pk = pk.split('-')
+            self.cleaned_data['from_suboption'] = SubOption.objects.get(pk=suboption_pk)
+            return Option.objects.get(pk=option_pk)
+        else:
+            self.cleaned_data['from_suboption'] = None
+            return Option.objects.get(pk=pk)
+
+
+class SelectionTransferVerificationForm(SelectionTransferForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SelectionTransferVerificationForm, self).__init__(*args, **kwargs)
+
+        self.fields['status'].widget = forms.MultipleHiddenInput()
+        self.fields['from_option'].widget = forms.HiddenInput()
+        self.fields['to_option'].widget = forms.HiddenInput()
+        self.fields['email'].widget = forms.HiddenInput()
+
+        self.helper.inputs.pop()

@@ -174,6 +174,12 @@ breadcrumbs = {
         'parent': 'event_selections'},
 
     # Assumes: context[event], kwargs[event_pk]
+    'event_selections_transfer':  {
+        'name': _('Transfer'),
+        'url_callback': url_callback('sadmin2:event_selections_transfer', ('event_pk',)),
+        'parent': 'event_selections'},
+
+    # Assumes: context[event], kwargs[event_pk]
     'event_selections_create_group':  {
         'name': _('Create Group'),
         'url_callback': url_callback('sadmin2:event_selections_create_group', ('event_pk',)),
