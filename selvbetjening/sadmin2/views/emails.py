@@ -175,6 +175,14 @@ def template_newsletter_users(request, template_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
 
+    if template_instance.template_context != 'user':
+        return render(request, 'sadmin2/generic/error.html',
+                      {
+                          'subject': _('Wrong template context:'),
+                          'message': _('This template is not using the user template context required by the user newsletter')
+                      },
+                      status=403)
+
     users = SUser.objects.filter(send_me_email=True)
 
     if request.method == 'POST':
@@ -200,25 +208,10 @@ def template_newsletter_users(request, template_pk):
                   })
 
 
-def _check_template_context(request, template_instance):
-    if not template_instance.template_context == 'attendee':
-        return render(request, 'sadmin2/generic/error.html',
-                      {
-                          'subject': _('Can\'t send event newsletter'),
-                          'message': _('This template is not using the attendee template context required by the event newsletter')
-                      })
-
-    return None
-
-
 @sadmin_prerequisites
 def template_newsletter_attendees(request, template_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
-
-    error = _check_template_context(request, template_instance)
-    if error is not None:
-        return error
 
     events = Event.objects.all()
 
@@ -241,10 +234,6 @@ def template_newsletter_attendees_step2(request, template_pk, event_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
     event = get_object_or_404(Event, pk=event_pk)
-
-    error = _check_template_context(request, template_instance)
-    if error is not None:
-        return error
 
     form = AttendeesNewsletterFilter(event=event)
 
@@ -270,10 +259,6 @@ def template_newsletter_attendees_step3(request, template_pk, event_pk):
 
     template_instance = get_object_or_404(EmailSpecification, pk=template_pk)
     event = get_object_or_404(Event, pk=event_pk)
-
-    error = _check_template_context(request, template_instance)
-    if error is not None:
-        return error
 
     form = AttendeesNewsletterFilterHidden(request.POST, event=event)
     assert form.is_valid()

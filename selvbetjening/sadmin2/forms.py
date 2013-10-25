@@ -360,9 +360,13 @@ class PasswordForm(forms.Form):
 
         return password2
 
-    def save(self):
+    def save(self, commit=True):
         self.instance.set_password(self.cleaned_data['password1'])
-        self.instance.save()
+
+        if commit:
+            self.instance.save()
+
+        return self.instance
 
 
 class GroupForm(forms.ModelForm):

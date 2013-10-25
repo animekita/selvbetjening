@@ -29,7 +29,7 @@ from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
-from generic import search_view
+from generic import search_view, generic_create_view
 
 
 @sadmin_prerequisites
@@ -67,28 +67,20 @@ def event_list_ajax(self, request, extra_context=None):
 @sadmin_prerequisites
 def event_create(request):
 
-    if request.method == 'POST':
-        form = EventForm(request.POST)
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'events_create',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
+        'sadmin2_menu_tab_active': 'events'
+    }
 
-        if form.is_valid():
-            event = form.save()
-            messages.add_message(request, messages.SUCCESS, _('Event created'))
-            return HttpResponseRedirect(reverse('sadmin2:event_attendees', kwargs={'event_pk': event.pk}))
-
-    else:
-        form = EventForm()
-
-    return render(request,
-                  'sadmin2/generic/form.html',
-                  {
-                      'sadmin2_menu_main_active': 'events',
-                      'sadmin2_breadcrumbs_active': 'events_create',
-                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
-                      'sadmin2_menu_tab_active': 'events_create',
-
-                      'form': form
-                  })
-
+    return generic_create_view(
+        request,
+        EventForm,
+        redirect_success_url_callback=lambda instance: reverse('sadmin2:event_attendees', kwargs={'event_pk': instance.pk}),
+        message_success=_('Event created'),
+        context=context
+    )
 
 @sadmin_prerequisites
 def register_payments(request):

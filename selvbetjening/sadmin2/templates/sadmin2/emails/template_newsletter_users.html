@@ -26,6 +26,7 @@
     <p>Send e-mails to all of <strong>{{ user_email_count }}</strong> users who have accepted to receive e-mail.</p>
 
     <form method="POST" class="form-inline">
+        {% csrf_token %}
         <input id="newsletter-submit" type="submit" disabled="disabled" class="btn btn-danger btn-lg" value="Send e-mails now" />
 
         <div class="checkbox">

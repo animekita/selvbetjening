@@ -274,18 +274,6 @@ breadcrumbs = {
     }
 }
 
-sadmin2_menu_main = (
-    {'id': 'events',
-     'name': _('Events'),
-     'url': 'sadmin2:events_list'},
-    {'id': 'users',
-     'name': _('Users'),
-     'url': 'sadmin2:users_list'},
-    {'id': 'emails',
-     'name': _('E-mails'),
-     'url': 'sadmin2:emails_templates'}
-)
-
 sadmin2_menu_tab_events = (
     {'id': 'events', 'name': _('Events'), 'url': 'sadmin2:events_list'},
     {'id': 'events_register_payments', 'name': _('Register Payment'), 'url': 'sadmin2:events_register_payments'}
@@ -426,17 +414,29 @@ sadmin2_menu_tab_template = (
             {
                 'id': 'send-newsletter-user',
                 'name': _('User Newsletter'),
-                'url_callback': url_callback('sadmin2:emails_template_newsletter_users', ('template_pk',))
+                'url_callback': url_callback('sadmin2:emails_template_newsletter_users', ('template_pk',)),
+                'hide': lambda context: context['template'].template_context == 'attendee'
             },
 
             {
                 'id': 'send-newsletter-attendees',
                 'name': _('Event Newsletter'),
                 'url_callback': url_callback('sadmin2:emails_template_newsletter_attendees', ('template_pk',)),
-                'hide': lambda context: context['template'].template_context != 'attendee'
             }
         )
     }
+)
+
+sadmin2_menu_main = (
+    {'id': 'users',
+     'name': _('Users'),
+     'url': 'sadmin2:users_list'},
+    {'id': 'events',
+     'name': _('Events'),
+     'url': 'sadmin2:events_list'},
+    {'id': 'emails',
+     'name': _('E-mails'),
+     'url': 'sadmin2:emails_templates'}
 )
 
 sadmin2_menu_manifest = {

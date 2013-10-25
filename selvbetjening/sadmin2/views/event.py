@@ -56,6 +56,7 @@ def event_overview(request, event_pk):
                       'status': status_flat
                   })
 
+
 @sadmin_prerequisites
 def event_attendees(request, event_pk):
 
@@ -378,6 +379,7 @@ def event_attendee(request, event_pk, attendee_pk):
                       'selections': selections
                   })
 
+
 @sadmin_prerequisites
 def event_attendee_payments(request, event_pk, attendee_pk):
 
@@ -387,40 +389,39 @@ def event_attendee_payments(request, event_pk, attendee_pk):
     payment_keys = request_attendee_pks_signal.send(None, attendee=attendee)
     payments = attendee.payment_set.all()
 
-    if request.method == 'POST':
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees_attendee_payments',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+        'sadmin2_menu_tab_active': 'payments',
 
-        form = PaymentForm(request.POST)
+        'event': event,
+        'attendee': attendee,
+        'payment_keys': payment_keys,
+        'payments': payments,
+    }
 
-        if form.is_valid():
+    def save_callback(payment):
+        payment.note = 'Manual payment'
+        payment.signee = request.user
+        payment.attendee = attendee
+        payment.user = attendee.user
+        payment.save()
 
-            payment = form.save(commit=False)
-            payment.note = 'Manual payment'
-            payment.signee = request.user
-            payment.attendee = attendee
-            payment.user = attendee.user
-            payment.save()
+    return generic_create_view(
+        request,
+        PaymentForm,
+        redirect_success_url=reverse('sadmin2:event_attendee_payments',
+                                     kwargs={
+                                         'event_pk': event.pk,
+                                         'attendee_pk': attendee.pk
+                                     }),
+        message_success=_('Payment registered'),
+        instance_save_callback=save_callback,
+        template='sadmin2/event/attendee_payments.html',
+        context=context
+    )
 
-            messages.success(request, _('Payment registered'))
-            return HttpResponseRedirect(reverse('sadmin2:event_attendee_payments', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}))
-
-    else:
-        form = PaymentForm()
-
-    return render(request,
-                  'sadmin2/event/attendee_payments.html',
-                  {
-                      'sadmin2_menu_main_active': 'events',
-                      'sadmin2_breadcrumbs_active': 'event_attendees_attendee_payments',
-                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
-                      'sadmin2_menu_tab_active': 'payments',
-
-                      'event': event,
-                      'attendee': attendee,
-                      'payment_keys': payment_keys,
-                      'payments': payments,
-
-                      'form': form
-                  })
 
 @sadmin_prerequisites
 def event_attendee_selections(request, event_pk, attendee_pk):

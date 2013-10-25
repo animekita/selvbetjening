@@ -49,27 +49,21 @@ def users_list(request):
 @sadmin_prerequisites
 def users_create(request):
 
-    if request.method == 'POST':
-        form = UserForm(request.POST)
+    context = {
+        'sadmin2_menu_main_active': 'users',
+        'sadmin2_breadcrumbs_active': 'users_create',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
+        'sadmin2_menu_tab_active': 'users'
+    }
 
-        if form.is_valid():
-            user = form.save()
-            messages.add_message(request, messages.SUCCESS, _('User created'))
-            return HttpResponseRedirect(reverse('sadmin2:user', kwargs={'user_pk': user.pk}))
-
-    else:
-        form = UserForm()
-
-    return render(request,
-                  'sadmin2/generic/form.html',
-                  {
-                      'sadmin2_menu_main_active': 'users',
-                      'sadmin2_breadcrumbs_active': 'users_create',
-                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-                      'sadmin2_menu_tab_active': 'users_create',
-
-                      'form': form
-                  })
+    return generic_create_view(
+        request,
+        UserForm,
+        redirect_success_url_callback=lambda instance: reverse('sadmin2:user', kwargs={'user_pk': instance.pk}),
+        message_success=_('User created'),
+        context=context,
+        template='sadmin2/generic/form.html'
+    )
 
 
 @sadmin_prerequisites

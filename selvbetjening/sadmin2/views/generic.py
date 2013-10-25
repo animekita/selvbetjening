@@ -19,7 +19,8 @@ def apply_search_query(qs, query, search_fields, condition_fields=None):
 @sadmin_prerequisites
 def generic_create_view(request,
                         form_class,
-                        redirect_success_url,
+                        redirect_success_url=None,
+                        redirect_success_url_callback=None,
                         message_success=None,
                         context=None,
                         instance=None,
@@ -34,17 +35,20 @@ def generic_create_view(request,
 
         if form.is_valid():
 
-            if instance_save_callback is None:
-                form.save()
+            commit = instance_save_callback is None
+            instance = form.save(commit=commit)
 
-            else:
-                instance = form.save(commit=False)
+            if not commit:
                 instance_save_callback(instance)
 
             if message_success is not None:
                 messages.success(request, message_success)
 
-            return HttpResponseRedirect(redirect_success_url)
+            if redirect_success_url is not None:
+                return HttpResponseRedirect(redirect_success_url)
+
+            if redirect_success_url_callback is not None:
+                return HttpResponseRedirect(redirect_success_url_callback(instance))
 
     else:
         form = form_class(**instance_kwarg)

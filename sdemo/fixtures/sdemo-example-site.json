@@ -1,13 +1,240 @@
 [
 {
   "pk": 1, 
+  "model": "events.event", 
+  "fields": {
+    "show_custom_signup_message": false, 
+    "startdate": null, 
+    "group": null, 
+    "description": "", 
+    "notify_on_registration": null, 
+    "title": "Simple Event", 
+    "tagline": "", 
+    "move_to_accepted_policy": "always", 
+    "show_custom_change_message": false, 
+    "notify_on_payment": null, 
+    "custom_change_message": "", 
+    "registration_open": false, 
+    "custom_status_page": "", 
+    "location_link": "", 
+    "maximum_attendees": 0, 
+    "notify_on_registration_update": null, 
+    "enddate": null, 
+    "show_custom_status_page": false, 
+    "custom_signup_message": "", 
+    "location": ""
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.event", 
+  "fields": {
+    "show_custom_signup_message": false, 
+    "startdate": null, 
+    "group": null, 
+    "description": "", 
+    "notify_on_registration": null, 
+    "title": "Complex Event", 
+    "tagline": "", 
+    "move_to_accepted_policy": "always", 
+    "show_custom_change_message": false, 
+    "notify_on_payment": null, 
+    "custom_change_message": "", 
+    "registration_open": false, 
+    "custom_status_page": "", 
+    "location_link": "", 
+    "maximum_attendees": 0, 
+    "notify_on_registration_update": null, 
+    "enddate": null, 
+    "show_custom_status_page": false, 
+    "custom_signup_message": "", 
+    "location": ""
+  }
+},
+{
+  "pk": 1,
+  "model": "events.attend",
+  "fields": {
+    "changed": null,
+    "price": "0",
+    "registration_date": "2013-10-25T14:13:14.223",
+    "is_new": true,
+    "paid": "0",
+    "change_timestamp": "2013-10-25T14:13:14.223",
+    "state": "accepted",
+    "user": 2,
+    "event": 1
+  }
+},
+{
+  "pk": 2,
+  "model": "events.attend",
+  "fields": {
+    "changed": null,
+    "price": "300",
+    "registration_date": "2013-10-25T14:36:13.731",
+    "is_new": false,
+    "paid": "0",
+    "change_timestamp": "2013-10-25T14:36:13.730",
+    "state": "accepted",
+    "user": 2,
+    "event": 2
+  }
+},
+{
+  "pk": 1, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:13:14.227", 
+    "state": "accepted", 
+    "attendee": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:27:20.484", 
+    "state": "attended", 
+    "attendee": 1
+  }
+},
+{
+  "pk": 3, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:27:21.764", 
+    "state": "accepted", 
+    "attendee": 1
+  }
+},
+{
+  "pk": 4, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:27:48.117", 
+    "state": "attended", 
+    "attendee": 1
+  }
+},
+{
+  "pk": 5, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:27:48.918", 
+    "state": "accepted", 
+    "attendee": 1
+  }
+},
+{
+  "pk": 6, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-25T14:36:13.735", 
+    "state": "accepted", 
+    "attendee": 2
+  }
+},
+{
+  "pk": 1, 
+  "model": "events.optiongroup", 
+  "fields": {
+    "gatekeeper": null, 
+    "description": "", 
+    "minimum_selected": 0, 
+    "is_special": true, 
+    "package_price": "0", 
+    "event": 2, 
+    "maximum_selected": 0, 
+    "order": -100, 
+    "name": ""
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.optiongroup", 
+  "fields": {
+    "gatekeeper": null, 
+    "description": "", 
+    "minimum_selected": 0, 
+    "is_special": false, 
+    "package_price": "0", 
+    "event": 2, 
+    "maximum_selected": 0, 
+    "order": 0, 
+    "name": "Swag"
+  }
+},
+{
+  "pk": 1, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": false, 
+    "group": 1, 
+    "name": "Event Ticket", 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_view_manage": false, 
+    "in_scope_view_user_invoice": true, 
+    "price": "300", 
+    "in_scope_edit_manage_waiting": false, 
+    "in_scope_edit_manage_attended": false, 
+    "in_scope_edit_registration": false, 
+    "in_scope_view_public": false, 
+    "type": "autoselect", 
+    "order": 0, 
+    "in_scope_view_registration": false, 
+    "description": ""
+  }
+},
+{
+  "pk": 1, 
+  "model": "events.selection", 
+  "fields": {
+    "text": "", 
+    "attendee": 2, 
+    "suboption": null, 
+    "option": 1
+  }
+},
+{
+  "pk": 1, 
+  "model": "mailcenter.emailspecification", 
+  "fields": {
+    "body": "Some content", 
+    "body_format": "markdown", 
+    "template_context": "attendee", 
+    "date_created": "2013-10-25", 
+    "subject": "Attendee e-mail"
+  }
+},
+{
+  "pk": 2, 
+  "model": "mailcenter.emailspecification", 
+  "fields": {
+    "body": "...", 
+    "body_format": "markdown", 
+    "template_context": "user", 
+    "date_created": "2013-10-25", 
+    "subject": "User e-mail"
+  }
+},
+{
+  "pk": 1, 
+  "model": "auth.group", 
+  "fields": {
+    "name": "User Group", 
+    "permissions": []
+  }
+},
+{
+  "pk": 1, 
   "model": "user.suser", 
   "fields": {
     "last_name": "", 
     "is_superuser": true, 
     "sex": "", 
     "street": "", 
-    "phonenumber": null, 
+    "phonenumber": "", 
     "skype": "", 
     "user_permissions": [], 
     "jabber": "", 
@@ -16,8 +243,8 @@
     "first_name": "", 
     "msn": "", 
     "dateofbirth": null, 
-    "last_login": "2013-10-24T14:23:54.930", 
-    "send_me_email": false, 
+    "last_login": "2013-10-25T13:57:20.097", 
+    "send_me_email": true, 
     "email": "example@example.org", 
     "username": "admin", 
     "picture": "", 
@@ -30,14 +257,55 @@
   }
 },
 {
+  "pk": 2, 
+  "model": "user.suser", 
+  "fields": {
+    "last_name": "", 
+    "is_superuser": false, 
+    "sex": "", 
+    "street": "", 
+    "phonenumber": "", 
+    "skype": "", 
+    "user_permissions": [], 
+    "jabber": "", 
+    "date_joined": "2013-10-25T14:12:57.075", 
+    "city": "", 
+    "first_name": "", 
+    "msn": "", 
+    "dateofbirth": null, 
+    "last_login": "2013-10-25T14:12:57.075", 
+    "send_me_email": true, 
+    "email": "", 
+    "username": "user1", 
+    "picture": "", 
+    "is_active": true, 
+    "groups": [], 
+    "postalcode": null, 
+    "password": "", 
+    "country": "DK", 
+    "is_staff": false
+  }
+},
+{
   "pk": 1, 
   "model": "members.userlocation", 
   "fields": {
     "lat": null, 
-    "timestamp": "2013-10-24T14:23:54.945", 
+    "timestamp": "2013-10-25T16:51:32.847", 
     "lng": null, 
     "expired": true, 
     "user": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "members.userlocation", 
+  "fields": {
+    "lat": null, 
+    "timestamp": "2013-10-25T16:51:42.427", 
+    "lng": null, 
+    "expired": true, 
+    "user": 2
   }
 }
 ]

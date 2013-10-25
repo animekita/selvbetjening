@@ -47,7 +47,7 @@ def user_password(request, user_pk):
 
     return generic_create_view(request,
                                PasswordForm,
-                               reverse('sadmin2:user_password', kwargs={'user_pk': user.pk}),
+                               redirect_success_url=reverse('sadmin2:user_password', kwargs={'user_pk': user.pk}),
                                message_success=_('Password updated'),
                                context=context,
                                instance=user)
