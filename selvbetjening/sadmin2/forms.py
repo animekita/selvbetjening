@@ -157,11 +157,22 @@ class AttendeeFormattingForm(forms.Form):
 
             line_groups[option.pk] = self.LineGroup(option.name, option.price)
 
+            for suboption in option.suboptions:
+                line_groups['%s-%s' % (option.pk, suboption.pk)] = self.LineGroup('%s (%s)' % (
+                    option.name,
+                    suboption.name
+                ), option.price + suboption.price)
+
         pks = [attendee.pk for attendee in self.attendees.all()]
 
         for selection in Selection.objects.filter(attendee__pk__in=pks).select_related('option', 'attendee'):
             if selection.option.pk in line_groups:
-                line_groups[selection.option.pk].add(selection.attendee)
+
+                if selection.suboption is None:
+                    line_groups[selection.option.pk].add(selection.attendee)
+
+                else:
+                    line_groups['%s-%s' % (selection.option.pk, selection.suboption.pk)].add(selection.attendee)
 
         total = sum_attendee_payment_status(self.attendees)
 

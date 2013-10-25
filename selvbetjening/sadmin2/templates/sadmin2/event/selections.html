@@ -33,7 +33,7 @@
          </tr>
          <tbody>
 
-         {% for option, count, waiting, accepted, attended in options %}
+         {% for option, suboptions, count, waiting, accepted, attended in options %}
          <tr>
            <td>{{ option.name }}</td>
            <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__option__pk={{ option.pk }} :state=waiting">{{waiting}}</a></td>
@@ -41,6 +41,16 @@
            <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__option__pk={{ option.pk }} :state=attended">{{attended}}</a></td>
            <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__option__pk={{ option.pk }}">{{count}}</a></td>
          </tr>
+
+             {% for suboption, count, waiting, accepted, attended in suboptions %}
+                 <tr>
+                     <td><i class="fa fa-angle-right"></i> <i>{{ suboption.name }}</i></td>
+                     <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__suboption__pk={{ suboption.pk }} :state=waiting">{{waiting}}</a></td>
+                     <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__suboption__pk={{ suboption.pk }} :state=accepted">{{accepted}}</a></td>
+                     <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__suboption__pk={{ suboption.pk }} :state=attended">{{attended}}</a></td>
+                     <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:selection__suboption__pk={{ suboption.pk }}">{{count}}</a></td>
+                 </tr>
+             {% endfor %}
          {% endfor %}
 
          </tbody>

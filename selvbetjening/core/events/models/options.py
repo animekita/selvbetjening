@@ -268,6 +268,10 @@ class SubOption(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2,
                                 blank=True, null=True, default=None)
 
+    @property
+    def selections(self):
+        return Selection.objects.filter(suboption=self)
+
     def __unicode__(self):
         return u'%s' % self.name
 

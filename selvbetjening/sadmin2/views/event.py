@@ -63,7 +63,7 @@ def event_attendees(request, event_pk):
     event = get_object_or_404(Event, pk=event_pk)
 
     columns = ('user__username', 'user__first_name', 'user__last_name', 'user__email')
-    conditions = ('selection__option__pk', 'state')
+    conditions = ('selection__option__pk', 'selection__suboption__pk', 'state')
 
     queryset = event.attendees.select_related('user').all()
 

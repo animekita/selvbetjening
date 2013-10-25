@@ -31,7 +31,16 @@ def event_selections(request, event_pk):
             waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
             accepted = option.selections.filter(attendee__state=AttendState.accepted).count()
             attended = option.selections.filter(attendee__state=AttendState.attended).count()
-            options.append((option, count, waiting, accepted, attended))
+
+            suboptions = []
+            for suboption in option.suboptions:
+                scount = suboption.selections.count()
+                swaiting = suboption.selections.filter(attendee__state=AttendState.waiting).count()
+                saccepted = suboption.selections.filter(attendee__state=AttendState.accepted).count()
+                sattended = suboption.selections.filter(attendee__state=AttendState.attended).count()
+                suboptions.append((suboption, scount, swaiting, saccepted, sattended))
+
+            options.append((option, suboptions, count, waiting, accepted, attended))
 
         option_groups.append((option_group, options))
 

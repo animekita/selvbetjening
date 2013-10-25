@@ -12,7 +12,12 @@
             {% endifchanged %}
 
             <tr>
-                <td>{{option.name}}</td><td>{{selection.price}},-</td>
+                <td>
+                    {{selection.option.name}}{% if selection.suboption %} ({{ selection.suboption.name }}){% endif %}
+                </td>
+                <td>
+                    {{selection.price}},-
+                </td>
             </tr>
 
         {% endif %}

@@ -75,56 +75,7 @@
 
         <h2>Kvittering</h2>
 
-        <table class="table">
-
-        {% for option, selection in selections %}
-        {% if selection %}
-
-            {% ifchanged option.group.name %}
-            {% if option.group.name %}
-            <tr>
-                <th colspan="2">{{ option.group.name }}</th>
-            </tr>
-            {% endif %}
-            {% endifchanged %}
-
-            <tr>
-                <td>{{option.name}}</td><td>{{selection.price}},-</td>
-            </tr>
-
-        {% endif %}
-        {% endfor %}
-
-            <tr>
-            <td colspan="2"></td>
-            </tr>
-
-            <tr>
-                <th>Total:</th><th>{{attendee.price}},-</th>
-            </tr>
-            <tr>
-                <th>Heraf betalt:</th><th>{{attendee.paid}},-</th>
-            </tr>
-
-            {% if attendee.in_balance %}
-            <tr class="success">
-                <th colspan="2">Denne invoice er betalt</th>
-            </tr>
-            {% endif %}
-
-            {% if not attendee.is_paid %}
-            <tr class="danger">
-                <th>Total til betaling:</th><th>{{attendee.unpaid}},-</th>
-            </tr>
-            {% endif %}
-
-            {% if attendee.is_overpaid %}
-            <tr class="danger">
-                <th>Total til udbetaling:</th><th>{{attendee.overpaid}},-</th>
-            </tr>
-            {% endif %}
-
-        </table>
+        {% include "events/parts/invoice.html" with invoice=selections %}
 
     </div>
 
