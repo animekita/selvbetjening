@@ -19,6 +19,25 @@
       }
     },
     {
+      "pk": 2,
+      "model": "events.event",
+      "fields": {
+        "show_custom_signup_message": false,
+        "startdate": null,
+        "group": null,
+        "description": "Description 1",
+        "move_to_accepted_policy": "always",
+        "title": "Event 2",
+        "show_custom_change_message": false,
+        "registration_open": true,
+        "custom_status_page": "",
+        "custom_change_message": "",
+        "enddate": null,
+        "show_custom_status_page": false,
+        "custom_signup_message": ""
+      }
+    },
+    {
         "pk": 1,
         "model": "user.suser",
         "fields": {
@@ -81,6 +100,21 @@
             "name": "",
             "description": "",
             "order": 1,
+            "minimum_selected": 0,
+            "maximum_selected": 0,
+            "gatekeeper": null,
+            "package_price": 0,
+            "is_special": false
+        }
+    },
+    {
+        "pk": 3,
+        "model": "events.optionGroup",
+        "fields": {
+            "event": 2,
+            "name": "",
+            "description": "",
+            "order": 0,
             "minimum_selected": 0,
             "maximum_selected": 0,
             "gatekeeper": null,
@@ -175,6 +209,222 @@
             "in_scope_edit_registration": true,
             "in_scope_edit_manage_waiting": true,
             "in_scope_edit_manage_accepted": true,
+            "in_scope_edit_manage_attended": true,
+
+            "price": 0
+        }
+    },
+    {
+        "pk": 5,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": true,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 6,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": true,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+         {
+        "pk": 7,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": true,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 8,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": true,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 9,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": true,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 10,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": true,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 11,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": true,
+            "in_scope_edit_manage_accepted": false,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 12,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": true,
+            "in_scope_edit_manage_attended": false,
+
+            "price": 0
+        }
+    },
+        {
+        "pk": 13,
+        "model": "events.option",
+        "fields": {
+            "group": 3,
+            "name": "option 5",
+            "description": "",
+            "order": 0,
+            "type": "boolean",
+
+            "in_scope_view_public": false,
+            "in_scope_view_registration": false,
+            "in_scope_view_manage": false,
+            "in_scope_view_user_invoice": false,
+            "in_scope_view_system_invoice": false,
+
+            "in_scope_edit_registration": false,
+            "in_scope_edit_manage_waiting": false,
+            "in_scope_edit_manage_accepted": false,
             "in_scope_edit_manage_attended": true,
 
             "price": 0

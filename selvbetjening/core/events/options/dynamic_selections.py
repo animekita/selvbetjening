@@ -2,7 +2,8 @@
 from collections import OrderedDict
 
 from django import forms
-from django.db.models import Count
+from django.db.models import Count, Q
+import operator
 
 from selvbetjening.core.events.options.scope import SCOPE
 from selvbetjening.core.events.options.typemanager import type_manager_factory
@@ -52,7 +53,18 @@ def _dynamic_selections(scope, event, attendee=None, option_group=None, as_dict=
     options = Option.objects.filter(group__event=event).select_related('group')
 
     if not scope == SCOPE.SADMIN:
-        options = options.filter(**{scope: True})
+        scope_filters = [Q(**{scope: True})]
+
+        if scope == SCOPE.EDIT_MANAGE_WAITING or \
+           scope == SCOPE.EDIT_MANAGE_ACCEPTED or \
+           scope == SCOPE.EDIT_MANAGE_ATTENDED:
+
+            scope_filters.append(Q(in_scope_view_manage=True))
+
+        if scope == SCOPE.EDIT_REGISTRATION:
+            scope_filters.append(Q(in_scope_view_registration=True))
+
+        options = options.filter(reduce(operator.or_, scope_filters))  # Creates Q(..) | Q(..) | Q(..)
 
     if option_group is not None:
         options = options.filter(group=option_group)
@@ -131,11 +143,19 @@ def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
     def iter(self):
         return self.instances.__iter__()
 
+    def len(self):
+        return self.instances.__len__()
+
+    def getitem(self, key):
+        return self.instances[key]
+
     fields = {
         '__init__': init,
         'save': save,
         'is_valid': is_valid,
-        '__iter__': iter
+        '__iter__': iter,
+        '__len__': len,
+        '__getitem__': getitem
     }
 
     return type('OptionGroupSelectionsFormSet', (object,), fields)
@@ -174,7 +194,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
             for field_id, type_widget in self.type_widgets.items():
 
                 if not self.type_widgets[field_id].is_editable(self.attendee):
-                    self.fields[field_id].widget.attrs['readonly'] = True
+                    self.fields[field_id].widget.attrs['disabled'] = "disabled"
 
     def save(self, *args, **kwargs):
         attendee = kwargs.pop('attendee', self.attendee)
@@ -193,7 +213,8 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         'save_callbacks': {},
         '__init__': init,
         'save': save,
-        'type_widgets': {}
+        'type_widgets': {},
+        'readonly': {}
     }
 
     if helper_factory is not None:
@@ -205,8 +226,14 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         field_id = _pack_id('option', option.pk)
 
         fields[field_id] = widget.get_field()
-        fields['clean_%s' % field_id] = clean_callback(field_id, widget.clean_callback)
-        fields['save_callbacks'][field_id] = widget.save_callback
+
+        if scope == SCOPE.SADMIN or getattr(option, scope):  # The edit scope bit is set
+            fields['clean_%s' % field_id] = clean_callback(field_id, widget.clean_callback)
+            fields['save_callbacks'][field_id] = widget.save_callback
+        else:  # The edit bit is not set, this is a view only option
+            fields['clean_%s' % field_id] = lambda self: None
+            fields['save_callbacks'][field_id] = lambda attendee, value: None
+            fields[field_id].widget.attrs['disabled'] = 'disabled'
 
         fields['type_widgets'][field_id] = widget
 

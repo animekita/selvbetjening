@@ -76,7 +76,7 @@ def event_register(request,
         extra_context = {}
 
     EventSelectionFormSet = dynamic_selections_formset_factory(
-        SCOPE.VIEW_REGISTRATION,
+        SCOPE.EDIT_REGISTRATION,
         event,
         helper_factory=attendee_selection_helper_factory
     )
@@ -143,9 +143,15 @@ def event_status_update(request, event):
 
     attendee = Attend.objects.get(user=request.user, event=event)
 
-    # TODO select an appropriate scope
+    if attendee.state == AttendState.waiting:
+        scope = SCOPE.EDIT_MANAGE_WAITING
+    elif attendee.state == AttendState.accepted:
+        scope = SCOPE.EDIT_MANAGE_ACCEPTED
+    else:
+        scope = SCOPE.EDIT_MANAGE_ATTENDED
+
     EventSelectionFormSet = dynamic_selections_formset_factory(
-        SCOPE.VIEW_MANAGE,
+        scope,
         event,
         helper_factory=attendee_selection_helper_factory
     )

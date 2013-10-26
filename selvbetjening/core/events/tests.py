@@ -5,7 +5,7 @@ from django.test import TestCase
 from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.models import Attend, Event, OptionGroup
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_form_factory, _pack_id, SCOPE, \
-    dynamic_selections
+    dynamic_selections, dynamic_selections_formset_factory
 
 import models
 
@@ -106,7 +106,7 @@ class DynamicSelectionsTestCase(TestCase):
         attendee = Attend.objects.all()[0]
 
         self.assertEqual(len(dynamic_selections(SCOPE.VIEW_REGISTRATION, attendee)), 4)
-        self.assertEqual(len(dynamic_selections(SCOPE.EDIT_REGISTRATION, attendee)), 3)
+        self.assertEqual(len(dynamic_selections(SCOPE.EDIT_REGISTRATION, attendee)), 4)
 
     def test_ordering(self):
 
@@ -282,3 +282,50 @@ class FormBuilderTestCase(TestCase):
         self.assertIsNotNone(selection)
         self.assertIsNotNone(selection.suboption)
         self.assertEqual(selection.suboption.pk, 1)
+
+    def test_option_scope(self):
+
+        event = Event.objects.filter(pk=2)
+
+        # Tests visibility in the different edit scopes.
+        # The event has one group and 9 options, one for each possible visibility bit
+
+        # SCOPE: SADMIN - all visible
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
+        form = OptionGroupSelectionsFormSet()
+
+        self.assertEqual(len(form), 1)
+        self.assertEqual(len(form[0].fields), 9)
+
+        # SCOPE: EDIT_MANAGE_WAITING - show in_scope_edit_manage_waiting and in_scope_view_manage (readonly)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_WAITING, event)
+        form = OptionGroupSelectionsFormSet()
+
+        self.assertEqual(len(form), 1)
+        self.assertEqual(len(form[0].fields), 2)
+
+        # SCOPE: EDIT_MANAGE_ACCEPTED
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_ACCEPTED, event)
+        form = OptionGroupSelectionsFormSet()
+
+        self.assertEqual(len(form), 1)
+        self.assertEqual(len(form[0].fields), 2)
+
+        # SCOPE: EDIT_MANAGE_ATTENDED
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_ATTENDED, event)
+        form = OptionGroupSelectionsFormSet()
+
+        self.assertEqual(len(form), 1)
+        self.assertEqual(len(form[0].fields), 2)
+
+        # SCOPE: EDIT_REGISTRATION
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+        form = OptionGroupSelectionsFormSet()
+
+        self.assertEqual(len(form), 1)
+        self.assertEqual(len(form[0].fields), 2)
