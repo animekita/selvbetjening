@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    depends_on = (
+        ("members", "0006_inline_communication_data"),
+    )
+
     def forwards(self, orm):
 
         for old_u in orm['auth.User'].objects.all():
