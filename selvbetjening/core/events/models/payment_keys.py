@@ -3,7 +3,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import Signal
 
-from attendee import Attend
+from selvbetjening.core.events.models.attendee import Attend
 
 request_attendee_pks_signal = Signal(providing_args=['attendee'])
 find_attendee_signal = Signal(providing_args=['pk'])
