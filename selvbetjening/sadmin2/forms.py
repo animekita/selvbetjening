@@ -162,7 +162,7 @@ class AttendeeFormattingForm(forms.Form):
                 line_groups['%s-%s' % (option.pk, suboption.pk)] = self.LineGroup('%s (%s)' % (
                     option.name,
                     suboption.name
-                ), option.price + suboption.price)
+                ), option.price + suboption.price if suboption.price is not None else 0)
 
         pks = [attendee.pk for attendee in self.attendees.all()]
 
