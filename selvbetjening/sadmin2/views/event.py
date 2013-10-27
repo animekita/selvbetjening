@@ -13,7 +13,8 @@ from django.db.models import Count
 from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
 from selvbetjening.core.events.utils import sum_attendee_payment_status
-from selvbetjening.core.events.models import Event, Attend, AttendState, Payment, request_attendee_pks_signal
+from selvbetjening.core.events.models import Event, Attend, AttendState, Payment
+from selvbetjening.core.events.signals import request_attendee_pks_signal
 
 from selvbetjening.sadmin2 import graph
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, PaymentForm, \
