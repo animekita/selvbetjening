@@ -11,11 +11,9 @@ from event import Event, Group
 from attendee import Attend, AttendState, AttendeeComment, AttendStateChange, AttendeeAcceptPolicy
 from options import OptionGroup, Option, SubOption, Selection
 from payment import Payment
-from payment_keys import request_attendee_pks_signal, find_attendee_signal
 
 __ALL__ = ['Group', 'Event', 'Attend', 'OptionGroup', 'Option', 'SubOption', 'Selection', 'AttendComment',
-           'AttendState', 'AttendStateChange', 'request_attendee_pks_signal', 'find_attendee_signal',
-           'suspend_price_updates', 'resume_price_updates']
+           'AttendState', 'AttendStateChange', 'suspend_price_updates', 'resume_price_updates']
 
 # Global update modes
 # This is used to disable automatic updates of attendee prices
@@ -73,3 +71,55 @@ def update_paid_and_update_state_on_payment(sender, **kwargs):
             attendee.state = AttendState.accepted
             attendee.save()
 
+# Payment keys
+
+from selvbetjening.core.events import signals
+
+
+@receiver(signals.request_attendee_pks_signal, dispatch_uid='basic_pks_handler')
+def basic_pks_handler(sender, **kwargs):
+    attendee = kwargs['attendee']
+    return 'Attendee ID', str(attendee.pk)
+
+
+@receiver(signals.find_attendee_signal, dispatch_uid='basic_find_attendee_handler')
+def basic_find_attendee_handler(sender, **kwargs):
+
+    try:
+        pk = int(kwargs['pk'])
+        return 'Attendee ID', Attend.objects.get(pk=pk)
+
+    except:
+        return None
+
+
+@receiver(signals.request_attendee_pks_signal, dispatch_uid='eua_pks_handler')
+def eua_pks_handler(sender, **kwargs):
+    attendee = kwargs['attendee']
+    key = 'EUA.%s.%s.%s' % (attendee.event.pk,
+                            attendee.user.pk,
+                            attendee.pk)
+
+    return 'EUA ID', key
+
+
+@receiver(signals.find_attendee_signal, dispatch_uid='eua_find_attendee_handler')
+def eua_find_attendee_handler(sender, **kwargs):
+
+    pk = kwargs['pk']
+
+    try:
+        label, event_pk, user_pk, attendee_pk = pk.split('.')
+
+        if label != 'EUA':
+            return None
+
+        attendee = Attend.objects.get(
+            pk=attendee_pk,
+            user__pk=user_pk,
+            event__pk=event_pk)
+
+        return 'EUA', attendee
+
+    except:
+        return None
