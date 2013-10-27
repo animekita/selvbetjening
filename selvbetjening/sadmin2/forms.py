@@ -16,7 +16,8 @@ from selvbetjening.core.events.models import Selection, Attend, SubOption
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
-from selvbetjening.core.events.models import Event, AttendState, find_attendee_signal, OptionGroup, Option, \
+from selvbetjening.core.events.signals import find_attendee_signal
+from selvbetjening.core.events.models import Event, AttendState, OptionGroup, Option, \
     AttendeeComment, Payment
 
 from selvbetjening.frontend.utilities.forms import *
