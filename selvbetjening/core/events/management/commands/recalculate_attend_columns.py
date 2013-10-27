@@ -1,11 +1,10 @@
 
 from django.core.management.base import NoArgsCommand
 
-from selvbetjening.core.events.models import Attend
-
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
+        from selvbetjening.core.events.models import Attend
 
         attendees = Attend.objects.select_related().prefetch_related('selection_set')
 
