@@ -3,8 +3,6 @@
 from django.dispatch import receiver
 from django.db.models.signals import Signal
 
-from selvbetjening.core.events.models.attendee import Attend
-
 request_attendee_pks_signal = Signal(providing_args=['attendee'])
 find_attendee_signal = Signal(providing_args=['pk'])
 
@@ -17,6 +15,8 @@ def basic_pks_handler(sender, **kwargs):
 
 @receiver(find_attendee_signal)
 def basic_find_attendee_handler(sender, **kwargs):
+    from selvbetjening.core.events.models.attendee import Attend
+
     try:
         pk = int(kwargs['pk'])
         return 'Attendee ID', Attend.objects.get(pk=pk)
@@ -37,6 +37,8 @@ request_attendee_pks_signal.connect(eua_pks_handler)
 
 
 def eua_find_attendee_handler(sender, **kwargs):
+    from selvbetjening.core.events.models.attendee import Attend
+    
     pk = kwargs['pk']
 
     try:
