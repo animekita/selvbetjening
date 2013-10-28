@@ -3,12 +3,14 @@
 import datetime
 import time
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
+from selvbetjening.core.members.models import UserLocation
 
 from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
@@ -23,6 +25,7 @@ from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
 from generic import generic_create_view, search_view
+from selvbetjening.sadmin2.views.reports import insecure_reports_address, insecure_reports_age
 
 
 @sadmin_prerequisites
@@ -298,6 +301,48 @@ def report_registration(request, event_pk):
 
 
 @sadmin_prerequisites
+def report_age(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_report_age',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'reports',
+
+        'event': event
+    }
+
+    return insecure_reports_age(
+        request,
+        SUser.objects.filter(attend__event=event),
+        extra_context=context
+    )
+
+
+@sadmin_prerequisites
+def report_address(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_report_address',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'reports',
+
+        'event': event
+    }
+
+    return insecure_reports_address(
+        request,
+        UserLocation.objects.filter(user__attend__event=event),
+        extra_context=context
+    )
+
+
+@sadmin_prerequisites
 def event_attendees_add(request, event_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
@@ -462,6 +507,7 @@ def event_attendee_selections(request, event_pk, attendee_pk):
                       'formset': formset
                   })
 
+
 @sadmin_prerequisites
 def event_attendee_notes(request, event_pk, attendee_pk):
 
@@ -493,3 +539,4 @@ def event_attendee_notes(request, event_pk, attendee_pk):
                                instance_save_callback=save_callback,
                                template='sadmin2/event/attendee_notes.html'
                                )
+

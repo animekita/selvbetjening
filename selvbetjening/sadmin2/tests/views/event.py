@@ -284,3 +284,21 @@ class EventTestCase(TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_event_report_age(self):
+
+        url = reverse('sadmin2:event_report_age', kwargs={
+            'event_pk': 2
+        })
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_report_address(self):
+
+        url = reverse('sadmin2:event_report_address', kwargs={
+            'event_pk': 2
+        })
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

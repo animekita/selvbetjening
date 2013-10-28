@@ -222,6 +222,18 @@ breadcrumbs = {
         'url_callback': url_callback('sadmin2:event_report_check_in', ('event_pk',)),
         'parent': 'event'},
 
+    # Assumes: context[event], kwargs[event_pk]
+    'event_report_age':  {
+        'name': _('Attendee age'),
+        'url_callback': url_callback('sadmin2:event_report_age', ('event_pk',)),
+        'parent': 'event'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_report_address':  {
+        'name': _('Attendee addresses'),
+        'url_callback': url_callback('sadmin2:event_report_address', ('event_pk',)),
+        'parent': 'event'},
+
     'emails': {
         'name': _('E-mails')
     },
@@ -369,7 +381,15 @@ sadmin2_menu_tab_event = (
 
          {'id': 'reports-checkin-history',
           'name': _('Check-in history'),
-          'url_callback': url_callback('sadmin2:event_report_check_in', ('event_pk',))}
+          'url_callback': url_callback('sadmin2:event_report_check_in', ('event_pk',))},
+
+         {'id': 'reports-age',
+          'name': _('Attendee age'),
+          'url_callback': url_callback('sadmin2:event_report_age', ('event_pk',))},
+
+         {'id': 'reports-address',
+          'name': _('Attendee address'),
+          'url_callback': url_callback('sadmin2:event_report_address', ('event_pk',))}
 
      )},
 

@@ -123,7 +123,12 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/reports/registration/$',
         views.event.report_registration,
         name='event_report_registration'),
-
+    url(r'^events/(?P<event_pk>[0-9]+)/reports/age/$',
+        views.event.report_age,
+        name='event_report_age'),
+    url(r'^events/(?P<event_pk>[0-9]+)/reports/address/$',
+        views.event.report_address,
+        name='event_report_address'),
 
     # E-mails
 
