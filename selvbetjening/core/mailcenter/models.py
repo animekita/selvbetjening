@@ -136,5 +136,5 @@ class EmailSpecification(models.Model):
 
         return Template(body).render(context)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.subject
