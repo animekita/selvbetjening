@@ -3,12 +3,15 @@
 {% block rows %}
 
 {% for email in instances %}
-<tr>
+<tr onclick="$('#mail-{{ email.pk }}').toggle();" class="clickable">
     <td>{{ email.last_attempt }}</td>
     <td>{{ email.app }}</td>
     <td>{{ email.subject }}</td>
     <td>{{ email.to_address }}</td>
     <td>{% if email.sent %}OK{% elif not email.sent and email.last_attemt %}ERROR{% endif %}</td>
+</tr>
+<tr id="mail-{{ email.pk }}" style="display: none;">
+    <td colspan="5"><pre>{{ email.content }}</pre></td>
 </tr>
 {% endfor %}
 
