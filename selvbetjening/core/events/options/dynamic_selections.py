@@ -127,6 +127,9 @@ def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
                                                             **kwargs))
 
     def init(self, *args, **kwargs):
+        if 'instance' in kwargs:
+            kwargs['attendee'] = kwargs['instance']
+
         if 'attendee' in kwargs:
             # prefetch
             kwargs['selections'] = kwargs['attendee'].selection_set.all().select_related('option')
@@ -171,6 +174,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
     def init(self, *args, **kwargs):
         self.attendee = kwargs.pop('attendee', None)
+        self.attendee = kwargs.pop('instance', self.attendee)
 
         if self.attendee is not None:
             initial = {}

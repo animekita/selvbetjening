@@ -16,24 +16,29 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
+from selvbetjening.core.events.options.scope import SCOPE
 
 from selvbetjening.core.user.models import SUser
+from selvbetjening.frontend.base.views.events import generic_event_status
 from selvbetjening.frontend.eventportal.views import event_register
 
 from selvbetjening.core.events.models import Attend, AttendState
 
+from selvbetjening.businesslogic.events import decorators as eventdecorators
 from selvbetjening.businesslogic.members.forms import MinimalUserRegistrationForm, ProfileEditForm
 from selvbetjening.businesslogic.events.decorators import event_registration_open_required, \
     get_event_from_id, suspend_automatic_attendee_price_updates
 
 from selvbetjening.frontend.auth.forms import AuthenticationForm
 from selvbetjening.frontend.eventportal import views as eventportal_views
+from selvbetjening.sadmin2.forms import attendee_selection_helper_factory
 
 
 def _get_step(request, event_pk):
     # step 0 - user not logged in
     if not request.user.is_authenticated():
-        return 0
+        return 0, False, False
 
     # step 1 or 2 - user not attending event
     try:
@@ -42,21 +47,21 @@ def _get_step(request, event_pk):
 
         # step 1 - verify user data
         if not request.session.get('user-data-verified', False):
-            return 1
+            return 1, True, False
 
-        return 2
+        return 2, True, True
 
     # step 3 - user not accepted
     if attendee.state == AttendState.waiting:
-        return 3
+        return 3, True, True
 
     # step 4
-    return 4
+    return 4, False, False
 
 
 def step_controller(request, event_pk):
 
-    step = _get_step(request, event_pk)
+    step, edit_profile, edit_selections = _get_step(request, event_pk)
 
     if step == 0:
         return step0(request, event_pk)
@@ -125,8 +130,11 @@ def step0(request, event):
                       'handle_authentication': handle_login,
                       'handle_registration': handle_registration,
 
-                      'step': 0
+                      'step': 0,
+                      'can_edit_profile': False,
+                      'can_edit_selections': False
                   })
+
 
 @get_event_from_id
 @event_registration_open_required
@@ -134,7 +142,8 @@ def step0(request, event):
 @login_required
 def step1(request,
           event,
-          form_class=ProfileEditForm):
+          form_class=ProfileEditForm,
+          skip_summary=False):
 
     user = request.user
 
@@ -150,6 +159,8 @@ def step1(request,
     else:
         form = form_class(instance=user)
 
+    step, edit_profile, edit_selections = _get_step(request, event.pk)
+
     return render(request,
                   'eventsingle/step1.html',
                   {
@@ -158,41 +169,95 @@ def step1(request,
                       'profile': user,
                       'form': form,
 
-                      'show_summary': form.is_valid(),
+                      'show_summary': form.is_valid() and not skip_summary,
 
-                      'step': 1
+                      'step': step,
+                      'can_edit_profile': edit_profile,
+                      'can_edit_selections': edit_selections
                   })
 
 
-def step2(request, event_pk):
+@login_required
+@eventdecorators.get_event_from_id
+@eventdecorators.event_registration_open_required
+@suspend_automatic_attendee_price_updates
+def step2(request, event):
 
-    return event_register(
-        request,
-        event_pk,
-        template='eventsingle/step2.html',
-        extra_context={
-            'step': 2
-        }
+    EventSelectionFormSet = dynamic_selections_formset_factory(
+        SCOPE.EDIT_REGISTRATION,
+        event,
+        helper_factory=attendee_selection_helper_factory
     )
 
+    try:
+        attendee = Attend.objects.get(event=event, user=request.user)
+        instance_kwargs = {'instance': attendee}
+    except Attend.DoesNotExist:
+        attendee = None
+        instance_kwargs = {}
 
-def step3(request, event_pk):
+    if request.method == 'POST':
+        options_form = EventSelectionFormSet(request.POST, **instance_kwargs)
 
-    return eventportal_views.event_status(
+        if options_form.is_valid():
+
+            if attendee is None:
+                attendee = Attend.objects.create(event=event, user=request.user, price=0)
+
+            options_form.save(attendee=attendee)
+
+            attendee.recalculate_price()
+            attendee.event.send_notification_on_registration(attendee)
+
+            return HttpResponseRedirect(
+                reverse('eventsingle_steps', kwargs={'event_pk': event.pk})
+            )
+
+    else:
+        options_form = EventSelectionFormSet(**instance_kwargs)
+
+    step, edit_profile, edit_selections = _get_step(request, event.pk)
+
+    return render(request,
+                  'eventsingle/step2.html',
+                  {
+                      'formset': options_form,
+
+                      'step': step,
+                      'can_edit_profile': edit_profile,
+                      'can_edit_selections': edit_selections
+                  })
+
+
+@login_required
+@eventdecorators.get_event_from_id
+@eventdecorators.event_attendance_required
+def step3(request, event):
+
+    step, edit_profile, edit_selections = _get_step(request, event.pk)
+
+    return generic_event_status(
         request,
-        event_pk,
+        event,
         template_name='eventsingle/step3.html',
         extra_context={
-            'step': 3
+            'step': step,
+            'can_edit_profile': edit_profile,
+            'can_edit_selections': edit_selections
         })
 
 
-def step4(request, event_pk):
+@login_required
+@eventdecorators.get_event_from_id
+@eventdecorators.event_attendance_required
+def step4(request, event):
 
-    return eventportal_views.event_status(
+    return generic_event_status(
         request,
-        event_pk,
+        event,
         template_name='eventsingle/step4.html',
         extra_context={
-            'step': 4
+            'step': 4,
+            'can_edit_profile': False,
+            'can_edit_selections': False
         })

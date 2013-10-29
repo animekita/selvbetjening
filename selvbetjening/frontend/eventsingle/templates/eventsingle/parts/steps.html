@@ -14,13 +14,13 @@
 
         <div class="col-lg-2{% if step == 1 %} state-current{% endif %}">
             <span>
-                {% if step > 1 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 1 %}badge-important{% endif %}">2</span>{% endif %} Opdater profil
+                {% if step > 1 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 1 %}badge-important{% endif %}">2</span>{% endif %} {% if can_edit_profile %}<a href="{% url "eventsingle_step1" %}">{% endif %}Opdater profil{% if can_edit_profile %}</a>{% endif %}
             </span>
         </div>
 
         <div class="col-lg-2{% if step == 2 %} state-current{% endif %}">
             <span>
-                {% if step > 2 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 2 %}badge-important{% endif %}">3</span>{% endif %} Vælg tilvalg
+                {% if step > 2 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 2 %}badge-important{% endif %}">3</span>{% endif %} {% if can_edit_selections %}<a href="{% url "eventsingle_step2" %}">{% endif %}Vælg tilvalg{% if can_edit_selections %}</a>{% endif %}
             </span>
         </div>
 
