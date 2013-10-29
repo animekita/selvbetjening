@@ -22,7 +22,7 @@ urlpatterns = patterns('',
         {
             'template_name': 'auth/password_reset/password_reset.html',
             'password_reset_form': forms.PasswordResetForm,
-            'email_template_name':'userportal/password_reset/password_reset_email.html'
+            'email_template_name':'auth/password_reset/password_reset_email.html'
         },
         name='auth_password_reset'),
 
