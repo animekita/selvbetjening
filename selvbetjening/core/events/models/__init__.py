@@ -45,7 +45,10 @@ def update_attendee_price(sender, **kwargs):
 
     # We should avoid this at all costs if more than one selection is changed at any time
     # In that case the automatic updates should be suspended and the recalculate_price called explicitly
-    selection.attendee.recalculate_price()
+    try:
+        selection.attendee.recalculate_price()
+    except Attend.DoesNotExist:
+        pass
 
 post_save.connect(update_attendee_price, sender=Selection, dispatch_uid='update_attendee_price_save')
 post_delete.connect(update_attendee_price, sender=Selection, dispatch_uid='update_attendee_price_delete')

@@ -1,0 +1,15 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1>To be deleted</h1>
+
+    {{ to_be_deleted|unordered_list }}
+
+
+    <form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
+    </form>
+
+{% endblock %}

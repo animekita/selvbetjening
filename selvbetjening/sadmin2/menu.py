@@ -143,6 +143,12 @@ breadcrumbs = {
         'url_callback': url_callback('sadmin2:event_attendee_notes', ('event_pk', 'attendee_pk')),
         'parent': 'event_attendees_attendee'},
 
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee_delete':  {
+        'name': _('Delete'),
+        'url_callback': url_callback('sadmin2:event_attendee_delete', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees_attendee'},
+
     # Assumes: context[event], kwargs[event_pk]
     'event_attendees_add':  {
         'name': _('Add user'),
@@ -350,7 +356,14 @@ sadmin2_menu_tab_attendee = (
      'name': _('User account'),
      'url_callback': lambda context: reverse('sadmin2:user', kwargs={'user_pk': context['attendee'].user.pk}),
      'class': 'pull-right',
-     'icon': 'user'}
+     'icon': 'user'},
+
+    {'id': 'delete',
+     'name': _('Delete'),
+     'url_callback': url_callback('sadmin2:event_attendee_delete', ('event_pk', 'attendee_pk')),
+     'class': 'pull-right',
+     'icon': '- fa fa-trash-o'}
+
 
 )
 

@@ -3,7 +3,7 @@
 import datetime
 import time
 
-from django.conf import settings
+from django.contrib.admin.util import NestedObjects
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
 from selvbetjening.core.members.models import UserLocation
+from django.db import router
 
 from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
@@ -540,3 +541,49 @@ def event_attendee_notes(request, event_pk, attendee_pk):
                                template='sadmin2/event/attendee_notes.html'
                                )
 
+
+def _get_deleted_objects(objs):
+    """
+    Slightly simplified version of the function used in the standard admin
+    """
+
+    if len(objs) == 0:
+        return []
+
+    collector = NestedObjects(using=router.db_for_write(objs[0]))
+    collector.collect(objs)
+
+    def format_callback(obj):
+        return '%s: %s' % (obj.__class__.__name__, unicode(obj))
+
+    return collector.nested(format_callback)
+
+
+@sadmin_prerequisites
+def event_attendee_delete(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    if request.method == 'POST':
+        attendee.delete()
+
+        messages.success(request, _('Attendee %s deleted' % attendee.user.username))
+        return HttpResponseRedirect(reverse('sadmin2:event_attendees', kwargs={'event_pk': event.pk}))
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees_attendee_delete',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+        'sadmin2_menu_tab_active': 'delete',
+
+        'event': event,
+        'attendee': attendee,
+
+        'to_be_deleted': _get_deleted_objects([attendee])
+    }
+
+    return render(request,
+                  'sadmin2/event/attendee_delete.html',
+                  context
+                  )

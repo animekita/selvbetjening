@@ -89,6 +89,9 @@ urlpatterns = patterns(
     url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/notes/$',
         views.event.event_attendee_notes,
         name='event_attendee_notes'),
+    url(r'^events/(?P<event_pk>[0-9]+)/attendees/(?P<attendee_pk>[0-9]+)/delete/$',
+        views.event.event_attendee_delete,
+        name='event_attendee_delete'),
 
     url(r'^events/(?P<event_pk>[0-9]+)/selections/$',
         views.options.event_selections,
