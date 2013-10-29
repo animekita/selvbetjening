@@ -16,6 +16,9 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
 
@@ -154,6 +157,8 @@ def step1(request,
             form.save()
 
             request.session['user-data-verified'] = True
+            messages.success(request, _('Profile updated'))
+
             return HttpResponseRedirect(reverse('eventsingle_steps', kwargs={'event_pk': event.pk}))
 
     else:
@@ -203,6 +208,8 @@ def step2(request, event):
 
             if attendee is None:
                 attendee = Attend.objects.create(event=event, user=request.user, price=0)
+            else:
+                messages.success(request, _('Selections updated'))
 
             options_form.save(attendee=attendee)
 

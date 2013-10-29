@@ -1,9 +1,11 @@
 {% extends "selvbetjening/sitebase.html" %}
 {% load crispy_forms_tags i18n %}
 
-{% block content %}
-
+{% block content-pre-messages %}
     {% include "eventsingle/parts/steps.html" %}
+{% endblock %}
+
+{% block content %}
 
     <form method="POST">
         {% csrf_token %}
