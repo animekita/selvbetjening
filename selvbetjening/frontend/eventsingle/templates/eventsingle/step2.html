@@ -1,6 +1,12 @@
 {% extends "selvbetjening/sitebase.html" %}
 {% load crispy_forms_tags i18n %}
 
+{% block head %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/eventsingle.css">
+{% endblock %}
+
 {% block content-pre-messages %}
     {% include "eventsingle/parts/steps.html" %}
 {% endblock %}

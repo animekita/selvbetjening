@@ -2,13 +2,12 @@
 <div class="row">
     <div class="col-lg-12">
 
-
     <h3 class="text-center">Status for din tilmelding</h3>
 
     <ol class="progtrckr" data-progtrckr-steps="5">
     <li class="progtrckr{% if step > 0 %}-done{% elif step == 0 %}-current{% else %}-todo{% endif %}">Log ind</li><!--
- --><li class="progtrckr{% if step > 1 %}-done{% elif step == 1 %}-current{% else %}-todo{% endif %}">{% if can_edit_profile %}<a href="{% url "eventsingle_step1" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Opdater konto{% if can_edit_profile %}</a>{% endif %}</li><!--
- --><li class="progtrckr{% if step > 2 %}-done{% elif step == 2 %}-current{% else %}-todo{% endif %}">{% if can_edit_selections %}<a href="{% url "eventsingle_step2" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Vælg tilvalg{% if can_edit_selections %}</a>{% endif %}</li><!--
+ --><li class="progtrckr{% if step > 1 %}-done{% elif step == 1 %}-current{% else %}-todo{% endif %}">{% if can_edit_profile and step > 1 %}<a href="{% url "eventsingle_step1" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Opdater konto{% if can_edit_profile and step > 1 %}</a>{% endif %}</li><!--
+ --><li class="progtrckr{% if step > 2 %}-done{% elif step == 2 %}-current{% else %}-todo{% endif %}">{% if can_edit_selections and step > 2 %}<a href="{% url "eventsingle_step2" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Vælg tilvalg{% if can_edit_selections and step > 2 %}</a>{% endif %}</li><!--
  --><li class="progtrckr{% if step > 3 %}-done{% elif step == 3 %}-current{% else %}-todo{% endif %}">Betal</li><!--
  --><li class="progtrckr{% if step == 4 %}-done{% else %}-todo{% endif %}">Tilmelding godkendt</li>
     </ol>
