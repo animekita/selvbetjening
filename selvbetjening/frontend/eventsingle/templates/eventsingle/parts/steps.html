@@ -1,41 +1,19 @@
-<div class="container">
 
-    <div class="row">
-        <div class="col-lg-12">
-            <h3>Status for din tilmelding</h3>
-        </div>
+<div class="row">
+    <div class="col-lg-12">
 
-    <div class="row">
-        <div class="col-lg-2{% if step == 0 %} state-current{% endif %}">
-            <span>
-                {% if step > 0 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 0 %}badge-important{% endif %}">1</span>{% endif %} Log ind
-            </span>
-        </div>
 
-        <div class="col-lg-2{% if step == 1 %} state-current{% endif %}">
-            <span>
-                {% if step > 1 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 1 %}badge-important{% endif %}">2</span>{% endif %} {% if can_edit_profile %}<a href="{% url "eventsingle_step1" %}">{% endif %}Opdater profil{% if can_edit_profile %}</a>{% endif %}
-            </span>
-        </div>
+    <h3 class="text-center">Status for din tilmelding</h3>
 
-        <div class="col-lg-2{% if step == 2 %} state-current{% endif %}">
-            <span>
-                {% if step > 2 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 2 %}badge-important{% endif %}">3</span>{% endif %} {% if can_edit_selections %}<a href="{% url "eventsingle_step2" %}">{% endif %}Vælg tilvalg{% if can_edit_selections %}</a>{% endif %}
-            </span>
-        </div>
+    <ol class="progtrckr" data-progtrckr-steps="5">
+    <li class="progtrckr{% if step > 0 %}-done{% elif step == 0 %}-current{% else %}-todo{% endif %}">Log ind</li><!--
+ --><li class="progtrckr{% if step > 1 %}-done{% elif step == 1 %}-current{% else %}-todo{% endif %}">{% if can_edit_profile %}<a href="{% url "eventsingle_step1" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Opdater konto{% if can_edit_profile %}</a>{% endif %}</li><!--
+ --><li class="progtrckr{% if step > 2 %}-done{% elif step == 2 %}-current{% else %}-todo{% endif %}">{% if can_edit_selections %}<a href="{% url "eventsingle_step2" %}"><i class="fa fa-pencil-square-o"></i> {% endif %}Vælg tilvalg{% if can_edit_selections %}</a>{% endif %}</li><!--
+ --><li class="progtrckr{% if step > 3 %}-done{% elif step == 3 %}-current{% else %}-todo{% endif %}">Betal</li><!--
+ --><li class="progtrckr{% if step == 4 %}-done{% else %}-todo{% endif %}">Tilmelding godkendt</li>
+    </ol>
 
-        <div class="col-lg-2{% if step == 3 %} state-current{% endif %}">
-            <span>
-                {% if step > 3 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge {% if step == 3 %}badge-important{% endif %}">4</span>{% endif %} Betal
-            </span>
-        </div>
+    <br/><br/>
 
-        <div class="col-lg-2{% if step == 4 %} state-current{% endif %}">
-            <span>
-                {% if step == 4 %}<i class="glyphicon glyphicon-ok"></i>{% else %}<span class="badge">5</span>{% endif %} Tilmelding godkendt
-            </span>
-        </div>
     </div>
-
-</div>
 </div>

@@ -28,15 +28,17 @@ class MinimalUserRegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MinimalUserRegistrationForm, self).__init__(*args, **kwargs)
 
-        self.helper = S2FormHelper(horizontal=True)
+        self.fields['username'].help_text = ''
+
+        self.helper = S2FormHelper(horizontal=False)
 
         layout = S2Layout(
-            S2Fieldset(None,
-                       'username',
-                       'password', 'password2'))
+            'username',
+            'password',
+            'password2')
 
         self.helper.add_layout(layout)
-        self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
+        self.helper.form_tag = False
 
     def clean_password2(self):
 

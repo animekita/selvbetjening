@@ -4,43 +4,22 @@
 {% block head %}
     {{ block.super }}
 
-    <script type="text/javascript">
-    $(function() {
-        var loginForm = $(".login");
-        var newForm = $(".new");
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/eventsingle.css">
 
-        loginForm.hide();
-        newForm.hide();
-
-        {% if handle_login %}
-        loginForm.show();
-        $("body").scrollTo("#useAccount");
-        {% endif %}
-
-        {% if handle_registration %}
-        newForm.show();
-        $("body").scrollTo("#newAccount");
-        {% endif %}
-
-        if ($(".error").length > 0) {
-            $("body").scrollTo($(".error")[0]);
+    <style type="text/css">
+        .content {
+            border-color: #494949;
+            border-width: 5px 0 0 0;
+            border-style: solid;
+            background-color: #eeeeec;
+            overflow: auto;
+            padding-bottom: 2em;
         }
 
-        $(".doNewAccount").bind("click", function() {
-            loginForm.hide();
-            newForm.fadeIn();
-            $("body").scrollTo("#newAccount");
-        });
-
-        $(".doReuseAccount").click(function() {
-            newForm.hide();
-            loginForm.fadeIn();
-            $("body").scrollTo("#useAccount");
-        });
-
-    });
-    </script>
-
+        .inner-content {
+            margin: 0 1em 0 1em;
+        }
+    </style>
 {% endblock %}
 
 {% block content-pre-messages %}
@@ -49,43 +28,74 @@
 
 {% block content %}
 
-    <h2>Tilmeld dig</h2>
-
-<div class="row jumbotron" style="text-align: center; padding-top: 2em; margin-top: 1em; padding-bottom: 2em; margin-bottom: 1em;">
-
+<div class="row content">
     <div class="col-lg-6">
-        <h4>Jeg har <strong>ikke</strong> en konto</h4>
-            <button class="btn btn-large btn-block btn-primary doNewAccount" type="button">Opret konto</button>
+    <div class="inner-content">
+
+        <h2>Jeg har <b>ikke</b> en konto</h2>
+
+        <p>Opret en ny konto og tilmeld dig vores arrangement.</p>
+
+        <p>Husk, du kan også bruge din konto til at følge din tilmelding.</p>
+
+        <form method="POST">
+            {% crispy registration_form %}
+
+            <div class="form-actions">
+                <button class="btn btn-danger" name="submit_create_user">
+                    <i class="fa fa-user"></i> Opret konto
+                </button>
+            </div>
+        </form>
+
+    </div>
     </div>
 
     <div class="col-lg-6">
-        <h4>Jeg har en konto</h4>
-        <button class="btn btn-large btn-block btn-primary doReuseAccount" type="button">Log ind</button>
-    </div>
+    <div class="inner-content">
 
-</div>
+        <h2>Jeg har en konto</h2>
 
-<div class="row login">
+        <p>Log ind og tilmeldig dig dette arrangement.</p>
 
-    <div class="col-lg-12">
+        <p>Du kan også logge ind for at <b>rette</b> og se <b>status</b> for din tilmelding.</p>
 
-        <h3 id="useAccount">Log ind</h3>
+        <form method="POST">
+            {% csrf_token %}
 
-        {% crispy authentication_form %}
+            {% if authentication_form.errors %}
+                <p class="alert alert-danger">Forkert brugernavn eller kodeord</p>
+            {% endif %}
+
+                <div id="div_id_username" class="form-group">
+                    <label for="id_username" class="control-label  requiredField">
+                        Brugernavn
+                    </label>
+                    <div class="controls ">
+                        <input class="textinput textInput form-control" id="id_username" maxlength="254" name="username" type="text" />
+                    </div>
+                </div>
+
+                <div id="div_id_password" class="form-group">
+                    <label for="id_password" class="control-label  requiredField">
+                        Adgangskode
+                    </label>
+                    <div class="controls ">
+                        <input class="textinput textInput form-control" id="id_password" name="password" type="password" />
+                    </div>
+                </div>
+
+            <div class="form-actions">
+                <button class="btn btn-danger" name="submit_login" id="submit-id-submit_login">
+                    <i class="fa fa-lock"></i> Log-in
+                </button>
+                <a class="btn btn-danger" href="{% url "auth_password_reset" %}"><i class="fa fa-question"></i> Glemt dit kodeord?</a>
+            </div>
+        </form>
 
         <br/>
 
     </div>
-
-</div>
-
-<div class="row new">
-    <div class="col-lg-12">
-
-        <h3 id="newAccount">Opret konto</h3>
-
-        {% crispy registration_form %}
-
     </div>
 </div>
 
