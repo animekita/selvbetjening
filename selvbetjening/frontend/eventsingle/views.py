@@ -62,7 +62,9 @@ def _get_step(request, event_pk):
     return 4, False, False
 
 
-def step_controller(request, event_pk):
+def step_controller(request,
+                    event_pk,
+                    step1_form=None):
 
     step, edit_profile, edit_selections = _get_step(request, event_pk)
 
@@ -70,7 +72,8 @@ def step_controller(request, event_pk):
         return step0(request, event_pk)
 
     if step == 1:
-        return step1(request, event_pk)
+        return step1(request, event_pk,
+                     form_class=step1_form)
 
     elif step == 2:
         return step2(request, event_pk)
@@ -145,8 +148,12 @@ def step0(request, event):
 @login_required
 def step1(request,
           event,
-          form_class=ProfileEditForm,
-          skip_summary=False):
+          form_class=None,
+          skip_summary=False,
+          update_mode=False):
+
+    if form_class is None:
+        form_class = ProfileEditForm
 
     user = request.user
 
@@ -175,6 +182,7 @@ def step1(request,
                       'form': form,
 
                       'show_summary': form.is_valid() and not skip_summary,
+                      'update_mode': update_mode,
 
                       'step': step,
                       'can_edit_profile': edit_profile,
