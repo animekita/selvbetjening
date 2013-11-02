@@ -64,30 +64,40 @@ def _get_step(request, event_pk):
 
 def step_controller(request,
                     event_pk,
-                    step1_form=None):
+                    step1_form=None,
+                    step0_template=None,
+                    step1_template=None,
+                    step2_template=None,
+                    step3_template=None,
+                    step4_template=None):
 
     step, edit_profile, edit_selections = _get_step(request, event_pk)
 
     if step == 0:
-        return step0(request, event_pk)
+        return step0(request,
+                     event_pk,
+                     template=step0_template)
 
     if step == 1:
         return step1(request, event_pk,
-                     form_class=step1_form)
+                     form_class=step1_form,
+                     template=step1_template)
 
     elif step == 2:
-        return step2(request, event_pk)
+        return step2(request, event_pk, template=step2_template)
 
     elif step == 3:
-        return step3(request, event_pk)
+        return step3(request, event_pk, template=step3_template)
 
-    return step4(request, event_pk)
+    return step4(request, event_pk, template=step4_template)
 
 
 @get_event_from_id
 @event_registration_open_required
 @suspend_automatic_attendee_price_updates
-def step0(request, event):
+def step0(request,
+          event,
+          template=None):
     """
     Combined account creation and account login
     """
@@ -126,7 +136,8 @@ def step0(request, event):
     else:
         login_form = AuthenticationForm()
 
-    return render(request, 'eventsingle/step0.html',
+    return render(request,
+                  template if template is not None else 'eventsingle/step0.html',
                   {
                       'event': event,
 
@@ -150,7 +161,8 @@ def step1(request,
           event,
           form_class=None,
           skip_summary=False,
-          update_mode=False):
+          update_mode=False,
+          template=None):
 
     if form_class is None:
         form_class = ProfileEditForm
@@ -174,7 +186,7 @@ def step1(request,
     step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     return render(request,
-                  'eventsingle/step1.html',
+                  template if template is not None else 'eventsingle/step1.html',
                   {
                       'user': request.user,
 
@@ -194,7 +206,9 @@ def step1(request,
 @eventdecorators.get_event_from_id
 @eventdecorators.event_registration_open_required
 @suspend_automatic_attendee_price_updates
-def step2(request, event):
+def step2(request,
+          event,
+          template=None):
 
     EventSelectionFormSet = dynamic_selections_formset_factory(
         SCOPE.EDIT_REGISTRATION,
@@ -234,7 +248,7 @@ def step2(request, event):
     step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     return render(request,
-                  'eventsingle/step2.html',
+                  template if template is not None else 'eventsingle/step2.html',
                   {
                       'formset': options_form,
 
@@ -247,14 +261,16 @@ def step2(request, event):
 @login_required
 @eventdecorators.get_event_from_id
 @eventdecorators.event_attendance_required
-def step3(request, event):
+def step3(request,
+          event,
+          template=None):
 
     step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     return generic_event_status(
         request,
         event,
-        template_name='eventsingle/step3.html',
+        template_name=template if template is not None else 'eventsingle/step3.html',
         extra_context={
             'step': step,
             'can_edit_profile': edit_profile,
@@ -265,12 +281,14 @@ def step3(request, event):
 @login_required
 @eventdecorators.get_event_from_id
 @eventdecorators.event_attendance_required
-def step4(request, event):
+def step4(request,
+          event,
+          template=None):
 
     return generic_event_status(
         request,
         event,
-        template_name='eventsingle/step4.html',
+        template_name=template if template is not None else 'eventsingle/step4.html',
         extra_context={
             'step': 4,
             'can_edit_profile': False,
