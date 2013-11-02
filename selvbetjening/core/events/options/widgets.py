@@ -21,7 +21,7 @@ class BooleanWidget(BaseWidget):
     def get_field(self):
 
         return forms.BooleanField(
-            label=self.option.name,
+            label=self.option.name if self.option.price == 0 else '%s (%s,-)' % (self.option.name, self.option.price),
             required=False,
             help_text=self.option.description,
             widget=forms.CheckboxInput())
@@ -87,7 +87,7 @@ class ChoiceWidget(BaseWidget):
     def __init__(self, option):
         self.option = option
 
-        self.choices = [('', '')] + [('suboption_%s' % suboption.pk, suboption.name)
+        self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
                                      for suboption in self.option.suboptions.all()]
 
     def get_field(self):
@@ -135,6 +135,9 @@ class ChoiceWidget(BaseWidget):
         else:
             return None
 
+    def _label(self, suboption):
+        price = suboption.real_price
+        return suboption.name if price == 0 else '%s (%s)' % (suboption.name, price)
 
 class AutoSelectBooleanWidget(BooleanWidget):
 

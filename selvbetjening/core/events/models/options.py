@@ -272,6 +272,13 @@ class SubOption(models.Model):
     def selections(self):
         return Selection.objects.filter(suboption=self)
 
+    @property
+    def real_price(self):
+        if self.price is None:
+            return self.option.price
+        else:
+            return self.option.price + self.price
+
     def __unicode__(self):
         return u'%s' % self.name
 
