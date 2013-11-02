@@ -4,31 +4,28 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
 from django import forms
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, HTML, Fieldset
-
-from selvbetjening.frontend.base.forms import SFieldset
+from crispy_forms.layout import HTML
 
 from selvbetjening.frontend.userportal.processor_handlers import extended_privacy_processors
 from selvbetjening.frontend.userportal.models import UserPrivacy
-from selvbetjening.frontend.utilities.forms import UsernameField
+from selvbetjening.frontend.utilities.forms import UsernameField, S2Layout, S2Fieldset, S2FormHelper, S2Submit
 
 
 class ChangePasswordForm(BasePasswordChangeForm):
-    helper = FormHelper()
+    helper = S2FormHelper()
 
     helper.add_input(
-        Submit(_('Change password'), _('Change password'))
+        S2Submit(_('Change password'), _('Change password'))
     )
 
 
 class ChangeUsernameForm(forms.Form):
     new_username = UsernameField()
 
-    helper = FormHelper()
+    helper = S2FormHelper()
 
-    layout = Layout(SFieldset(_('New username'), 'new_username'))
-    submit = Submit(_('Change username'), _('Change username'))
+    layout = S2Layout(S2Fieldset(_('New username'), 'new_username'))
+    submit = S2Submit(_('Change username'), _('Change username'))
 
     helper.add_layout(layout)
     helper.add_input(submit)
@@ -37,9 +34,9 @@ class ChangeUsernameForm(forms.Form):
 class ChangePictureForm(forms.Form):
     picture = forms.ImageField(label=_(u'Picture'))
 
-    helper = FormHelper()
+    helper = S2FormHelper()
 
-    submit = Submit(_('Change picture'), _('Change picture'))
+    submit = S2Submit(_('Change picture'), _('Change picture'))
     helper.add_input(submit)
 
 
@@ -108,13 +105,13 @@ class PrivacyForm(forms.ModelForm):
                 'css_class': 'privacy_settings'
         }
 
-        layout = Layout('public_profile',
-                        Fieldset(*fields, **properties),
-                        HTML(self.html))
+        layout = S2Layout('public_profile',
+                          S2Fieldset(*fields, **properties),
+                          HTML(self.html))
 
-        submit = Submit(_('Update privacy settings'), _('Update privacy settings'))
+        submit = S2Submit(_('Update privacy settings'), _('Update privacy settings'))
 
-        self.helper = FormHelper()
+        self.helper = S2FormHelper()
         self.helper.add_input(submit)
         self.helper.add_layout(layout)
 

@@ -117,8 +117,6 @@ def _unpack_id(packed_id):
 
 def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
 
-    # TODO view and edit scopes should be taken into account
-
     form_classes = []
 
     for option_group_pk, options in dynamic_options(scope, event, as_group_dict=True).items():

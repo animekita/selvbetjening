@@ -479,7 +479,8 @@ def event_attendee_selections(request, event_pk, attendee_pk):
     DynamicSelectionsFormSet = dynamic_selections_formset_factory(
         SCOPE.SADMIN,
         event,
-        helper_factory=attendee_selection_helper_factory)
+        helper_factory=attendee_selection_helper_factory
+    )
 
     if request.method == 'POST':
         formset = DynamicSelectionsFormSet(request.POST, attendee=attendee)

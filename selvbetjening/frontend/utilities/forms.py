@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div
+from crispy_forms.layout import Submit, Layout, Field, Row, Fieldset, Div, HTML
 
 from selvbetjening.core.user.models import SUser
 
@@ -75,8 +75,6 @@ class S2Layout(Layout):
 class S2Field(Field):
     def __init__(self, *args, **kwargs):
 
-        kwargs['css_class'] = kwargs.get('css_class', '') + ' input-lg'
-
         if 'width' in kwargs:
             kwargs['wrapper_class'] = kwargs.get('wrapper_class', '') + ' col-lg-%s' % kwargs.get('width')
 
@@ -88,6 +86,7 @@ class S2Fieldset(Fieldset):
     def __init__(self, name, *args, **kwargs):
         collapse = kwargs.pop('collapse', True)
         show_help_text = kwargs.pop('show_help_text', True)
+        help_text = kwargs.pop('help_text', None)
 
         if not show_help_text:
             kwargs['css_class'] = ' '.join([kwargs.get('css_class', ''), 'hide-help-block'])
@@ -96,6 +95,9 @@ class S2Fieldset(Fieldset):
 
         args = [(S2Field(arg) if isinstance(arg, str) else arg) for arg in args]
         super(S2Fieldset, self).__init__(name, *args, **kwargs)
+
+        if help_text is not None:
+            self.fields = [HTML('<p>%s</p>' % unicode(help_text))] + list(self.fields)
 
 
 class S2HorizontalRow(Row):

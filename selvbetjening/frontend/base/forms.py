@@ -1,20 +1,19 @@
-from crispy_forms import layout
+from selvbetjening.frontend.utilities.forms import S2Layout, S2Fieldset, S2FormHelper
 
 
-# TODO remove this and replace it with S2*
-class SFieldset(layout.Fieldset):
-    def __init__(self, *args, **kwargs):
-        ext_class = kwargs.pop('ext_class', None)
-        help_text = kwargs.pop('help_text', None)
-        large_hints = kwargs.pop('large_hints', False)
+def frontend_selection_helper_factory(option_group, visible_fields):
 
-        super(SFieldset, self).__init__(*args, **kwargs)
+    description = option_group.description if option_group.description != '' else None
 
-        if large_hints:
-            self.css_class = self.css_class + ' optionList' if self.css_class else 'optionList'
+    layout = S2Layout(
+        S2Fieldset(option_group.name, *visible_fields,
+                   collapse=False,
+                   show_help_text=True,
+                   help_text=description)
+    )
 
-        if ext_class is not None:
-            self.css_class = self.css_class + ' ' + ext_class if self.css_class else ext_class
+    helper = S2FormHelper(horizontal=True)
+    helper.add_layout(layout)
+    helper.form_tag = False
 
-        if help_text is not None:
-            self.fields = [layout.HTML('<p>%s</p>' % unicode(help_text))] + list(self.fields)
+    return helper

@@ -8,36 +8,33 @@ from django.contrib.auth.forms import AuthenticationForm as BaseAuthenticationFo
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm, \
     SetPasswordForm as BaseSetPasswordForm
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout
-
-from selvbetjening.frontend.base.forms import SFieldset
+from selvbetjening.frontend.utilities.forms import S2Fieldset, S2FormHelper, S2Layout, S2Submit
 
 
 class AuthenticationForm(BaseAuthenticationForm):
-    helper = FormHelper()
+    helper = S2FormHelper()
 
-    helper.add_layout(Layout(
-        SFieldset('', 'username', 'password')
+    helper.add_layout(S2Layout(
+        S2Fieldset('', 'username', 'password')
     ))
 
     helper.add_input(
-        Submit('submit_login', _('Log-in'))
+        S2Submit('submit_login', _('Log-in'))
     )
 
 
 class SetPasswordForm(BaseSetPasswordForm):
 
-    helper = FormHelper()
+    helper = S2FormHelper()
     helper.form_tag = False
-    helper.add_input(Submit(_(u'Choose Password'), _(u'Choose Password')))
+    helper.add_input(S2Submit(_(u'Choose Password'), _(u'Choose Password')))
 
 
 class PasswordResetForm(BasePasswordResetForm):
 
-    helper = FormHelper()
+    helper = S2FormHelper()
     helper.form_tag = False
-    helper.add_input(Submit(_('Recover Account'), _('Recover Account')))
+    helper.add_input(S2Submit(_('Recover Account'), _('Recover Account')))
 
     def save(self, domain_override=None,
              subject_template_name='registration/password_reset_subject.txt',

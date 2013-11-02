@@ -22,9 +22,8 @@ from django.utils.translation import ugettext as _
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
 
-from selvbetjening.core.user.models import SUser
+from selvbetjening.frontend.base.forms import frontend_selection_helper_factory
 from selvbetjening.frontend.base.views.events import generic_event_status
-from selvbetjening.frontend.eventportal.views import event_register
 
 from selvbetjening.core.events.models import Attend, AttendState
 
@@ -34,8 +33,6 @@ from selvbetjening.businesslogic.events.decorators import event_registration_ope
     get_event_from_id, suspend_automatic_attendee_price_updates
 
 from selvbetjening.frontend.auth.forms import AuthenticationForm
-from selvbetjening.frontend.eventportal import views as eventportal_views
-from selvbetjening.sadmin2.forms import attendee_selection_helper_factory
 
 
 def _get_step(request, event_pk):
@@ -213,7 +210,7 @@ def step2(request,
     EventSelectionFormSet = dynamic_selections_formset_factory(
         SCOPE.EDIT_REGISTRATION,
         event,
-        helper_factory=attendee_selection_helper_factory
+        helper_factory=frontend_selection_helper_factory
     )
 
     try:
