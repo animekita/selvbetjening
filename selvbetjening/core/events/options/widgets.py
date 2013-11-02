@@ -1,6 +1,7 @@
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms.widgets import Input
 from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
@@ -139,6 +140,7 @@ class ChoiceWidget(BaseWidget):
         price = suboption.real_price
         return suboption.name if price == 0 else '%s (%s)' % (suboption.name, price)
 
+
 class AutoSelectBooleanWidget(BooleanWidget):
 
     def get_field(self):
@@ -153,25 +155,39 @@ class AutoSelectBooleanWidget(BooleanWidget):
         return True
 
 
+class AutoChoiceDisplay(Input):
+
+    def __init__(self, suboption):
+        self.suboption = suboption
+        super(AutoChoiceDisplay, self).__init__()
+
+    def render(self, name, value, attrs=None):
+        value = self.suboption.name if self.suboption.real_price == 0 else '%s (%s,-)' % (self.suboption.name, self.suboption.real_price)
+        return '<p class="form-control-static">%s</p>' % value
+
+
 class AutoSelectChoiceWidget(ChoiceWidget):
+
+    def __init__(self, *args, **kwargs):
+        super(AutoSelectChoiceWidget, self).__init__(*args, **kwargs)
+        self.option = AutoSelectChoiceOption.objects.get(option_ptr=self.option)
 
     def get_field(self):
 
         return forms.ChoiceField(
+            label=self.option.name,
             required=False,
-            widget=forms.HiddenInput(),
+            widget=AutoChoiceDisplay(self.option.auto_select_suboption),
             choices=self.choices)
 
     def save_callback(self, attendee, value):
-
-        autoselect = AutoSelectChoiceOption.objects.get(option_ptr=self.option)
 
         selection, created = Selection.objects.get_or_create(
             option_id=self.option.pk,
             attendee=attendee
         )
 
-        selection.suboption = autoselect.auto_select_suboption
+        selection.suboption = self.option.auto_select_suboption
         selection.save()
 
 
