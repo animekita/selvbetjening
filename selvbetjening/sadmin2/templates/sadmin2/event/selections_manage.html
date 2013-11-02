@@ -72,6 +72,7 @@
             // update order
             var i = 0;
             row.parent(parent_selector).find(order_selector).each(function(index, element) {
+                console.log("do");
                 element.value = i++;
             });
         }
@@ -176,9 +177,8 @@
         <tbody>
 
          {% for option in option_group.options %}
-         <input type="hidden" class="order" name="order__{{ option.pk }}" id="order__{{ option.pk }}" value="{{ option.order }}" />
          <tr id="option__{{ option.pk }}">
-
+             <input type="hidden" class="order" name="order__{{ option.pk }}" id="order__{{ option.pk }}" value="{{ option.order }}" />
 
              <td>{{ option.name }}</td>
              <td>
