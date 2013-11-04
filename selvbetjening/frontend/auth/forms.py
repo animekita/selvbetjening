@@ -32,8 +32,10 @@ class SetPasswordForm(BaseSetPasswordForm):
 
 class PasswordResetForm(BasePasswordResetForm):
 
+    layout = S2Layout('email')
+
     helper = S2FormHelper()
-    helper.form_tag = False
+    helper.add_layout(layout)
     helper.add_input(S2Submit(_('Recover Account'), _('Recover Account')))
 
     def save(self, domain_override=None,

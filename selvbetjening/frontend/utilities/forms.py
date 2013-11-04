@@ -87,10 +87,7 @@ class S2HorizontalRow(Row):
 
 
 class S2Submit(Submit):
-
-    def __init__(self, *args, **kwargs):
-        kwargs['css_class'] = kwargs.get('css_class', '') + ' btn-lg'
-        super(S2Submit, self).__init__(*args, **kwargs)
+    pass
 
 
 class S2SubmitCreate(S2Submit):
