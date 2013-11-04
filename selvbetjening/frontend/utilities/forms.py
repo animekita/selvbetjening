@@ -15,35 +15,6 @@ __ALL__ = ('S2FormHelper', 'S2Layout', 'S2Field', 'S2Fieldset', 'S2HorizontalRow
            'S2SubmitCreate', 'S2SubmitUpdate', 'SplitDateWidget')
 
 
-#TODO move this to model validation? This should also be enforced for sadmin2
-def username_available_validator(username):
-
-    try:
-        SUser.objects.get(username__exact=username)
-    except SUser.DoesNotExist:
-        return
-
-    raise forms.ValidationError(_(u'This username is already taken.'))
-
-
-class UsernameField(forms.CharField):
-    default_validators = [
-        validators.RegexValidator(
-            re.compile("^[a-zA-Z0-9_]+$"),
-            message=_(u'Usernames can only contain letters, numbers and underscores')),
-        username_available_validator
-    ]
-
-    def __init__(self, *args, **kwargs):
-
-        kwargs['max_length'] = 30
-        kwargs['widget'] = forms.TextInput()
-        kwargs['label'] = _(u"Username")
-        kwargs['help_text'] = _(u"Your username can only contain the characters a-z, underscore and numbers.")
-
-        super(UsernameField, self).__init__(*args, **kwargs)
-
-
 class S2FormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         horizontal = kwargs.pop('horizontal', False)

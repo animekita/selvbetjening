@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-04 21:46+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forms.py:20
+msgid "This username is already taken."
+msgstr "Dit valgte brugernavn er allerede taget."
+
+#: forms.py:27
+msgid "Usernames can only contain letters, numbers and underscores"
+msgstr "Brugernavne kan kun indeholde tegnene a-z, underscore og tallene 0-9."
+
+#: forms.py:35
+msgid "Username"
+msgstr "Brugernavn"
+
+#: forms.py:36
+msgid ""
+"Your username can only contain the characters a-z, underscore and numbers."
+msgstr ""
+"Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
+
+#: forms.py:50
+msgid "Password"
+msgstr "Kodeord"
+
+#: forms.py:53
+msgid "Verify password"
+msgstr "Gentag kodeord"
+
+#: forms.py:75
+msgid "You must type the same password each time"
+msgstr "De to kodeord er ikke ens."
+
+#: forms.py:108 forms.py:168
+msgid "First name"
+msgstr "Fornavn"
+
+#: forms.py:113 forms.py:173
+msgid "Last name"
+msgstr "Efternavn"
+
+#: forms.py:116 forms.py:176
+msgid "Phonenumber"
+msgstr "Telefonnummer"
+
+#: forms.py:121 forms.py:181
+msgid "Inform me about events and other important changes."
+msgstr "Ja, jeg vil gerne modtage e-mails om nye arrangementer og vigtige nyhedder."
+
+#: forms.py:126
+msgid "I allow the storage of my personal information on this site."
+msgstr ""
+"Du skal tillade os at gemme dine personlige informationer for at oprette en "
+"konto hos os."
+
+#: forms.py:138 forms.py:191
+msgid "Personal info"
+msgstr "Personoplysninger"
+
+#: forms.py:140 forms.py:193
+msgid "Contact"
+msgstr "Kontakt"
+
+#: forms.py:142 forms.py:195
+msgid "Address"
+msgstr "Adresse"

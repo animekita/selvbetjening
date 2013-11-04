@@ -23,7 +23,7 @@ msgid "E-mails have been sent to %s persons"
 msgstr "E-mails er blevet sendt til %s personer."
 
 #: admin_views.py:57
-#, fuzzy, python-format
+#, python-format
 msgid "A preview e-mail has been sent to %s"
 msgstr "En test email er blevet sendt til %s"
 

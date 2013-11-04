@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-26 22:17+0100\n"
+"POT-Creation-Date: 2013-11-04 22:21+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -18,133 +18,90 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:25
-msgid "Sign in"
-msgstr "Log ind"
-
-#: forms.py:37
-msgid "Please enter a correct username and password."
-msgstr "Indtast venligst et korrekt brugernavn og adgangskode."
-
-#: forms.py:45
+#: forms.py:18
 msgid "Change password"
 msgstr "Ændre kodeord"
 
-#: forms.py:55
+#: forms.py:27
 msgid "New username"
 msgstr "Nyt brugernavn"
 
-#: forms.py:56
-#, fuzzy
+#: forms.py:28
 msgid "Change username"
-msgstr "Ændre billede"
+msgstr "Ændre brugernavn"
 
-#: forms.py:67
+#: forms.py:35
 msgid "Picture"
 msgstr "Billede"
 
-#: forms.py:71
+#: forms.py:39
 msgid "Change picture"
 msgstr "Ændre billede"
 
-#: forms.py:103
+#: forms.py:70
 msgid "Public profile"
 msgstr "Offentlig profil"
 
-#: forms.py:104
+#: forms.py:71
 msgid "Name"
 msgstr "Navn"
 
-#: forms.py:105
+#: forms.py:72
 msgid "Age"
 msgstr "Alder"
 
-#: forms.py:106
+#: forms.py:73
 msgid "Sex"
 msgstr "Køn"
 
-#: forms.py:107
+#: forms.py:74
 msgid "Email"
 msgstr "Email"
 
-#: forms.py:108
+#: forms.py:75
 msgid "Phonenumber"
 msgstr "Telefonnummer"
 
-#: forms.py:109
+#: forms.py:76
 msgid "Town"
 msgstr "By"
 
-#: forms.py:110
+#: forms.py:77
 msgid "Contact"
 msgstr "Kontaktoplysninger"
 
-#: forms.py:111
+#: forms.py:78
 msgid "Websites"
 msgstr "Hjemmesider"
 
-#: forms.py:112
+#: forms.py:79
 msgid "Join date"
 msgstr "Dato for indmeldelse"
 
-#: forms.py:130
+#: forms.py:97
 msgid "Visible on my profile"
 msgstr "Synlig på min profil"
 
-#: forms.py:145
+#: forms.py:112
 msgid "Update privacy settings"
 msgstr "Opdater privacy indstillinger"
 
-#: forms.py:172
-#, fuzzy
-msgid "Choose Password"
-msgstr "Ændre kodeord"
-
-#: forms.py:180
-msgid "Recover Account"
-msgstr "Genskab konto"
-
-#: views.py:83
+#: views.py:100
 msgid "Personal information updated"
 msgstr "Personlige oplysninger opdateret"
 
-#: views.py:104
+#: views.py:128
 msgid "Privacy settings updated"
 msgstr "Privacy indstillinger opdateret"
 
-#: views.py:128
+#: views.py:157
 msgid "Profile picture changed"
 msgstr "Profil billede opdateret"
 
-#: views.py:148
+#: views.py:181
 msgid "Password changed"
 msgstr "Kodeord ændret"
 
-#: views.py:183
+#: views.py:208
 msgid "Username changed"
 msgstr "Brugernavn ændret"
-
-#: templates/profile/password_reset/password_reset.html:14
-msgid "Forgot your username and password?"
-msgstr "Glemt dit brugernavn og kodeord?"
-
-#: templates/profile/password_reset/password_reset.html:17
-msgid ""
-"Enter your e-mail below and we will send you your username and a link to "
-"reset your password."
-msgstr "Giv os din e-mail, og vi vil sende dig dit brugernavn og link til at nulstille dit kodeord med."
-
-#: templates/profile/password_reset/password_reset_confirm.html:11
-msgid "Home"
-msgstr "Hjem"
-
-#: templates/profile/password_reset/password_reset_confirm.html:11
-msgid "Password reset confirmation"
-msgstr "Bekræftigelse af nulstilning af kodeord"
-
-#~ msgid "Select the information which is to be visible on your profile."
-#~ msgstr ""
-#~ "Vælg de informationer der skal være synligt på din offentlige profil."
-
-#~ msgid "Send new password"
-#~ msgstr "Send nyt kodeord"

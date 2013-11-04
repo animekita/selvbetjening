@@ -64,7 +64,7 @@
             {% csrf_token %}
 
             {% if authentication_form.errors %}
-                <p class="alert alert-danger">Forkert brugernavn eller kodeord</p>
+                <p class="alert alert-danger has-error">Forkert brugernavn eller kodeord</p>
             {% endif %}
 
                 <div id="div_id_username" class="form-group">

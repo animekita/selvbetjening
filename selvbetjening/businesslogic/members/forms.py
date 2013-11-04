@@ -10,6 +10,34 @@ from selvbetjening.core.user.models import SUser
 from selvbetjening.frontend.utilities.forms import *
 
 
+def username_available_validator(username):
+
+    try:
+        SUser.objects.get(username__exact=username)
+    except SUser.DoesNotExist:
+        return
+
+    raise forms.ValidationError(_(u'This username is already taken.'))
+
+
+class UsernameField(forms.CharField):
+    default_validators = [
+        validators.RegexValidator(
+            re.compile("^[a-zA-Z0-9_]+$"),
+            message=_(u'Usernames can only contain letters, numbers and underscores')),
+        username_available_validator
+    ]
+
+    def __init__(self, *args, **kwargs):
+
+        kwargs['max_length'] = 30
+        kwargs['widget'] = forms.TextInput()
+        kwargs['label'] = _(u"Username")
+        kwargs['help_text'] = _(u"Your username can only contain the characters a-z, underscore and numbers.")
+
+        super(UsernameField, self).__init__(*args, **kwargs)
+
+
 class MinimalUserRegistrationForm(forms.ModelForm):
 
     class Meta:

@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-04 21:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forms.py:22
+msgid "Log-in"
+msgstr "Log ind"
+
+#: forms.py:30
+msgid "Choose Password"
+msgstr "Vælg kodeord"
+
+#: forms.py:37
+msgid "Recover Account"
+msgstr "Genskab din konto"
+
+#: templates/auth/password_reset/password_reset.html:4
+msgid "Forgot your username and password?"
+msgstr "Glemt dit kodeord?"
+
+#: templates/auth/password_reset/password_reset.html:7
+msgid ""
+"Enter your e-mail below and we will send you your username and a link to "
+"reset your password."
+msgstr ""
+"Indtast din e-mail adresse nedenfor, så sender vi dig dit brugernavn og et link "
+"som du kan bruge til at nulstille dit kodeord."

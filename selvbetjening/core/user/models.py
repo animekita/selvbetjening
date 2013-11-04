@@ -25,13 +25,13 @@ class SUser(AbstractUser):
 
     SEX = (('male', _('male')), ('female', _('female')))
 
-    dateofbirth = models.DateField(_(u'date of birth'), blank=True, null=True)
+    dateofbirth = models.DateField(_(u'Date of birth'), blank=True, null=True)
 
-    sex = models.CharField(_(u'sex'), blank=True, max_length=6, choices=SEX, default='')
+    sex = models.CharField(_(u'Sex'), blank=True, max_length=6, choices=SEX, default='')
 
-    street = models.CharField(_(u'street'), max_length=255, blank=True)
-    postalcode = models.PositiveIntegerField(_(u'postal code'), blank=True, null=True)
-    city = models.CharField(_(u'city'), max_length=255, blank=True)
+    street = models.CharField(_(u'Street and house number'), max_length=255, blank=True)
+    postalcode = models.PositiveIntegerField(_(u'Postal code'), blank=True, null=True)
+    city = models.CharField(_(u'City'), max_length=255, blank=True)
     country = models.ForeignKey(Country, default='DK', blank=True, null=True)
 
     phonenumber = models.CharField(_(u'phonenumber'), max_length=32, blank=True, null=True)
