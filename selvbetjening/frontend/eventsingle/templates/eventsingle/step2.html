@@ -23,7 +23,7 @@
         {% endfor %}
 
         <div class="form-actions">
-            <input type="submit" name="register" value="Tilmeld dig" class="btn btn-primary" />
+            <input type="submit" name="register" value="{% if edit_mode %}Opdater dine tilvalg{% else %}Tilmeld dig{% endif %}" class="btn btn-primary" />
         </div>
 
     </form>

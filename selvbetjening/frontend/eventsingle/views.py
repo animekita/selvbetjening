@@ -207,12 +207,6 @@ def step2(request,
           event,
           template=None):
 
-    EventSelectionFormSet = dynamic_selections_formset_factory(
-        SCOPE.EDIT_REGISTRATION,
-        event,
-        helper_factory=frontend_selection_helper_factory
-    )
-
     step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     if step < 2:
@@ -224,9 +218,25 @@ def step2(request,
     try:
         attendee = Attend.objects.get(event=event, user=request.user)
         instance_kwargs = {'instance': attendee}
+
+        if attendee.state == AttendState.waiting:
+            scope = SCOPE.EDIT_MANAGE_WAITING
+        elif attendee.state == AttendState.accepted:
+            scope = SCOPE.EDIT_MANAGE_ACCEPTED
+        else:
+            scope = SCOPE.EDIT_MANAGE_ATTENDED
+
     except Attend.DoesNotExist:
         attendee = None
         instance_kwargs = {}
+
+        scope = SCOPE.EDIT_REGISTRATION
+
+    EventSelectionFormSet = dynamic_selections_formset_factory(
+        scope,
+        event,
+        helper_factory=frontend_selection_helper_factory
+    )
 
     if request.method == 'POST':
         options_form = EventSelectionFormSet(request.POST, **instance_kwargs)
@@ -257,7 +267,8 @@ def step2(request,
 
                       'step': step,
                       'can_edit_profile': edit_profile,
-                      'can_edit_selections': edit_selections
+                      'can_edit_selections': edit_selections,
+                      'edit_mode': step > 2
                   })
 
 
