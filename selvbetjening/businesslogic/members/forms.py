@@ -9,6 +9,8 @@ from selvbetjening.core.members.models import UserWebsite
 from selvbetjening.core.user.models import SUser
 from selvbetjening.frontend.utilities.forms import *
 
+from countries.models import Country
+
 
 def username_available_validator(username):
 
@@ -181,6 +183,9 @@ class ProfileEditForm(forms.ModelForm):
                                        label=_(u'Inform me about events and other important changes.'),
                                        initial=True,
                                        required=False)
+
+    country = forms.ModelChoiceField(Country.objects.all(),
+                                     label=_('Country'))
 
     def __init__(self, *args, **kwargs):
         super(ProfileEditForm, self).__init__(*args, **kwargs)

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-04 22:09+0100\n"
+"POT-Creation-Date: 2013-11-05 22:01+0100\n"
 "PO-Revision-Date: 2009-08-06 00:47+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -21,4 +21,3 @@ msgstr ""
 #: models.py:30
 msgid "user"
 msgstr "bruger"
-

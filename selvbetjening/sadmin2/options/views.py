@@ -120,6 +120,7 @@ def discount_option_update_view(request, event, group, instance):
     parent_view = base_option_update_view(UpdateDiscountOptionForm, show_suboptions=True)
 
     if request.method == 'POST' and 'gen' in request.POST:
+        request.method = 'get'  # fake a get request for the parent view
 
         gen_form = GenerateDiscountCodes(request.POST)
 

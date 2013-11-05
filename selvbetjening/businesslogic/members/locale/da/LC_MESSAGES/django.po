@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-04 21:46+0100\n"
+"POT-Creation-Date: 2013-11-05 22:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,66 +18,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: forms.py:20
+#: forms.py:22
 msgid "This username is already taken."
 msgstr "Dit valgte brugernavn er allerede taget."
 
-#: forms.py:27
+#: forms.py:29
 msgid "Usernames can only contain letters, numbers and underscores"
 msgstr "Brugernavne kan kun indeholde tegnene a-z, underscore og tallene 0-9."
 
-#: forms.py:35
+#: forms.py:37
 msgid "Username"
 msgstr "Brugernavn"
 
-#: forms.py:36
+#: forms.py:38
 msgid ""
 "Your username can only contain the characters a-z, underscore and numbers."
 msgstr ""
 "Dit brugernavn kan kun indeholde tegnene a-z, underscore og tallene 0-9."
 
-#: forms.py:50
+#: forms.py:52
 msgid "Password"
 msgstr "Kodeord"
 
-#: forms.py:53
+#: forms.py:55
 msgid "Verify password"
 msgstr "Gentag kodeord"
 
-#: forms.py:75
+#: forms.py:77
 msgid "You must type the same password each time"
 msgstr "De to kodeord er ikke ens."
 
-#: forms.py:108 forms.py:168
+#: forms.py:110 forms.py:170
 msgid "First name"
 msgstr "Fornavn"
 
-#: forms.py:113 forms.py:173
+#: forms.py:115 forms.py:175
 msgid "Last name"
 msgstr "Efternavn"
 
-#: forms.py:116 forms.py:176
+#: forms.py:118 forms.py:178
 msgid "Phonenumber"
 msgstr "Telefonnummer"
 
-#: forms.py:121 forms.py:181
+#: forms.py:123 forms.py:183
 msgid "Inform me about events and other important changes."
-msgstr "Ja, jeg vil gerne modtage e-mails om nye arrangementer og vigtige nyhedder."
+msgstr ""
+"Ja, jeg vil gerne modtage e-mails om nye arrangementer og vigtige nyhedder."
 
-#: forms.py:126
+#: forms.py:128
 msgid "I allow the storage of my personal information on this site."
 msgstr ""
 "Du skal tillade os at gemme dine personlige informationer for at oprette en "
 "konto hos os."
 
-#: forms.py:138 forms.py:191
+#: forms.py:140 forms.py:196
 msgid "Personal info"
 msgstr "Personoplysninger"
 
-#: forms.py:140 forms.py:193
+#: forms.py:142 forms.py:198
 msgid "Contact"
 msgstr "Kontakt"
 
-#: forms.py:142 forms.py:195
+#: forms.py:144 forms.py:200
 msgid "Address"
 msgstr "Adresse"
+
+#: forms.py:188
+msgid "Country"
+msgstr "Land"
