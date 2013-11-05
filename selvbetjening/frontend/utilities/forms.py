@@ -51,6 +51,14 @@ class S2Field(Field):
 
         super(S2Field, self).__init__(*args, **kwargs)
 
+    def render(self, form, form_style, context, **kwargs):
+
+        for field in self.fields:
+            if 'disabled' in form.fields[field].widget.attrs:
+                self.wrapper_class = 'disabled'
+
+        return super(S2Field, self).render(form, form_style, context, **kwargs)
+
 
 class S2Fieldset(Fieldset):
 

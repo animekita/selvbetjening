@@ -157,6 +157,8 @@ class AutoSelectBooleanWidget(BooleanWidget):
 
 class AutoChoiceDisplay(Input):
 
+    CANT_DISABLE = True
+
     def __init__(self, suboption):
         self.suboption = suboption
         super(AutoChoiceDisplay, self).__init__()

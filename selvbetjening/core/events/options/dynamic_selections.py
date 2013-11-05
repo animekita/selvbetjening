@@ -219,10 +219,6 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         'readonly': {}
     }
 
-    if helper_factory is not None:
-        fields['helper'] = helper_factory(option_group_instance,
-                                          [_pack_id('option', option.pk) for option in options])
-
     for option in options:
         widget = type_manager_factory(option).get_widget(scope, option)
         field_id = _pack_id('option', option.pk)
@@ -235,9 +231,15 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         else:  # The edit bit is not set, this is a view only option
             fields['clean_%s' % field_id] = lambda self: None
             fields['save_callbacks'][field_id] = lambda attendee, value: None
-            fields[field_id].widget.attrs['disabled'] = 'disabled'
+
+            if not hasattr(fields[field_id].widget, 'CANT_DISABLE'):
+                fields[field_id].widget.attrs['disabled'] = 'disabled'
 
         fields['type_widgets'][field_id] = widget
+
+    if helper_factory is not None:
+        fields['helper'] = helper_factory(option_group_instance,
+                                          [_pack_id('option', option.pk) for option in options])
 
     return type('OptionGroupSelectionsForm', (forms.Form,), fields)
 
