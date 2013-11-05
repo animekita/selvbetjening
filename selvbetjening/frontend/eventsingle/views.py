@@ -213,6 +213,14 @@ def step2(request,
         helper_factory=frontend_selection_helper_factory
     )
 
+    step, edit_profile, edit_selections = _get_step(request, event.pk)
+
+    if step < 2:
+        # we have not arrived at this step yet
+        return HttpResponseRedirect(
+            reverse('eventsingle_steps', kwargs={'event_pk': event.pk})
+        )
+
     try:
         attendee = Attend.objects.get(event=event, user=request.user)
         instance_kwargs = {'instance': attendee}
@@ -241,8 +249,6 @@ def step2(request,
 
     else:
         options_form = EventSelectionFormSet(**instance_kwargs)
-
-    step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     return render(request,
                   template if template is not None else 'eventsingle/step2.html',
