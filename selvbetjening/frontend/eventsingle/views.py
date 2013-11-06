@@ -145,6 +145,7 @@ def step0(request,
                       'handle_registration': handle_registration,
 
                       'step': 0,
+                      'current_step': 0,
                       'can_edit_profile': False,
                       'can_edit_selections': False
                   })
@@ -194,6 +195,7 @@ def step1(request,
                       'update_mode': update_mode,
 
                       'step': step,
+                      'current_step': 1,
                       'can_edit_profile': edit_profile,
                       'can_edit_selections': edit_selections
                   })
@@ -266,6 +268,7 @@ def step2(request,
                       'formset': options_form,
 
                       'step': step,
+                      'current_step': 2,
                       'can_edit_profile': edit_profile,
                       'can_edit_selections': edit_selections,
                       'edit_mode': step > 2
@@ -287,6 +290,7 @@ def step3(request,
         template_name=template if template is not None else 'eventsingle/step3.html',
         extra_context={
             'step': step,
+            'current_step': 3,
             'can_edit_profile': edit_profile,
             'can_edit_selections': edit_selections
         })
@@ -305,6 +309,7 @@ def step4(request,
         template_name=template if template is not None else 'eventsingle/step4.html',
         extra_context={
             'step': 4,
+            'current_step': 4,
             'can_edit_profile': False,
             'can_edit_selections': False
         })

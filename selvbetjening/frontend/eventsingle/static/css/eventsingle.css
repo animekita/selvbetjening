@@ -33,8 +33,17 @@ ol.progtrckr li.progtrckr-todo {
     border-bottom: 4px solid silver;
 }
 ol.progtrckr li.progtrckr-current {
-    color: black;
+    color: #ffffff;
     border-bottom: 4px solid #AA1818;
+    background-color: #E74C3C;
+    border-radius: 4px 4px 0 0;
+}
+
+ol.progtrckr li.progtrckr-clickable {
+    color: 000000;
+    border-bottom: 4px solid #AA1818;
+    background-color: #EEEECC;
+    border-radius: 4px 4px 0 0;
 }
 
 ol.progtrckr li:after {
