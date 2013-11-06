@@ -5,10 +5,11 @@ from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeFo
 from django import forms
 
 from crispy_forms.layout import HTML
+from selvbetjening.businesslogic.members.forms import UsernameField
 
 from selvbetjening.frontend.userportal.processor_handlers import extended_privacy_processors
 from selvbetjening.frontend.userportal.models import UserPrivacy
-from selvbetjening.frontend.utilities.forms import UsernameField, S2Layout, S2Fieldset, S2FormHelper, S2Submit
+from selvbetjening.frontend.utilities.forms import S2Layout, S2Fieldset, S2FormHelper, S2Submit
 
 
 class ChangePasswordForm(BasePasswordChangeForm):
