@@ -72,6 +72,13 @@
     Important: All options with a price must be visible on user invoices, otherwise the price will not be added
     to the invoice!
 
+
+    Invariants on Data
+    ==================
+
+    - Required, sets the option as required for end-users. sadmin can always skip it.
+
+
     Change management
     =================
 
@@ -153,6 +160,7 @@ class OptionGroup(models.Model):
 
     # A package price modifier - if all options in a group are selected then we will
     # apply this special package price modifier. We interpret this as disabled if set to 0.
+    # TODO deprecate, create a new option type for this
     package_price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
     # Special
@@ -198,6 +206,10 @@ class Option(models.Model):
     order = models.IntegerField(_('Order'), default=0)
 
     type = models.CharField(_('Type'), max_length=32, choices=TYPE_CHOICES, default='boolean')
+
+    # Invariants on data
+
+    required = models.BooleanField(_('Required'), default=False)
 
     # Scopes, default settings equals to the "disabled" preset
 
