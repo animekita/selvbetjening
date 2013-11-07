@@ -44,6 +44,8 @@ class S2Layout(Layout):
 
 
 class S2Field(Field):
+    template = "sadmin2/generic/parts/form_field.html"
+
     def __init__(self, *args, **kwargs):
 
         if 'width' in kwargs:

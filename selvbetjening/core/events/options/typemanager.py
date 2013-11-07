@@ -16,21 +16,21 @@ class BooleanTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return BooleanWidget(option)
+        return BooleanWidget(scope, option)
 
 
 class TextTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return TextWidget(option)
+        return TextWidget(scope, option)
 
 
 class ChoiceTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return ChoiceWidget(option)
+        return ChoiceWidget(scope, option)
 
 
 class AutoSelectTypeManager(BooleanTypeManager):
@@ -38,9 +38,9 @@ class AutoSelectTypeManager(BooleanTypeManager):
     @staticmethod
     def get_widget(scope, option):
         if scope == SCOPE.SADMIN:
-            return BooleanWidget(option)
+            return BooleanWidget(scope, option)
         else:
-            return AutoSelectBooleanWidget(option)
+            return AutoSelectBooleanWidget(scope, option)
 
 
 class AutoSelectChoiceTypeManager(ChoiceTypeManager):
@@ -52,9 +52,9 @@ class AutoSelectChoiceTypeManager(ChoiceTypeManager):
     @staticmethod
     def get_widget(scope, option):
         if scope == SCOPE.SADMIN:
-            return ChoiceWidget(option)
+            return ChoiceWidget(scope, option)
         else:
-            return AutoSelectChoiceWidget(option)
+            return AutoSelectChoiceWidget(scope, option)
 
 
 class DiscountTypeManager(ChoiceTypeManager):
@@ -67,11 +67,11 @@ class DiscountTypeManager(ChoiceTypeManager):
     def get_widget(scope, option):
         if scope == SCOPE.SADMIN:
             if option.suboptions.count() > 0:
-                return ChoiceWidget(option)
+                return ChoiceWidget(scope, option)
             else:
-                return BooleanWidget(option)
+                return BooleanWidget(scope, option)
         else:
-            return DiscountWidget(option)
+            return DiscountWidget(scope, option)
 
 _type_manager_register = {
     'boolean': BooleanTypeManager,

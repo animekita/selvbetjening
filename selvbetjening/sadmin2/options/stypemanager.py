@@ -18,15 +18,15 @@ class SBaseTypeManager(object):
 
         self.create_form = option_form_factory(
             Option,
-            ('name', 'description', 'price'),
-            ('name', 'type', 'description', 'price'),
+            ('name', 'description', 'required', 'price'),
+            ('name', 'type', 'description', 'required', 'price'),
             type_raw
         ) if create_form is None else create_form
 
         self.update_form = option_form_factory(
             Option,
-            ('name', 'description'),
-            ('name', 'type', 'description', 'price'),
+            ('name', 'description', 'required'),
+            ('name', 'type', 'description', 'required', 'price'),
             type_raw
         ) if update_form is None else update_form
 
@@ -65,7 +65,13 @@ _type_manager_register = {
     'discount': SDiscountTypeManager(
         'discount',
         update_show_suboptions=True,
-        create_form=CreateDiscountOptionForm
+        create_form=CreateDiscountOptionForm,
+        update_form=option_form_factory(
+            Option,
+            ('name', 'description'),
+            ('name', 'type', 'description', 'price'),
+            'discount'
+        )
     )
 }
 

@@ -329,3 +329,38 @@ class FormBuilderTestCase(TestCase):
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 2)
+
+
+class FormSubmitTestCase(TestCase):
+    fixtures = ['form_submit_test_fixture.json']
+
+    def test_required_checkbox_sadmin(self):
+
+        event = Event.objects.get(pk=1)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
+
+        form = OptionGroupSelectionsFormSet({
+
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_required_checkbox(self):
+
+        event = Event.objects.get(pk=1)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        form = OptionGroupSelectionsFormSet({
+
+        })
+
+        self.assertFalse(form.is_valid())
+
+        form = OptionGroupSelectionsFormSet({
+            'option_1': 'checked'
+        })
+
+        self.assertTrue(form.is_valid())
+

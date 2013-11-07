@@ -90,7 +90,7 @@ def _auto_select_choice_post_super_callback(form, *args, **kwargs):
 UpdateAutoSelectChoiceOptionForm = option_form_factory(
     AutoSelectChoiceOption,
     ('name', 'description', 'auto_select_suboption'),
-    ('name', 'type', 'description', 'price', 'auto_select_suboption'),
+    ('name', 'type', 'description', 'price', 'required', 'auto_select_suboption'),
     'autoselectchoice',
     post_super_callback=_auto_select_choice_post_super_callback
 )
@@ -98,7 +98,7 @@ UpdateAutoSelectChoiceOptionForm = option_form_factory(
 CreateAutoSelectChoiceOptionForm = option_form_factory(
     AutoSelectChoiceOption,
     ('name', 'description', 'price'),
-    ('name', 'type', 'description', 'price'),
+    ('name', 'type', 'description', 'required', 'price'),
     'autoselectchoice',
 )
 

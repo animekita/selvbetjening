@@ -24,7 +24,12 @@ def dynamic_statistics(event):
 
 
 def dynamic_selections(scope, attendee, option_group=None, as_dict=False, as_group_dict=False):
-    return _dynamic_selections(scope, attendee.event, attendee=attendee, option_group=option_group, as_dict=as_dict, as_group_dict=as_group_dict)
+    return _dynamic_selections(scope,
+                               attendee.event,
+                               attendee=attendee,
+                               option_group=option_group,
+                               as_dict=as_dict,
+                               as_group_dict=as_group_dict)
 
 
 def dynamic_options(scope, event, option_group=None, as_dict=False, as_group_dict=False):

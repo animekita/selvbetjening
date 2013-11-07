@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
 from selvbetjening.core.events.models import Selection
+from selvbetjening.core.events.options.scope import SCOPE
 
 
 class BaseWidget(object):
@@ -16,14 +17,15 @@ class BaseWidget(object):
 
 class BooleanWidget(BaseWidget):
 
-    def __init__(self, option):
+    def __init__(self, scope, option):
+        self.scope = scope
         self.option = option
 
     def get_field(self):
 
         return forms.BooleanField(
             label=self.option.name if self.option.price == 0 else '%s (%s,-)' % (self.option.name, self.option.price),
-            required=False,
+            required=self.option.required if self.scope != SCOPE.SADMIN else False,
             help_text=self.option.description,
             widget=forms.CheckboxInput())
 
@@ -49,14 +51,15 @@ class BooleanWidget(BaseWidget):
 
 class TextWidget(BaseWidget):
 
-    def __init__(self, option):
+    def __init__(self, scope, option):
+        self.scope = scope
         self.option = option
 
     def get_field(self):
 
         return forms.CharField(
             label=self.option.name,
-            required=False,
+            required=self.option.required if self.scope != SCOPE.SADMIN else False,
             help_text=self.option.description,
             widget=forms.TextInput())
 
@@ -85,7 +88,8 @@ class TextWidget(BaseWidget):
 
 class ChoiceWidget(BaseWidget):
 
-    def __init__(self, option):
+    def __init__(self, scope, option):
+        self.scope = scope
         self.option = option
 
         self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
@@ -95,7 +99,7 @@ class ChoiceWidget(BaseWidget):
 
         return forms.ChoiceField(
             label=self.option.name,
-            required=False,
+            required=self.option.required if self.scope != SCOPE.SADMIN else False,
             help_text=self.option.description,
             widget=forms.Select(),
             choices=self.choices)
@@ -159,7 +163,8 @@ class AutoChoiceDisplay(Input):
 
     CANT_DISABLE = True
 
-    def __init__(self, suboption):
+    def __init__(self, scope, suboption):
+        self.scope = scope
         self.suboption = suboption
         super(AutoChoiceDisplay, self).__init__()
 
@@ -178,7 +183,7 @@ class AutoSelectChoiceWidget(ChoiceWidget):
 
         return forms.ChoiceField(
             label=self.option.name,
-            required=False,
+            required=self.option.required if self.scope != SCOPE.SADMIN else False,
             widget=AutoChoiceDisplay(self.option.auto_select_suboption),
             choices=self.choices)
 
@@ -195,8 +200,8 @@ class AutoSelectChoiceWidget(ChoiceWidget):
 
 class DiscountWidget(TextWidget):
 
-    def __init__(self, option):
-        super(DiscountWidget, self).__init__(option)
+    def __init__(self, scope, option):
+        super(DiscountWidget, self).__init__(scope, option)
         self.discount_option = DiscountOption.objects.get(option_ptr=option)
 
     def is_editable(self, attendee):
