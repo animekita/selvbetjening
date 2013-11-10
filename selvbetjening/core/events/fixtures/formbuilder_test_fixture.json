@@ -185,7 +185,8 @@
             "in_scope_edit_manage_accepted": true,
             "in_scope_edit_manage_attended": true,
 
-            "price": 0
+            "price": 0,
+            "required": false
         }
     },
     {

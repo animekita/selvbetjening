@@ -139,7 +139,6 @@
   "pk": 1, 
   "model": "events.optiongroup", 
   "fields": {
-    "gatekeeper": null, 
     "description": "", 
     "minimum_selected": 0, 
     "is_special": true, 
@@ -154,7 +153,6 @@
   "pk": 2, 
   "model": "events.optiongroup", 
   "fields": {
-    "gatekeeper": null, 
     "description": "", 
     "minimum_selected": 0, 
     "is_special": false, 
