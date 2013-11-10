@@ -169,6 +169,10 @@ class AutoChoiceDisplay(Input):
 
     CANT_DISABLE = True
 
+    def __init__(self, suboption, *args, **kwargs):
+        self.suboption = suboption
+        super(AutoChoiceDisplay, self).__init__(*args, **kwargs)
+
     def render(self, name, value, attrs=None):
         value = self.suboption.name if self.suboption.real_price == 0 else '%s (%s,-)' % (self.suboption.name, self.suboption.real_price)
         return '<p class="form-control-static">%s</p>' % value
