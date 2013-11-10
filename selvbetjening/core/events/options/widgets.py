@@ -16,7 +16,7 @@ class BaseWidget(object):
         self.scope = scope
         self.option = option
         self.required = self.option.required if self.scope != SCOPE.SADMIN else False
-        self.use_native_required = self.required and self.option.depends_on is None,  # if we have a dependency, then disable native required checks
+        self.use_native_required = self.required and self.option.depends_on is None  # if we have a dependency, then disable native required checks
 
     def is_editable(self, attendee):
         return True
