@@ -154,8 +154,6 @@ class OptionGroup(models.Model):
     minimum_selected = models.IntegerField(_('Minimum selected'), default=0)
     maximum_selected = models.IntegerField(_('Maximum selected'), default=0)
 
-    gatekeeper = models.ForeignKey('events.Option', blank=True, null=True)
-
     # Effects
 
     # A package price modifier - if all options in a group are selected then we will
@@ -210,6 +208,7 @@ class Option(models.Model):
     # Invariants on data
 
     required = models.BooleanField(_('Required'), default=False)
+    depends_on = models.ForeignKey('events.Option', blank=True, null=True, default=None)
 
     # Scopes, default settings equals to the "disabled" preset
 

@@ -210,9 +210,20 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         for key, save_callback in self.save_callbacks.items():
             save_callback(attendee, self.cleaned_data.get(key, None))
 
-    def clean_callback(field_id, type_manager_callback):
+    def clean_callback(field_id, related_field, type_manager_clean_callback):
         def inner(self):
-            return type_manager_callback(self.cleaned_data.get(field_id, None))
+
+            # If we have a related field, then erase the value if the related field is not selected.
+            if related_field is not None:
+
+                # Related field is readonly and is not set "initially"
+                if related_field in self.readonly and not self.initial.get(related_field, False):
+                    return None
+
+                if related_field not in self.readonly and not self.cleaned_data.get(related_field, False):
+                    return None
+
+            return type_manager_clean_callback(self.cleaned_data.get(field_id, None))
 
         return inner
 
@@ -221,17 +232,24 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         '__init__': init,
         'save': save,
         'type_widgets': {},
-        'readonly': {}
+        'readonly': []
     }
 
     for option in options:
         widget = type_manager_factory(option).get_widget(scope, option)
         field_id = _pack_id('option', option.pk)
 
-        fields[field_id] = widget.get_field()
+        related_field = None
+        attrs = None
+
+        if option.depends_on is not None:
+            related_field = _pack_id('option', option.depends_on.pk)
+            attrs = {'data-depends-on': related_field}
+
+        fields[field_id] = widget.get_field(attrs=attrs)
 
         if scope == SCOPE.SADMIN or getattr(option, scope):  # The edit scope bit is set
-            fields['clean_%s' % field_id] = clean_callback(field_id, widget.clean_callback)
+            fields['clean_%s' % field_id] = clean_callback(field_id, related_field, widget.clean_callback)
             fields['save_callbacks'][field_id] = widget.save_callback
         else:  # The edit bit is not set, this is a view only option
             fields['clean_%s' % field_id] = lambda self: None
@@ -239,6 +257,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
             if not hasattr(fields[field_id].widget, 'CANT_DISABLE'):
                 fields[field_id].widget.attrs['disabled'] = 'disabled'
+                fields['readonly'].append(field_id)
 
         fields['type_widgets'][field_id] = widget
 

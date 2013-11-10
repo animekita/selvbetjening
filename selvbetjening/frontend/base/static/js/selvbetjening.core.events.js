@@ -57,5 +57,31 @@ $(function() {
         selvbetjening.update_checkbox_class($(p)[0]);
     });
 
+    $("[data-depends-on]").each(function(i, p) {
+
+        var node = $(p);
+        var dependency = $("[name=" + p.getAttribute('data-depends-on') + "]");
+
+        var parentBlock = node.parents('.form-group');
+        var nodeIsRequired = node.attr('required') != undefined;
+
+        function update(fast) {
+            if (dependency.prop('checked')) {
+
+                parentBlock.fadeIn();
+
+                if (nodeIsRequired) {
+                    node.attr('required', 'required');
+                }
+            } else {
+                parentBlock.fadeOut();
+                node.removeAttr('required');
+            }
+        }
+
+        update(true);
+
+        dependency.change(update);
+    });
 });
 

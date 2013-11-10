@@ -1,5 +1,6 @@
 
 from django import forms
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.forms.widgets import Input
 from django.utils.translation import ugettext as _
@@ -11,23 +12,34 @@ from selvbetjening.core.events.options.scope import SCOPE
 
 class BaseWidget(object):
 
+    def __init__(self, scope, option):
+        self.scope = scope
+        self.option = option
+        self.required = self.option.required if self.scope != SCOPE.SADMIN else False
+        self.use_native_required = self.required and self.option.depends_on is None,  # if we have a dependency, then disable native required checks
+
     def is_editable(self, attendee):
         return True
+
+    def clean_callback(self, value):
+
+        if (value in validators.EMPTY_VALUES or not value) and self.required:
+            raise ValidationError(_('This field is required.'))
+
+        return value if value is not None else False
 
 
 class BooleanWidget(BaseWidget):
 
-    def __init__(self, scope, option):
-        self.scope = scope
-        self.option = option
+    def get_field(self, attrs=None):
 
-    def get_field(self):
-
-        return forms.BooleanField(
+        field = forms.BooleanField(
             label=self.option.name if self.option.price == 0 else '%s (%s,-)' % (self.option.name, self.option.price),
-            required=self.option.required if self.scope != SCOPE.SADMIN else False,
+            required=self.use_native_required,
             help_text=self.option.description,
-            widget=forms.CheckboxInput())
+            widget=forms.CheckboxInput(attrs=attrs))
+        field.render_as_required = self.required
+        return field
 
     def save_callback(self, attendee, value):
 
@@ -42,26 +54,21 @@ class BooleanWidget(BaseWidget):
                 attendee=attendee
             ).delete()
 
-    def clean_callback(self, value):
-        return value if value is not None else False
-
     def initial_value(self, selection):
         return True
 
 
 class TextWidget(BaseWidget):
 
-    def __init__(self, scope, option):
-        self.scope = scope
-        self.option = option
+    def get_field(self, attrs=None):
 
-    def get_field(self):
-
-        return forms.CharField(
+        field = forms.CharField(
             label=self.option.name,
-            required=self.option.required if self.scope != SCOPE.SADMIN else False,
+            required=self.use_native_required,
             help_text=self.option.description,
-            widget=forms.TextInput())
+            widget=forms.TextInput(attrs=attrs))
+        field.render_as_required = self.required
+        return field
 
     def save_callback(self, attendee, value):
 
@@ -79,9 +86,6 @@ class TextWidget(BaseWidget):
                 attendee=attendee
             ).delete()
 
-    def clean_callback(self, value):
-        return value
-
     def initial_value(self, selection):
         return selection.text
 
@@ -89,20 +93,21 @@ class TextWidget(BaseWidget):
 class ChoiceWidget(BaseWidget):
 
     def __init__(self, scope, option):
-        self.scope = scope
-        self.option = option
+        super(ChoiceWidget, self).__init__(scope, option)
 
         self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
                                      for suboption in self.option.suboptions.all()]
 
-    def get_field(self):
+    def get_field(self, attrs=None):
 
-        return forms.ChoiceField(
+        field = forms.ChoiceField(
             label=self.option.name,
-            required=self.option.required if self.scope != SCOPE.SADMIN else False,
+            required=self.use_native_required,
             help_text=self.option.description,
-            widget=forms.Select(),
+            widget=forms.Select(attrs=attrs),
             choices=self.choices)
+        field.render_as_required = self.required
+        return field
 
     def save_callback(self, attendee, value):
 
@@ -124,6 +129,7 @@ class ChoiceWidget(BaseWidget):
             ).delete()
 
     def clean_callback(self, value):
+        value = super(ChoiceWidget, self).clean_callback(value)
 
         if value is None:
             return None
@@ -147,10 +153,10 @@ class ChoiceWidget(BaseWidget):
 
 class AutoSelectBooleanWidget(BooleanWidget):
 
-    def get_field(self):
+    def get_field(self, attrs=None):
         return forms.BooleanField(
             required=False,
-            widget=forms.HiddenInput())
+            widget=forms.HiddenInput(attrs=None))
 
     def clean_callback(self, value):
         return True
@@ -163,11 +169,6 @@ class AutoChoiceDisplay(Input):
 
     CANT_DISABLE = True
 
-    def __init__(self, scope, suboption):
-        self.scope = scope
-        self.suboption = suboption
-        super(AutoChoiceDisplay, self).__init__()
-
     def render(self, name, value, attrs=None):
         value = self.suboption.name if self.suboption.real_price == 0 else '%s (%s,-)' % (self.suboption.name, self.suboption.real_price)
         return '<p class="form-control-static">%s</p>' % value
@@ -179,13 +180,15 @@ class AutoSelectChoiceWidget(ChoiceWidget):
         super(AutoSelectChoiceWidget, self).__init__(*args, **kwargs)
         self.option = AutoSelectChoiceOption.objects.get(option_ptr=self.option)
 
-    def get_field(self):
+    def get_field(self, attrs=None):
 
-        return forms.ChoiceField(
+        field = forms.ChoiceField(
             label=self.option.name,
-            required=self.option.required if self.scope != SCOPE.SADMIN else False,
-            widget=AutoChoiceDisplay(self.option.auto_select_suboption),
+            required=self.use_native_required,
+            widget=AutoChoiceDisplay(self.option.auto_select_suboption, attrs=attrs),
             choices=self.choices)
+        field.render_as_native = self.required
+        return field
 
     def save_callback(self, attendee, value):
 
@@ -228,6 +231,7 @@ class DiscountWidget(TextWidget):
             value.save()
 
     def clean_callback(self, value):
+        value = super(DiscountWidget, self).clean_callback(value)
 
         if value is None or len(value) == 0:
             return None

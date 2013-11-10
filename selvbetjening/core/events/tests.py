@@ -364,3 +364,89 @@ class FormSubmitTestCase(TestCase):
 
         self.assertTrue(form.is_valid())
 
+    def test_dependency(self):
+
+        event = Event.objects.get(pk=2)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
+
+        form = OptionGroupSelectionsFormSet({
+            'option_2': 'checked',
+            'option_3': 'checked'
+        })
+
+        self.assertTrue(form.is_valid())
+        self.assertTrue('option_2' in form[0].cleaned_data)
+        self.assertTrue('option_3' in form[0].cleaned_data)
+
+        # We should remove dependent selections automatically - even in sadmin scope
+
+        form = OptionGroupSelectionsFormSet({
+            'option_3': 'checked'
+        })
+
+        self.assertTrue(form.is_valid())
+        self.assertFalse(form[0].cleaned_data.get('option_2', False))
+        self.assertFalse(form[0].cleaned_data.get('option_3', False))
+
+    def test_dependency_required_all_selected(self):
+
+        event = Event.objects.get(pk=3)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        # Both selected
+
+        form = OptionGroupSelectionsFormSet({
+            'option_4': 'checked',
+            'option_5': 'checked'
+        })
+
+        self.assertTrue(form.is_valid())
+        self.assertTrue(form[0].cleaned_data.get('option_4', False))
+        self.assertTrue(form[0].cleaned_data.get('option_5', False))
+
+    def test_dependency_required_dependency_not_selected(self):
+
+        event = Event.objects.get(pk=3)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        # Dependency not selected, so both should be deselected
+
+        form = OptionGroupSelectionsFormSet({
+            'option_5': 'checked'
+        })
+
+        self.assertTrue(form.is_valid())
+        self.assertFalse(form[0].cleaned_data.get('option_4', False))
+        self.assertFalse(form[0].cleaned_data.get('option_5', False))
+
+    def test_dependency_required_dependency_none_selected(self):
+
+        event = Event.objects.get(pk=3)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        # None selected, but still valid
+
+        form = OptionGroupSelectionsFormSet({
+        })
+
+        self.assertTrue(form.is_valid())
+        self.assertFalse(form[0].cleaned_data.get('option_4', False))
+        self.assertFalse(form[0].cleaned_data.get('option_5', False))
+
+    def test_dependency_required_dependency_dependency_selected(self):
+
+        event = Event.objects.get(pk=3)
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        # Fail if the dependency is checked, but the required child is not
+
+        form = OptionGroupSelectionsFormSet({
+            'option_4': 'checked'
+        })
+
+        self.assertFalse(form.is_valid())

@@ -87,7 +87,6 @@
             "order": 0,
             "minimum_selected": 0,
             "maximum_selected": 0,
-            "gatekeeper": null,
             "package_price": 0,
             "is_special": false
         }
@@ -102,7 +101,6 @@
             "order": 1,
             "minimum_selected": 0,
             "maximum_selected": 0,
-            "gatekeeper": null,
             "package_price": 0,
             "is_special": false
         }
@@ -117,7 +115,6 @@
             "order": 0,
             "minimum_selected": 0,
             "maximum_selected": 0,
-            "gatekeeper": null,
             "package_price": 0,
             "is_special": false
         }
