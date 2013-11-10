@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_statistics, dynamic_selections_formset_factory, SCOPE, dynamic_selections
-from selvbetjening.core.events.models import Event, Attend, AttendState
+from selvbetjening.core.events.models import Event, Attend, AttendState, AttendeeAcceptPolicy
 
 from selvbetjening.businesslogic.events import decorators as eventdecorators
 from selvbetjening.businesslogic.events.decorators import suspend_automatic_attendee_price_updates
@@ -73,6 +73,8 @@ def event_register(request,
                    template='eventportal/event_register.html',
                    extra_context=None):
 
+    # TODO This method should be merged with the nearly identical registration method in eventsingle
+
     if extra_context is None:
         extra_context = {}
 
@@ -98,6 +100,11 @@ def event_register(request,
             attendee.recalculate_price()
 
             attendee.event.send_notification_on_registration(attendee)
+
+            # If the user has paid fully, and the event policy is to move paid members to the attended state, then do it
+            if event.move_to_accepted_policy == AttendeeAcceptPolicy.on_payment and attendee.is_paid():
+                attendee.state = AttendState.accepted
+                attendee.save()
 
             return HttpResponseRedirect(
                 reverse('eventportal_event', kwargs={'event_pk': event.pk}) + '?signup=1')
@@ -165,6 +172,12 @@ def event_status_update(request, event):
         if form.is_valid():
             form.save()
             attendee.recalculate_price()
+
+            # If the user has paid fully, and the event policy is to move paid members to the attended state, then do it
+            if event.move_to_accepted_policy == AttendeeAcceptPolicy.on_payment and attendee.is_paid():
+                attendee.state = AttendState.accepted
+                attendee.save()
+
             attendee.event.send_notification_on_registration_update(attendee)
 
             return HttpResponseRedirect(

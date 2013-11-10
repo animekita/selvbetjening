@@ -25,7 +25,7 @@ from selvbetjening.core.events.options.scope import SCOPE
 from selvbetjening.frontend.base.forms import frontend_selection_helper_factory
 from selvbetjening.frontend.base.views.events import generic_event_status
 
-from selvbetjening.core.events.models import Attend, AttendState
+from selvbetjening.core.events.models import Attend, AttendState, AttendeeAcceptPolicy
 
 from selvbetjening.businesslogic.events import decorators as eventdecorators
 from selvbetjening.businesslogic.members.forms import MinimalUserRegistrationForm, ProfileEditForm
@@ -209,6 +209,8 @@ def step2(request,
           event,
           template=None):
 
+    # TODO This method should be merged with the nearly identical registration method in eventportal
+
     step, edit_profile, edit_selections = _get_step(request, event.pk)
 
     if step < 2:
@@ -253,6 +255,12 @@ def step2(request,
             options_form.save(attendee=attendee)
 
             attendee.recalculate_price()
+
+            # If the user has paid fully, and the event policy is to move paid members to the attended state, then do it
+            if event.move_to_accepted_policy == AttendeeAcceptPolicy.on_payment and attendee.is_paid():
+                attendee.state = AttendState.accepted
+                attendee.save()
+
             attendee.event.send_notification_on_registration(attendee)
 
             return HttpResponseRedirect(

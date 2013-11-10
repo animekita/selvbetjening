@@ -52,33 +52,29 @@
   }
 },
 {
-  "pk": 1,
-  "model": "events.attend",
+  "pk": 3, 
+  "model": "events.event", 
   "fields": {
-    "changed": null,
-    "price": "0",
-    "registration_date": "2013-10-25T14:13:14.223",
-    "is_new": true,
-    "paid": "0",
-    "change_timestamp": "2013-10-25T14:13:14.223",
-    "state": "accepted",
-    "user": 2,
-    "event": 1
-  }
-},
-{
-  "pk": 2,
-  "model": "events.attend",
-  "fields": {
-    "changed": null,
-    "price": "300",
-    "registration_date": "2013-10-25T14:36:13.731",
-    "is_new": false,
-    "paid": "0",
-    "change_timestamp": "2013-10-25T14:36:13.730",
-    "state": "accepted",
-    "user": 2,
-    "event": 2
+    "show_custom_signup_message": false, 
+    "startdate": null, 
+    "group": null, 
+    "description": "Welcome all, especially those who don't need to pay anything (accept those people instantly).", 
+    "notify_on_registration": null, 
+    "title": "Simple Event (open for registrations)", 
+    "tagline": "", 
+    "move_to_accepted_policy": "on_payment", 
+    "show_custom_change_message": false, 
+    "notify_on_payment": null, 
+    "custom_change_message": "", 
+    "registration_open": true, 
+    "custom_status_page": "", 
+    "location_link": "", 
+    "maximum_attendees": 0, 
+    "notify_on_registration_update": null, 
+    "enddate": null, 
+    "show_custom_status_page": false, 
+    "custom_signup_message": "", 
+    "location": ""
   }
 },
 {
@@ -136,6 +132,15 @@
   }
 },
 {
+  "pk": 7, 
+  "model": "events.attendstatechange", 
+  "fields": {
+    "timestamp": "2013-10-26T21:30:13.843", 
+    "state": "accepted", 
+    "attendee": 3
+  }
+},
+{
   "pk": 1, 
   "model": "events.optiongroup", 
   "fields": {
@@ -164,24 +169,178 @@
   }
 },
 {
+  "pk": 3, 
+  "model": "events.optiongroup", 
+  "fields": {
+    "description": "", 
+    "minimum_selected": 0, 
+    "is_special": false, 
+    "package_price": "0", 
+    "event": 2, 
+    "maximum_selected": 0, 
+    "order": 0, 
+    "name": "Option Types"
+  }
+},
+{
   "pk": 1, 
   "model": "events.option", 
   "fields": {
     "in_scope_edit_manage_accepted": false, 
     "group": 1, 
     "name": "Event Ticket", 
-    "in_scope_view_system_invoice": true, 
+    "depends_on": null, 
     "in_scope_view_manage": false, 
+    "required": false, 
     "in_scope_view_user_invoice": true, 
-    "price": "300", 
+    "in_scope_view_system_invoice": true, 
     "in_scope_edit_manage_waiting": false, 
     "in_scope_edit_manage_attended": false, 
     "in_scope_edit_registration": false, 
     "in_scope_view_public": false, 
+    "price": "300", 
     "type": "autoselect", 
     "order": 0, 
     "in_scope_view_registration": false, 
     "description": ""
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 2, 
+    "name": "Boolean visibility", 
+    "depends_on": null, 
+    "in_scope_view_manage": true, 
+    "required": false, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": false, 
+    "in_scope_edit_registration": false, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "boolean", 
+    "order": 0, 
+    "in_scope_view_registration": true, 
+    "description": ""
+  }
+},
+{
+  "pk": 3, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 3, 
+    "name": "Checkbox", 
+    "depends_on": null, 
+    "in_scope_view_manage": true, 
+    "required": false, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": true, 
+    "in_scope_edit_registration": true, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "boolean", 
+    "order": 0, 
+    "in_scope_view_registration": true, 
+    "description": "Optional checkbox"
+  }
+},
+{
+  "pk": 4, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 3, 
+    "name": "Checkbox (Required)", 
+    "depends_on": null, 
+    "in_scope_view_manage": true, 
+    "required": true, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": true, 
+    "in_scope_edit_registration": true, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "boolean", 
+    "order": 2, 
+    "in_scope_view_registration": true, 
+    "description": "Required checkbox"
+  }
+},
+{
+  "pk": 5, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 3, 
+    "name": "Text", 
+    "depends_on": 4, 
+    "in_scope_view_manage": true, 
+    "required": false, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": true, 
+    "in_scope_edit_registration": true, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "text", 
+    "order": 3, 
+    "in_scope_view_registration": true, 
+    "description": "Text"
+  }
+},
+{
+  "pk": 6, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 3, 
+    "name": "Text (required)", 
+    "depends_on": 4, 
+    "in_scope_view_manage": true, 
+    "required": true, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": true, 
+    "in_scope_edit_registration": true, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "text", 
+    "order": 4, 
+    "in_scope_view_registration": true, 
+    "description": "Required Text"
+  }
+},
+{
+  "pk": 7, 
+  "model": "events.option", 
+  "fields": {
+    "in_scope_edit_manage_accepted": true, 
+    "group": 3, 
+    "name": "Boolean (depends on above)", 
+    "depends_on": 3, 
+    "in_scope_view_manage": true, 
+    "required": true, 
+    "in_scope_view_user_invoice": true, 
+    "in_scope_view_system_invoice": true, 
+    "in_scope_edit_manage_waiting": true, 
+    "in_scope_edit_manage_attended": true, 
+    "in_scope_edit_registration": true, 
+    "in_scope_view_public": false, 
+    "price": "0", 
+    "type": "boolean", 
+    "order": 1, 
+    "in_scope_view_registration": true, 
+    "description": "This boolean can only be selected if the above is selected."
   }
 },
 {
@@ -192,6 +351,36 @@
     "attendee": 2, 
     "suboption": null, 
     "option": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.selection", 
+  "fields": {
+    "text": "", 
+    "attendee": 3, 
+    "suboption": null, 
+    "option": 2
+  }
+},
+{
+  "pk": 3, 
+  "model": "events.selection", 
+  "fields": {
+    "text": "l", 
+    "attendee": 3, 
+    "suboption": null, 
+    "option": 6
+  }
+},
+{
+  "pk": 4, 
+  "model": "events.selection", 
+  "fields": {
+    "text": "", 
+    "attendee": 3, 
+    "suboption": null, 
+    "option": 4
   }
 },
 {
@@ -304,6 +493,51 @@
     "lng": null, 
     "expired": true, 
     "user": 2
+  }
+},
+{
+  "pk": 1, 
+  "model": "events.attend", 
+  "fields": {
+    "changed": null, 
+    "price": "0", 
+    "registration_date": "2013-10-25T14:13:14.223", 
+    "is_new": true, 
+    "paid": "0", 
+    "change_timestamp": "2013-10-25T14:13:14.223", 
+    "state": "accepted", 
+    "user": 2, 
+    "event": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "events.attend", 
+  "fields": {
+    "changed": null, 
+    "price": "300", 
+    "registration_date": "2013-10-25T14:36:13.731", 
+    "is_new": false, 
+    "paid": "0", 
+    "change_timestamp": "2013-10-25T14:36:13.730", 
+    "state": "accepted", 
+    "user": 2, 
+    "event": 2
+  }
+},
+{
+  "pk": 3, 
+  "model": "events.attend", 
+  "fields": {
+    "changed": null, 
+    "price": "0", 
+    "registration_date": "2013-10-26T21:30:13.839", 
+    "is_new": true, 
+    "paid": "0", 
+    "change_timestamp": "2013-10-26T21:30:13.839", 
+    "state": "accepted", 
+    "user": 1, 
+    "event": 2
   }
 }
 ]
