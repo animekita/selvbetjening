@@ -35,7 +35,7 @@ ol.progtrckr li.progtrckr-todo {
 ol.progtrckr li.progtrckr-current {
     color: #ffffff;
     border-bottom: 4px solid #AA1818;
-    background-color: #E74C3C;
+    background-color: #494949;
     border-radius: 4px 4px 0 0;
 }
 
