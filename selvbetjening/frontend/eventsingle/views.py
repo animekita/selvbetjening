@@ -18,6 +18,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.views.decorators.cache import cache_page
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
@@ -89,6 +90,7 @@ def step_controller(request,
     return step4(request, event_pk, template=step4_template)
 
 
+@cache_page(60 * 15)
 @get_event_from_id
 @event_registration_open_required
 @suspend_automatic_attendee_price_updates
@@ -151,6 +153,7 @@ def step0(request,
                   })
 
 
+#@cache_page(60 * 15)
 @get_event_from_id
 @event_registration_open_required
 @suspend_automatic_attendee_price_updates

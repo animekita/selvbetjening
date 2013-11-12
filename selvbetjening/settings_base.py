@@ -50,26 +50,26 @@ USE_TZ = False
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    )
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
-    )
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
+)
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.doc.XViewMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
+    'django.middleware.doc.XViewMiddleware', #
+    'django.middleware.transaction.TransactionMiddleware', #
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', #
     'selvbetjening.sadmin2.middleware.RequireLoginMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
@@ -175,7 +175,7 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.sql.SQLDebugPanel',
     'debug_toolbar.panels.signals.SignalDebugPanel',
     'debug_toolbar.panels.logger.LoggingPanel',
-#    'debug_toolbar.panels.profiling.ProfilingDebugPanel'
+    #'debug_toolbar.panels.profiling.ProfilingDebugPanel'
 )
 
 POLICY = dict()
