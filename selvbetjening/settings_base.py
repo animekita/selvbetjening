@@ -66,10 +66,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.doc.XViewMiddleware', #
-    'django.middleware.transaction.TransactionMiddleware', #
+    'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware', #
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'selvbetjening.sadmin2.middleware.RequireLoginMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
