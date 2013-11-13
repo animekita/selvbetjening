@@ -153,7 +153,6 @@ def step0(request,
                   })
 
 
-#@cache_page(60 * 15)
 @get_event_from_id
 @event_registration_open_required
 @suspend_automatic_attendee_price_updates
