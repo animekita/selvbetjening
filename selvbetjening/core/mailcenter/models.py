@@ -3,7 +3,7 @@ import markdown
 
 from django.conf import settings
 from django.db import models
-from django.template import Template, Context
+from django.template import Template, Context, loader
 
 from selvbetjening.core.mail import send_mail
 
@@ -81,7 +81,8 @@ class EmailSpecification(models.Model):
 
             # attendee.event context
             'event_title': 'Dummy Event',
-            'invoice': []
+            'invoice_plain': 'INVOICE',
+            'invoice_html': 'INVOICE_HTML'
         }
 
         return self._render(context)
@@ -98,10 +99,24 @@ class EmailSpecification(models.Model):
         }
 
         if attendee is not None:
+
+            invoice = dynamic_selections(SCOPE.VIEW_USER_INVOICE, attendee)
+
+            invoice_html = loader.render_to_string('events/parts/invoice.html', {
+                'attendee': attendee,
+                'invoice': invoice
+            })
+
+            invoice_text = loader.render_to_string('events/parts/invoice_text.html', {
+                'attendee': attendee,
+                'invoice': invoice
+            })
+
             context.update({
                 # attendee.event context
                 'event_title': attendee.event.title,
-                'invoice': dynamic_selections(SCOPE.VIEW_USER_INVOICE, attendee)
+                'invoice_plain': invoice_text,
+                'invoice_html': invoice_html
             })
 
         return context
@@ -125,6 +140,8 @@ class EmailSpecification(models.Model):
         else:
             body = re.sub(r'<[^>]*?>', '', self.body)
 
+        context['invoice'] = context['invoice_plain']
+
         return Template(body).render(context)
 
     def _get_rendered_body_html(self, context):
@@ -133,6 +150,8 @@ class EmailSpecification(models.Model):
             body = markdown.markdown(self.body)
         else:
             body = self.body
+
+        context['invoice'] = context['invoice_html']
 
         return Template(body).render(context)
 
