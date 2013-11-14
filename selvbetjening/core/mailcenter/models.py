@@ -144,7 +144,7 @@ class EmailSpecification(models.Model):
         else:
             body = re.sub(r'<[^>]*?>', '', self.body)
 
-        context['invoice'] = context['invoice_plain']
+        context['invoice'] = context.get('invoice_plain', None)
 
         return Template(body).render(context)
 
@@ -155,7 +155,7 @@ class EmailSpecification(models.Model):
         else:
             body = self.body
 
-        context['invoice'] = context['invoice_html']
+        context['invoice'] = context.get('invoice_html', None)
 
         return Template(body).render(context)
 
