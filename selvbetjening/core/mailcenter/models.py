@@ -115,9 +115,13 @@ class EmailSpecification(models.Model):
             context.update({
                 # attendee.event context
                 'event_title': attendee.event.title,
+                'attendee': attendee,
                 'invoice_plain': invoice_text,
-                'invoice_html': invoice_html
+                'invoice_html': invoice_html,
             })
+
+            for option, selection in invoice:
+                context['selected_%s' % option.pk] = selection is not None
 
         return context
 
