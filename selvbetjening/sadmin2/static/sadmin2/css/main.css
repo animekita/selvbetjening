@@ -6,13 +6,43 @@
 body {
     padding-bottom: 4em;
     padding-top: 1em;
+    background-color: #F5F5F5;
+    font-family: 'Open Sans', sans-serif;
 }
 
-body.login, .navbar-static-top {
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
+a {
+    color: #0e0e0e;
+
+}
+
+.main {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+}
+
+.panel {
+    background-color: #F5F5F5;
+}
+
+ol.breadcrumb {
+    background-color: #FFFFFF;
+    border: 0 solid #eeeecc;
+    border-bottom-width: 2px;
+    border-radius: 0;
+}
+
+/* Login */
+
+body.login {
     background-image: url(../img/bgtile.png);
 }
 
 /* Remove spinners for number inputs */
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
@@ -20,10 +50,15 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+/*
+ * Main menu bar
+ */
+
 .navbar-static-top {
     border-color: #111111;
     border-width: 2px 0 2px 0;
     border-style: solid;
+    background-color: #1e1e1e;
 }
 
 .navbar-static-top a {
@@ -32,11 +67,6 @@ input::-webkit-inner-spin-button {
 
 .navbar-brand span {
     color: #FFFFFF;
-}
-
-ol.breadcrumb li.active a {
-    font-weight: bold;
-    color: #000000;
 }
 
 /*
