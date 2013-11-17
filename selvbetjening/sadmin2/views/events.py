@@ -25,7 +25,7 @@ from django.http import HttpResponseRedirect
 
 from selvbetjening.core.events.models import Event, Payment
 
-from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm
+from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm, RegisterPaymentFormSet
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -86,44 +86,53 @@ def event_create(request):
 @sadmin_prerequisites
 def register_payments(request):
 
-    payments = []
-
     if request.method == 'POST':
-        form = RegisterPaymentForm(request.POST)
+        formset = RegisterPaymentFormSet(request.POST)
 
-        if form.is_valid():
+        if formset.is_valid():
 
-            result = form.cleaned_data
-            attendee = result['attendee']
+            for form in formset:
+                if form.cleaned_data is None:
+                    continue
 
-            Payment.objects.create(
-                user=attendee.user,
-                attendee=attendee,
-                amount=result['payment'],
-                signee=request.user
-            )
+                result = form.cleaned_data
 
-            attendee.event.send_notification_on_payment(attendee)
+                if 'attendee' not in result:
+                    continue  # skip this form, it is empty
 
-            messages.success(request, _('Payment for %s has been registered successfully') % attendee.user.username)
+                attendee = result['attendee']
 
-            if not attendee.in_balance():
-                # TODO Add a link to the attendee overview
-                messages.warning(request, _('Payment did match the payment due. Please review the status of this person <a href="%s">here</a>') % '#')
+                Payment.objects.create(
+                    user=attendee.user,
+                    attendee=attendee,
+                    amount=result['payment'],
+                    signee=request.user
+                )
+
+                attendee.event.send_notification_on_payment(attendee)
+
+                url = reverse('sadmin2:event_attendee_payments',
+                    kwargs={'event_pk': attendee.event.pk,
+                            'attendee_pk': attendee.pk})
+
+                if attendee.in_balance():
+                    messages.success(request, _('<a href="%s">Payment for %s has been registered successfully.</a>') % (url, attendee.user.username))
+                else:
+                    messages.error(request, _('<a href="%s">Payment for %s has been registered successfully. Note, payment does not match the payment due (link).</a>') % (url, attendee.user.username))
 
             return HttpResponseRedirect(reverse('sadmin2:events_register_payments'))
 
     else:
-        form = RegisterPaymentForm()
+        formset = RegisterPaymentFormSet()
 
     return render(request,
-                  'sadmin2/generic/form.html',
+                  'sadmin2/generic/formset.html',
                   {
                       'sadmin2_menu_main_active': 'events',
                       'sadmin2_breadcrumbs_active': 'events_register_payments',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_events,
                       'sadmin2_menu_tab_active': 'events_register_payments',
 
-                      'form': form
+                      'formset': formset
                   })
 

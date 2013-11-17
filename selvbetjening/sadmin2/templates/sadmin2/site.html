@@ -78,7 +78,7 @@
 
         {% if messages %}
             {% for message in messages %}
-                <p{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+                <p{% if message.tags %} class="alert alert-{% ifequal message.tags "error" %}danger{% else %}{{ message.tags }}{% endifequal %}"{% endif %}>{{ message|safe }}</p>
             {% endfor %}
         {% endif %}
 

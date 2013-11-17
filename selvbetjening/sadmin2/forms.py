@@ -4,16 +4,18 @@ from collections import OrderedDict
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+from django.forms.formsets import formset_factory, BaseFormSet
+from django.forms.util import ErrorList
 from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_options, SCOPE
 from selvbetjening.core.events.models import Selection, Attend, SubOption
 from selvbetjening.core.events.utils import sum_attendee_payment_status
-from selvbetjening.core.mailcenter.models import EmailSpecification
-
 from selvbetjening.core.events.signals import find_attendee_signal
 from selvbetjening.core.events.models import Event, AttendState, OptionGroup, Option, \
     AttendeeComment, Payment
+
+from selvbetjening.core.mailcenter.models import EmailSpecification
 
 from selvbetjening.frontend.utilities.forms import *
 
@@ -178,25 +180,14 @@ class AttendeeFormattingForm(forms.Form):
 
 
 class RegisterPaymentForm(forms.Form):
-    payment_key = forms.CharField(max_length=255)
-    payment = forms.DecimalField(decimal_places=2)
+    payment_key = forms.CharField(max_length=255, required=False)
+    payment = forms.DecimalField(decimal_places=2, required=False)
 
     fieldsets = [
         (None, {
             'fields': ('payment_key', 'payment'),
         })
     ]
-
-    helper = S2FormHelper(horizontal=True)
-
-    layout = Layout(
-        Fieldset(None,
-                 S2Field('payment_key'), S2Field('payment')))
-
-    submit = Submit('update', _('Register'))
-
-    helper.add_layout(layout)
-    helper.add_input(submit)
 
     def clean_payment_key(self):
         payment_key = self.cleaned_data['payment_key']
@@ -214,6 +205,44 @@ class RegisterPaymentForm(forms.Form):
         self.cleaned_data['attendee'] = results[0][1]
 
         return payment_key
+
+    def clean(self):
+
+        if 'attendee' not in self.cleaned_data:
+            return
+
+        payment = self.cleaned_data.get('payment', None)
+
+        if payment is None or payment == 0:
+
+            if 'payment' not in self._errors:
+                self._errors['payment'] = ErrorList()
+
+            self._errors['payment'] = self.error_class([_('Payment field empty')])
+
+            del self.cleaned_data['payment']
+            del self.cleaned_data['attendee']
+            del self.cleaned_data['handler']
+            del self.cleaned_data['payment_key']
+
+        return self.cleaned_data
+
+
+class BaseRegisterPaymentFormSet(BaseFormSet):
+
+    helper = S2FormHelper(horizontal=False)
+
+    layout = S2Layout(S2Fieldset(
+        None,
+        S2HorizontalRow(S2Field('payment_key', width=6), S2Field('payment', width=6))
+    ))
+
+    submit = Submit('update', _('Register'))
+
+    helper.add_layout(layout)
+    helper.add_input(submit)
+
+RegisterPaymentFormSet = formset_factory(RegisterPaymentForm, formset=BaseRegisterPaymentFormSet, extra=8)
 
 
 class OptionGroupForm(forms.ModelForm):
