@@ -36,13 +36,31 @@ class EventsTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+        # normal behaviour
+
         response = self.client.post(url, {
-            'payment_key': 'EUA.1.2.1',
-            'payment': 100
+            'form-INITIAL_FORMS': 0,
+            'form-TOTAL_FORMS': 8,
+            'form-MAX_NUM_FORMS': 1000,
+            'form-0-payment_key': 'EUA.1.2.1',
+            'form-0-payment': 100
         }, follow=True)
 
         self.assertEqual(response.status_code, 200)
 
         attendee = Attend.objects.get(pk=1)  # user1 attendance to Simple Event
         self.assertEqual(attendee.paid, 100)
+
+        # don't succeed (don't redirect) if we are missing a payment
+
+        response = self.client.post(url, {
+            'form-INITIAL_FORMS': 0,
+            'form-TOTAL_FORMS': 8,
+            'form-MAX_NUM_FORMS': 1000,
+            'form-0-payment_key': 'EUA.1.2.1'
+        })
+
+        self.assertEqual(response.status_code, 200)
+
+
 
