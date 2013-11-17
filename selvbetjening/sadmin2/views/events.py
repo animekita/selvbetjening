@@ -82,6 +82,7 @@ def event_create(request):
         context=context
     )
 
+
 @sadmin_prerequisites
 def register_payments(request):
 

@@ -377,6 +377,7 @@ def event_attendees_add(request, event_pk):
                        context=context
                        )
 
+
 @sadmin_prerequisites
 def event_attendee(request, event_pk, attendee_pk):
 
