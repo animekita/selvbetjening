@@ -32,7 +32,7 @@ class SetPasswordForm(BaseSetPasswordForm):
 
 class PasswordResetForm(BasePasswordResetForm):
 
-    layout = S2Layout('email')
+    layout = S2Layout(S2Fieldset(None, 'email'))
 
     helper = S2FormHelper()
     helper.add_layout(layout)
