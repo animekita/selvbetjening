@@ -8,13 +8,12 @@ Overwrite this file if you want to provide your own stylesheets.
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.3.0.0.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.4.0.0.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
 {% endblock %}
 
 {% block head %}
     {{ block.super }}
     <script src="{{ STATIC_URL }}js/vendor/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}js/vendor/holder.min.js"></script>
 {% endblock %}
 
