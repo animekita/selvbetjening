@@ -18,6 +18,8 @@ DATABASES = {
     }
 }
 
+SITE_URL = 'http://localhost:8000/'
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
@@ -44,4 +46,3 @@ ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 # Make this unique, and don't share it with anybody.
 # Remember to change this!
 SECRET_KEY = 'lic-@(-)mi^b&amp;**h1ggnbyya2qiivaop-@c#3@m3w%m1o73j8@'
-
