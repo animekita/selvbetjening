@@ -25,7 +25,10 @@ class AuthenticationForm(BaseAuthenticationForm):
 
 class SetPasswordForm(BaseSetPasswordForm):
 
+    layout = S2Layout(S2Fieldset(None, 'new_password1', 'new_password2'))
+
     helper = S2FormHelper()
+    helper.add_layout(layout)
     helper.form_tag = False
     helper.add_input(S2Submit(_(u'Choose Password'), _(u'Choose Password')))
 
