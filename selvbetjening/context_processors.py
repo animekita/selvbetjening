@@ -9,6 +9,5 @@ def site_urls(request):
         'DEBUG': settings.DEBUG,
         'VERSION': settings.VERSION,
         'STATIC_URL': settings.STATIC_URL,
-        'MEDIA_URL': settings.MEDIA_URL,
-        'SITE_URL': settings.SITE_URL
+        'MEDIA_URL': settings.MEDIA_URL
     }
