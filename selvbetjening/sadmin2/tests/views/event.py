@@ -189,7 +189,7 @@ class EventTestCase(TestCase):
         # TODO test create anon group
         # TODO detailed testing of changing scopes
 
-        url = reverse('sadmin2:event_selections_manage', kwargs={
+        url = reverse('sadmin2:event_settings_selections', kwargs={
             'event_pk': 2
         })
 

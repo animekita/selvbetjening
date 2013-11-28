@@ -99,7 +99,7 @@ def event_selections_manage(request, event_pk):
                 )
 
                 messages.success(request, _('Special option group created'))
-                return HttpResponseRedirect(reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}))
+                return HttpResponseRedirect(reverse('sadmin2:event_settings_selections', kwargs={'event_pk': event.pk}))
 
         # split selections into options
 
@@ -146,13 +146,13 @@ def event_selections_manage(request, event_pk):
                 option.save()
 
         messages.success(request, _('Selections saves'))
-        return HttpResponseRedirect(reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}))
+        return HttpResponseRedirect(reverse('sadmin2:event_settings_selections', kwargs={'event_pk': event.pk}))
 
     return render(request,
                   'sadmin2/event/selections_manage.html',
                   {
                       'sadmin2_menu_main_active': 'events',
-                      'sadmin2_breadcrumbs_active': 'event_selections_manage',
+                      'sadmin2_breadcrumbs_active': 'event_settings_selections',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
                       'sadmin2_menu_tab_active': 'selections',
 
@@ -182,7 +182,7 @@ def event_selections_create_group(request, event_pk):
 
     return generic_create_view(request,
                                OptionGroupForm,
-                               reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}),
+                               reverse('sadmin2:event_settings_selections', kwargs={'event_pk': event.pk}),
                                message_success=_('Option group created'),
                                context=context,
                                instance_save_callback=save_callback)
@@ -206,7 +206,7 @@ def event_selections_edit_group(request, event_pk, group_pk):
 
     return generic_create_view(request,
                                OptionGroupForm,
-                               reverse('sadmin2:event_selections_manage', kwargs={'event_pk': event.pk}),
+                               reverse('sadmin2:event_settings_selections', kwargs={'event_pk': event.pk}),
                                message_success=_('Option group saved'),
                                context=context,
                                instance=group)

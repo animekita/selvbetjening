@@ -168,34 +168,22 @@ breadcrumbs = {
         'parent': 'event'},
 
     # Assumes: context[event], kwargs[event_pk]
-    'event_selections':  {
+    'event_settings_selections':  {
         'name': _('Selections'),
-        'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
-        'parent': 'event'},
-
-    # Assumes: context[event], kwargs[event_pk]
-    'event_selections_manage':  {
-        'name': _('Settings'),
-        'url_callback': url_callback('sadmin2:event_selections_manage', ('event_pk',)),
-        'parent': 'event_selections'},
-
-    # Assumes: context[event], kwargs[event_pk]
-    'event_selections_transfer':  {
-        'name': _('Transfer'),
-        'url_callback': url_callback('sadmin2:event_selections_transfer', ('event_pk',)),
-        'parent': 'event_selections'},
+        'url_callback': url_callback('sadmin2:event_settings_selections', ('event_pk',)),
+        'parent': 'event_settings'},
 
     # Assumes: context[event], kwargs[event_pk]
     'event_selections_create_group':  {
         'name': _('Create Group'),
         'url_callback': url_callback('sadmin2:event_selections_create_group', ('event_pk',)),
-        'parent': 'event_selections_manage'},
+        'parent': 'event_settings_selections'},
 
     # Assumes: context[event], context[option_group], kwargs[event_pk]
     'event_selections_group':  {
         'name_callback': lambda context: context['option_group'].name if context['option_group'].name != '' else 'anon',
         'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
-        'parent': 'event_selections_manage'},
+        'parent': 'event_settings_selections'},
 
     # Assumes: context[event], context[option_group], kwargs[event_pk], kwargs[group_pk]
     'event_selections_edit_group':  {
@@ -215,6 +203,18 @@ breadcrumbs = {
         'name_callback': lambda context: context['option'].name,
         'url_callback': url_callback('sadmin2:event_selections_edit_option', ('event_pk', 'group_pk', 'option_pk')),
         'parent': 'event_selections_group'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_selections':  {
+        'name': _('Selections'),
+        'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
+        'parent': 'event'},
+
+    # Assumes: context[event], kwargs[event_pk]
+    'event_selections_transfer':  {
+        'name': _('Transfer'),
+        'url_callback': url_callback('sadmin2:event_selections_transfer', ('event_pk',)),
+        'parent': 'event_selections'},
 
     # Assumes: context[event], kwargs[event_pk]
     'event_report_registration':  {
@@ -374,11 +374,11 @@ sadmin2_menu_tab_event = (
      'url_callback': url_callback('sadmin2:event_overview', ('event_pk',))},
 
     {'id': 'attendees',
-     'name': u'Deltagere',
+     'name': _(u'Attendees'),
      'url_callback': url_callback('sadmin2:event_attendees', ('event_pk',))},
 
     {'id': 'selections',
-     'name': u'Tilvalg',
+     'name': _(u'Selections'),
      'url_callback': url_callback('sadmin2:event_selections', ('event_pk',))},
 
     {'id': 'reports',
@@ -407,9 +407,20 @@ sadmin2_menu_tab_event = (
      )},
 
     {'id': 'settings',
-     'name': u'Settings',
-     'url_callback': url_callback('sadmin2:event_settings', ('event_pk',))
-     }
+     'name': _('Settings'),
+     'dropdown': (
+
+         {'id': 'settings_event',
+          'name': _(u'Event'),
+          'url_callback': url_callback('sadmin2:event_settings', ('event_pk',))
+          },
+
+         {'id': 'settings_selections',
+          'name': _(u'Selections'),
+          'url_callback': url_callback('sadmin2:event_settings_selections', ('event_pk',))
+          }
+
+     )}
 )
 
 sadmin2_menu_tab_emails = (
