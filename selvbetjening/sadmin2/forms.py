@@ -598,9 +598,23 @@ class SelectionTransferForm(forms.Form):
             choices.append((option.pk, '%s - %s,-' % (option.name, option.price)))
 
             for suboption in option.suboption_set.all():
+
+                price = 0
+
+                if option.price is not None:
+                    price += option.price
+
+                if suboption.price is not None:
+                    price += suboption.price
+
+                if price > 0:
+                    price_str = ' - %s,-' % price
+                else:
+                    price_str = ''
+
                 choices.append((
                     '%s-%s' % (option.pk, suboption.pk),
-                    '%s (%s) - %s,-' % (option.name, suboption.name, option.price + suboption.price))
+                    '%s (%s)%s' % (option.name, suboption.name, price_str))
                 )
 
         self.fields['from_option'].choices = choices
