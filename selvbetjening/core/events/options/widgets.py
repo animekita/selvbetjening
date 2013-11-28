@@ -12,9 +12,10 @@ from selvbetjening.core.events.options.scope import SCOPE
 
 class BaseWidget(object):
 
-    def __init__(self, scope, option):
+    def __init__(self, scope, option, send_notifications=False):
         self.scope = scope
         self.option = option
+        self.send_notifications = send_notifications
         self.required = self.option.required if self.scope != SCOPE.SADMIN else False
         self.use_native_required = self.required and self.option.depends_on is None  # if we have a dependency, then disable native required checks
 
@@ -44,10 +45,14 @@ class BooleanWidget(BaseWidget):
     def save_callback(self, attendee, value):
 
         if value is not None and value:
-            Selection.objects.get_or_create(
+            selection, created = Selection.objects.get_or_create(
                 option_id=self.option.pk,
                 attendee=attendee
             )
+
+            if created and self.send_notifications:
+                self.option.send_notification_on_select(attendee)
+
         else:
             Selection.objects.filter(
                 option_id=self.option.pk,
@@ -80,6 +85,10 @@ class TextWidget(BaseWidget):
 
             selection.text = value.strip()
             selection.save()
+
+            if created and self.send_notifications:
+                self.option.send_notification_on_select(attendee)
+
         else:
             Selection.objects.filter(
                 option_id=self.option.pk,
@@ -92,8 +101,8 @@ class TextWidget(BaseWidget):
 
 class ChoiceWidget(BaseWidget):
 
-    def __init__(self, scope, option):
-        super(ChoiceWidget, self).__init__(scope, option)
+    def __init__(self, scope, option, send_notifications=False):
+        super(ChoiceWidget, self).__init__(scope, option, send_notifications=send_notifications)
 
         self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
                                      for suboption in self.option.suboptions.all()]
@@ -121,6 +130,9 @@ class ChoiceWidget(BaseWidget):
 
             selection.suboption_id = pk
             selection.save()
+
+            if created and self.send_notifications:
+                self.option.send_notification_on_select(attendee)
 
         else:
             Selection.objects.filter(
@@ -204,11 +216,14 @@ class AutoSelectChoiceWidget(ChoiceWidget):
         selection.suboption = self.option.auto_select_suboption
         selection.save()
 
+        if created and self.send_notifications:
+            self.option.send_notification_on_select(attendee)
+
 
 class DiscountWidget(TextWidget):
 
-    def __init__(self, scope, option):
-        super(DiscountWidget, self).__init__(scope, option)
+    def __init__(self, scope, option, send_notifications=False):
+        super(DiscountWidget, self).__init__(scope, option, send_notifications=send_notifications)
         self.discount_option = DiscountOption.objects.get(option_ptr=option)
 
     def is_editable(self, attendee):
@@ -233,6 +248,9 @@ class DiscountWidget(TextWidget):
 
             value.selection = selection
             value.save()
+
+            if created and self.send_notifications:
+                self.option.send_notification_on_select(attendee)
 
     def clean_callback(self, value):
         value = super(DiscountWidget, self).clean_callback(value)

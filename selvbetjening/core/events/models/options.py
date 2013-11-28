@@ -132,6 +132,7 @@ from django.db import models
 from event import Event
 
 from attendee import Attend
+from selvbetjening.core.mailcenter.models import EmailSpecification
 
 
 class OptionGroup(models.Model):
@@ -228,6 +229,13 @@ class Option(models.Model):
 
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2,
                                 help_text=_('This option will automatically be visible in user invoices and at check-in if a non-zero price is set. You can not modify the price if the option has been selected by an attendee.'))
+
+    notify_on_selection = \
+        models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_option_on_selection')
+
+    def send_notification_on_select(self, attendee):
+        if self.notify_on_selection is not None:
+            self.notify_on_selection.send_email_attendee(attendee, 'event.notify.on_select')
 
     @property
     def selections(self):

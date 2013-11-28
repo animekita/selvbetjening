@@ -262,7 +262,10 @@ def step2(request,
                 attendee.state = AttendState.accepted
                 attendee.save()
 
-            attendee.event.send_notification_on_registration(attendee)
+            if scope == SCOPE.EDIT_REGISTRATION:
+                attendee.event.send_notification_on_registration(attendee)
+            else:
+                attendee.event.send_notification_on_registration_update(attendee)
 
             return HttpResponseRedirect(
                 reverse('eventsingle_steps', kwargs={'event_pk': event.pk})

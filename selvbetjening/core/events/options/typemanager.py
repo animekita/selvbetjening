@@ -16,21 +16,30 @@ class BooleanTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return BooleanWidget(scope, option)
+        if scope == SCOPE.SADMIN:
+            return BooleanWidget(scope, option)
+        else:
+            return BooleanWidget(scope, option, send_notifications=True)
 
 
 class TextTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return TextWidget(scope, option)
+        if scope == SCOPE.SADMIN:
+            return TextWidget(scope, option)
+        else:
+            return TextWidget(scope, option, send_notifications=True)
 
 
 class ChoiceTypeManager(BaseTypeManager):
 
     @staticmethod
     def get_widget(scope, option):
-        return ChoiceWidget(scope, option)
+        if scope == SCOPE.SADMIN:
+            return ChoiceWidget(scope, option)
+        else:
+            return ChoiceWidget(scope, option, send_notifications=True)
 
 
 class AutoSelectTypeManager(BooleanTypeManager):
@@ -40,7 +49,7 @@ class AutoSelectTypeManager(BooleanTypeManager):
         if scope == SCOPE.SADMIN:
             return BooleanWidget(scope, option)
         else:
-            return AutoSelectBooleanWidget(scope, option)
+            return AutoSelectBooleanWidget(scope, option, send_notifications=True)
 
 
 class AutoSelectChoiceTypeManager(ChoiceTypeManager):
@@ -54,7 +63,7 @@ class AutoSelectChoiceTypeManager(ChoiceTypeManager):
         if scope == SCOPE.SADMIN:
             return ChoiceWidget(scope, option)
         else:
-            return AutoSelectChoiceWidget(scope, option)
+            return AutoSelectChoiceWidget(scope, option, send_notifications=True)
 
 
 class DiscountTypeManager(ChoiceTypeManager):
@@ -71,7 +80,7 @@ class DiscountTypeManager(ChoiceTypeManager):
             else:
                 return BooleanWidget(scope, option)
         else:
-            return DiscountWidget(scope, option)
+            return DiscountWidget(scope, option, send_notifications=True)
 
 _type_manager_register = {
     'boolean': BooleanTypeManager,

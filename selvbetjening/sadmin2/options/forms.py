@@ -89,16 +89,16 @@ def _auto_select_choice_post_super_callback(form, *args, **kwargs):
 
 UpdateAutoSelectChoiceOptionForm = option_form_factory(
     AutoSelectChoiceOption,
-    ('name', 'description', 'required', 'depends_on', 'auto_select_suboption'),
-    ('name', 'type', 'description', 'price', 'required', 'depends_on', 'auto_select_suboption'),
+    ('name', 'description', 'required', 'depends_on', 'auto_select_suboption', 'notify_on_selection'),
+    ('name', 'type', 'description', 'price', 'required', 'depends_on', 'auto_select_suboption', 'notify_on_selection'),
     'autoselectchoice',
     post_super_callback=_auto_select_choice_post_super_callback
 )
 
 CreateAutoSelectChoiceOptionForm = option_form_factory(
     AutoSelectChoiceOption,
-    ('name', 'description', 'required', 'depends_on', 'price'),
-    ('name', 'type', 'description', 'required', 'depends_on', 'price'),
+    ('name', 'description', 'required', 'depends_on', 'price', 'notify_on_selection'),
+    ('name', 'type', 'description', 'required', 'depends_on', 'price', 'notify_on_selection'),
     'autoselectchoice',
 )
 
@@ -114,16 +114,16 @@ def _discount_post_super_callback(form, *args, **kwargs):
 
 UpdateDiscountOptionForm = option_form_factory(
     DiscountOption,
-    ('name', 'description', 'depends_on', 'discount_suboption'),
-    ('name', 'type', 'description', 'depends_on', 'discount_suboption'),
+    ('name', 'description', 'depends_on', 'discount_suboption', 'notify_on_selection'),
+    ('name', 'type', 'description', 'depends_on', 'discount_suboption', 'notify_on_selection'),
     'discount',
     post_super_callback=_discount_post_super_callback
 )
 
 CreateDiscountOptionForm = option_form_factory(
     DiscountOption,
-    ('name', 'description', 'depends_on'),
-    ('name', 'type', 'description', 'depends_on'),
+    ('name', 'description', 'depends_on', 'notify_on_selection'),
+    ('name', 'type', 'description', 'depends_on', 'notify_on_selection'),
     'discount'
 )
 
