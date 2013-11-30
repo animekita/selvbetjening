@@ -198,10 +198,10 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'combined': {
         'source_filenames': [
-            'js/vendor/bootstrap.min.js',
-            'js/vendor/jquery-2.0.3.min.js',
             'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
+            'js/vendor/jquery-2.0.3.min.js',
             'js/vendor/jquery.scrollTo-min.js',
+            'js/vendor/bootstrap.min.js',
             'js/selvbetjening.core.events.js'
         ],
         'output_filename': 'js/combined.js',
@@ -209,12 +209,12 @@ PIPELINE_JS = {
 
     'sadmin2': {
         'source_filenames': (
+            'sadmin2/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
             'sadmin2/js/vendor/jquery-2.0.3.min.js',
             'sadmin2/js/vendor/bootstrap.min.js',
             'sadmin2/js/vendor/jquery.autocomplete.min.js',
             'sadmin2/js/vendor/autosize.min.js',
             'sadmin2/js/vendor/jquery-ui-1.10.3.min.js',
-            'sadmin2/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
             'sadmin2/js/main.js'
         ),
         'output_filename': 'sadmin2/js/combined.js',

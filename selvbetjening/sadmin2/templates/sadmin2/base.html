@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load compressed %}<!DOCTYPE html>
 <html class="no-js">
     <head>
         <meta charset="utf-8">
@@ -6,16 +6,8 @@
         <title>Selvbetjening v{{ VERSION }}</title>
         <meta name="viewport" content="width=device-width">
 
-        <link href="{{STATIC_URL}}sadmin2/css/bootstrap.3.0.0.min.css" rel="stylesheet">
-        <link href="{{STATIC_URL}}sadmin2/css/font-awesome.4.0.0.min.css" rel="stylesheet">
-        <link href="{{STATIC_URL}}sadmin2/css/main.css" rel="stylesheet">
-
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/jquery-2.0.3.min.js"></script>
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/jquery-ui-1.10.3.min.js"></script>
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/jquery.autosize.min.js"></script>
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/jquery.autocomplete.min.js"></script>
-        <script src="{{STATIC_URL}}sadmin2/js/vendor/bootstrap.min.js"></script>
+        {% compressed_css 'sadmin2' %}
+        {% compressed_js 'sadmin2' %}
 
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700|Merriweather+Sans:400,700' rel='stylesheet' type='text/css'>
 
