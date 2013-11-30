@@ -1,11 +1,5 @@
 {% extends "base/events/status.html" %}
 
-{% block head %}
-    {{ block.super }}
-
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/eventsingle.css">
-{% endblock %}
-
 {% block content-pre-messages %}
     {% include "eventsingle/parts/steps.html" %}
 {% endblock %}
