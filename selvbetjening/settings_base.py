@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'debug_toolbar',
     'django_extensions',
+    'pipeline',
 
     'django.contrib.sites',
     'django.contrib.auth',
@@ -139,8 +140,8 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
         }
+    }
 }
 
 SKIP_SOUTH_TESTS = True
@@ -167,6 +168,60 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
     #'debug_toolbar.panels.profiling.ProfilingDebugPanel'
 )
+
+# Static file management (using django-pipeline)
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
+
+PIPELINE_CSS = {
+    'combined': {
+        'source_filenames': [
+            'css/vendor/bootstrap.min.css',
+            'css/vendor/font-awesome.min.css',
+            'css/eventsingle.css'
+        ],
+        'output_filename': 'css/combined.css'
+    },
+
+    'sadmin2': {
+        'source_filenames': (
+            'sadmin2/css/bootstrap.3.0.0.min.css',
+            'sadmin2/css/font-awesome.4.0.0.min.com',
+            'sadmin2/css/main.css'
+        ),
+        'output_filename': 'sadmin2/css/combined.css'
+    }
+}
+
+PIPELINE_JS = {
+    'combined': {
+        'source_filenames': [
+            'js/vendor/bootstrap.min.js',
+            'js/vendor/jquery-2.0.3.min.js',
+            'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
+            'js/vendor/jquery.scrollTo-min.js',
+            'js/selvbetjening.core.events.js'
+        ],
+        'output_filename': 'js/combined.js',
+    },
+
+    'sadmin2': {
+        'source_filenames': (
+            'sadmin2/js/vendor/jquery-2.0.3.min.js',
+            'sadmin2/js/vendor/bootstrap.min.js',
+            'sadmin2/js/vendor/jquery.autocomplete.min.js',
+            'sadmin2/js/vendor/autosize.min.js',
+            'sadmin2/js/vendor/jquery-ui-1.10.3.min.js',
+            'sadmin2/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
+            'sadmin2/js/main.js'
+        ),
+        'output_filename': 'sadmin2/js/combined.js',
+    }
+}
+
+# Selvbetjening specific settings
 
 POLICY = dict()
 POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] = False

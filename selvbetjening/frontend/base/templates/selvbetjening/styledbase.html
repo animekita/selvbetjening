@@ -6,14 +6,5 @@ By default we are providing a basic bootstrap styling of the website.
 Overwrite this file if you want to provide your own stylesheets.
 {% endcomment %}
 
-{% block css %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
-{% endblock %}
 
-{% block head %}
-    {{ block.super }}
-    <script src="{{ STATIC_URL }}js/vendor/bootstrap.min.js"></script>
-{% endblock %}
 
