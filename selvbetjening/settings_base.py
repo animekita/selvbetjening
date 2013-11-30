@@ -178,3 +178,4 @@ SADMIN2_BASE_URL = 'sadmin2'  # don't add a trailing slash
 # E-mail
 
 MAILQUEUE_LIMIT = 50
+MAILQUEUE_QUEUE_UP = True
