@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
         for location in locations:
             location.expired = False
 
-            profile, created = SUser.objects.get(pk=location.user.pk)
+            profile, created = SUser.objects.get_or_create(pk=location.user.pk)
 
             if profile.street == '' or \
                (profile.postalcode is None or profile.city == ''):
