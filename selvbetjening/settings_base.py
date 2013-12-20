@@ -213,7 +213,7 @@ PIPELINE_JS = {
             'sadmin2/js/vendor/jquery-2.0.3.min.js',
             'sadmin2/js/vendor/bootstrap.min.js',
             'sadmin2/js/vendor/jquery.autocomplete.min.js',
-            'sadmin2/js/vendor/autosize.min.js',
+            'sadmin2/js/vendor/jquery.autosize.min.js',
             'sadmin2/js/vendor/jquery-ui-1.10.3.min.js',
             'sadmin2/js/main.js'
         ),
