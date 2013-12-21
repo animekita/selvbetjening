@@ -202,10 +202,10 @@ def step1(request,
                   })
 
 
-@login_required
 @eventdecorators.get_event_from_id
 @eventdecorators.event_registration_open_required
 @suspend_automatic_attendee_price_updates
+@login_required
 def step2(request,
           event,
           template=None):
