@@ -75,6 +75,8 @@ function init_livesearch(search_url) {
     });
 }
 
+window.sinit_livesearch = init_livesearch;
+
 $(document).ready(function(){
     $('textarea').autosize();
 });
@@ -85,4 +87,6 @@ function popup(url, name, height, width) {
 
     return false;
 }
+
+window.spopup = popup;
 
