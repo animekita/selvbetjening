@@ -20,8 +20,8 @@ msgstr ""
 
 #: views.py:176
 msgid "Profile updated"
-msgstr "Konto opdateret"
+msgstr "Konto opdateret."
 
 #: views.py:231
 msgid "Selections updated"
-msgstr "Tilvalg opdateret"
+msgstr "Tilvalg opdateret."
