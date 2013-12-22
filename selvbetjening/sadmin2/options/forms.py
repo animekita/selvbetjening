@@ -2,7 +2,7 @@ from crispy_forms.layout import HTML
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption
+from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, Selection
 from selvbetjening.core.events.models import SubOption, Option
 
 from selvbetjening.frontend.utilities.forms import *
@@ -24,11 +24,11 @@ def _get_price_html(price):
 </div>""" % price
 
 
-def _field_filter(field, type_raw, instance):
+def _field_filter(field, type_raw, instance, static_price):
     if field == 'type':
         return HTML(_get_type_html(type_raw))
 
-    if field == 'price' and instance is not None:
+    if field == 'price' and static_price and instance is not None:
         return HTML(_get_price_html(instance.price))
 
     return field
@@ -53,7 +53,16 @@ def option_form_factory(db_model, db_fields, layout_fields, type_raw, post_super
                 post_super_callback(self, *args, **kwargs)
 
             instance = kwargs.get('instance', None)
-            fields = [_field_filter(field, type_raw, instance) for field in layout_fields]
+            static_price = False
+
+            # Editable price check
+            if Selection.objects.filter(option=instance).count() > 0:
+                if 'price' in self.fields:
+                    del self.fields['price']
+
+                static_price = True
+
+            fields = [_field_filter(field, type_raw, instance, static_price) for field in layout_fields]
 
             self.helper = S2FormHelper(horizontal=True)
 
@@ -89,7 +98,7 @@ def _auto_select_choice_post_super_callback(form, *args, **kwargs):
 
 UpdateAutoSelectChoiceOptionForm = option_form_factory(
     AutoSelectChoiceOption,
-    ('name', 'description', 'required', 'depends_on', 'auto_select_suboption', 'notify_on_selection'),
+    ('name', 'description', 'price', 'required', 'depends_on', 'auto_select_suboption', 'notify_on_selection'),
     ('name', 'type', 'description', 'price', 'required', 'depends_on', 'auto_select_suboption', 'notify_on_selection'),
     'autoselectchoice',
     post_super_callback=_auto_select_choice_post_super_callback
