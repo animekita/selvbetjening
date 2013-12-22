@@ -1,0 +1,22 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1>Delete {{ obj_type }}</h1>
+
+    {% if to_be_deleted|length == 1 %}
+        <p>Delete the {{ obj_type }} <code>{{ option }}</code>.</p>
+    {% else %}
+        <p>Delete the {{ obj_type }} <code>{{ option }}</code> and the following additional objects:</p>
+
+        <ul>
+            {{ to_be_deleted.1|unordered_list }}
+        </ul>
+    {% endif %}
+
+    <form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
+    </form>
+
+{% endblock %}

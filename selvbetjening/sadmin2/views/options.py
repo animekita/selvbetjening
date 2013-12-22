@@ -15,6 +15,7 @@ from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
 from generic import generic_create_view, apply_search_query
+from selvbetjening.sadmin2.views.event import _get_deleted_objects
 
 
 @sadmin_prerequisites
@@ -154,7 +155,7 @@ def event_selections_manage(request, event_pk):
                       'sadmin2_menu_main_active': 'events',
                       'sadmin2_breadcrumbs_active': 'event_settings_selections',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-                      'sadmin2_menu_tab_active': 'selections',
+                      'sadmin2_menu_tab_active': 'settings',
 
                       'event': event,
 
@@ -260,6 +261,56 @@ def event_selections_create_option_step2(request, event_pk, group_pk, type_raw):
     view = stype_manager.get_create_view()
 
     return view(request, event, group)
+
+
+@sadmin_prerequisites
+def event_selections_delete_option(request, event_pk, group_pk, option_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    group = get_object_or_404(event.optiongroups, pk=group_pk)
+    _option = get_object_or_404(group.options, pk=option_pk)
+
+    type_manager = type_manager_factory(_option)
+
+    # fetch the correct "overloaded" option
+    option = type_manager.get_model().objects.get(pk=_option.pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_selections_delete_option',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+        'sadmin2_menu_tab_active': 'settings',
+
+        'event': event,
+        'option_group': group,
+        'option': option
+    }
+
+    # Check if we are allowed to delete this object
+
+    selection_count = Selection.objects.filter(option=option).count()
+
+    if selection_count > 0:
+        context['selection_count'] = selection_count
+
+        return render(request,
+                      'sadmin2/event/selection_option_delete_not_possible.html',
+                      context)
+
+    # If yes, then ...
+
+    if request.method == 'POST':
+        option.delete()
+
+        messages.success(request, _('Option %s deleted' % option.name))
+        return HttpResponseRedirect(reverse('sadmin2:event_settings_selections', kwargs={'event_pk': event.pk}))
+
+    context['obj_type'] = 'Option'
+    context['to_be_deleted'] = _get_deleted_objects([option])
+
+    return render(request,
+        'sadmin2/generic/delete.html',
+        context)
 
 
 @sadmin_prerequisites

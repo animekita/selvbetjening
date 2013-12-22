@@ -77,10 +77,6 @@ function init_livesearch(search_url) {
 
 window.sinit_livesearch = init_livesearch;
 
-$(document).ready(function(){
-    $('textarea').autosize();
-});
-
 function popup(url, name, height, width) {
 	var newwindow = window.open(url, name, 'height=' + height + ',width=' + width);
 	if (window.focus) { newwindow.focus() }
@@ -90,3 +86,11 @@ function popup(url, name, height, width) {
 
 window.spopup = popup;
 
+$(document).ready(function(){
+
+    // Auto resize all text areas
+    $('textarea').autosize();
+
+    // Enable tooltips automatically
+    $('[data-toggle=tooltip]').tooltip();
+});

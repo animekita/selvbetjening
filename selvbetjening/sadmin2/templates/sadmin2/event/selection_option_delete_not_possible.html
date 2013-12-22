@@ -1,0 +1,11 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1>Delete Option</h1>
+
+    <p class="alert alert-danger">This option is selected by {{ selection_count }} {% ifequal selection_count 1 %}attendee{% else %}attendees{% endifequal %}. It is not possible to delete options when they are selected.</p>
+
+    <p>Use the <a href="{% url "sadmin2:event_selections_transfer" event_pk=event.pk %}">transfer page</a> to remove all attendees from this option.</p>
+
+{% endblock %}

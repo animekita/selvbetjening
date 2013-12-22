@@ -182,7 +182,7 @@ breadcrumbs = {
     # Assumes: context[event], context[option_group], kwargs[event_pk]
     'event_selections_group':  {
         'name_callback': lambda context: context['option_group'].name if context['option_group'].name != '' else 'anon',
-        'url_callback': url_callback('sadmin2:event_selections', ('event_pk',)),
+        'url_callback': url_callback('sadmin2:event_settings_selections', ('event_pk',)),
         'parent': 'event_settings_selections'},
 
     # Assumes: context[event], context[option_group], kwargs[event_pk], kwargs[group_pk]
@@ -199,10 +199,24 @@ breadcrumbs = {
 
     # Assumes: context[event], context[option_group], context[option],
     #          kwargs[event_pk], kwargs[group_pk], kwargs[option_pk]
-    'event_selections_edit_option':  {
+    'event_selections_option':  {
         'name_callback': lambda context: context['option'].name,
         'url_callback': url_callback('sadmin2:event_selections_edit_option', ('event_pk', 'group_pk', 'option_pk')),
         'parent': 'event_selections_group'},
+
+    # Assumes: context[event], context[option_group], context[option],
+    #          kwargs[event_pk], kwargs[group_pk], kwargs[option_pk]
+    'event_selections_edit_option':  {
+        'name': _('Edit'),
+        'url_callback': url_callback('sadmin2:event_selections_edit_option', ('event_pk', 'group_pk', 'option_pk')),
+        'parent': 'event_selections_option'},
+
+    # Assumes: context[event], context[option_group], context[option],
+    #          kwargs[event_pk], kwargs[group_pk], kwargs[option_pk]
+    'event_selections_delete_option':  {
+        'name': _('Delete'),
+        'url_callback': url_callback('sadmin2:event_selections_delete_option', ('event_pk', 'group_pk', 'option_pk')),
+        'parent': 'event_selections_option'},
 
     # Assumes: context[event], kwargs[event_pk]
     'event_selections':  {

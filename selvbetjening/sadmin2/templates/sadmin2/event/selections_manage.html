@@ -135,7 +135,9 @@
           <a class="btn btn-default" onclick="move_option_group('up', {{ option_group.pk }});"><span class="glyphicon glyphicon-chevron-up"></span></a>
           <a class="btn btn-default" onclick="move_option_group('down', {{ option_group.pk }});"><span class="glyphicon glyphicon-chevron-down"></span></a>
 
-          <a class="btn btn-default" href="{% url "sadmin2:event_selections_edit_group" event_pk=event.pk group_pk=option_group.pk %}">Edit</a>
+          <a class="btn btn-default" href="{% url "sadmin2:event_selections_edit_group" event_pk=event.pk group_pk=option_group.pk %}">
+              <span class="glyphicon glyphicon-edit"></span>
+          </a>
           {% endif %}
 
           <a class="btn btn-success pull-right" href="{% url "sadmin2:event_selections_create_option" event_pk=event.pk group_pk=option_group.pk %}">Tilføj option</a>
@@ -248,7 +250,12 @@
                  <div class="btn-group pull-right">
                      <span class="btn btn-sm btn-default" onclick="move_option('up', {{ option.pk }});"><span class="glyphicon glyphicon-chevron-up"></span></span>
                      <span class="btn btn-sm btn-default" onclick="move_option('down', {{ option.pk }});"><span class="glyphicon glyphicon-chevron-down"></span></span>
-                     <a class="btn btn-sm btn-default" href="{% url "sadmin2:event_selections_edit_option" event_pk=event.pk group_pk=option_group.pk option_pk=option.pk %}">Edit</a>
+                     <a class="btn btn-sm btn-default" href="{% url "sadmin2:event_selections_edit_option" event_pk=event.pk group_pk=option_group.pk option_pk=option.pk %}">
+                         <span class="glyphicon glyphicon-edit"></span>
+                     </a>
+                     <a class="btn btn-sm btn-default" href="{% url "sadmin2:event_selections_delete_option" event_pk=event.pk group_pk=option_group.pk option_pk=option.pk %}">
+                         <span class="glyphicon glyphicon-trash"></span>
+                     </a>
                  </div>
 
              </td>

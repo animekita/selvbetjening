@@ -51,7 +51,7 @@ def base_option_update_view(form_class, show_suboptions=False):
             'sadmin2_menu_main_active': 'events',
             'sadmin2_breadcrumbs_active': 'event_selections_edit_option',
             'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
-            'sadmin2_menu_tab_active': 'selections',
+            'sadmin2_menu_tab_active': 'settings',
 
             'form': form,
             'formset': formset,
