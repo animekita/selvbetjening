@@ -95,6 +95,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'pipeline',
 
+    'provider',
+    'provider.oauth2',
+
     'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',

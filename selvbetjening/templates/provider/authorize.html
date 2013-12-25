@@ -1,0 +1,45 @@
+{% extends "selvbetjening/sitebase.html" %}
+{% load scope %}
+
+{% block content-header-large %}
+
+
+
+    {% if not error %}
+        <h1>{{ client.name }} is requesting permission to:</h1>
+
+        <ul>
+            {% for permission in oauth_data.scope|scopes %}
+                <li>
+                    {% if permission == "read" %}
+                    Read your data
+                    {% else %}
+                    Write your data
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <form method="post" action="{% url "oauth2:authorize" %}">
+            {% csrf_token %}
+            {{ form.errors }}
+            {{ form.non_field_errors }}
+            <fieldset>
+                <div style="display: none;" />
+                    <select type="select" name="scope" multiple="multiple">
+                    {% for scope in oauth_data.scope|scopes %}
+                        <option value="{{ scope }}" selected="selected">{{ scope }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" class="btn login large primary" name="authorize" value="Allow access" />
+                <input type="submit" class="btn login large" value="No thanks" />
+
+            </fieldset>
+        </form>
+    {% else %}
+        <h1>Access request error</h1>
+        <p>An error occured when using the OAUTH API, please contact a developer if this persists.</p>
+        <code>{{ error }}: {{ error_description }}</code>
+    {% endif %}
+{% endblock %}
