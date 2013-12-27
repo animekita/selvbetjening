@@ -9,7 +9,9 @@ sorl-thumbnail==3.2.5
 
 django-crispy-forms==1.4.0
 django-mail-queue
+
 django-oauth2-provider
+django-tastypie
 
 django-debug-toolbar==0.9.4
 django-extensions==1.2.0

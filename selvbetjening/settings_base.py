@@ -97,6 +97,7 @@ INSTALLED_APPS = [
 
     'provider',
     'provider.oauth2',
+    'tastypie',
 
     'django.contrib.sites',
     'django.contrib.auth',
