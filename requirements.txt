@@ -23,3 +23,5 @@ splinter==0.5.4
 django-pipeline
 jsmin
 cssmin
+
+simplejson
