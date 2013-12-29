@@ -15,7 +15,7 @@ urlpatterns = patterns(
     (r'^%s/' % settings.SADMIN2_BASE_URL, include('selvbetjening.sadmin2.urls', namespace='sadmin2')),
 
     (r'^api/sso/', include('selvbetjening.api.sso.urls')),
-
+    (r'^api/rest/', include('selvbetjening.api.rest.urls')),
 )
 
 if getattr(settings, 'STATIC_DEBUG', False):

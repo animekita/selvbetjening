@@ -11,6 +11,8 @@ INSTALLED_APPS.extend([
     'selvbetjening.frontend.eventportal',
     'selvbetjening.frontend.eventsingle',
 
+    'selvbetjening.api.rest',
+
     'sdemo'
 ])
 

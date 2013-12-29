@@ -34,6 +34,9 @@ class AuthenticatedUserResource(ModelResource):
     class Meta:
         queryset = SUser.objects.all()
         resource_name = 'authenticated_user'
+        allowed_methods = ['get']
+
+        excludes = ['password']
 
         authentication = OAuth2Authentication()
 

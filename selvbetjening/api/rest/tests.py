@@ -1,0 +1,49 @@
+
+import simplejson
+
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from provider.oauth2.models import AccessToken, Client
+
+from selvbetjening.core.members.models import SUser
+
+
+class RestAPITestCase(TestCase):
+
+    fixtures = ['rest-api-tests.json']
+
+    def setUp(self):
+        AccessToken.objects.create(
+            user=SUser.objects.get(pk=1),
+            token='abc',
+            client=Client.objects.get(pk=1)
+        )
+
+    def test_no_access_code(self):
+
+        url = '/api/rest/v1/authenticated_user/?format=json'
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.content, '')
+
+    def test_incorrect_access_code(self):
+
+        url = '/api/rest/v1/authenticated_user/?access_key=SOMETHINGWRONG&format=json'
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.content, '')
+
+    def test_only_one_authenticated_user_returned(self):
+
+        url = '/api/rest/v1/authenticated_user/?access_key=abc&format=json'
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        json = simplejson.loads(response.content)
+
+        self.assertEqual(len(json['objects']), 1)
+        self.assertEqual(json['objects'][0]['username'], 'admin')
