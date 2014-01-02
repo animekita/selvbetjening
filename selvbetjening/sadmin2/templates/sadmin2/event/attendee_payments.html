@@ -33,7 +33,7 @@
     <tr>
         <td colspan="2"></td>
         <td>Beløb på kvittering</td>
-        <td>{{ attendee.price }}</td>
+        <td>{{ attendee.price|floatformat:"-2" }}</td>
     </tr>
 
     {% if not attendee.in_balance %}

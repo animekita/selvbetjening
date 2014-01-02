@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.forms.util import ErrorList
+from django.template.defaultfilters import floatformat
 from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_options, SCOPE
@@ -595,7 +596,7 @@ class SelectionTransferForm(forms.Form):
 
         for option in Option.objects.filter(group__event=event):
 
-            choices.append((option.pk, '%s - %s,-' % (option.name, option.price)))
+            choices.append((option.pk, '%s - %s,-' % (option.name, floatformat(option.price, "-2"))))
 
             for suboption in option.suboption_set.all():
 

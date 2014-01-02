@@ -1,6 +1,6 @@
 
     {% for option, selection in invoice %}{% if selection %}{% ifchanged option.group.name %}{% if option.group.name %}__{{ option.group.name }}__{% endif %}{% endifchanged %}
-    {{selection.option.name}}{% if selection.suboption %} ({{ selection.suboption.name }}){% endif %}: {{selection.price}},-{% endif %}{% endfor %}
+    {{selection.option.name}}{% if selection.suboption %} ({{ selection.suboption.name }}){% endif %}: {{selection.price|floatformat:"-2"}},-{% endif %}{% endfor %}
 
-    Total: {{attendee.price}},-
-    Heraf betalt: {{attendee.paid}},-
+    Total: {{attendee.price|floatformat:"-2"}},-
+    Heraf betalt: {{attendee.paid|floatformat:"-2"}},-

@@ -3,6 +3,7 @@ from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.forms.widgets import Input
+from django.template.defaultfilters import floatformat
 from django.utils.translation import ugettext as _
 
 from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
@@ -35,7 +36,7 @@ class BooleanWidget(BaseWidget):
     def get_field(self, attrs=None):
 
         field = forms.BooleanField(
-            label=self.option.name if self.option.price == 0 else '%s (%s,-)' % (self.option.name, self.option.price),
+            label=self.option.name if self.option.price == 0 else '%s (%s,-)' % (self.option.name, floatformat(self.option.price, "-2")),
             required=self.use_native_required,
             help_text=self.option.description,
             widget=forms.CheckboxInput(attrs=attrs))
