@@ -117,7 +117,7 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
 
     """
 
-    raw_fragments = shlex.split(query)
+    raw_fragments = map(lambda s: s.decode('utf8'), shlex.split(query.encode('utf8')))
 
     fragments = []
 
