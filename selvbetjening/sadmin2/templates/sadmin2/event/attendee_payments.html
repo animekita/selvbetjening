@@ -20,27 +20,27 @@
         <td>{{ payment.created_date }}</td>
         <td>{{ payment.signee }}</td>
         <td>{{ payment.note }}</td>
-        <td>{{ payment.amount }}</td>
+        <td>{{ payment.amount|floatformat:"-2" }},-</td>
     </tr>
     {% endfor %}
 
     <tr>
         <td colspan="2"></td>
         <td><strong>Total</strong></td>
-        <td><strong>{{ attendee.paid }}</strong></td>
+        <td><strong>{{ attendee.paid|floatformat:"-2" }},-</strong></td>
     </tr>
 
     <tr>
         <td colspan="2"></td>
         <td>Beløb på kvittering</td>
-        <td>{{ attendee.price|floatformat:"-2" }}</td>
+        <td>{{ attendee.price|floatformat:"-2" }},-</td>
     </tr>
 
     {% if not attendee.in_balance %}
     <tr {% if not attendee.in_balance %}class="danger"{% endif %}>
         <td colspan="2"></td>
         <td><strong>Til {% if attendee.is_overpaid %}ud{% endif %}betaling</strong></td>
-        <td><strong>{{ attendee.unpaid }}</strong></td>
+        <td><strong>{{ attendee.unpaid|floatformat:"-2" }},-</strong></td>
     </tr>
     {% endif %}
 
