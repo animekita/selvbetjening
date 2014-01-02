@@ -16,7 +16,7 @@
                     {{selection.option.name}}{% if selection.suboption %} ({{ selection.suboption.name }}){% endif %}
                 </td>
                 <td>
-                    {{selection.price}},-
+                    {% ifnotequal selection.price 0 %}{{selection.price}},-{% endifnotequal %}
                 </td>
             </tr>
 
