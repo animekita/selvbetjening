@@ -48,7 +48,7 @@
                             class="btn btn-danger pull-right"
                             name="action" value="pay">Beløb tilbagebetalt</button>
 
-                <strong>Til <strong>ud</strong>betaling ({{attendee.overpaid}},-)</strong>
+                <strong>Til <strong>ud</strong>betaling ({{attendee.overpaid|floatformat:"-2"}},-)</strong>
 
             </td>
         </tr>
@@ -60,7 +60,7 @@
                             class="btn btn-danger pull-right"
                             name="action" value="pay">Beløb betalt</button>
 
-                <strong>Til betaling ({{attendee.unpaid}},-)</strong>
+                <strong>Til betaling ({{attendee.unpaid|floatformat:"-2"}},-)</strong>
             </td>
         </tr>
         {% endif %}{% endif %}

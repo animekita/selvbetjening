@@ -609,7 +609,7 @@ class SelectionTransferForm(forms.Form):
                     price += suboption.price
 
                 if price > 0:
-                    price_str = ' - %s,-' % price
+                    price_str = ' - %s,-' % floatformat(price, "-2")
                 else:
                     price_str = ''
 
