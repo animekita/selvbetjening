@@ -28,7 +28,7 @@ msgstr "Kvinde"
 
 #: models.py:28
 msgid "Date of birth"
-msgstr "Fødselsdag"
+msgstr "Fødselsdato"
 
 #: models.py:30
 msgid "Sex"

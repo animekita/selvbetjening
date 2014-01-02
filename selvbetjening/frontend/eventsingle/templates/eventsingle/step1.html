@@ -54,9 +54,9 @@
 {% if update_mode %}
     <h1>Opdatér din konto</h1>
 {% else %}
-    <h1>Kontroller din konto</h1>
+    <h1>Kontrollér din konto</h1>
 
-    <p class="lead">Der er gået lidt under et år siden, vi så dig sidst. Er dine kontooplysninger stadig opdatéret? </p>
+    <p class="lead">Der er gået lidt under et år siden, vi så dig sidst. Er dine kontooplysninger stadig korrekte? </p>
 {% endif %}
 
     <form class="form-horizontal" method="post" >
@@ -73,7 +73,7 @@
                 <th>Køn</th><td>{% ifequal profile.sex "male" %}Mand{% endifequal %}{% ifequal profile.sex "female" %}Kvinde{% endifequal %}</td>
             </tr>
             <tr>
-                <th>Fødselsdag</th><td>{{ profile.dateofbirth }}</td>
+                <th>Fødselsdato</th><td>{{ profile.dateofbirth }}</td>
             </tr>
             <tr>
                 <th>E-mail</th><td>{{ user.email }}</td>

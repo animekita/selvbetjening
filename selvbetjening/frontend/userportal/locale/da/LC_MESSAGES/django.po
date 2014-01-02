@@ -88,15 +88,15 @@ msgstr "Opdatér privacy indstillinger"
 
 #: views.py:100
 msgid "Personal information updated"
-msgstr "Personlige oplysninger opdatéret"
+msgstr "Personlige oplysninger opdateret"
 
 #: views.py:128
 msgid "Privacy settings updated"
-msgstr "Privacy indstillinger opdatéret"
+msgstr "Privacy indstillinger opdateret"
 
 #: views.py:157
 msgid "Profile picture changed"
-msgstr "Profil billede opdatéret"
+msgstr "Profil billede opdateret"
 
 #: views.py:181
 msgid "Password changed"

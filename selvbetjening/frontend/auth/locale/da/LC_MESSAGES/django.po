@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: forms.py:22
-msgid "Log-in"
+msgid "Log in"
 msgstr "Log ind"
 
 #: forms.py:30

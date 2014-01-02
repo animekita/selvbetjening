@@ -19,7 +19,7 @@ class AuthenticationForm(BaseAuthenticationForm):
     ))
 
     helper.add_input(
-        S2Submit('submit_login', _('Log-in'))
+        S2Submit('submit_login', _('Log in'))
     )
 
 

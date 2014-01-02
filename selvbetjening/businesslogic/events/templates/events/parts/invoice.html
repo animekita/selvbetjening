@@ -16,7 +16,7 @@
                     {{selection.option.name}}{% if selection.suboption %} ({{ selection.suboption.name }}){% endif %}
                 </td>
                 <td>
-                    {% ifnotequal selection.price 0 %}{{selection.price}},-{% endifnotequal %}
+                    {% ifnotequal selection.price 0 %}{{selection.price|floatformat:"-2"}},-{% endifnotequal %}
                 </td>
             </tr>
 
@@ -28,10 +28,10 @@
     </tr>
 
     <tr>
-        <th>Total:</th><th>{{attendee.price}},-</th>
+        <th>Total:</th><th>{{attendee.price|floatformat:"-2"}},-</th>
     </tr>
     <tr>
-        <th>Heraf betalt:</th><th>{{attendee.paid}},-</th>
+        <th>Heraf betalt:</th><th>{{attendee.paid|floatformat:"-2"}},-</th>
     </tr>
 
     {% if attendee.in_balance %}
@@ -42,13 +42,13 @@
 
     {% if not attendee.is_paid %}
         <tr class="danger">
-            <th>Total til betaling:</th><th>{{attendee.unpaid}},-</th>
+            <th>Total til betaling:</th><th>{{attendee.unpaid|floatformat:"-2"}},-</th>
         </tr>
     {% endif %}
 
     {% if attendee.is_overpaid %}
         <tr class="danger">
-            <th>Total til udbetaling:</th><th>{{attendee.overpaid}},-</th>
+            <th>Total til udbetaling:</th><th>{{attendee.overpaid|floatformat:"-2"}},-</th>
         </tr>
     {% endif %}
 
