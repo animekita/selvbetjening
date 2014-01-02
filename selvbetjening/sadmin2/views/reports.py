@@ -1,3 +1,4 @@
+
 from datetime import date
 from django.conf import settings
 
@@ -10,9 +11,12 @@ from selvbetjening.sadmin2 import graph, menu
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 
 
-def user_age_chart(users, min_age=5, max_age=80):
+def user_age_chart(users, min_age=5, max_age=80, at_date=None):
 
-    cur_year = date.today().year
+    if at_date is None:
+        at_date = date.today()
+
+    cur_year = at_date.year
 
     # The graph looks stupid if we allow ages 0 and 100 et al.
     # Enforce sane limitations, lets say min 5 and max 80 years of age
@@ -27,14 +31,14 @@ def user_age_chart(users, min_age=5, max_age=80):
     age_stats = users.aggregate(min=Max('dateofbirth'),
                                 max=Min('dateofbirth'))
 
-    age_stats['max'], age_stats['min'] = (to_age(age_stats['max']),
-                                          to_age(age_stats['min']))
+    age_stats['max'], age_stats['min'] = (to_age(age_stats['max'], at_date),
+                                          to_age(age_stats['min'], at_date))
 
     age_span = [0] * (age_stats['max'] - age_stats['min'] + 1)
 
     sum = count = 0
     for user in users:
-        age = user.get_age()
+        age = user.get_age(at_date=at_date)
 
         age_span[age - age_stats['min']] += 1
         sum += age
@@ -83,10 +87,11 @@ def user_join_chart(users):
 
 def insecure_reports_age(request,
                          users,
+                         at_date=None,
                          extra_context=None):
 
     join_data = user_join_chart(users)
-    age_data = user_age_chart(users)
+    age_data = user_age_chart(users, at_date=at_date)
 
     if join_data is None:
         join_data = {}

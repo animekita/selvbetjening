@@ -318,6 +318,7 @@ def report_age(request, event_pk):
     return insecure_reports_age(
         request,
         SUser.objects.filter(attend__event=event),
+        at_date=event.startdate if event.startdate is not None else datetime.date.today(),
         extra_context=context
     )
 
