@@ -84,19 +84,19 @@ msgstr "Synlig på min profil"
 
 #: forms.py:112
 msgid "Update privacy settings"
-msgstr "Opdater privacy indstillinger"
+msgstr "Opdatér privacy indstillinger"
 
 #: views.py:100
 msgid "Personal information updated"
-msgstr "Personlige oplysninger opdateret"
+msgstr "Personlige oplysninger opdatéret"
 
 #: views.py:128
 msgid "Privacy settings updated"
-msgstr "Privacy indstillinger opdateret"
+msgstr "Privacy indstillinger opdatéret"
 
 #: views.py:157
 msgid "Profile picture changed"
-msgstr "Profil billede opdateret"
+msgstr "Profil billede opdatéret"
 
 #: views.py:181
 msgid "Password changed"

@@ -24,4 +24,4 @@ msgstr "Opert"
 
 #: forms.py:105
 msgid "Update"
-msgstr "Opdater"
+msgstr "Opdatér"
