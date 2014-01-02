@@ -161,7 +161,7 @@ class ChoiceWidget(BaseWidget):
 
     def _label(self, suboption):
         price = suboption.real_price
-        return suboption.name if price == 0 else '%s (%s)' % (suboption.name, price)
+        return suboption.name if price == 0 else '%s (%s)' % (suboption.name, floatformat(price, "-2"))
 
 
 class AutoSelectBooleanWidget(BooleanWidget):
@@ -187,7 +187,7 @@ class AutoChoiceDisplay(Input):
         super(AutoChoiceDisplay, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-        value = self.suboption.name if self.suboption.real_price == 0 else '%s (%s,-)' % (self.suboption.name, self.suboption.real_price)
+        value = self.suboption.name if self.suboption.real_price == 0 else '%s (%s,-)' % (self.suboption.name, floatformat(self.suboption.real_price, "-2"))
         return '<p class="form-control-static">%s</p>' % value
 
 
