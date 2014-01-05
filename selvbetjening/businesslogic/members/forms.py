@@ -26,7 +26,8 @@ class UsernameField(forms.CharField):
     default_validators = [
         validators.RegexValidator(
             re.compile("^[a-zA-Z0-9_]+$"),
-            message=_(u'Usernames can only contain letters, numbers and underscores')),
+            message=_(u'Usernames can only contain letters, numbers and underscores'),
+            code='invalid-other'),
         username_available_validator
     ]
 
