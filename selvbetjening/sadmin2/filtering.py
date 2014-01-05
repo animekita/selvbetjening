@@ -144,7 +144,7 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
     return fragments
 
 
-def filter_queryset(queryset, query, search_fields=None, condition_fields=None, invalid_fragments=None):
+def filter_queryset(queryset, query, search_fields=None, condition_fields=None, invalid_fragments=None, search_order=None):
 
     if search_fields is None and condition_fields is None:
         return queryset
@@ -159,6 +159,9 @@ def filter_queryset(queryset, query, search_fields=None, condition_fields=None, 
 
     for fragment in fragments:
         queryset = fragment.filter_queryset(queryset, search_fields)
+
+    if search_order is not None:
+        queryset = queryset.order_by(search_order)
 
     return queryset.distinct()
 

@@ -87,6 +87,7 @@ def event_attendees(request, event_pk):
                        'sadmin2/event/attendees_inner.html',
                        search_columns=columns,
                        search_conditions=conditions,
+                       search_order='-pk',
                        context=context)
 
 
