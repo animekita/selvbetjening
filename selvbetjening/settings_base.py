@@ -238,3 +238,7 @@ SADMIN2_BASE_URL = 'sadmin2'  # don't add a trailing slash
 
 MAILQUEUE_LIMIT = 50
 MAILQUEUE_QUEUE_UP = True
+
+# OAUTH settings
+
+OAUTH_ENABLE_APPROVAL_PROMPT_BYPASS = True
