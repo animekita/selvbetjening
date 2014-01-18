@@ -10,7 +10,7 @@ sorl-thumbnail==3.2.5
 django-crispy-forms==1.4.0
 django-mail-queue
 
--e git@github.com:sema/django-oauth2-provider.git#egg=django-oauth2-provider
+-e git+git@github.com:sema/django-oauth2-provider.git#egg=django-oauth2-provider
 django-tastypie
 
 django-debug-toolbar==0.9.4
