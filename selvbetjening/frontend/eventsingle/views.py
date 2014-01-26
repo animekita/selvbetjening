@@ -14,9 +14,10 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_page
 
@@ -129,7 +130,13 @@ def step0(request,
         if login_form.is_valid():
 
             login(request, login_form.get_user())
-            return HttpResponseRedirect(reverse('eventsingle_steps', kwargs={'event_pk': event.pk}))
+
+            redirect_to = request.REQUEST.get(REDIRECT_FIELD_NAME, '')
+
+            if not is_safe_url(url=redirect_to, host=request.get_host()):
+                redirect_to = reverse('eventsingle_steps', kwargs={'event_pk': event.pk})
+
+            return HttpResponseRedirect(redirect_to)
 
     else:
         login_form = AuthenticationForm()
