@@ -41,4 +41,4 @@ class AuthenticatedUserResource(ModelResource):
         authentication = OAuth2Authentication()
 
     def get_object_list(self, request):
-        return super(AuthenticatedUserResource, self).get_object_list(request).filter(pk=1)
+        return super(AuthenticatedUserResource, self).get_object_list(request).filter(pk=request.user.pk)
