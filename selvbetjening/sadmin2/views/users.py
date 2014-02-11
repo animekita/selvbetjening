@@ -24,7 +24,7 @@ from selvbetjening.sadmin2.views.reports import insecure_reports_age, insecure_r
 def users_list(request):
 
     queryset = SUser.objects.all()
-    columns = ('username', 'first_name', 'last_name', 'email')
+    columns = ('pk', 'username', 'first_name', 'last_name', 'email')
 
     context = {
         'sadmin2_menu_main_active': 'users',
@@ -38,6 +38,7 @@ def users_list(request):
                        'sadmin2/users/list.html',
                        'sadmin2/users/list_inner.html',
                        search_columns=columns,
+                       search_order='-pk',
                        context=context)
 
 
