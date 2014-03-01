@@ -1,4 +1,4 @@
-from django.test.simple import DjangoTestSuiteRunner, settings as lazy_settings
+from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
 
 INCLUDING_APPS = getattr(settings, 'TEST_INCLUDE', [])
@@ -20,5 +20,5 @@ class IncludingTestSuiteRunner(DjangoTestSuiteRunner):
 
     def setup_test_environment(self, **kwargs):
         super(IncludingTestSuiteRunner, self).setup_test_environment(**kwargs)
-        lazy_settings.STATICFILES_STORAGE='pipeline.storage.NonPackagingPipelineStorage'
+        settings.STATICFILES_STORAGE='pipeline.storage.NonPackagingPipelineStorage'
 

@@ -60,7 +60,7 @@ class Event(models.Model):
                          default=AttendeeAcceptPolicy.always,
                          choices=AttendeeAcceptPolicy.get_choices())
 
-    registration_open = models.BooleanField(_(u'registration open'))
+    registration_open = models.BooleanField(_(u'registration open'), default=False)
 
     # display
     show_custom_signup_message = models.BooleanField(default=False)

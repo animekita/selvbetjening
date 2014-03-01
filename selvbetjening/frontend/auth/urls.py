@@ -34,7 +34,7 @@ urlpatterns = patterns('',
         },
         name='auth_password_reset_done'),
 
-    url(r'^reset-password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/', auth_views.password_reset_confirm,
+    url(r'^reset-password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/', auth_views.password_reset_confirm,
         {
             'template_name': 'auth/password_reset/password_reset_confirm.html',
             'set_password_form': forms.SetPasswordForm,

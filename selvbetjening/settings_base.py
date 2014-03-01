@@ -160,18 +160,20 @@ DEBUG_TOOLBAR_CONFIG = {
     "INTERCEPT_REDIRECTS": False
 }
 
-DEBUG_TOOLBAR_PANELS = (
-    'debug_toolbar.panels.version.VersionDebugPanel',
-    'debug_toolbar.panels.timer.TimerDebugPanel',
-    'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-    'debug_toolbar.panels.headers.HeaderDebugPanel',
-    'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-    'debug_toolbar.panels.template.TemplateDebugPanel',
-    'debug_toolbar.panels.sql.SQLDebugPanel',
-    'debug_toolbar.panels.signals.SignalDebugPanel',
-    'debug_toolbar.panels.logger.LoggingPanel',
-    #'debug_toolbar.panels.profiling.ProfilingDebugPanel'
-)
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
 
 # Static file management (using django-pipeline)
 
@@ -193,6 +195,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'sadmin2/css/bootstrap.3.0.0.min.css',
             'sadmin2/css/font-awesome.4.0.0.min.com',
+            'sadmin2/css/nv.d3.css',
             'sadmin2/css/main.css'
         ),
         'output_filename': 'sadmin2/css/combined.css'
@@ -219,6 +222,8 @@ PIPELINE_JS = {
             'sadmin2/js/vendor/jquery.autocomplete.min.js',
             'sadmin2/js/vendor/jquery.autosize.min.js',
             'sadmin2/js/vendor/jquery-ui-1.10.3.min.js',
+            'sadmin2/js/vendor/d3.v3.js',
+            'sadmin2/js/vendor/nv.d3.js',
             'sadmin2/js/main.js'
         ),
         'output_filename': 'sadmin2/js/combined.js',

@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
 
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
+from selvbetjening.sadmin2.views import dashboard
 
 import views.events
 import views.event
@@ -201,5 +202,6 @@ urlpatterns = patterns(
 
     # Dashboard
 
-    url(r'^$', sadmin_prerequisites(TemplateView.as_view(template_name='sadmin2/dashboard.html')), name='dashboard',
-        kwargs={'sadmin2_breadcrumbs_active': 'dashboard'}))
+    url(r'^$', dashboard.dashboard,
+        name='dashboard')
+)

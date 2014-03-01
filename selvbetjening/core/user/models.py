@@ -40,7 +40,7 @@ class SUser(AbstractUser):
     jabber = models.CharField(max_length=255, blank=True)
     msn = models.CharField(max_length=255, blank=True)
 
-    send_me_email = models.BooleanField(_(u'Send me emails'))
+    send_me_email = models.BooleanField(_(u'Send me emails'), default=False)
 
     picture = ThumbnailField(_(u'Picture'),
                              upload_to='pictures/',
