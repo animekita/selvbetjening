@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.forms.util import ErrorList
 from django.template.defaultfilters import floatformat
@@ -126,7 +127,7 @@ class AttendeeFormattingForm(forms.Form):
         elif attendee_filter == 'not_attended':
             self.attendees = self.attendees.exclude(state=AttendState.attended)
         elif attendee_filter == 'attended_or_paid':
-            self.attendees = self.attendees.filter(state=AttendState.attended).filter(paid__gt=0)
+            self.attendees = self.attendees.filter(Q(state=AttendState.attended) | Q(paid__gt=0))
         elif attendee_filter == 'all':
             pass
         else:

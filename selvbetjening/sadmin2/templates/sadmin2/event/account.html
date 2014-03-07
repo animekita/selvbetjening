@@ -65,13 +65,16 @@
 
     {% for attendee in attendees %}
 
-    {% if show_regular_attendees or not attendee.is_paid %}
+    {% if show_regular_attendees or not attendee.is_paid or attendee.is_overpaid %}
     <tr>
         <td>{{ attendee.user.pk }}</td>
         <td>{{ attendee.user.username }}</td>
         <td>{{ attendee.price | intcomma }},-</td>
         <td>{{ attendee.paid | intcomma }},-</td>
-        <td>{% if not attendee.is_paid %}{{ attendee.unpaid | intcomma }},-{% endif %}</td>
+        <td>
+            {% if not attendee.is_paid %}<b>+</b>{{ attendee.unpaid | intcomma }},-{% endif %}
+            {% if attendee.is_overpaid %}<b>-</b>{{ attendee.overpaid | intcomma }},-{% endif %}
+        </td>
     </tr>
     {% endif %}
 
