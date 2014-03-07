@@ -58,6 +58,11 @@ class UsersTestCase(TestCase):
 
         self.assertTrue(Group.objects.filter(name='GroupAlt').exists())
 
+    def test_users_reports_users(self):
+
+        response = self.client.get(reverse('sadmin2:users_reports_users'))
+        self.assertEqual(response.status_code, 200)
+
     def test_users_reports_age(self):
 
         response = self.client.get(reverse('sadmin2:users_reports_age'))

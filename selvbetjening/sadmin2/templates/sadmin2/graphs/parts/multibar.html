@@ -1,0 +1,24 @@
+{% extends "sadmin2/graphs/parts/base.html" %}
+
+{% block graphsetup %}
+<script>
+    var chart;
+    nv.addGraph(function() {
+        chart = nv.models.multiBarChart() // discreteBarChart
+                .transitionDuration(300)
+                .staggerLabels(true)
+                //.showValues(true)
+                .rotateLabels(45)
+                .tooltips(false)
+        ;
+
+        d3.select('#chart1 svg')
+                .datum(data)
+                .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+    });
+</script>
+{% endblock %}

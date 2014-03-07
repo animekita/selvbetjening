@@ -1,0 +1,29 @@
+{% extends "sadmin2/graphs/parts/base.html" %}
+
+{% block graphsetup %}
+<script>
+    var chart;
+    nv.addGraph(function() {
+        chart = nv.models.stackedAreaChart()
+                .transitionDuration(300)
+                .tooltips(false)
+        ;
+
+        {% if graph.datetime_xaxis %}
+        chart.xAxis.tickFormat(function(d,i) {
+            return d3.time.format('%b %d %Y')(new Date(d * 1000));
+        });
+        {% endif %}
+
+        chart.yAxis.tickFormat(d3.format(',.0f'));
+
+        d3.select('#chart1 svg')
+                .datum(data)
+                .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+    });
+</script>
+{% endblock %}

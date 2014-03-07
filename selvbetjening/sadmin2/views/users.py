@@ -2,6 +2,7 @@
 """
     See events.py for rules regarding sadmin2 views
 """
+import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -17,7 +18,9 @@ from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
 from generic import search_view, generic_create_view
-from selvbetjening.sadmin2.views.reports import insecure_reports_age, insecure_reports_address
+from selvbetjening.sadmin2.graphs.timelines import AgeTimeGraph, AbsoluteTimeGraph
+from selvbetjening.sadmin2.graphs.units import UserAgeUnit, UserUnit
+from selvbetjening.sadmin2.views.reports import insecure_reports_address
 
 
 @sadmin_prerequisites
@@ -122,20 +125,36 @@ def users_group(request, group_pk):
 
 
 @sadmin_prerequisites
+def users_reports_users(request):
+
+    graph = AbsoluteTimeGraph(AbsoluteTimeGraph.SCOPE.month,
+                              UserUnit('Users'))
+
+    return render(request, 'sadmin2/graphs/linegraph.html', {
+        'sadmin2_menu_main_active': 'users',
+        'sadmin2_breadcrumbs_active': 'users_reports_users',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
+        'sadmin2_menu_tab_active': 'reports',
+        'title': _('Users'),
+        'graph': graph
+    })
+
+
+@sadmin_prerequisites
 def users_reports_age(request):
 
-    context = {
+    graph = AgeTimeGraph(AbsoluteTimeGraph.SCOPE.year,
+                         UserAgeUnit('Users'),
+                         today=datetime.datetime.today())
+
+    return render(request, 'sadmin2/graphs/linegraph.html', {
         'sadmin2_menu_main_active': 'users',
         'sadmin2_breadcrumbs_active': 'users_reports_age',
         'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-        'sadmin2_menu_tab_active': 'reports'
-    }
-
-    return insecure_reports_age(
-        request,
-        SUser.objects.all(),
-        extra_context=context
-    )
+        'sadmin2_menu_tab_active': 'reports',
+        'title': _('User age'),
+        'graph': graph
+    })
 
 
 @sadmin_prerequisites

@@ -78,6 +78,10 @@ breadcrumbs = {
                           'url': 'sadmin2:users_reports_age',
                           'parent': 'users_reports'},
 
+    'users_reports_users': {'name': _('Users'),
+                            'url': 'sadmin2:users_reports_users',
+                            'parent': 'users_reports'},
+
     'users_reports_address': {'name': _('Address'),
                               'url': 'sadmin2:users_reports_address',
                               'parent': 'users_reports'},
@@ -324,12 +328,16 @@ sadmin2_menu_tab_users = (
     {'id': 'reports',
      'name': _('Reports'),
      'dropdown': (
+         {'id': 'reports-users',
+          'name': _('Users'),
+          'url_callback': url_callback('sadmin2:users_reports_users', ())},
+
          {'id': 'reports-age',
-          'name': _('Alder'),
+          'name': _('Age'),
           'url_callback': url_callback('sadmin2:users_reports_age', ())},
 
          {'id': 'reports-address',
-          'name': _('Address'),
+          'name': _('Map'),
           'url_callback': url_callback('sadmin2:users_reports_address', ())},
      )}
 )
@@ -415,7 +423,7 @@ sadmin2_menu_tab_event = (
           'url_callback': url_callback('sadmin2:event_report_age', ('event_pk',))},
 
          {'id': 'reports-address',
-          'name': _('Attendee address'),
+          'name': _('Map'),
           'url_callback': url_callback('sadmin2:event_report_address', ('event_pk',))}
 
      )},

@@ -50,6 +50,7 @@ def event_list(request):
                        'sadmin2/events/list.html',
                        'sadmin2/events/list_inner.html',
                        search_columns=columns,
+                       search_order='-pk',
                        context=context)
 
 

@@ -47,6 +47,9 @@ urlpatterns = patterns(
         views.users.users_group,
         name='users_group'),
 
+    url(r'^users/reports/users/$',
+        views.users.users_reports_users,
+        name='users_reports_users'),
     url(r'^users/reports/age/$',
         views.users.users_reports_age,
         name='users_reports_age'),

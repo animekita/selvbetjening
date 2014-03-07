@@ -1,0 +1,31 @@
+
+{% if graph.empty %}
+    <p class="alert alert-danger"><strong>No graph data</strong> There is no data to show in a graph.</p>
+{% else %}
+    <div id="chart1" class="with-3d-shadow with-transitions"
+         style="height: 400px; min-height: 100px; min-width: 100px;">
+        <svg></svg>
+    </div>
+
+    <script>
+        var data = [
+            {% for series in graph.series %}
+                {
+                    area: {% if series.area %}true{% else %}false{% endif %},
+                    key: '{{ series.label }}',
+                    values: [
+                        {% for value in series.values %}
+                            {
+                                x: {% if graph.datetime_xaxis %}{{ value.x|date:"U" }}{% else %}{{ value.x }}{% endif %},
+                                y: {{ value.y }}
+                            }{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ]
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+    </script>
+
+    {% block graphsetup %}
+    {% endblock %}
+{% endif %}

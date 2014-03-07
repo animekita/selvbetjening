@@ -1,0 +1,40 @@
+{% extends "sadmin2/graphs/parts/base.html" %}
+
+{% block graphsetup %}
+<script>
+    var chart;
+    nv.addGraph(function() {
+        chart = nv.models.lineChart() // lineWithFocusChart
+                .transitionDuration(300)
+                .tooltips(true)
+                .useInteractiveGuideline(true)
+        ;
+
+        {% if graph.datetime_xaxis %}
+        chart.xAxis.tickFormat(function(d,i) {
+            return d3.time.format('{% if date_formatting %}{{ date_formatting }}{% else %}%b %d %Y{% endif %}')(new Date(d * 1000));
+        });
+        {% endif %}
+
+        {% comment %}
+        chart.xAxis
+                .tickFormat(d3.format(',f'));
+        chart.x2Axis
+                .tickFormat(d3.format(',f'));
+
+        chart.yAxis
+                .tickFormat(d3.format(',.2f'));
+        chart.y2Axis
+                .tickFormat(d3.format(',.2f'));
+        {% endcomment %}
+
+        d3.select('#chart1 svg')
+                .datum(data)
+                .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+    });
+</script>
+{% endblock %}
