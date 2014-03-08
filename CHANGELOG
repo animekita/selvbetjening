@@ -1,3 +1,7 @@
+8.1.0
+
+ * Update django-extensions to 1.3.3
+
 8.0.0
 
  * sadmin2
@@ -19,7 +23,7 @@
  * Update Django to 1.6.3
  * Update South to 0.8.2
  * Update django-crispy-forms to 1.4.0
- * Update djanog-extensions to 1.2.0
+ * Update django-extensions to 1.2.0
 
 7.5.0
 
