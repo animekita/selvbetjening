@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.dispatch import Signal
 from django.db.models.signals import pre_save
 from django.utils.encoding import smart_str
@@ -14,13 +15,13 @@ real_set_password = SUser.set_password
 
 
 def set_password(self, raw_password):
-    if self.id is None:
-        self.save()
-
     real_set_password(self, raw_password)
 
     # signal changed password
-    user_changed_password.send(sender=self, instance=self, clear_text_password=smart_str(raw_password))
+    if len(self.username) > 0:  # A hack in the login code creates an empty user and inserts a new password
+        if self.id is None:
+            self.save()
+        user_changed_password.send(sender=self, instance=self, clear_text_password=smart_str(raw_password))
 
 # replace the method
 SUser.set_password = set_password
