@@ -384,7 +384,7 @@ sadmin2_menu_tab_attendee = (
      'name': _('Delete'),
      'url_callback': url_callback('sadmin2:event_attendee_delete', ('event_pk', 'attendee_pk')),
      'class': 'pull-right',
-     'icon': '- fa fa-trash-o'}
+     'icon': 'trash'}
 
 
 )
