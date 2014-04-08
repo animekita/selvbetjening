@@ -12,6 +12,13 @@
 
         <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} <small>&lt;{{ attendee.user.username }}&gt;</small></h2>
 
+        {% for comment in comments %}
+            <div class="alert alert-danger">
+            <h4>Bemærk</h4>
+            {{ comment.comment }}
+            </div>
+        {% endfor %}
+
         <table class="table">
 
         <tr>

@@ -10,6 +10,7 @@
         <td>{{ note.author }}</td>
         <td>{{ note.timestamp }}</td>
         <td>{{ note.comment }}</td>
+        <td>{% if note.check_in_announce %}<span class="badge">announce</span>{% endif %}</td>
     </tr>
     {% endfor %}
 

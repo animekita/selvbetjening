@@ -307,7 +307,7 @@ class AttendeeCommentForm(forms.ModelForm):
 
     class Meta:
         model = AttendeeComment
-        fields = ('comment',)
+        fields = ('comment', 'check_in_announce')
 
         widgets = {
             'comment': forms.Textarea(attrs={'rows': 2}),
@@ -316,7 +316,7 @@ class AttendeeCommentForm(forms.ModelForm):
     helper = S2FormHelper(horizontal=True)
 
     layout = S2Layout(
-        S2Fieldset(None, 'comment')
+        S2Fieldset(None, 'comment', 'check_in_announce')
     )
 
     helper.add_layout(layout)

@@ -181,3 +181,5 @@ class AttendeeComment(models.Model):
     comment = models.TextField()
 
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    check_in_announce = models.BooleanField(default=False)
