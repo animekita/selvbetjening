@@ -356,6 +356,7 @@ def event_selections_transfer(request, event_pk):
             if 'verify' in request.POST:
 
                 attendees = []
+
                 to_option = form.cleaned_data['to_option']
                 to_suboption = form.cleaned_data['to_suboption']
 
@@ -366,20 +367,25 @@ def event_selections_transfer(request, event_pk):
                     # delete old selection
                     selection.delete()
 
-                    # select new selection
-                    new_selection, created = Selection.objects.get_or_create(
-                        attendee=attendee,
-                        option=to_option,
-                        suboption=to_suboption,
-                        defaults={
-                            'text': selection.text
-                        }
-                    )
-
                     # update price
                     attendee.price -= selection.price
-                    if created:
-                        attendee.price += new_selection.price
+
+                    if to_option is not None:
+
+                        # select new selection
+                        new_selection, created = Selection.objects.get_or_create(
+                            attendee=attendee,
+                            option=to_option,
+                            suboption=to_suboption,
+                            defaults={
+                                'text': selection.text
+                            }
+                        )
+
+                        # update price
+                        if created:
+                            attendee.price += new_selection.price
+
                     attendee.save()
 
                 email = form.cleaned_data['email']

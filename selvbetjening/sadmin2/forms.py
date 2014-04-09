@@ -592,7 +592,7 @@ class SelectionTransferForm(forms.Form):
 
     to_option = forms.ChoiceField(
         label=_(u'To option'),
-        required=True)
+        required=False)
 
     email = forms.ModelChoiceField(
         EmailSpecification.objects.all(),
@@ -630,8 +630,11 @@ class SelectionTransferForm(forms.Form):
                     '%s (%s)%s' % (option.name, suboption.name, price_str))
                 )
 
-        self.fields['from_option'].choices = choices
-        self.fields['to_option'].choices = choices
+        from_choices = choices
+        to_choices = [('', '---------')] + choices
+
+        self.fields['from_option'].choices = from_choices
+        self.fields['to_option'].choices = to_choices
 
         self.helper = S2FormHelper(horizontal=False)
 
@@ -645,8 +648,9 @@ class SelectionTransferForm(forms.Form):
     def clean_to_option(self):
         pk = self.cleaned_data.get('to_option', None)
 
-        if pk is None:
-            raise ValidationError('Invalid choice selected')
+        if pk is None or pk == '':
+            self.cleaned_data['to_suboption'] = None
+            return None
         elif '-' in pk:
             option_pk, suboption_pk = pk.split('-')
             self.cleaned_data['to_suboption'] = SubOption.objects.get(pk=suboption_pk)
