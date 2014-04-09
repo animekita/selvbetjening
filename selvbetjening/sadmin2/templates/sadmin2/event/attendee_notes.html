@@ -3,19 +3,58 @@
 
 {% block content %}
 
+    <script>
+    $(function() {
+        $('.form-edit-comment').hide();
+    });
+
+    function showCommentEditForms() {
+        $('.form-edit-comment').show();
+        $('.form-show-comment').hide();
+    }
+    </script>
+
+    <div class="pull-right">
+        <a class="btn btn-danger" onclick="showCommentEditForms();"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+    </div>
+
+    <h1>Notes</h1>
+
+    <form method="POST" action="">
+    {{ formset.management_form }}
+
     <table class="table">
 
-    {% for note in notes %}
+    {% for form in formset %}
     <tr>
-        <td>{{ note.author }}</td>
-        <td>{{ note.timestamp }}</td>
-        <td>{{ note.comment }}</td>
-        <td>{% if note.check_in_announce %}<span class="badge">announce</span>{% endif %}</td>
+    {% if form.instance.author %}
+        <td>{{ form.instance.author }}<br/>{{ form.instance.timestamp }}{% if form.instance.check_in_announce %}<br/><span class="label label-primary">announce</span>{% endif %}</td>
+    {% else %}
+        <td>{{ request.user.username }}</td>
+    {% endif %}
+        <td>
+            <div class="form-show-comment">
+            {{ form.instance.comment }}
+            </div>
+
+            {% if form.instance.author %}
+                <div class="form-edit-comment">
+                    {% crispy form %}
+                    <div class="form-actions">
+                    <input type="submit" name="save" value="Save" class="btn btn-primary" id="btn-save-comment"/>
+                    </div>
+                </div>
+            {% else %}
+                {% crispy form %}
+                <div class="form-actions">
+                <input type="submit" name="save" value="Create" class="btn btn-primary" id="btn-create-comment"/>
+                </div>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
-
     </table>
 
-    {% crispy form form.helper %}
+    </form>
 
 {% endblock %}

@@ -2,6 +2,7 @@
 
 from django.contrib.admin.util import NestedObjects
 from django.core.urlresolvers import reverse
+from django.forms.models import modelformset_factory
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
@@ -13,11 +14,11 @@ from django.db import router
 from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
 from selvbetjening.core.events.utils import sum_attendee_payment_status
-from selvbetjening.core.events.models import Event, Attend, AttendState, Payment
+from selvbetjening.core.events.models import Event, Attend, AttendState, Payment, AttendeeComment
 from selvbetjening.core.events.signals import request_attendee_pks_signal
 
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, PaymentForm, \
-    AttendeeCommentForm, attendee_selection_helper_factory
+    AttendeeCommentForm, attendee_selection_helper_factory, AttendeeCommentFormSet
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -410,7 +411,25 @@ def event_attendee_notes(request, event_pk, attendee_pk):
     event = get_object_or_404(Event, pk=event_pk)
     attendee = get_object_or_404(event.attendees, pk=attendee_pk)
 
-    notes = attendee.comments
+    if request.method == 'POST':
+
+        formset = AttendeeCommentFormSet(request.POST, queryset=attendee.comments.all())
+
+        if formset.is_valid():
+
+            instances = formset.save(commit=False)
+            for instance in instances:
+                if instance.pk is None:
+                    instance.attendee = attendee
+                    instance.author = request.user
+
+                instance.save()
+
+            return HttpResponseRedirect(reverse('sadmin2:event_attendee_notes', kwargs={'event_pk': event.pk,
+                                                                                        'attendee_pk': attendee.pk}))
+
+    else:
+        formset = AttendeeCommentFormSet(queryset=attendee.comments.all())
 
     context = {
         'sadmin2_menu_main_active': 'events',
@@ -420,21 +439,14 @@ def event_attendee_notes(request, event_pk, attendee_pk):
 
         'event': event,
         'attendee': attendee,
-        'notes': notes.all()
+        'comments': attendee.comments.all(),
+
+        'formset': formset
     }
 
-    def save_callback(instance):
-        instance.attendee = attendee
-        instance.author = request.user
-        instance.save()
-
-    return generic_create_view(request,
-                               AttendeeCommentForm,
-                               reverse('sadmin2:event_attendee_notes', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}),
-                               context=context,
-                               instance_save_callback=save_callback,
-                               template='sadmin2/event/attendee_notes.html'
-                               )
+    return render(request,
+                  'sadmin2/event/attendee_notes.html',
+                  context)
 
 
 def _get_deleted_objects(objs):

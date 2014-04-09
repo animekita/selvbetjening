@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms.formsets import formset_factory, BaseFormSet
+from django.forms.models import modelformset_factory, BaseModelFormSet
 from django.forms.util import ErrorList
 from django.template.defaultfilters import floatformat
 from django.utils.translation import ugettext as _
@@ -305,22 +306,32 @@ class PaymentForm(forms.ModelForm):
 
 class AttendeeCommentForm(forms.ModelForm):
 
+    id = forms.IntegerField()
+    DELETE = forms.BooleanField(label=_('Delete'))
+
     class Meta:
-        model = AttendeeComment
+        model = AttendeeComment()
         fields = ('comment', 'check_in_announce')
 
         widgets = {
             'comment': forms.Textarea(attrs={'rows': 2}),
         }
 
-    helper = S2FormHelper(horizontal=True)
+    def __init__(self, *args, **kwargs):
+        super(AttendeeCommentForm, self).__init__(*args, **kwargs)
 
-    layout = S2Layout(
-        S2Fieldset(None, 'comment', 'check_in_announce')
-    )
+        layout = S2Layout(
+            S2Fieldset(None, 'id', 'comment', 'check_in_announce', 'DELETE')
+        )
 
-    helper.add_layout(layout)
-    helper.add_input(S2SubmitCreate())
+        self.helper = S2FormHelper(horizontal=False)
+        self.helper.add_layout(layout)
+        self.helper.form_tag = False
+        self.helper.html5_required = False
+
+AttendeeCommentFormSet = modelformset_factory(AttendeeComment,
+                                              form=AttendeeCommentForm,
+                                              can_delete=True)
 
 
 def attendee_selection_helper_factory(option_group, visible_fields):
