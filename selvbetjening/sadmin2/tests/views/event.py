@@ -158,7 +158,10 @@ class EventTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.post(url, {
-            'comment': 'A user note'
+            'form-TOTAL_FORMS': 1,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 100,
+            'form-0-comment': 'A user note'
         }, follow=True)
 
         self.assertEqual(response.status_code, 200)
