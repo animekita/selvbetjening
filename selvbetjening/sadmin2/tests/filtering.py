@@ -2,7 +2,7 @@
 from django.utils import unittest
 from django.test import TestCase
 
-from selvbetjening.core.events.models import Event
+from selvbetjening.core.events.models import Event, Attend
 
 from selvbetjening.sadmin2 import filtering
 
@@ -34,12 +34,12 @@ class FilteringTestCase(TestCase):
 
         fragments = filtering.query_parser("alpha", [])
         assert len(fragments) == 1
-        assert not fragments[0].excludes
+        assert not fragments[0].negated
         assert fragments[0].fragment_type == filtering.TYPES.SEARCH_TERM
 
         fragments = filtering.query_parser("-alpha", [])
         assert len(fragments) == 1
-        assert fragments[0].excludes
+        assert fragments[0].negated
         assert fragments[0].fragment_type == filtering.TYPES.SEARCH_TERM
 
         fragments = filtering.query_parser(':description="Another event"', ['description'])
@@ -97,3 +97,49 @@ class FilteringTestCase(TestCase):
         with self.assertRaises(filtering.FilterException):
             filtering.filter_queryset(events, ':description="Another event"',
                                       search_fields=['title', 'description'])
+
+    def test_fragment_field_comparison(self):
+
+        attendees = Attend.objects.all()
+        assert attendees.count() == 1
+
+        e = filtering.filter_queryset(attendees, ':price=:paid',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 0
+
+        e = filtering.filter_queryset(attendees, '-:price=:paid',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 1
+
+        e = filtering.filter_queryset(attendees, ':price!=:paid',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 1
+
+        e = filtering.filter_queryset(attendees, ':price<:paid',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 0
+
+        e = filtering.filter_queryset(attendees, ':price>:paid',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 1
+
+    def test_fragment_lt_gt_comparison(self):
+
+        attendees = Attend.objects.all()
+        assert attendees.count() == 1
+
+        e = filtering.filter_queryset(attendees, ':price<50',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 0
+
+        e = filtering.filter_queryset(attendees, ':price>50',
+                                      search_fields=[],
+                                      condition_fields=['price', 'paid'])
+        assert e.count() == 1
+

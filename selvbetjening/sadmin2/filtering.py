@@ -2,7 +2,7 @@
 import shlex
 import operator
 
-from django.db.models import Q
+from django.db.models import Q, F
 
 
 class FilterException(Exception):
@@ -19,65 +19,129 @@ class SearchFragment(object):
 
     fragment_type = TYPES.SEARCH_TERM
 
-    def __init__(self, term, excludes=False):
+    def __init__(self, term, negated=False):
         self.term = term
-        self.excludes = excludes
+        self.negated = negated
 
     def filter_queryset(self, queryset, search_fields):
 
         fields_and_terms = [Q(**{'%s__icontains' % search_field: self.term}) for search_field in search_fields]
         or_terms = reduce(operator.or_, fields_and_terms)
 
-        return queryset.filter(or_terms) if not self.excludes else queryset.exclude(or_terms)
+        return queryset.filter(or_terms) if not self.negated else queryset.exclude(or_terms)
 
 
 class ConditionFragment(object):
 
+    EQUAL = 0
+    NOT_EQUAL = 1
+    LT = 2
+    GT = 3
+
     fragment_type = TYPES.CONDITION
 
-    def __init__(self, field, term, excludes=False):
-        self.field = field
-        self.term = term
-        self.excludes = excludes
+    def __init__(self, lhs, operator, rhs, negated=False):
+        self.lhs = lhs
+        self.operator = operator
+        self.rhs = rhs
+        self.negated = negated
+
+        if self.operator == ConditionFragment.NOT_EQUAL:
+            self.negated = not self.negated
 
     def filter_queryset(self, queryset, search_fields):
 
-        term = {self.field: self.term}
-        return queryset.filter(**term) if not self.excludes else queryset.exclude(**term)
+        if self.operator == ConditionFragment.EQUAL or self.operator == ConditionFragment.NOT_EQUAL:
+            term = {self.lhs: self.rhs}
+        elif self.operator == ConditionFragment.LT:
+            lhs = self.lhs + '__lt'
+            term = {lhs: self.rhs}
+        elif self.operator == ConditionFragment.GT:
+            lhs = self.lhs + '__gt'
+            term = {lhs: self.rhs}
+        else:
+            raise FilterException
+
+        return queryset.filter(**term) if not self.negated else queryset.exclude(**term)
+
+OPERATORS = [
+    (u'!=', ConditionFragment.NOT_EQUAL),
+    (u'=', ConditionFragment.EQUAL),
+    (u'<', ConditionFragment.LT),
+    (u'>', ConditionFragment.GT)
+]
+
+
+def _is_field(raw_value):
+
+    return len(raw_value) > 0 and raw_value[0] == ':'
 
 
 def _is_condition(raw_fragment):
-    return len(raw_fragment) > 0 and raw_fragment[0] == ':'
+
+    if len(raw_fragment) == 0:
+        return False
+
+    for operator_repr, _ in OPERATORS:
+        if operator_repr in str(raw_fragment):
+            return True
+
+    return False
 
 
-def _parse_condition(raw_fragment, excludes, allowed_conditions):
+def _parse_condition(raw_fragment, negated, allowed_conditions):
     """
     Assumes that raw_fragment has been checked by is_condition.
     """
 
-    raw_fragment = raw_fragment[1:]
+    operator_repr = None
+    operator = None
 
-    parts = raw_fragment.split('=')
+    # Find the used operator
+
+    for op in OPERATORS:
+        operator_repr, operator = op
+        if operator_repr in raw_fragment:
+            break
+
+    # Split it into a lhs and rhs
+
+    parts = raw_fragment.split(operator_repr)
 
     if len(parts) != 2:
         raise FilterException
 
-    field, search_term = parts
+    lhs, rhs = parts
 
-    if len(field) == 0 or len(search_term) == 0:
+    if len(lhs) == 0 or len(rhs) == 0:
         raise FilterException
 
-    if field not in allowed_conditions:
+    # The lhs must be a field reference
+
+    if not _is_field(lhs):
         raise FilterException
 
-    return ConditionFragment(field, search_term, excludes=excludes)
+    # Ensure that field references are whitelisted
+
+    if lhs[1:] not in allowed_conditions:
+        raise FilterException
+
+    if _is_field(rhs) and rhs[1:] not in allowed_conditions:
+        raise FilterException
+
+    # Convert field references
+
+    lhs = lhs[1:]
+    rhs = F(rhs[1:]) if _is_field(rhs) else rhs
+
+    return ConditionFragment(lhs, operator, rhs, negated=negated)
 
 
-def _parse_search_term(raw_fragment, excludes):
-    return SearchFragment(raw_fragment, excludes=excludes)
+def _parse_search_term(raw_fragment, negated):
+    return SearchFragment(raw_fragment, negated=negated)
 
 
-def _is_exclude(raw_fragment):
+def _is_negated(raw_fragment):
     if len(raw_fragment) == 0:
         raise FilterException
 
@@ -124,20 +188,20 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
     for raw_fragment in raw_fragments:
 
         try:
-            excludes = _is_exclude(raw_fragment)
+            negated = _is_negated(raw_fragment)
 
-            if excludes:
+            if negated:
                 raw_fragment = _parse_exclude(raw_fragment)
 
             if _is_condition(raw_fragment):
-                fragments.append(_parse_condition(raw_fragment, excludes, allowed_conditions))
+                fragments.append(_parse_condition(raw_fragment, negated, allowed_conditions))
 
             else:
-                fragments.append(_parse_search_term(raw_fragment, excludes))
+                fragments.append(_parse_search_term(raw_fragment, negated))
 
-        except FilterException:
+        except FilterException as e:
             if invalid_fragments is None:
-                raise FilterException
+                raise e
             else:
                 invalid_fragments.append(raw_fragment)
 
