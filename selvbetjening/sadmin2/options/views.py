@@ -139,7 +139,8 @@ def discount_option_update_view(request, event, group, instance):
     else:
         gen_form = GenerateDiscountCodes()
 
-    discount_codes = DiscountCode.objects.filter(discount_option=instance).select_related()
+    discount_codes = DiscountCode.objects.filter(discount_option=instance)\
+        .select_related('selection', 'selection__attendee', 'selection__attendee__user')
 
     return parent_view(request, event, group, instance,
                        template_name='sadmin2/event/selection_discount_option_update.html',

@@ -21,10 +21,9 @@
     <table class="table">
 
     {% for discount_code in discount_codes %}
-
         <tr>
-        <td><code>{{ discount_code.code }}</code></td>
-        <td>{{ discount_code.attendee }}</td>
+            <td><code>{{ discount_code.code }}</code></td>
+            <td>{{ discount_code.selection.attendee.user.username }}</td>
         </tr>
     {% endfor %}
 
