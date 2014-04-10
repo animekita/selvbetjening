@@ -2,6 +2,7 @@
 
  * Allow transfers of selections from one option to nothing (deselect option)
  * Add links to over- and under-paid attendees
+ * Allow filtering attendees based on their address
 
 8.2.0
 
