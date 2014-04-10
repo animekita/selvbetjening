@@ -77,6 +77,29 @@ def _is_field(raw_value):
     return len(raw_value) > 0 and raw_value[0] == ':'
 
 
+def _is_related(raw_fragment):
+
+    return len(raw_fragment) > 0 and raw_fragment[0:4] == 'has:'
+
+
+def _parse_related(raw_fragment, negated, allowed_related):
+    """
+    Assumes that raw_fragment has been checked by is_related.
+    """
+
+    parts = raw_fragment.split(':')
+
+    if len(parts) != 2:
+        raise FilterException
+
+    field = parts[1]
+
+    if len(field) == 0 or field not in allowed_related:
+        raise FilterException
+
+    return ConditionFragment(field + '_set', ConditionFragment.NOT_EQUAL, None, negated=negated)
+
+
 def _is_condition(raw_fragment):
 
     if len(raw_fragment) == 0:
@@ -121,7 +144,7 @@ def _parse_condition(raw_fragment, negated, allowed_conditions):
     if not _is_field(lhs):
         raise FilterException
 
-    # Ensure that field references are whitelisted
+    # Ensure that field references are white listed
 
     if lhs[1:] not in allowed_conditions:
         raise FilterException
@@ -156,7 +179,7 @@ def _parse_exclude(raw_fragment):
     return raw_fragment[1:]
 
 
-def query_parser(query, allowed_conditions, invalid_fragments=None):
+def query_parser(query, allowed_conditions, allowed_related, invalid_fragments=None):
     """
     Parses a query string and returns a series of query fragments.
 
@@ -171,13 +194,16 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
     SEARCH_TERM            := <alphanumeric>*
                             | " <alphanumeric-and-space>* "
 
-    CONDITION              := : FIELD = SEARCH_TERM
+    CONDITION              := FIELD =|!=|<|> FIELD|PRIMITIVE_VALUE
 
-    FIELD                  := <alphanumeric-and-single-underscore>*
-                            | <alphanumeric-and-single-underscore>* __ FIELD
+    FIELD                  := : DJANGO_FIELD
 
-    EXCLUDE                := - SEARCH_TERM
+    NEGATION               := - SEARCH_TERM
                             | - CONDITION
+
+    RELATED                := has RELATED_FIELD
+
+    RELATED_FIELD          := : FIELD
 
     """
 
@@ -196,6 +222,9 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
             if _is_condition(raw_fragment):
                 fragments.append(_parse_condition(raw_fragment, negated, allowed_conditions))
 
+            elif _is_related(raw_fragment):
+                fragments.append(_parse_related(raw_fragment, negated, allowed_related))
+
             else:
                 fragments.append(_parse_search_term(raw_fragment, negated))
 
@@ -208,7 +237,13 @@ def query_parser(query, allowed_conditions, invalid_fragments=None):
     return fragments
 
 
-def filter_queryset(queryset, query, search_fields=None, condition_fields=None, invalid_fragments=None, search_order=None):
+def filter_queryset(queryset,
+                    query,
+                    search_fields=None,
+                    condition_fields=None,
+                    related_sets=None,
+                    invalid_fragments=None,
+                    search_order=None):
 
     if search_fields is None and condition_fields is None:
         return queryset
@@ -219,7 +254,10 @@ def filter_queryset(queryset, query, search_fields=None, condition_fields=None, 
     if condition_fields is None:
         condition_fields = []
 
-    fragments = query_parser(query, condition_fields, invalid_fragments=invalid_fragments)
+    if related_sets is None:
+        related_sets = []
+
+    fragments = query_parser(query, condition_fields, related_sets, invalid_fragments=invalid_fragments)
 
     for fragment in fragments:
         queryset = fragment.filter_queryset(queryset, search_fields)

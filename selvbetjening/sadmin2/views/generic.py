@@ -7,13 +7,13 @@ from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import filtering
 
 
-def apply_search_query(qs, query, search_fields, condition_fields=None, search_order=None):
+def apply_search_query(qs, query, search_fields, condition_fields=None, related_sets=None, search_order=None):
 
     if condition_fields is None:
         condition_fields = []
 
     invalid_fragments = []
-    return filtering.filter_queryset(qs, query, search_fields, condition_fields,
+    return filtering.filter_queryset(qs, query, search_fields, condition_fields, related_sets,
                                      invalid_fragments=invalid_fragments,
                                      search_order=search_order), invalid_fragments
 
@@ -72,6 +72,7 @@ def search_view(request,
                 template_fragment,
                 search_columns=None,
                 search_conditions=None,
+                search_related=None,
                 search_order=None,
                 context=None):
 
@@ -81,6 +82,9 @@ def search_view(request,
     if search_conditions is None:
         search_conditions = []
 
+    if search_related is None:
+        search_related = []
+
     if context is None:
         context = {}
 
@@ -88,6 +92,7 @@ def search_view(request,
 
     queryset, invalid_fragments = apply_search_query(queryset, query, search_columns,
                                                      condition_fields=search_conditions,
+                                                     related_sets=search_related,
                                                      search_order=search_order)
 
     paginator = Paginator(queryset, 30)

@@ -2,7 +2,7 @@
 from django.utils import unittest
 from django.test import TestCase
 
-from selvbetjening.core.events.models import Event, Attend
+from selvbetjening.core.events.models import Event, Attend, AttendeeComment
 
 from selvbetjening.sadmin2 import filtering
 
@@ -12,37 +12,37 @@ class FilteringTestCase(TestCase):
 
     def test_parser_splitting(self):
 
-        fragments = filtering.query_parser("alpha beta", [])
+        fragments = filtering.query_parser("alpha beta", [], [])
         assert len(fragments) == 2
 
-        fragments = filtering.query_parser("alpha \"beta beta\"", [])
+        fragments = filtering.query_parser("alpha \"beta beta\"", [], [])
         assert len(fragments) == 2
 
-        fragments = filtering.query_parser("alpha", [])
+        fragments = filtering.query_parser("alpha", [], [])
         assert len(fragments) == 1
 
-        fragments = filtering.query_parser("", [])
+        fragments = filtering.query_parser("", [], [])
         assert len(fragments) == 0
 
-        fragments = filtering.query_parser(':description="Another event"', ['description'])
+        fragments = filtering.query_parser(':description="Another event"', ['description'], [])
         assert len(fragments) == 1
 
         with self.assertRaises(filtering.FilterException):
-            filtering.query_parser(':description="Another event"', [])
+            filtering.query_parser(':description="Another event"', [], [])
 
     def test_fragment_construction(self):
 
-        fragments = filtering.query_parser("alpha", [])
+        fragments = filtering.query_parser("alpha", [], [])
         assert len(fragments) == 1
         assert not fragments[0].negated
         assert fragments[0].fragment_type == filtering.TYPES.SEARCH_TERM
 
-        fragments = filtering.query_parser("-alpha", [])
+        fragments = filtering.query_parser("-alpha", [], [])
         assert len(fragments) == 1
         assert fragments[0].negated
         assert fragments[0].fragment_type == filtering.TYPES.SEARCH_TERM
 
-        fragments = filtering.query_parser(':description="Another event"', ['description'])
+        fragments = filtering.query_parser(':description="Another event"', ['description'], [])
         assert len(fragments) == 1, fragments
         assert fragments[0].fragment_type == filtering.TYPES.CONDITION
 
@@ -141,5 +141,26 @@ class FilteringTestCase(TestCase):
         e = filtering.filter_queryset(attendees, ':price>50',
                                       search_fields=[],
                                       condition_fields=['price', 'paid'])
+        assert e.count() == 1
+
+    def test_related(self):
+
+        attendees = Attend.objects.all()
+        assert attendees.count() == 1
+
+        e = filtering.filter_queryset(attendees, 'has:comment',
+                                      search_fields=[],
+                                      related_sets=['comment'])
+        assert e.count() == 0
+
+        AttendeeComment.objects.create(
+            attendee=attendees[0],
+            author="author",
+            comment="comment"
+        )
+
+        e = filtering.filter_queryset(attendees, 'has:comment',
+                                      search_fields=[],
+                                      related_sets=['comment'])
         assert e.count() == 1
 

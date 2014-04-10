@@ -70,6 +70,7 @@ def event_attendees(request, event_pk):
     columns = ('pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email',
                'user__street', 'user__postalcode', 'user__city')
     conditions = ('selection__option__pk', 'selection__suboption__pk', 'state', 'paid', 'price')
+    related = ('comment',)
 
     queryset = event.attendees.select_related('user').all()
 
@@ -88,6 +89,7 @@ def event_attendees(request, event_pk):
                        'sadmin2/event/attendees_inner.html',
                        search_columns=columns,
                        search_conditions=conditions,
+                       search_related=related,
                        search_order='-pk',
                        context=context)
 
