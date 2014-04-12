@@ -28,7 +28,7 @@ def event_selections(request, event_pk):
     option_groups = []
     for option_group in event.optiongroups.prefetch_related('option_set'):
         options = []
-        for option in option_group.option_set.all():
+        for option in option_group.option_set.all().prefetch_related('selection_set'):
             count = option.selections.count()
             waiting = option.selections.filter(attendee__state=AttendState.waiting).count()
             accepted = option.selections.filter(attendee__state=AttendState.accepted).count()
