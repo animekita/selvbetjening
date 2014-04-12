@@ -148,6 +148,12 @@ breadcrumbs = {
         'parent': 'event_attendees_attendee'},
 
     # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
+    'event_attendees_attendee_log':  {
+        'name': _('Log'),
+        'url_callback': url_callback('sadmin2:event_attendee_log', ('event_pk', 'attendee_pk')),
+        'parent': 'event_attendees_attendee'},
+
+    # Assumes: context[event], context[attendee], kwargs[event_pk], kwargs[attendee_pk]
     'event_attendees_attendee_delete':  {
         'name': _('Delete'),
         'url_callback': url_callback('sadmin2:event_attendee_delete', ('event_pk', 'attendee_pk')),
@@ -367,6 +373,10 @@ sadmin2_menu_tab_attendee = (
     {'id': 'notes',
      'name_callback': lambda context: _('Notes %s') % ('<span class="badge">%s<span>' % context['attendee'].comments.count()),
      'url_callback': url_callback('sadmin2:event_attendee_notes', ('event_pk', 'attendee_pk'))},
+
+    {'id': 'log',
+     'name_callback': lambda context: _('Log %s') % ('<span class="badge">%s<span>' % context['attendee'].log.count()),
+     'url_callback': url_callback('sadmin2:event_attendee_log', ('event_pk', 'attendee_pk'))},
 
     {'id': 'back-to-event',
      'name': _('Back to event'),

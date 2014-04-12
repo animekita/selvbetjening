@@ -1,0 +1,47 @@
+{% extends "sadmin2/site.html" %}
+
+{% block content %}
+
+    <h1>Log</h1>
+
+    <table class="table">
+
+        <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            {% comment %}
+            <th>Severity</th>
+            <th>Module</th>
+            {% endcomment %}
+            <th>Message</th>
+            {% comment %}
+            <th>Related</th>
+            {% endcomment %}
+        </tr>
+
+        {% for entry in log %}
+
+        <tr>
+            <td>{{ entry.timestamp }}</td>
+            <td>{% if entry.request_user %}{{ entry.request_user }}{% else %}<i>anonymous</i>{% endif %} ({{ entry.request_ip }})</td>
+            {% comment %}
+            <td>{{ entry.level }}</td>
+            <td>{{ entry.source }}</td>
+            {% endcomment %}
+            <td>{{ entry.msg }}</td>
+            {% comment %}
+            <td>
+                {% if entry.related_user and not entry.related_attendee %}
+                    <i class="glyphicon glyphicon-user"></i> <a href="{% url "sadmin2:user" user_pk=entry.related_user.pk %}">{{ entry.related_user }}</a>
+                {% endif %}
+                {% if entry.related_attendee %}
+                    <i class="glyphicon glyphicon-user"></i> <a href="{% url "sadmin2:event_attendee" event_pk=entry.related_attendee.event.pk attendee_pk=entry.related_attendee.pk %}">{{ entry.related_attendee }}</a>
+                {% endif %}
+            </td>
+            {% endcomment %}
+        </tr>
+
+        {% endfor %}
+    </table>
+
+{% endblock %}

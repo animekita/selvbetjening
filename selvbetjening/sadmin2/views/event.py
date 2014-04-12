@@ -452,6 +452,28 @@ def event_attendee_notes(request, event_pk, attendee_pk):
                   context)
 
 
+@sadmin_prerequisites
+def event_attendee_log(request, event_pk, attendee_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+    attendee = get_object_or_404(event.attendees, pk=attendee_pk)
+
+    context = {
+        'sadmin2_menu_main_active': 'events',
+        'sadmin2_breadcrumbs_active': 'event_attendees_attendee_log',
+        'sadmin2_menu_tab': menu.sadmin2_menu_tab_attendee,
+        'sadmin2_menu_tab_active': 'log',
+
+        'event': event,
+        'attendee': attendee,
+        'log': attendee.log.all().order_by('-id')
+    }
+
+    return render(request,
+                  'sadmin2/event/attendee_log.html',
+                  context)
+
+
 def _get_deleted_objects(objs):
     """
     Slightly simplified version of the function used in the standard admin

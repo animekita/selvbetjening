@@ -69,6 +69,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'selvbetjening.core.logging.middleware.SelvbetjeningGlobalRequestMiddleware',
     'selvbetjening.sadmin2.middleware.RequireLoginMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
@@ -112,6 +113,7 @@ INSTALLED_APPS = [
     'selvbetjening.core.members',
     'selvbetjening.core.events',
     'selvbetjening.core.mailcenter',
+    'selvbetjening.core.logging',
 
     'selvbetjening.businesslogic.members',
     'selvbetjening.businesslogic.events',
@@ -119,11 +121,6 @@ INSTALLED_APPS = [
     'selvbetjening.sadmin2'
 ]
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -137,13 +134,22 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'selvbetjening_db_log': {
+            'level': 'INFO',
+            'class': 'selvbetjening.core.logging.log.DBHandler'
         }
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': True
+        },
+        'selvbetjening': {
+            'handlers': ['selvbetjening_db_log'],
+            'level': 'INFO',
+            'propagate': True
         }
     }
 }

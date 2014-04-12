@@ -1,13 +1,20 @@
 # coding=UTF-8
 
+import logging
+
 from datetime import datetime
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext as _
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from event import Event, AttendeeAcceptPolicy
+
+logger = logging.getLogger('selvbetjening.events')
 
 
 class AttendState(object):
@@ -170,6 +177,24 @@ class AttendStateChange(models.Model):
     attendee = models.ForeignKey(Attend, related_name='state_history')
 
 
+@receiver(post_save, sender=AttendStateChange)
+def attend_state_change_handler(sender, **kwargs):
+    instance = kwargs.get('instance')
+    created = kwargs.get('created')
+
+    try:
+
+        if created:
+            logger.info('Attendee state changed (%s)', instance.state,
+                        extra={
+                            'related_user': instance.attendee.user,
+                            'related_attendee': instance.attendee
+                        })
+
+    except ObjectDoesNotExist:
+        pass
+
+
 class AttendeeComment(models.Model):
 
     class Meta:
@@ -183,3 +208,5 @@ class AttendeeComment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     check_in_announce = models.BooleanField(default=False)
+
+

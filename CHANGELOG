@@ -4,6 +4,7 @@
  * Add links to over- and under-paid attendees
  * Allow filtering attendees based on their address
  * Allow filtering attendees who have an attached note
+ * Add a log of changes for each attendee
 
 8.2.0
 

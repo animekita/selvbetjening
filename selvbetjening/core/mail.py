@@ -8,6 +8,8 @@ def send_mail(subject, body, from_email, recipient_list, body_html=None, interna
 
     """
 
+    mails = []
+
     for recipient in recipient_list:
 
         new_message = MailerMessage()
@@ -25,3 +27,7 @@ def send_mail(subject, body, from_email, recipient_list, body_html=None, interna
             new_message.app = internal_sender_id
 
         new_message.save()
+
+        mails.append(new_message)
+
+    return mails

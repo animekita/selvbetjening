@@ -1,3 +1,4 @@
+import logging
 import re
 import markdown
 
@@ -6,6 +7,8 @@ from django.db import models
 from django.template import Template, Context, loader
 
 from selvbetjening.core.mail import send_mail
+
+logger = logging.getLogger('selvbetjening.email')
 
 
 class EmailSpecification(models.Model):
@@ -36,21 +39,36 @@ class EmailSpecification(models.Model):
             raise ValueError
 
         email = self.render_user(user)
-        self._send_mail(user.email, email, internal_sender_id)
+        instance = self._send_mail(user.email, email, internal_sender_id)
+
+        logger.info('E-mail queued (%s) -- Addressed to %s', email['subject'], user.email,
+                    extra={
+                        'related_user': user,
+                        'related_email': instance
+                    })
 
     def send_email_attendee(self, attendee, internal_sender_id):
 
         email = self.render_attendee(attendee)
-        self._send_mail(attendee.user.email, email, internal_sender_id)
+        instance = self._send_mail(attendee.user.email, email, internal_sender_id)
+
+        logger.info('E-mail queued (%s) -- Addressed to %s', email['subject'], attendee.user.email,
+                    extra={
+                        'related_user': attendee.user,
+                        'related_attendee': attendee,
+                        'related_email': instance
+                    })
 
     def _send_mail(self, to_address, email, internal_sender_id):
 
-        send_mail(email['subject'],
-                  email['body_plain'],
-                  settings.DEFAULT_FROM_EMAIL,
-                  [to_address],
-                  body_html=email['body_html'],
-                  internal_sender_id=internal_sender_id)
+        mails = send_mail(email['subject'],
+                          email['body_plain'],
+                          settings.DEFAULT_FROM_EMAIL,
+                          [to_address],
+                          body_html=email['body_html'],
+                          internal_sender_id=internal_sender_id)
+
+        return mails[0]
 
     def render_user(self, user):
         """
