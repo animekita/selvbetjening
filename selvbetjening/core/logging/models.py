@@ -1,7 +1,6 @@
 
 from django.db import models
 from mailqueue.models import MailerMessage
-from selvbetjening.core.events.models import Attend
 from selvbetjening.core.user.models import SUser
 
 
@@ -35,6 +34,6 @@ class Log(models.Model):
 
     # Related to
 
-    related_attendee = models.ForeignKey(Attend, related_name='log', null=True, blank=True, on_delete=models.SET_NULL)
+    related_attendee = models.ForeignKey('events.Attend', related_name='log', null=True, blank=True, on_delete=models.SET_NULL)
     related_user = models.ForeignKey(SUser, related_name='log', null=True, blank=True, on_delete=models.SET_NULL)
     related_email = models.ForeignKey(MailerMessage, related_name='log', null=True, blank=True, on_delete=models.SET_NULL)
