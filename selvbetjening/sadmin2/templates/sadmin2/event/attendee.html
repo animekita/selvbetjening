@@ -13,11 +13,17 @@
         <h2>{{ attendee.user.first_name }} {{ attendee.user.last_name }} <small>&lt;{{ attendee.user.username }}&gt;</small></h2>
 
         {% for comment in comments %}
-            <div class="alert alert-danger">
+            <div class="alert alert-danger pulsate">
             <h4>Bemærk</h4>
             {{ comment.comment }}
             </div>
         {% endfor %}
+
+        <script>
+            $(function() {
+                $('.pulsate').effect('pulsate', {times:10}, 6000 );
+            });
+        </script>
 
         <table class="table">
 
