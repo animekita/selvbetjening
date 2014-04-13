@@ -1,3 +1,4 @@
+# coding=utf8
 
 from django.utils import unittest
 from django.test import TestCase
@@ -164,3 +165,11 @@ class FilteringTestCase(TestCase):
                                       related_sets=['comment'])
         assert e.count() == 1
 
+    def test_non_ascii(self):
+
+        events = Event.objects.all()
+        assert events.count() == 2
+
+        filtering.filter_queryset(events, u'ø :description=ø',
+                                  search_fields=['title', 'description'],
+                                  condition_fields=['description'])

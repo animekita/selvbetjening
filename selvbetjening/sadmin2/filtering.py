@@ -106,7 +106,7 @@ def _is_condition(raw_fragment):
         return False
 
     for operator_repr, _ in OPERATORS:
-        if operator_repr in str(raw_fragment):
+        if operator_repr in unicode(raw_fragment):
             return True
 
     return False
