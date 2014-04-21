@@ -1,0 +1,8 @@
+{% if messages or session_message %}
+    {% for message in messages %}
+    <p class="alert alert-info">{{ message }}</p>
+    {% endfor %}
+    {% if session_message %}
+    <p class="alert alert-info">{{session_message}}</p>
+    {% endif %}
+{% endif %}
