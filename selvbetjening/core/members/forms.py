@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_str
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from selvbetjening.core.members import signals
 from selvbetjening.core.members.models import UserWebsite
@@ -207,7 +207,7 @@ class ProfileEditForm(forms.ModelForm):
         self.helper.form_tag = False
 
 
-class UserWebsiteFormSet(BaseInlineFormSet):
+class UserWebsiteFormSetBase(BaseInlineFormSet):
 
     helper = S2FormHelper(horizontal=True)
 
@@ -217,7 +217,5 @@ class UserWebsiteFormSet(BaseInlineFormSet):
 
     helper.add_layout(layout)
     helper.form_tag = False
-
-UserWebsiteFormSet = inlineformset_factory(get_user_model(), UserWebsite, formset=UserWebsiteFormSet, extra=2)
 
 

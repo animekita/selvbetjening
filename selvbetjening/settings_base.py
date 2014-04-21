@@ -98,7 +98,7 @@ INSTALLED_APPS = [
 
     'provider',
     'provider.oauth2',
-    'tastypie',
+    #'tastypie',  # todo re-enable
 
     'django.contrib.sites',
     'django.contrib.auth',
@@ -114,9 +114,6 @@ INSTALLED_APPS = [
     'selvbetjening.core.events',
     'selvbetjening.core.mailcenter',
     'selvbetjening.core.logging',
-
-    'selvbetjening.businesslogic.members',
-    'selvbetjening.businesslogic.events',
 
     'selvbetjening.sadmin2'
 ]
@@ -176,7 +173,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
     'debug_toolbar.panels.templates.TemplatesPanel',
     'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
+    #'debug_toolbar.panels.signals.SignalsPanel',  # TODO re-enable
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
