@@ -3,10 +3,9 @@
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
 from django import forms
-
 from crispy_forms.layout import HTML
-from selvbetjening.businesslogic.members.forms import UsernameField
 
+from selvbetjening.core.members.forms import UsernameField
 from selvbetjening.frontend.userportal.processor_handlers import extended_privacy_processors
 from selvbetjening.frontend.userportal.models import UserPrivacy
 from selvbetjening.frontend.utilities.forms import S2Layout, S2Fieldset, S2FormHelper, S2Submit
@@ -25,7 +24,7 @@ class ChangeUsernameForm(forms.Form):
 
     helper = S2FormHelper()
 
-    layout = S2Layout(S2Fieldset(_('New username'), 'new_username'))
+    layout = S2Layout(S2Fieldset(_('New username'), 'new_username', collapse=False))
     submit = S2Submit(_('Change username'), _('Change username'))
 
     helper.add_layout(layout)
@@ -100,10 +99,11 @@ class PrivacyForm(forms.ModelForm):
                   'public_join_date',
                   'public_email', 'public_phonenumber',
                   'public_town', 'public_contact',
-                  'public_websites',] + extended_fields
+                  'public_websites'] + extended_fields
 
         properties = {
-                'css_class': 'privacy_settings'
+            'css_class': 'privacy_settings',
+            'collapse': False
         }
 
         layout = S2Layout('public_profile',

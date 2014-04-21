@@ -1,13 +1,13 @@
-from django.contrib.auth import get_user_model
-from django.db import models
 
+from django.db import models
+from django.conf import settings
 
 class UserPrivacy(models.Model):
 
     class Meta:
         db_table = 'profile_userprivacy'
 
-    user = models.ForeignKey(get_user_model())
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     public_profile = models.BooleanField(default=False)
 

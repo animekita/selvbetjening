@@ -9,7 +9,7 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from django.forms.models import modelformset_factory, BaseModelFormSet
 from django.forms.util import ErrorList
 from django.template.defaultfilters import floatformat
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_options, SCOPE
 from selvbetjening.core.events.models import Selection, Attend, SubOption

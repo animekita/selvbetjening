@@ -3,11 +3,11 @@
 import logging
 
 from datetime import datetime
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 
+from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 from django.db.models.aggregates import Sum
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -51,7 +51,7 @@ class Attend(models.Model):
         app_label = 'events'
 
     event = models.ForeignKey(Event)
-    user = models.ForeignKey(get_user_model())
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     state = models.CharField(max_length=32,
                              choices=AttendState.get_choices(),

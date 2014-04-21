@@ -3,7 +3,7 @@ from datetime import date
 
 from django.db import models
 from django.contrib.auth.models import AnonymousUser
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
@@ -66,19 +66,19 @@ class Event(models.Model):
     show_custom_signup_message = models.BooleanField(default=False)
     custom_signup_message = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
+        help_text=_('The following variables are available: event, user, attendee.')
     )
 
     show_custom_change_message = models.BooleanField(default=False)
     custom_change_message = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
+        help_text=_('The following variables are available: event, user, attendee.')
     )
 
     show_custom_status_page = models.BooleanField(default=False)
     custom_status_page = models.TextField(
         blank=True,
-        help_text=_('The following variables are available: %s.') % u'event, user, attendee'
+        help_text=_('The following variables are available: event, user, attendee.')
     )
 
     # E-mail notifications

@@ -19,21 +19,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
-from django.views.decorators.cache import cache_page
+
+from selvbetjening.core.events import decorators as eventdecorators
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
-
 from selvbetjening.frontend.base.forms import frontend_selection_helper_factory
 from selvbetjening.frontend.base.views.events import generic_event_status
-
 from selvbetjening.core.events.models import Attend, AttendState, AttendeeAcceptPolicy
-
-from selvbetjening.businesslogic.events import decorators as eventdecorators
-from selvbetjening.businesslogic.members.forms import MinimalUserRegistrationForm, ProfileEditForm
-from selvbetjening.businesslogic.events.decorators import event_registration_open_required, \
+from selvbetjening.core.members.forms import MinimalUserRegistrationForm, ProfileEditForm
+from selvbetjening.core.events.decorators import event_registration_open_required, \
     get_event_from_id, suspend_automatic_attendee_price_updates
-
 from selvbetjening.frontend.auth.forms import AuthenticationForm
 
 

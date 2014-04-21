@@ -1,11 +1,11 @@
 # coding=UTF-8
 
 import datetime
-from django.contrib.auth import get_user_model
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
+from django.conf import settings
 
 from countries.models import Country
 
@@ -27,14 +27,14 @@ def to_age(dateofbirth, reference_date=None):
 
 
 class UserWebsite(models.Model):
-    user = models.ForeignKey(get_user_model(), verbose_name=_(u'user'), db_column='user_id')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_column='user_id')
 
     name = models.CharField(max_length=32, blank=True)
     url = models.URLField(blank=True)
 
 
 class UserLocation(models.Model):
-    user = models.OneToOneField(get_user_model(), related_name='location')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='location')
     lat = models.FloatField(blank=True, null=True, default=None)
     lng = models.FloatField(blank=True, null=True, default=None)
     expired = models.BooleanField(default=False)

@@ -1,4 +1,5 @@
 # coding=UTF-8
+from django.forms import inlineformset_factory
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -9,12 +10,11 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.contrib.formtools.preview import FormPreview
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, get_user_model
+from selvbetjening.core.members.models import UserWebsite
 
 from selvbetjening.core.user.models import SUser
-
-from selvbetjening.businesslogic.members.forms import UserRegistrationForm, ProfileEditForm, UserWebsiteFormSet
-
+from selvbetjening.core.members.forms import UserRegistrationForm, ProfileEditForm, UserWebsiteFormSetBase
 from selvbetjening.frontend.userportal.forms import ChangePasswordForm, ChangePictureForm, \
     PrivacyForm, ChangeUsernameForm
 from selvbetjening.frontend.userportal.processor_handlers import profile_page_processors
@@ -86,6 +86,8 @@ def edit_profile(request,
                  template_name='userportal/edit_profile.html',
                  success_page='userportal_profile',
                  form_class=ProfileEditForm):
+
+    UserWebsiteFormSet = inlineformset_factory(get_user_model(), UserWebsite, formset=UserWebsiteFormSetBase, extra=2)
 
     user = request.user
 
