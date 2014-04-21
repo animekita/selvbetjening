@@ -25,7 +25,7 @@ class ChangeUsernameForm(forms.Form):
 
     helper = S2FormHelper()
 
-    layout = S2Layout(S2Fieldset(_('New username'), 'new_username'))
+    layout = S2Layout(S2Fieldset(_('New username'), 'new_username', collapse=False))
     submit = S2Submit(_('Change username'), _('Change username'))
 
     helper.add_layout(layout)
@@ -103,7 +103,8 @@ class PrivacyForm(forms.ModelForm):
                   'public_websites',] + extended_fields
 
         properties = {
-                'css_class': 'privacy_settings'
+            'css_class': 'privacy_settings',
+            'collapse': False
         }
 
         layout = S2Layout('public_profile',
