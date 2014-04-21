@@ -9,7 +9,10 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Removing unique constraint on 'UserCommunication', fields ['method', 'user']
-        db.delete_unique(u'members_usercommunication', ['method', 'user_id'])
+        try:
+            db.delete_unique(u'members_usercommunication', ['method', 'user_id'])
+        except ValueError:
+            pass
 
         # Deleting model 'UserCommunication'
         db.delete_table(u'members_usercommunication')
