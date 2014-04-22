@@ -106,6 +106,8 @@ def event_register(request,
                 attendee.state = AttendState.accepted
                 attendee.save()
 
+            messages.success(request, _(u'You are now registered for this event.'))
+
             return HttpResponseRedirect(
                 reverse('eventportal_event', kwargs={'event_pk': event.pk}) + '?signup=1')
 

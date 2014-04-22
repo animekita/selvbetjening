@@ -7,7 +7,7 @@
       <h1>{{event.title}}</h1>
 
       {% if event.tagline %}<h2>{{ event.tagline|safe }}</h2>{% endif %}
-      {% if event.startdate %}<p><strong>Tid:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
+      {% if event.startdate %}<p><strong>Tidspunkt:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
       {% if event.location %}<p><strong>Sted:</strong> Huset {% if event.location_link %}(<a href="{{ event.location_link }}">kort</a>){% endif %}</p>{% endif %}
       {% if event.maximum_attendees %}<p><strong>Pladser:</strong> {{ event.maximum_attendees }} pladser</p>{% endif %}
 
@@ -32,7 +32,7 @@
 
 {% else %}
     {% if event.is_registration_open %}
-        <p><a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a></p>
+        <a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a>
     {% endif %}
 {% endif %}
 </div>
