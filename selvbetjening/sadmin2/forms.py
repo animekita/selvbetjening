@@ -287,6 +287,10 @@ class SelectOptionType(forms.Form):
     helper.add_layout(layout)
     helper.add_input(S2SubmitCreate())
 
+    def __init__(self, *args, **kwargs):
+        super(SelectOptionType, self).__init__(*args, **kwargs)
+        self.fields['type'].choices = Option.TYPE_CHOICES  # force a refresh of the type list
+
 
 class PaymentForm(forms.ModelForm):
 

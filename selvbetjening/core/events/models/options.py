@@ -186,14 +186,14 @@ class Option(models.Model):
         ordering = ('order',)
         app_label = 'events'
 
-    TYPE_CHOICES = (
+    TYPE_CHOICES = [
         ('boolean', _('Boolean')),
         ('choices', _('Choices')),
         ('text', _('Text')),
         ('autoselect', _('Auto Select')),
         ('autoselectchoice', _('Auto Select Choice')),
         ('discount', _('Discount Option'))
-    )
+    ]
 
     group = models.ForeignKey(OptionGroup)
 
@@ -232,6 +232,10 @@ class Option(models.Model):
 
     notify_on_selection = \
         models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_option_on_selection')
+
+    def __init__(self, *args, **kwargs):
+        super(Option, self).__init__(*args, **kwargs)
+        self._meta.get_field_by_name('type')[0]._choices = self.TYPE_CHOICES  # Force this to be reloaded
 
     def send_notification_on_select(self, attendee):
         if self.notify_on_selection is not None:
