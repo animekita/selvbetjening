@@ -376,6 +376,7 @@ def selection_update_handler_save(sender, **kwargs):
     #selection_update_handler(sender, modifier, **kwargs)
 
 
+# TODO in some cases we get an exception if an attendee is deleted, we need to check why this is the case.
 @receiver(post_delete, sender=Selection)
 def selection_update_handler_delete(sender, **kwargs):
     selection_update_handler(sender, 'deleted', **kwargs)
