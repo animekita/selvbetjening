@@ -14,6 +14,7 @@ from selvbetjening.core.events.models import Event, Attend, AttendState, Attende
 
 from selvbetjening.businesslogic.events import decorators as eventdecorators
 from selvbetjening.businesslogic.events.decorators import suspend_automatic_attendee_price_updates
+from selvbetjening.core.events.signals import attendee_updated_signal
 from selvbetjening.frontend.base.views.events import generic_event_status
 
 from selvbetjening.sadmin2.forms import attendee_selection_helper_factory
@@ -90,7 +91,7 @@ def event_register(request,
                     kwargs={'event_pk': event.pk}))
 
     if request.method == 'POST':
-        options_form = EventSelectionFormSet(request.POST)
+        options_form = EventSelectionFormSet(request.POST, user=request.user)
 
         if options_form.is_valid():
 
@@ -108,13 +109,16 @@ def event_register(request,
 
             messages.success(request, _(u'You are now registered for this event.'))
 
+            attendee_updated_signal.send(event_register, attendee=attendee)
+
             return HttpResponseRedirect(
                 reverse('eventportal_event', kwargs={'event_pk': event.pk}) + '?signup=1')
 
     else:
-        options_form = EventSelectionFormSet()
+        options_form = EventSelectionFormSet(user=request.user)
 
     context = {
+        'event': event,
         'formset': options_form,
     }
     context.update(extra_context)
@@ -169,7 +173,7 @@ def event_status_update(request, event):
 
     if request.method == 'POST':
 
-        form = EventSelectionFormSet(request.POST, attendee=attendee)
+        form = EventSelectionFormSet(request.POST, user=request.user, attendee=attendee)
 
         if form.is_valid():
             form.save()
@@ -182,16 +186,19 @@ def event_status_update(request, event):
 
             attendee.event.send_notification_on_registration_update(attendee)
 
+            attendee_updated_signal.send(event_status_update, attendee=attendee)
+
             return HttpResponseRedirect(
                 reverse('eventportal_event_status',
                         kwargs={'event_pk': event.id}))
 
     else:
-        form = EventSelectionFormSet(attendee=attendee)
+        form = EventSelectionFormSet(user=request.user, attendee=attendee)
 
     return render(request,
                   'eventportal/status_update.html',
                   {
+                      'event': event,
                       'formset': form
                   })
 

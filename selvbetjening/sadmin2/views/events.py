@@ -24,6 +24,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 
 from selvbetjening.core.events.models import Event, Payment
+from selvbetjening.core.events.signals import attendee_updated_signal
 
 from selvbetjening.sadmin2.forms import EventForm, RegisterPaymentForm, RegisterPaymentFormSet
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
@@ -111,6 +112,8 @@ def register_payments(request):
                 )
 
                 attendee.event.send_notification_on_payment(attendee)
+
+                attendee_updated_signal.send(register_payments, attendee=attendee)
 
                 url = reverse('sadmin2:event_attendee_payments',
                     kwargs={'event_pk': attendee.event.pk,

@@ -15,7 +15,7 @@ from selvbetjening.core.user.models import SUser
 from selvbetjening.core.events.options.dynamic_selections import SCOPE, dynamic_selections_formset_factory, dynamic_selections
 from selvbetjening.core.events.utils import sum_attendee_payment_status
 from selvbetjening.core.events.models import Event, Attend, AttendState, Payment, AttendeeComment
-from selvbetjening.core.events.signals import request_attendee_pks_signal
+from selvbetjening.core.events.signals import request_attendee_pks_signal, attendee_updated_signal
 
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, PaymentForm, \
     AttendeeCommentForm, attendee_selection_helper_factory, AttendeeCommentFormSet
@@ -308,6 +308,8 @@ def event_attendee(request, event_pk, attendee_pk):
                 signee=request.user
             )
 
+            attendee_updated_signal.send(event_attendee, attendee=attendee)
+
             return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk, 'attendee_pk': attendee.pk}))
 
     return render(request,
@@ -353,6 +355,8 @@ def event_attendee_payments(request, event_pk, attendee_pk):
         payment.user = attendee.user
         payment.save()
 
+        attendee_updated_signal.send(event_attendee_selections, attendee=attendee)
+
     return generic_create_view(
         request,
         PaymentForm,
@@ -381,17 +385,20 @@ def event_attendee_selections(request, event_pk, attendee_pk):
     )
 
     if request.method == 'POST':
-        formset = DynamicSelectionsFormSet(request.POST, attendee=attendee)
+        formset = DynamicSelectionsFormSet(request.POST, user=attendee.user, attendee=attendee)
 
         if formset.is_valid():
 
             formset.save()
 
             messages.success(request, 'Saved selections')
+
+            attendee_updated_signal.send(event_attendee_selections, attendee=attendee)
+
             return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk,
                                                                                   'attendee_pk': attendee.pk}))
     else:
-        formset = DynamicSelectionsFormSet(attendee=attendee)
+        formset = DynamicSelectionsFormSet(user=request.user, attendee=attendee)
 
     return render(request,
                   'sadmin2/event/attendee_selections.html',
