@@ -348,14 +348,14 @@ sadmin2_menu_tab_users = (
      )}
 )
 
-sadmin2_menu_tab_user = (
+sadmin2_menu_tab_user = [
     {'id': 'user',
      'name': _('User'),
      'url_callback': url_callback('sadmin2:user', ('user_pk', ))},
     {'id': 'password',
      'name': _('Password'),
      'url_callback': url_callback('sadmin2:user_password', ('user_pk', ))}
-)
+]
 
 sadmin2_menu_tab_attendee = (
     {'id': 'registration',
