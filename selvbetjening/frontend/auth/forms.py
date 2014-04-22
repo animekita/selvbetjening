@@ -17,7 +17,7 @@ class AuthenticationForm(BaseAuthenticationForm):
     helper = S2FormHelper()
 
     helper.add_layout(S2Layout(
-        S2Fieldset('', 'username', 'password')
+        S2Fieldset(None, 'username', 'password')
     ))
 
     helper.add_input(

@@ -63,7 +63,7 @@ msgstr "Telefonnummer"
 #: forms.py:123 forms.py:183
 msgid "Inform me about events and other important changes."
 msgstr ""
-"Ja, jeg vil gerne modtage e-mails om nye arrangementer og vigtige nyhedder."
+"Ja, jeg vil gerne modtage e-mails om nye arrangementer og vigtige nyheder."
 
 #: forms.py:128
 msgid "I allow the storage of my personal information on this site."

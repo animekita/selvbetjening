@@ -194,7 +194,7 @@ class ProfileEditForm(forms.ModelForm):
         self.helper = S2FormHelper(horizontal=True)
 
         layout = S2Layout(
-            S2Fieldset(_('Personal info'),
+            S2Fieldset(None,
                        'first_name', 'last_name', 'sex', 'dateofbirth', collapse=False),
             S2Fieldset(_('Contact'),
                        'email', 'phonenumber', 'msn', 'skype', 'jabber', collapse=False),
