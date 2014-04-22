@@ -126,20 +126,13 @@
 
 """
 
-import logging
-from django.core.exceptions import ObjectDoesNotExist
-
 from django.utils.translation import ugettext as _
 from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 
 from event import Event
 
 from attendee import Attend
 from selvbetjening.core.mailcenter.models import EmailSpecification
-
-logger = logging.getLogger('selvbetjening.events')
 
 
 class OptionGroup(models.Model):
@@ -342,44 +335,6 @@ class Selection(models.Model):
             return u'%s (%s)' % (self.option, self.suboption)
         else:
             return u'%s' % self.option
-
-
-def selection_update_handler(sender, modifier, **kwargs):
-    instance = kwargs.get('instance')
-
-    try:
-        text = ' -- %s' % instance.text if instance.text else ''
-
-        logger.info('Selection %s (%s @ %s,-)%s', modifier, unicode(instance), instance.price, text,
-                    extra={
-                        'related_user': instance.attendee.user,
-                        'related_attendee': instance.attendee
-                    })
-
-    except ObjectDoesNotExist:
-        pass
-
-
-@receiver(post_save, sender=Selection)
-def selection_update_handler_save(sender, **kwargs):
-    created = kwargs.get('created')
-
-    if created:
-        modifier = 'added'
-        selection_update_handler(sender, modifier, **kwargs)
-    else:
-        modifier = 'changed'
-
-    # TODO enable logging of selection modifications. Right now a lot of selections are saved even though they have
-    # not been modified.
-
-    #selection_update_handler(sender, modifier, **kwargs)
-
-
-# TODO in some cases we get an exception if an attendee is deleted, we need to check why this is the case.
-@receiver(post_delete, sender=Selection)
-def selection_update_handler_delete(sender, **kwargs):
-    selection_update_handler(sender, 'deleted', **kwargs)
 
 
 class DiscountOption(Option):
