@@ -8,7 +8,7 @@ from django.forms.widgets import Input
 from django.template.defaultfilters import floatformat
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
+from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode, SubOption
 from selvbetjening.core.events.models import Selection
 from selvbetjening.core.events.options.scope import SCOPE
 
@@ -143,12 +143,60 @@ class TextWidget(BaseWidget):
 
 
 class ChoiceWidget(BaseWidget):
+    """
+    By default, the choice widget populates (through update_choices) itself with all related suboptions.
+    Inherit from ChoiceWidget and override update_choices if you want a subset.
 
-    def __init__(self, scope, option, send_notifications=False):
-        super(ChoiceWidget, self).__init__(scope, option, send_notifications=send_notifications)
+    (hint, use _get_or_create_choices as a helper function.)
 
-        self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
-                                     for suboption in self.option.suboptions.all()]
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ChoiceWidget, self).__init__(*args, **kwargs)
+        self.choices = []  # the set of valid choices
+
+    def update_choices(self, user, attendee):
+        """
+        This function is called by the forms __init__ function, when the user and attendee is known
+
+        Update the internal choices list (the list of valid options). This list of choices are then
+        pulled automatically into the field shown to the user.
+        """
+        if len(self.choices) == 0:
+            self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption)) for suboption in self.option.suboptions.all()]
+
+    def _get_or_create_choices(self, get_or_create_choices, default_label='---'):
+        """
+        get_or_create_choices -- list of (label, price) pairs
+        """
+
+        empty_choice = [('', default_label)]
+
+        existing_choices = self.option.suboptions.filter(price__in=[price for price, label in get_or_create_choices])
+
+        if len(existing_choices) == len(get_or_create_choices):
+            # Fast path
+            # We assume the choices found matches the choices we want (they have the same price).
+
+            return empty_choice + [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
+
+        else:
+            choices = empty_choice
+
+            for price, label in get_or_create_choices:
+
+                choice = None
+                for existing_choice in existing_choices:
+                    if existing_choice.price == price and existing_choice.label == label:
+                        choice = existing_choice
+                        break
+
+                if choice is None:
+                    choice = SubOption.objects.create(option=self.option, name=label, price=price)
+
+                choices.append(('suboption_%s' % choice.pk, self._label(choice)))
+
+            return choices
 
     def get_field(self, attrs=None):
 
