@@ -4,7 +4,7 @@
       "model": "events.event",
       "fields": {
         "show_custom_signup_message": false,
-        "startdate": null,
+        "startdate": "2014-12-12",
         "group": null,
         "description": "Description 1",
         "move_to_accepted_policy": "always",
@@ -13,7 +13,7 @@
         "registration_open": true,
         "custom_status_page": "",
         "custom_change_message": "",
-        "enddate": null,
+        "enddate": "2014-12-12",
         "show_custom_status_page": false,
         "custom_signup_message": ""
       }
@@ -62,7 +62,7 @@
       "model": "events.event",
       "fields": {
         "show_custom_signup_message": false,
-        "startdate": null,
+        "startdate": "2014-12-12",
         "group": null,
         "description": "Description 1",
         "move_to_accepted_policy": "always",
@@ -71,7 +71,7 @@
         "registration_open": true,
         "custom_status_page": "",
         "custom_change_message": "",
-        "enddate": null,
+        "enddate": "2014-12-12",
         "show_custom_status_page": false,
         "custom_signup_message": ""
       }
@@ -143,7 +143,7 @@
       "model": "events.event",
       "fields": {
         "show_custom_signup_message": false,
-        "startdate": null,
+        "startdate": "2014-12-12",
         "group": null,
         "description": "Description 1",
         "move_to_accepted_policy": "always",
@@ -152,7 +152,7 @@
         "registration_open": true,
         "custom_status_page": "",
         "custom_change_message": "",
-        "enddate": null,
+        "enddate": "2014-12-12",
         "show_custom_status_page": false,
         "custom_signup_message": ""
       }

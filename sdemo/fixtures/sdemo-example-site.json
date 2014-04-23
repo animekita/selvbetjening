@@ -4,7 +4,7 @@
   "model": "events.event", 
   "fields": {
     "show_custom_signup_message": false, 
-    "startdate": null, 
+    "startdate": "2014-12-12",
     "group": null, 
     "description": "", 
     "notify_on_registration": null, 
@@ -19,7 +19,7 @@
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": null, 
+    "enddate": "2014-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
@@ -30,7 +30,7 @@
   "model": "events.event", 
   "fields": {
     "show_custom_signup_message": false, 
-    "startdate": null, 
+    "startdate": "2014-12-12",
     "group": null, 
     "description": "", 
     "notify_on_registration": null, 
@@ -45,7 +45,7 @@
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": null, 
+    "enddate": "2014-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
@@ -56,7 +56,7 @@
   "model": "events.event", 
   "fields": {
     "show_custom_signup_message": false, 
-    "startdate": null, 
+    "startdate": "2014-12-12",
     "group": null, 
     "description": "Welcome all, especially those who don't need to pay anything (accept those people instantly).", 
     "notify_on_registration": null, 
@@ -71,7 +71,7 @@
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": null, 
+    "enddate": "2014-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
