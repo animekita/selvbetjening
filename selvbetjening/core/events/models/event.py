@@ -49,8 +49,8 @@ class Event(models.Model):
     location = models.CharField(_('location'), max_length=255, blank=True)
     location_link = models.URLField(_('location map url'), blank=True)
 
-    startdate = models.DateField(_(u'start date'), blank=True, null=True)
-    enddate = models.DateField(_(u'end date'), blank=True, null=True)
+    startdate = models.DateField(_(u'start date'))
+    enddate = models.DateField(_(u'end date'))
 
     maximum_attendees = models.IntegerField(_('Maximum attendees'), default=0)
 
