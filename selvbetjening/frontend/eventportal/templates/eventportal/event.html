@@ -28,7 +28,9 @@
 
     <a class="btn btn-primary" href="{% url "eventportal_event_status" event.pk %}">Se din status</a>
     <a class="btn btn-primary" href="{% url "eventportal_event_status_update" event.pk %}">Opdatér din status</a>
+    {% if attendee.state == 'waiting' %}
     <a class="btn btn-danger" href="{% url "eventportal_event_unregister" event.pk %}">Fjern din tilmelding</a>
+    {% endif %}
 
 {% else %}
     {% if event.is_registration_open %}

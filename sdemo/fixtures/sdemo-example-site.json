@@ -30,7 +30,7 @@
   "model": "events.event", 
   "fields": {
     "show_custom_signup_message": false, 
-    "startdate": "2014-12-12",
+    "startdate": "2012-12-12",
     "group": null, 
     "description": "", 
     "notify_on_registration": null, 
@@ -40,12 +40,12 @@
     "show_custom_change_message": false, 
     "notify_on_payment": null, 
     "custom_change_message": "", 
-    "registration_open": false, 
+    "registration_open": true,
     "custom_status_page": "", 
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": "2014-12-12",
+    "enddate": "2040-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
@@ -537,7 +537,7 @@
     "change_timestamp": "2013-10-26T21:30:13.839", 
     "state": "accepted", 
     "user": 1, 
-    "event": 2
+    "event": 3
   }
 }
 ]
