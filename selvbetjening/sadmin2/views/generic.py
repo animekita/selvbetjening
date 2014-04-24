@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from django.conf import settings
 
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import filtering
@@ -110,7 +111,7 @@ def search_view(request,
         'invalid_fragments': invalid_fragments,
 
         'query': query,
-        'search_url': request.path_info + '?q='
+        'search_url': '%s%s?q=' % (getattr(settings, 'FORCE_SCRIPT_NAME', ''), request.path_info)
     })
 
     return render(request,
