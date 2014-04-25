@@ -499,7 +499,7 @@
   "pk": 1, 
   "model": "events.attend", 
   "fields": {
-    "changed": null, 
+    "check_in_timestamp": null,
     "price": "0", 
     "registration_date": "2013-10-25T14:13:14.223", 
     "is_new": true, 
@@ -514,7 +514,7 @@
   "pk": 2, 
   "model": "events.attend", 
   "fields": {
-    "changed": null, 
+    "check_in_timestamp": null,
     "price": "300", 
     "registration_date": "2013-10-25T14:36:13.731", 
     "is_new": false, 
@@ -529,7 +529,7 @@
   "pk": 3, 
   "model": "events.attend", 
   "fields": {
-    "changed": null, 
+    "check_in_timestamp": null,
     "price": "0", 
     "registration_date": "2013-10-26T21:30:13.839", 
     "is_new": true, 

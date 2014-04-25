@@ -71,7 +71,7 @@
   "pk": 1,
   "model": "events.attend",
   "fields": {
-    "changed": null,
+    "check_in_timestamp": null,
     "price": "100",
     "registration_date": "2013-10-25T14:13:14.223",
     "is_new": true,

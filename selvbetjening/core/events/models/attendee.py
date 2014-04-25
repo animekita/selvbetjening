@@ -68,7 +68,7 @@ class Attend(models.Model):
     change_timestamp = models.DateTimeField(null=True, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True, null=True)
 
-    changed = models.DateTimeField(null=True, blank=True)
+    check_in_timestamp = models.DateTimeField(null=True, blank=True)
 
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     paid = models.DecimalField(max_digits=6, decimal_places=2, default=0)
@@ -132,6 +132,8 @@ class Attend(models.Model):
         self.selection_set.filter(option=option).delete()
 
     def save(self, *args, **kwargs):
+
+        self.check_in_timestamp = datetime.now() if self.state == AttendState.attended else None
 
         # TODO this mechanism does not seem to robust, do we ever update existing entries to have a correct value?
         if self.is_new is None:
