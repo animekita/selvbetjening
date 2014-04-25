@@ -1,3 +1,7 @@
+8.4.0
+
+ * Force start and end dates for all events
+
 8.3.0
 
  * Allow transfers of selections from one option to nothing (deselect option)
