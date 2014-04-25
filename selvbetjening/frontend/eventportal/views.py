@@ -36,7 +36,7 @@ def event_detail(request,
     event = get_object_or_404(Event, pk=event_pk)
 
     try:
-        if request.is_authenticated():
+        if request.user.is_authenticated():
             attendee = Attend.objects.get(event=event, user=request.user)
         else:
             attendee = None
