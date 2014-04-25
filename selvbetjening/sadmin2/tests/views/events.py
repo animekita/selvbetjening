@@ -23,6 +23,8 @@ class EventsTestCase(TestCase):
 
         response = self.client.post(url, {
             'title': 'Event 1',
+            'startdate': '2012-12-12',
+            'enddate': '2012-12-12',
             'move_to_accepted_policy': 'always',
             'maximum_attendees': 0
         }, follow=True)

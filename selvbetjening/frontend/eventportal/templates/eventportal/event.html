@@ -7,7 +7,7 @@
       <h1>{{event.title}}</h1>
 
       {% if event.tagline %}<h2>{{ event.tagline|safe }}</h2>{% endif %}
-      {% if event.startdate %}<p><strong>Tid:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
+      {% if event.startdate %}<p><strong>Tidspunkt:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
       {% if event.location %}<p><strong>Sted:</strong> Huset {% if event.location_link %}(<a href="{{ event.location_link }}">kort</a>){% endif %}</p>{% endif %}
       {% if event.maximum_attendees %}<p><strong>Pladser:</strong> {{ event.maximum_attendees }} pladser</p>{% endif %}
 
@@ -28,11 +28,18 @@
 
     <a class="btn btn-primary" href="{% url "eventportal_event_status" event.pk %}">Se din status</a>
     <a class="btn btn-primary" href="{% url "eventportal_event_status_update" event.pk %}">Opdatér din status</a>
+    {% if attendee.state == 'waiting' %}
     <a class="btn btn-danger" href="{% url "eventportal_event_unregister" event.pk %}">Fjern din tilmelding</a>
+    {% endif %}
 
 {% else %}
     {% if event.is_registration_open %}
-        <p><a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a></p>
+
+        {% if "PORTAL.EVENTREGISTRATION.COMBINED_EVENT" in POLICY %}
+            <a href="{% url "eventsingle_steps" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a>
+        {% else %}
+            <a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a>
+        {% endif %}
     {% endif %}
 {% endif %}
 </div>

@@ -43,11 +43,12 @@ def public_profile_page(request,
         handler = profile_page_processors.get_handler(request, user)
         add_to_profile = handler.view(own_profile)
 
-        return render(template_name,
+        return render(request,
+                      template_name,
                       {
-                          'viewed_user' : user,
-                          'privacy' : privacy,
-                          'add_to_profile' : add_to_profile
+                          'viewed_user': user,
+                          'privacy': privacy,
+                          'add_to_profile': add_to_profile
                       })
 
     else:

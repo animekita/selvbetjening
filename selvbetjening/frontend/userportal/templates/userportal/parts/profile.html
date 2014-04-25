@@ -1,7 +1,7 @@
 <div class="row">
-<div class="col-lg-8" id="profile-info">
+<div class="col-lg-8">
 
-    <table class="table" id="profile-matrix">
+    <table class="table">
         {% if privacy.public_name %}
             <tr>
                 <th>Navn:</th>
@@ -113,17 +113,15 @@
         {% endif %}
     </div>
 
-    <div id="profile-groups">
+    <div>
         {% if viewed_user.groups.all %}
         <h4>Grupper</h4>
 
-        <table class="table">
+        <ul>
         {% for group in viewed_user.groups.all %}
-            <tr>
-                <td>{{ group.name }}</td>
-            </tr>
+                <li>{{ group.name }}</li>
         {% endfor %}
-        </table>
+        </ul>
 
         {% endif %}
     </div>

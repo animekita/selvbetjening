@@ -3,6 +3,10 @@
 
 {% block content %}
 
+    <h1>Tilmelding</h1>
+    <h2>{{ event.title }}</h2>
+    <p>Udfyld formularen nedenfor for at tilmelde dig dette event.</p>
+
 <form method="POST" class="form-horizontal">
     {% csrf_token %}
 

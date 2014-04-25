@@ -1,4 +1,4 @@
-{% extends "selvbetjening/sitebase.html" %}
+{% extends "userportal/base.html" %}
 
 {% block contenthead %}{{viewed_user.username}}{% endblock %}
 
@@ -10,6 +10,6 @@
     </div>
     {% endif %}
 
-{% include "userportal/parts/profile.html" %}
+    {% include "userportal/parts/profile.html" %}
 
 {% endblock %}

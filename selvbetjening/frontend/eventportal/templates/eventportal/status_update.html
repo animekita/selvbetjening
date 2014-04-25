@@ -3,6 +3,9 @@
 
 {% block content %}
 
+    <h1>{{ event.title }}</h1>
+    <h2>Opdater din tilmelding</h2>
+
 <form method="POST" class="form-horizontal">
     {% csrf_token %}
 

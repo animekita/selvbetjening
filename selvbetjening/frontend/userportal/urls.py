@@ -10,7 +10,7 @@ urlpatterns = patterns('',
      url(r'^registration/$', views.register,
          kwargs={
              'login_on_success': True,
-             'success_page': 'userportal_edit_profile'
+             'success_page': 'userportal_profile'
          },
          name='userportal_register'),
 

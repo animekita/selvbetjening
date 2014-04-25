@@ -1,4 +1,6 @@
 
+import logging
+
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -6,9 +8,11 @@ from django.forms.widgets import Input
 from django.template.defaultfilters import floatformat
 from django.utils.translation import ugettext as _
 
-from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode
+from selvbetjening.core.events.models.options import AutoSelectChoiceOption, DiscountOption, DiscountCode, SubOption
 from selvbetjening.core.events.models import Selection
 from selvbetjening.core.events.options.scope import SCOPE
+
+logger = logging.getLogger('selvbetjening.events')
 
 
 class BaseWidget(object):
@@ -29,6 +33,18 @@ class BaseWidget(object):
             raise ValidationError(_('This field is required.'))
 
         return value if value is not None else False
+
+    def _log_change(self, action, selection, attendee):
+
+        text = ''
+        if selection.text is not None and len(selection.text) > 0:
+            text = ' -- %s' % selection.text
+
+        logger.info('Selection %s (%s @ %s,-)%s', action, unicode(selection), selection.price, text,
+                    extra={
+                        'related_user': attendee.user,
+                        'related_attendee': attendee
+                    })
 
 
 class BooleanWidget(BaseWidget):
@@ -54,11 +70,21 @@ class BooleanWidget(BaseWidget):
             if created and self.send_notifications:
                 self.option.send_notification_on_select(attendee)
 
+            if created:
+                self._log_change('created', selection, attendee)
+
         else:
-            Selection.objects.filter(
-                option_id=self.option.pk,
-                attendee=attendee
-            ).delete()
+            try:
+                selection = Selection.objects.get(
+                    option_id=self.option.pk,
+                    attendee=attendee
+                )
+
+                self._log_change('deleted', selection, attendee)
+
+                selection.delete()
+            except Selection.DoesNotExist:
+                pass
 
     def initial_value(self, selection):
         return True
@@ -79,34 +105,98 @@ class TextWidget(BaseWidget):
     def save_callback(self, attendee, value):
 
         if value is not None and len(value.strip()) > 0:
+            value = value.strip()
+
             selection, created = Selection.objects.get_or_create(
                 option_id=self.option.pk,
-                attendee=attendee
+                attendee=attendee,
+                defaults={
+                    'text': value
+                }
             )
-
-            selection.text = value.strip()
-            selection.save()
 
             if created and self.send_notifications:
                 self.option.send_notification_on_select(attendee)
 
+            if created:
+                self._log_change('created', selection, attendee)
+            elif selection.text != value:
+                selection.text = value
+                selection.save()
+                self._log_change('changed', selection, attendee)
+
         else:
-            Selection.objects.filter(
-                option_id=self.option.pk,
-                attendee=attendee
-            ).delete()
+            try:
+                selection = Selection.objects.get(
+                    option_id=self.option.pk,
+                    attendee=attendee
+                )
+
+                selection.delete()
+
+                self._log_change('deleted', selection, attendee)
+            except Selection.DoesNotExist:
+                pass
 
     def initial_value(self, selection):
         return selection.text
 
 
 class ChoiceWidget(BaseWidget):
+    """
+    By default, the choice widget populates (through update_choices) itself with all related suboptions.
+    Inherit from ChoiceWidget and override update_choices if you want a subset.
 
-    def __init__(self, scope, option, send_notifications=False):
-        super(ChoiceWidget, self).__init__(scope, option, send_notifications=send_notifications)
+    (hint, use _get_or_create_choices as a helper function.)
 
-        self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption))
-                                     for suboption in self.option.suboptions.all()]
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ChoiceWidget, self).__init__(*args, **kwargs)
+        self.choices = []  # the set of valid choices
+
+    def update_choices(self, user, attendee):
+        """
+        This function is called by the forms __init__ function, when the user and attendee is known
+
+        Update the internal choices list (the list of valid options). This list of choices are then
+        pulled automatically into the field shown to the user.
+        """
+        if len(self.choices) == 0:
+            self.choices = [('', '')] + [('suboption_%s' % suboption.pk, self._label(suboption)) for suboption in self.option.suboptions.all()]
+
+    def _get_or_create_choices(self, get_or_create_choices, default_label='---'):
+        """
+        get_or_create_choices -- list of (label, price) pairs
+        """
+
+        empty_choice = [('', default_label)]
+
+        existing_choices = self.option.suboptions.filter(price__in=[price for price, label in get_or_create_choices])
+
+        if len(existing_choices) == len(get_or_create_choices):
+            # Fast path
+            # We assume the choices found matches the choices we want (they have the same price).
+
+            return empty_choice + [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
+
+        else:
+            choices = empty_choice
+
+            for price, label in get_or_create_choices:
+
+                choice = None
+                for existing_choice in existing_choices:
+                    if existing_choice.price == price and existing_choice.label == label:
+                        choice = existing_choice
+                        break
+
+                if choice is None:
+                    choice = SubOption.objects.create(option=self.option, name=label, price=price)
+
+                choices.append(('suboption_%s' % choice.pk, self._label(choice)))
+
+            return choices
 
     def get_field(self, attrs=None):
 
@@ -122,24 +212,39 @@ class ChoiceWidget(BaseWidget):
     def save_callback(self, attendee, value):
 
         if value is not None and len(value) > 0:
-            selection, created = Selection.objects.get_or_create(
-                option_id=self.option.pk,
-                attendee=attendee
-            )
 
             _, pk = value.split('_')
 
-            selection.suboption_id = pk
-            selection.save()
+            selection, created = Selection.objects.get_or_create(
+                option_id=self.option.pk,
+                attendee=attendee,
+                defaults={
+                    'suboption_id': pk
+                }
+            )
 
             if created and self.send_notifications:
                 self.option.send_notification_on_select(attendee)
 
+            if created:
+                self._log_change('created', selection, attendee)
+            elif selection.suboption_id != pk:
+                selection.suboption_id = pk
+                selection.save()
+                self._log_change('changed', selection, attendee)
+
         else:
-            Selection.objects.filter(
-                option_id=self.option.pk,
-                attendee=attendee
-            ).delete()
+            try:
+                selection = Selection.objects.get(
+                    option_id=self.option.pk,
+                    attendee=attendee
+                )
+
+                selection.delete()
+
+                self._log_change('deleted', selection, attendee)
+            except Selection.DoesNotExist:
+                pass
 
     def clean_callback(self, value):
         value = super(ChoiceWidget, self).clean_callback(value)
@@ -211,14 +316,21 @@ class AutoSelectChoiceWidget(ChoiceWidget):
 
         selection, created = Selection.objects.get_or_create(
             option_id=self.option.pk,
-            attendee=attendee
+            attendee=attendee,
+            defaults={
+                'suboption': self.option.auto_select_suboption
+            }
         )
-
-        selection.suboption = self.option.auto_select_suboption
-        selection.save()
 
         if created and self.send_notifications:
             self.option.send_notification_on_select(attendee)
+
+        if created:
+            self._log_change('created', selection, attendee)
+        elif selection.suboption != self.option.auto_select_suboption:
+            selection.suboption = self.option.auto_select_suboption
+            selection.save()
+            self._log_change('changed', selection, attendee)
 
 
 class DiscountWidget(TextWidget):
@@ -252,6 +364,9 @@ class DiscountWidget(TextWidget):
 
             if created and self.send_notifications:
                 self.option.send_notification_on_select(attendee)
+
+            if created:
+                self._log_change('created', selection, attendee)
 
     def clean_callback(self, value):
         value = super(DiscountWidget, self).clean_callback(value)

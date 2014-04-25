@@ -126,20 +126,13 @@
 
 """
 
-import logging
-from django.core.exceptions import ObjectDoesNotExist
-
 from django.utils.translation import ugettext as _
 from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 
 from event import Event
 
 from attendee import Attend
 from selvbetjening.core.mailcenter.models import EmailSpecification
-
-logger = logging.getLogger('selvbetjening.events')
 
 
 class OptionGroup(models.Model):
@@ -193,14 +186,14 @@ class Option(models.Model):
         ordering = ('order',)
         app_label = 'events'
 
-    TYPE_CHOICES = (
+    TYPE_CHOICES = [
         ('boolean', _('Boolean')),
         ('choices', _('Choices')),
         ('text', _('Text')),
         ('autoselect', _('Auto Select')),
         ('autoselectchoice', _('Auto Select Choice')),
         ('discount', _('Discount Option'))
-    )
+    ]
 
     group = models.ForeignKey(OptionGroup)
 
@@ -239,6 +232,10 @@ class Option(models.Model):
 
     notify_on_selection = \
         models.ForeignKey(EmailSpecification, blank=True, null=True, related_name='notify_option_on_selection')
+
+    def __init__(self, *args, **kwargs):
+        super(Option, self).__init__(*args, **kwargs)
+        self._meta.get_field_by_name('type')[0]._choices = self.TYPE_CHOICES  # Force this to be reloaded
 
     def send_notification_on_select(self, attendee):
         if self.notify_on_selection is not None:
@@ -342,43 +339,6 @@ class Selection(models.Model):
             return u'%s (%s)' % (self.option, self.suboption)
         else:
             return u'%s' % self.option
-
-
-def selection_update_handler(sender, modifier, **kwargs):
-    instance = kwargs.get('instance')
-
-    try:
-        text = ' -- %s' % instance.text if instance.text else ''
-
-        logger.info('Selection %s (%s @ %s,-)%s', modifier, unicode(instance), instance.price, text,
-                    extra={
-                        'related_user': instance.attendee.user,
-                        'related_attendee': instance.attendee
-                    })
-
-    except ObjectDoesNotExist:
-        pass
-
-
-@receiver(post_save, sender=Selection)
-def selection_update_handler_save(sender, **kwargs):
-    created = kwargs.get('created')
-
-    if created:
-        modifier = 'added'
-        selection_update_handler(sender, modifier, **kwargs)
-    else:
-        modifier = 'changed'
-
-    # TODO enable logging of selection modifications. Right now a lot of selections are saved even though they have
-    # not been modified.
-
-    #selection_update_handler(sender, modifier, **kwargs)
-
-
-@receiver(post_delete, sender=Selection)
-def selection_update_handler_delete(sender, **kwargs):
-    selection_update_handler(sender, 'deleted', **kwargs)
 
 
 class DiscountOption(Option):

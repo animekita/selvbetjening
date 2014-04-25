@@ -23,6 +23,7 @@ from django.views.decorators.cache import cache_page
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
+from selvbetjening.core.events.signals import attendee_updated_signal
 
 from selvbetjening.frontend.base.forms import frontend_selection_helper_factory
 from selvbetjening.frontend.base.views.events import generic_event_status
@@ -229,7 +230,10 @@ def step2(request,
 
     try:
         attendee = Attend.objects.get(event=event, user=request.user)
-        instance_kwargs = {'instance': attendee}
+        instance_kwargs = {
+            'instance': attendee,
+            'user': request.user
+        }
 
         if attendee.state == AttendState.waiting:
             scope = SCOPE.EDIT_MANAGE_WAITING
@@ -240,7 +244,9 @@ def step2(request,
 
     except Attend.DoesNotExist:
         attendee = None
-        instance_kwargs = {}
+        instance_kwargs = {
+            'user': request.user
+        }
 
         scope = SCOPE.EDIT_REGISTRATION
 
@@ -273,6 +279,8 @@ def step2(request,
                 attendee.event.send_notification_on_registration(attendee)
             else:
                 attendee.event.send_notification_on_registration_update(attendee)
+
+            attendee_updated_signal.send(step2, attendee=attendee)
 
             return HttpResponseRedirect(
                 reverse('eventsingle_steps', kwargs={'event_pk': event.pk})

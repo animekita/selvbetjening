@@ -11,7 +11,7 @@ django-crispy-forms==1.4.0
 django-mail-queue
 
 -e git+https://github.com/sema/django-oauth2-provider.git#egg=django-oauth2-provider
-django-tastypie
+django-tastypie==0.11.0
 django-qsstats-magic
 
 django-debug-toolbar==1.0.1

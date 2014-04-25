@@ -178,6 +178,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
     def init(self, *args, **kwargs):
         self.attendee = kwargs.pop('attendee', None)
         self.attendee = kwargs.pop('instance', self.attendee)
+        self.user = kwargs.pop('user')
 
         if self.attendee is not None:
             initial = {}
@@ -197,11 +198,14 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
         super(forms.Form, self).__init__(*args, **kwargs)
 
-        if self.attendee is not None:
-            for field_id, type_widget in self.type_widgets.items():
+        for field_id, type_widget in self.type_widgets.items():
 
-                if not self.type_widgets[field_id].is_editable(self.attendee):
-                    self.fields[field_id].widget.attrs['disabled'] = "disabled"
+            if hasattr(type_widget, 'update_choices'):
+                type_widget.update_choices(self.user, self.attendee)
+                self.fields[field_id].choices = type_widget.choices
+
+            if self.attendee is not None and not type_widget.is_editable(self.attendee):
+                self.fields[field_id].widget.attrs['disabled'] = "disabled"
 
     def save(self, *args, **kwargs):
         attendee = kwargs.pop('attendee', self.attendee)
@@ -257,6 +261,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
             if not hasattr(fields[field_id].widget, 'CANT_DISABLE'):
                 fields[field_id].widget.attrs['disabled'] = 'disabled'
+                fields[field_id].required = False  # If we don't do this Django will err because of missing POST data
                 fields['readonly'].append(field_id)
 
         fields['type_widgets'][field_id] = widget

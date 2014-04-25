@@ -40,7 +40,9 @@
 
 {% endif %}
 
+    {% if attendee.state == 'waiting' %}
     <p><a href="{% url "eventportal_event_unregister" event_pk=event.pk %}">Du kan afmelde dig fra dette arrangement igen her.</a></p>
+    {% endif %}
 
     <h2>Kvittering</h2>
 

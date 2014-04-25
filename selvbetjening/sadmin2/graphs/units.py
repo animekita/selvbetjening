@@ -101,11 +101,11 @@ class AttendeeCheckedInUnit(object):
 
     def __init__(self, label, event):
         self.label = label
-        self.date_field = 'changed'
+        self.date_field = 'check_in_timestamp'
         self.qs = Attend.objects.filter(event__pk=event.pk,
-                                        changed__isnull=False,
-                                        changed__gt=event.startdate if event.startdate is not None else datetime.datetime.now(),
-                                        changed__lt=event.enddate if event.enddate is not None else datetime.datetime.now(),
+                                        check_in_timestamp__isnull=False,
+                                        check_in_timestamp__gte=event.startdate if event.startdate is not None else datetime.datetime.now(),
+                                        check_in_timestamp__lte=event.enddate if event.enddate is not None else datetime.datetime.now(),
                                         state=AttendState.attended)
         self.start_date = _get_start_date(self.qs, self.date_field)
         self.end_date = _get_end_date(self.qs, self.date_field)

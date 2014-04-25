@@ -12,6 +12,7 @@ import models
 
 class Database(object):
     _id = 0
+
     @classmethod
     def new_id(cls):
         cls._id += 1
@@ -19,7 +20,8 @@ class Database(object):
 
     @classmethod
     def new_event(cls,
-                  move_to_accepted_policy=None):
+                  move_to_accepted_policy=None,
+                  start_date=None):
 
         kwargs = {}
 
@@ -27,7 +29,7 @@ class Database(object):
             kwargs['move_to_accepted_policy'] = move_to_accepted_policy
 
         return models.Event.objects.create(title=cls.new_id(),
-                                           startdate=date.today(),
+                                           startdate=start_date if start_date is not None else date.today(),
                                            enddate=date.today(),
                                            registration_open=True,
                                            **kwargs)
@@ -57,7 +59,7 @@ class Database(object):
         if name is None:
             name = cls.new_id()
 
-        kwargs = {'group' : optiongroup, 'name' : name, 'order' : order}
+        kwargs = {'group': optiongroup, 'name': name, 'order': order}
 
         if id is not None:
             kwargs['id'] = id
@@ -138,9 +140,10 @@ class FormBuilderTestCase(TestCase):
     def test_basic_form_building(self):
 
         instance = OptionGroup.objects.all()[0]
+        user = SUser.objects.get(pk=1)
 
         form_class = dynamic_selections_form_factory(SCOPE.SADMIN, instance)
-        form = form_class()
+        form = form_class(user=user)
 
         self.assertEqual(len(form.fields), 2)
 
@@ -150,7 +153,7 @@ class FormBuilderTestCase(TestCase):
         attendee = Attend.objects.all()[0]
 
         OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
-        form = OptionGroupSelectionsForm({}, attendee=attendee)
+        form = OptionGroupSelectionsForm({}, user=attendee.user, attendee=attendee)
 
         self.assertTrue(form.is_valid())
         self.assertTrue(hasattr(form, 'cleaned_data'))
@@ -165,7 +168,7 @@ class FormBuilderTestCase(TestCase):
             _pack_id('option', 2): "1"
         }
 
-        form = OptionGroupSelectionsForm(post, attendee=attendee)
+        form = OptionGroupSelectionsForm(post, user=attendee.user, attendee=attendee)
 
         self.assertTrue(form.is_valid())
 
@@ -192,7 +195,7 @@ class FormBuilderTestCase(TestCase):
             _pack_id('option', 2): "1"
         }
 
-        form = OptionGroupSelectionsForm(post)
+        form = OptionGroupSelectionsForm(post, user=attendee.user)
 
         self.assertTrue(form.is_valid())
 
@@ -219,7 +222,7 @@ class FormBuilderTestCase(TestCase):
 
         OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
 
-        form = OptionGroupSelectionsForm({})
+        form = OptionGroupSelectionsForm({}, user=attendee.user)
 
         self.assertTrue(form.is_valid())
 
@@ -242,7 +245,7 @@ class FormBuilderTestCase(TestCase):
         }
 
         OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
-        form = OptionGroupSelectionsForm(post, attendee=attendee)
+        form = OptionGroupSelectionsForm(post, user=attendee.user, attendee=attendee)
 
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data[_pack_id('option', 3)], "some text")
@@ -268,7 +271,7 @@ class FormBuilderTestCase(TestCase):
         }
 
         OptionGroupSelectionsForm = dynamic_selections_form_factory(SCOPE.SADMIN, option_group)
-        form = OptionGroupSelectionsForm(post, attendee=attendee)
+        form = OptionGroupSelectionsForm(post, user=attendee.user, attendee=attendee)
 
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data[_pack_id('option', 4)], "suboption_1")
@@ -286,6 +289,7 @@ class FormBuilderTestCase(TestCase):
     def test_option_scope(self):
 
         event = Event.objects.filter(pk=2)
+        user = SUser.objects.get(pk=1)
 
         # Tests visibility in the different edit scopes.
         # The event has one group and 9 options, one for each possible visibility bit
@@ -293,7 +297,7 @@ class FormBuilderTestCase(TestCase):
         # SCOPE: SADMIN - all visible
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
-        form = OptionGroupSelectionsFormSet()
+        form = OptionGroupSelectionsFormSet(user=user)
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 9)
@@ -301,7 +305,7 @@ class FormBuilderTestCase(TestCase):
         # SCOPE: EDIT_MANAGE_WAITING - show in_scope_edit_manage_waiting and in_scope_view_manage (readonly)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_WAITING, event)
-        form = OptionGroupSelectionsFormSet()
+        form = OptionGroupSelectionsFormSet(user=user)
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 2)
@@ -309,7 +313,7 @@ class FormBuilderTestCase(TestCase):
         # SCOPE: EDIT_MANAGE_ACCEPTED
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_ACCEPTED, event)
-        form = OptionGroupSelectionsFormSet()
+        form = OptionGroupSelectionsFormSet(user=user)
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 2)
@@ -317,7 +321,7 @@ class FormBuilderTestCase(TestCase):
         # SCOPE: EDIT_MANAGE_ATTENDED
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_MANAGE_ATTENDED, event)
-        form = OptionGroupSelectionsFormSet()
+        form = OptionGroupSelectionsFormSet(user=user)
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 2)
@@ -325,7 +329,7 @@ class FormBuilderTestCase(TestCase):
         # SCOPE: EDIT_REGISTRATION
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
-        form = OptionGroupSelectionsFormSet()
+        form = OptionGroupSelectionsFormSet(user=user)
 
         self.assertEqual(len(form), 1)
         self.assertEqual(len(form[0].fields), 2)
@@ -337,43 +341,46 @@ class FormSubmitTestCase(TestCase):
     def test_required_checkbox_sadmin(self):
 
         event = Event.objects.get(pk=1)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
 
         form = OptionGroupSelectionsFormSet({
 
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
 
     def test_required_checkbox(self):
 
         event = Event.objects.get(pk=1)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
 
         form = OptionGroupSelectionsFormSet({
 
-        })
+        }, user=user)
 
         self.assertFalse(form.is_valid())
 
         form = OptionGroupSelectionsFormSet({
             'option_1': 'checked'
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
 
     def test_dependency(self):
 
         event = Event.objects.get(pk=2)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.SADMIN, event)
 
         form = OptionGroupSelectionsFormSet({
             'option_2': 'checked',
             'option_3': 'checked'
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
         self.assertTrue('option_2' in form[0].cleaned_data)
@@ -383,7 +390,7 @@ class FormSubmitTestCase(TestCase):
 
         form = OptionGroupSelectionsFormSet({
             'option_3': 'checked'
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
         self.assertFalse(form[0].cleaned_data.get('option_2', False))
@@ -392,6 +399,7 @@ class FormSubmitTestCase(TestCase):
     def test_dependency_required_all_selected(self):
 
         event = Event.objects.get(pk=3)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
 
@@ -400,7 +408,7 @@ class FormSubmitTestCase(TestCase):
         form = OptionGroupSelectionsFormSet({
             'option_4': 'checked',
             'option_5': 'checked'
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
         self.assertTrue(form[0].cleaned_data.get('option_4', False))
@@ -409,6 +417,7 @@ class FormSubmitTestCase(TestCase):
     def test_dependency_required_dependency_not_selected(self):
 
         event = Event.objects.get(pk=3)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
 
@@ -416,7 +425,7 @@ class FormSubmitTestCase(TestCase):
 
         form = OptionGroupSelectionsFormSet({
             'option_5': 'checked'
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
         self.assertFalse(form[0].cleaned_data.get('option_4', False))
@@ -425,13 +434,14 @@ class FormSubmitTestCase(TestCase):
     def test_dependency_required_dependency_none_selected(self):
 
         event = Event.objects.get(pk=3)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
 
         # None selected, but still valid
 
         form = OptionGroupSelectionsFormSet({
-        })
+        }, user=user)
 
         self.assertTrue(form.is_valid())
         self.assertFalse(form[0].cleaned_data.get('option_4', False))
@@ -440,6 +450,7 @@ class FormSubmitTestCase(TestCase):
     def test_dependency_required_dependency_dependency_selected(self):
 
         event = Event.objects.get(pk=3)
+        user = SUser.objects.get(pk=1)
 
         OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
 
@@ -447,6 +458,6 @@ class FormSubmitTestCase(TestCase):
 
         form = OptionGroupSelectionsFormSet({
             'option_4': 'checked'
-        })
+        }, user=user)
 
         self.assertFalse(form.is_valid())

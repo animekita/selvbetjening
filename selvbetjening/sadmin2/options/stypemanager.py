@@ -48,7 +48,7 @@ class SDiscountTypeManager(SBaseTypeManager):
         return discount_option_update_view
 
 
-_type_manager_register = {
+_stype_manager_register = {
     'boolean': SBaseTypeManager('boolean'),
     'text': SBaseTypeManager('text'),
     'choices': SBaseTypeManager(
@@ -81,4 +81,4 @@ def stype_manager_factory(option_or_type):
     Returns a type manager based on the options type
     """
 
-    return _type_manager_register[option_or_type.type if hasattr(option_or_type, 'type') else option_or_type]
+    return _stype_manager_register[option_or_type.type if hasattr(option_or_type, 'type') else option_or_type]

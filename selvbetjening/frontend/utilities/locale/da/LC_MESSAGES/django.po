@@ -20,7 +20,7 @@ msgstr ""
 
 #: forms.py:99
 msgid "Create"
-msgstr "Opert"
+msgstr "Opret"
 
 #: forms.py:105
 msgid "Update"
