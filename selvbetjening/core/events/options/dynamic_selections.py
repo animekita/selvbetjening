@@ -81,7 +81,7 @@ def _dynamic_selections(scope, event, attendee=None, option_group=None, as_dict=
     if attendee is not None:
         selections = Selection.objects.filter(attendee=attendee)\
             .filter(option__in=options)\
-            .select_related('option', 'option__group')
+            .select_related('option', 'option__group', 'suboption')
     else:
         selections = []
 
