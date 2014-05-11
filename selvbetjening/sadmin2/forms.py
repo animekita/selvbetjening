@@ -154,7 +154,7 @@ class AttendeeFormattingForm(forms.Form):
 
         for option in self.options:
 
-            if option.pk in excluded_options:
+            if unicode(option.pk) in excluded_options:
                 continue
 
             line_groups[option.pk] = self.LineGroup(option.name, option.price)
