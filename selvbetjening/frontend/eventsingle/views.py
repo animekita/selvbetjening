@@ -257,8 +257,8 @@ def step2(request,
     )
 
     if request.method == 'POST' and \
-        (('register' in request.POST and EventSelectionFormSet.is_empty()) or
-            'register' not in request.POST):
+        (('quick_register' in request.POST and EventSelectionFormSet.is_empty()) or
+            'quick_register' not in request.POST):
 
         options_form = EventSelectionFormSet(request.POST, **instance_kwargs)
 
