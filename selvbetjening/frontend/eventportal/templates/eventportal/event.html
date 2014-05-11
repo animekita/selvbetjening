@@ -36,7 +36,10 @@
     {% if event.is_registration_open %}
 
         {% if "PORTAL.EVENTREGISTRATION.COMBINED_EVENT" in POLICY %}
-            <a href="{% url "eventsingle_steps" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a>
+            <form method="POST" action="{% url "eventsingle_steps" event.pk %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-lg" name="register" value="Tilmeld dig" />
+            </form>
         {% else %}
             <a href="{% url "eventportal_event_register" event.pk %}" class="btn btn-primary btn-lg">Tilmeld dig</a>
         {% endif %}

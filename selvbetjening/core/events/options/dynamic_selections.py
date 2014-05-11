@@ -155,13 +155,18 @@ def dynamic_selections_formset_factory(scope, event, *args, **kwargs):
     def getitem(self, key):
         return self.instances[key]
 
+    @staticmethod
+    def is_empty():
+        return all([form_class.is_empty() for form_class in form_classes])
+
     fields = {
         '__init__': init,
         'save': save,
         'is_valid': is_valid,
         '__iter__': iter,
         '__len__': len,
-        '__getitem__': getitem
+        '__getitem__': getitem,
+        'is_empty': is_empty
     }
 
     return type('OptionGroupSelectionsFormSet', (object,), fields)
@@ -231,12 +236,17 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
 
         return inner
 
+    @staticmethod
+    def is_empty():
+        return len(options) == 0
+
     fields = {
         'save_callbacks': {},
         '__init__': init,
         'save': save,
         'type_widgets': {},
-        'readonly': []
+        'readonly': [],
+        'is_empty': is_empty
     }
 
     for option in options:

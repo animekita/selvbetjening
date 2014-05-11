@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
-from django.views.decorators.cache import cache_page
+from django.conf import settings
 
 from selvbetjening.core.events.options.dynamic_selections import dynamic_selections_formset_factory
 from selvbetjening.core.events.options.scope import SCOPE
@@ -256,7 +256,10 @@ def step2(request,
         helper_factory=frontend_selection_helper_factory
     )
 
-    if request.method == 'POST':
+    if request.method == 'POST' and \
+        (('register' in request.POST and EventSelectionFormSet.is_empty()) or
+            'register' not in request.POST):
+
         options_form = EventSelectionFormSet(request.POST, **instance_kwargs)
 
         if options_form.is_valid():
