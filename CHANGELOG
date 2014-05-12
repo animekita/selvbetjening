@@ -1,4 +1,4 @@
-dev
+8.5.0
 
  * Add visibility bit to events, controlling if an event is visible in the event list
  * sadmin
