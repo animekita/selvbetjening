@@ -184,6 +184,12 @@ breadcrumbs = {
         'parent': 'event_settings'},
 
     # Assumes: context[event], kwargs[event_pk]
+    'event_copy':  {
+        'name': _('Copy'),
+        'url_callback': url_callback('sadmin2:event_copy', ('event_pk',)),
+        'parent': 'event'},
+
+    # Assumes: context[event], kwargs[event_pk]
     'event_selections_create_group':  {
         'name': _('Create Group'),
         'url_callback': url_callback('sadmin2:event_selections_create_group', ('event_pk',)),
@@ -452,7 +458,13 @@ sadmin2_menu_tab_event = (
           'url_callback': url_callback('sadmin2:event_settings_selections', ('event_pk',))
           }
 
-     )}
+     )},
+
+    {'id': 'copy',
+     'name': _('Copy'),
+     'url_callback': url_callback('sadmin2:event_copy', ('event_pk',)),
+     'class': 'pull-right',
+     'icon': 'floppy-disk'}
 )
 
 sadmin2_menu_tab_emails = (

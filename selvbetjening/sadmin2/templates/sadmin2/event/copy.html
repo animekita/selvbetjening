@@ -1,0 +1,19 @@
+{% extends "sadmin2/site.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <h1>Copy Event</h1>
+    <h2>{{ event.title }}</h2>
+
+    <p>Please confirm that you want to create a copy of the event <i>{{ event.title }}</i>.</p>
+
+    <ul>
+    <li>Event settings, option groups, options and suboptions will be copied.</li>
+    <li>The event visibility will be set to <b>off</b>.</li>
+    <li>Attendees will <b>not</b> be copied to the new event.</li>
+    </ul>
+
+    {% crispy form %}
+
+{% endblock %}

@@ -1,3 +1,9 @@
+dev
+
+ * Add visibility bit to events, controlling if an event is visible in the event list
+ * sadmin
+   - Copy events
+
 8.4.0
 
  * Force start and end dates for all events
