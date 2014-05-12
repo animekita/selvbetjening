@@ -28,3 +28,44 @@ class SingleEventTestCase(TestCase):
         # We should now be attending the event
         attend = Attend.objects.get(user__username='admin', event__pk=3)
         self.assertEqual(attend.state, AttendState.accepted)
+
+    def test_step2_quick(self):
+
+        s = self.client.session
+        s['user-data-verified'] = True
+        s.save()
+
+        # Try to load the page
+
+        response = self.client.get(reverse('eventsingle_step2', kwargs={'event_pk': 3}))
+        self.assertEqual(response.status_code, 200)
+
+        # Post, try to attend
+        response = self.client.post(reverse('eventsingle_step2', kwargs={'event_pk': 3}), {
+            'register': 'do'
+        })
+        self.assertEqual(response.status_code, 302)
+
+        # We should now be attending the event
+        attend = Attend.objects.get(user__username='admin', event__pk=3)
+        self.assertEqual(attend.state, AttendState.accepted)
+
+    def test_step2_nonquick(self):
+
+        s = self.client.session
+        s['user-data-verified'] = True
+        s.save()
+
+        # Try to load the page
+
+        response = self.client.get(reverse('eventsingle_step2', kwargs={'event_pk': 2}))
+        self.assertEqual(response.status_code, 200)
+
+        # Post, try to attend
+        response = self.client.post(reverse('eventsingle_step2', kwargs={'event_pk': 2}), {
+            'register': 'do'
+        })
+        self.assertEqual(response.status_code, 200)
+
+        # We should now be attending the event
+        self.assertFalse(Attend.objects.filter(user__username='admin', event__pk=2).exists())

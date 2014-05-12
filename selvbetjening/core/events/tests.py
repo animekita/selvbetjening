@@ -78,12 +78,14 @@ class AttendModelTestCase(TestCase):
 
 
 class EventModelTestCase(TestCase):
+    fixtures = ['sdemo-example-site.json']
+
     def test_attendee_order(self):
         event = Database.new_event()
 
         self.userarray = []
         for i in range(30):
-            self.userarray.append(SUser.objects.create_user('user%s' % i, 'user@example.org', ''))
+            self.userarray.append(SUser.objects.create_user('suser%s' % i, 'user@example.org', ''))
             models.Attend.objects.create(event=event, user=self.userarray[i])
 
         for i in range(30):
@@ -98,6 +100,23 @@ class EventModelTestCase(TestCase):
         attend.delete()
         self.assertFalse(event.is_attendee(user))
 
+    def test_copy(self):
+
+        event = Event.objects.get(pk=2)
+        old_pk = event.pk
+        self.assertNotEqual(len(event.optiongroups), 0)
+
+        event.copy_and_mutate_self()
+
+        self.assertNotEqual(old_pk, event.pk)
+        self.assertNotEqual(len(event.optiongroups), 0)
+
+        options = 0
+
+        for group in event.optiongroup_set.all():
+            options += group.option_set.all().count()
+
+        self.assertNotEqual(options, 0)
 
 class DynamicSelectionsTestCase(TestCase):
     fixtures = ['formbuilder_test_fixture.json']

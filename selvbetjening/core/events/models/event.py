@@ -61,6 +61,7 @@ class Event(models.Model):
                          choices=AttendeeAcceptPolicy.get_choices())
 
     registration_open = models.BooleanField(_(u'registration open'), default=False)
+    is_visible = models.BooleanField(default=False)
 
     # display
     show_custom_signup_message = models.BooleanField(default=False)
@@ -136,6 +137,42 @@ class Event(models.Model):
             return False
         else:
             return self.attend_set.filter(user=user).count() == 1
+
+    # event management
+
+    def copy_and_mutate_self(self):
+
+        optiongroups = list(self.optiongroup_set.all())
+
+        self.pk = None
+        self.title = '%s (copy)' % self.title
+        self.is_visible = False
+        self.save()
+
+        for group in optiongroups:
+
+            options = list(group.options)
+
+            group.pk = None
+            group.save()
+
+            self.optiongroup_set.add(group)
+
+            for option in options:
+
+                suboptions = list(option.suboptions)
+
+                option.pk = None
+                option.save()
+
+                group.option_set.add(option)
+
+                for suboption in suboptions:
+
+                    suboption.pk = None
+                    suboption.save()
+
+                    option.suboption_set.add(suboption)
 
     def __unicode__(self):
         return _(u'%s') % self.title

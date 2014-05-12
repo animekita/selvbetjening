@@ -263,7 +263,7 @@ def template_newsletter_attendees_step3(request, template_pk, event_pk):
     form = AttendeesNewsletterFilterHidden(request.POST, event=event)
     assert form.is_valid()
 
-    attendees = Attend.objects.filter(event=event)
+    attendees = Attend.objects.filter(event=event).select_related()
 
     if len(form.cleaned_data['status']) > 0:
         attendees = attendees.filter(state__in=form.cleaned_data['status'])

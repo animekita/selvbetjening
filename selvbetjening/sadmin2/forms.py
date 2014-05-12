@@ -23,6 +23,12 @@ from selvbetjening.core.mailcenter.models import EmailSpecification
 from selvbetjening.frontend.utilities.forms import *
 
 
+class ConfirmForm(forms.Form):
+
+    helper = S2FormHelper(horizontal=True)
+    helper.add_input(S2SubmitConfirm())
+
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
@@ -45,6 +51,7 @@ class EventForm(forms.ModelForm):
                        'startdate', 'enddate',
                        'location', 'location_link',
                        'maximum_attendees',
+                       'is_visible',
                        'registration_open'),
             S2Fieldset(_('Conditions'),
                        'move_to_accepted_policy'),
@@ -154,7 +161,7 @@ class AttendeeFormattingForm(forms.Form):
 
         for option in self.options:
 
-            if option.pk in excluded_options:
+            if unicode(option.pk) in excluded_options:
                 continue
 
             line_groups[option.pk] = self.LineGroup(option.name, option.price)

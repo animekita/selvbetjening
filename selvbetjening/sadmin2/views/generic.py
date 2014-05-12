@@ -106,12 +106,17 @@ def search_view(request,
     except EmptyPage:
         instances = paginator.page(paginator.num_pages)
 
+    if getattr(settings, 'FORCE_SCRIPT_NAME', None) is None:
+        prefix = ''
+    else:
+        prefix = settings.FORCE_SCRIPT_NAME
+
     context.update({
         'instances': instances,
         'invalid_fragments': invalid_fragments,
 
         'query': query,
-        'search_url': '%s%s?q=' % (getattr(settings, 'FORCE_SCRIPT_NAME', ''), request.path_info)
+        'search_url': '%s%s?q=' % (prefix, request.path_info)
     })
 
     return render(request,

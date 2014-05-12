@@ -100,6 +100,12 @@ class S2Submit(Submit):
     pass
 
 
+class S2SubmitConfirm(S2Submit):
+
+    def __init__(self, name=None):
+        super(S2SubmitConfirm, self).__init__('confirm' if name is None else name, _('Confirm'))
+
+
 class S2SubmitCreate(S2Submit):
 
     def __init__(self, name=None):

@@ -25,7 +25,7 @@ def events_list(request,
     return render(request,
                   template_name,
                   {
-                      'events': Event.objects.order_by('-startdate')
+                      'events': Event.objects.filter(is_visible=True).order_by('-startdate')
                   })
 
 

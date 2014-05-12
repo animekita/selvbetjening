@@ -18,7 +18,7 @@ from selvbetjening.core.events.models import Event, Attend, AttendState, Payment
 from selvbetjening.core.events.signals import request_attendee_pks_signal, attendee_updated_signal
 
 from selvbetjening.sadmin2.forms import EventForm, AttendeeFormattingForm, PaymentForm, \
-    AttendeeCommentForm, attendee_selection_helper_factory, AttendeeCommentFormSet
+    AttendeeCommentForm, attendee_selection_helper_factory, AttendeeCommentFormSet, ConfirmForm
 from selvbetjening.sadmin2.decorators import sadmin_prerequisites
 from selvbetjening.sadmin2 import menu
 
@@ -128,6 +128,7 @@ def event_account(request, event_pk):
                       'attendee_filter_label': attendee_filter_label
                   })
 
+
 @sadmin_prerequisites
 def event_settings(request, event_pk):
 
@@ -150,6 +151,37 @@ def event_settings(request, event_pk):
                       'sadmin2_breadcrumbs_active': 'event_settings',
                       'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
                       'sadmin2_menu_tab_active': 'settings',
+
+                      'event': event,
+                      'form': form
+                  })
+
+
+@sadmin_prerequisites
+def event_copy(request, event_pk):
+
+    event = get_object_or_404(Event, pk=event_pk)
+
+    if request.method == 'POST':
+        form = ConfirmForm(request.POST)
+
+        if form.is_valid():
+
+            messages.add_message(request, messages.SUCCESS, _('Event copied'))
+
+            event.copy_and_mutate_self()
+            return HttpResponseRedirect(reverse('sadmin2:event_settings', kwargs={'event_pk': event.pk}))
+
+    else:
+        form = ConfirmForm()
+
+    return render(request,
+                  'sadmin2/event/copy.html',
+                  {
+                      'sadmin2_menu_main_active': 'events',
+                      'sadmin2_breadcrumbs_active': 'event_copy',
+                      'sadmin2_menu_tab': menu.sadmin2_menu_tab_event,
+                      'sadmin2_menu_tab_active': 'copy',
 
                       'event': event,
                       'form': form
