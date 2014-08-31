@@ -5,6 +5,7 @@ import markdown
 from django.conf import settings
 from django.db import models
 from django.template import Template, Context, loader
+import sys
 
 from selvbetjening.core.mail import send_mail
 
@@ -38,7 +39,16 @@ class EmailSpecification(models.Model):
         if self.template_context == 'attendee':
             raise ValueError
 
-        email = self.render_user(user)
+        ok, email, err = self.render_user(user)
+
+        if not ok:
+            # Warn an admin and log the error silently
+
+            logger.exception('Failure rendering e-mail (template pk: %s) -- Addressed to %s', self.pk, user.email, exc_info=err, extra={
+                'related_user': user})
+
+            return
+
         instance = self._send_mail(user.email, email, internal_sender_id)
 
         logger.info('E-mail queued (%s) -- Addressed to %s', email['subject'], user.email,
@@ -49,7 +59,17 @@ class EmailSpecification(models.Model):
 
     def send_email_attendee(self, attendee, internal_sender_id):
 
-        email = self.render_attendee(attendee)
+        ok, email, err = self.render_attendee(attendee)
+
+        if not ok:
+            # Warn an admin and log the error silently
+
+            logger.exception('Failure rendering e-mail (template pk: %s) -- Addressed to %s', self.pk, attendee.user.email, exc_info=err, extra={
+                'related_user': attendee.user,
+                'related_attendee': attendee})
+
+            return
+
         instance = self._send_mail(attendee.user.email, email, internal_sender_id)
 
         logger.info('E-mail queued (%s) -- Addressed to %s', email['subject'], attendee.user.email,
@@ -147,13 +167,17 @@ class EmailSpecification(models.Model):
 
         context = Context(context)
 
-        email = {
-            'subject': self.subject,
-            'body_plain': self._get_rendered_body_plain(context),
-            'body_html': self._get_rendered_body_html(context)
-        }
+        try:
+            email = {
+                'subject': self.subject,
+                'body_plain': self._get_rendered_body_plain(context),
+                'body_html': self._get_rendered_body_html(context)
+            }
 
-        return email
+            return True, email, None
+
+        except Exception:
+            return False, None, sys.exc_info()
 
     def _get_rendered_body_plain(self, context):
 
