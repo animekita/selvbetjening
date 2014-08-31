@@ -1,3 +1,7 @@
+8.6.0
+
+ * Remove event groups and user groups, they are no longer used.
+
 8.5.0
 
  * Add visibility bit to events, controlling if an event is visible in the event list

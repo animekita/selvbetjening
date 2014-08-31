@@ -66,65 +66,6 @@ def users_create(request):
 
 
 @sadmin_prerequisites
-def users_groups_list(request):
-
-    queryset = Group.objects.all()
-    columns = ('name',)
-
-    context = {
-        'sadmin2_menu_main_active': 'users',
-        'sadmin2_breadcrumbs_active': 'users_groups',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-        'sadmin2_menu_tab_active': 'groups',
-    }
-
-    return search_view(request,
-                       queryset,
-                       'sadmin2/users/groups_list.html',
-                       'sadmin2/users/groups_list_inner.html',
-                       search_columns=columns,
-                       context=context)
-
-
-@sadmin_prerequisites
-def users_groups_create(request):
-
-    context = {
-        'sadmin2_menu_main_active': 'users',
-        'sadmin2_breadcrumbs_active': 'users_groups_create',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-        'sadmin2_menu_tab_active': 'groups',
-    }
-
-    return generic_create_view(request,
-                               GroupForm,
-                               reverse('sadmin2:users_groups_list'),
-                               message_success=_('Group created'),
-                               context=context)
-
-@sadmin_prerequisites
-def users_group(request, group_pk):
-
-    group = get_object_or_404(Group, pk=group_pk)
-
-    context = {
-        'sadmin2_menu_main_active': 'users',
-        'sadmin2_breadcrumbs_active': 'users_group',
-        'sadmin2_menu_tab': menu.sadmin2_menu_tab_users,
-        'sadmin2_menu_tab_active': 'groups',
-
-        'group': group
-    }
-
-    return generic_create_view(request,
-                               GroupForm,
-                               reverse('sadmin2:users_group', kwargs={'group_pk': group.pk}),
-                               message_success=_('Group updated'),
-                               context=context,
-                               instance=group)
-
-
-@sadmin_prerequisites
 def users_reports_users(request):
 
     graph = AbsoluteTimeGraph(AbsoluteTimeGraph.SCOPE.month,
