@@ -1,18 +1,16 @@
 {% extends "selvbetjening/sitebase.html" %}
 
 {% block content %}
-
-<div class="jumbotron">
-  <div class="container">
-      <h1>{{event.title}}</h1>
-
-      {% if event.tagline %}<h2>{{ event.tagline|safe }}</h2>{% endif %}
-      {% if event.startdate %}<p><strong>Tidspunkt:</strong> {{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</p>{% endif %}
-      {% if event.location %}<p><strong>Sted:</strong> Huset {% if event.location_link %}(<a href="{{ event.location_link }}">kort</a>){% endif %}</p>{% endif %}
-      {% if event.maximum_attendees %}<p><strong>Pladser:</strong> {{ event.maximum_attendees }} pladser</p>{% endif %}
-
-  </div>
+<div class="page-header">
+    <h1>{{event.title}}{% if event.tagline %}<small> {{ event.tagline|safe }}</small>{% endif %}</h1>
 </div>
+
+    <p>
+
+        {% if event.startdate %}<strong>Tid:</strong> <i>{{event.startdate|date:"j/n"}} - {{event.enddate|date:"j/n"}} {{event.enddate|date:"Y"}}</i> {% endif %}
+        {% if event.location %}<strong>Sted:</strong> <i>{{ event.location }} {% if event.location_link %}(<a href="{{ event.location_link }}">kort</a>){% endif %}</i> {% endif %}
+        {% if event.maximum_attendees %}<strong>Pladser:</strong> <i>{{ event.maximum_attendees }} pladser</i>{% endif %}
+    </p>
 
 {% if not event.is_registration_open %}
     <p class="alert alert-danger">Tilmeldingen er ikke åbnet på nuværende tidspunkt.</p>
