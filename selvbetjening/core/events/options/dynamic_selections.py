@@ -186,6 +186,9 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         self.user = kwargs.pop('user')
 
         if self.attendee is not None:
+            self.user = self.attendee.user  # force the usage of attendee.user
+
+        if self.attendee is not None:
             initial = {}
 
             selections = kwargs.pop('selections', None)

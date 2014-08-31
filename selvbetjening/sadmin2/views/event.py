@@ -430,7 +430,7 @@ def event_attendee_selections(request, event_pk, attendee_pk):
             return HttpResponseRedirect(reverse('sadmin2:event_attendee', kwargs={'event_pk': event.pk,
                                                                                   'attendee_pk': attendee.pk}))
     else:
-        formset = DynamicSelectionsFormSet(user=request.user, attendee=attendee)
+        formset = DynamicSelectionsFormSet(user=attendee.user, attendee=attendee)
 
     return render(request,
                   'sadmin2/event/attendee_selections.html',
