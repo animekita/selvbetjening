@@ -47,7 +47,7 @@ class EventForm(forms.ModelForm):
 
         layout = S2Layout(
             S2Fieldset(None,
-                       'title', 'tagline', 'description', 'group',
+                       'title', 'tagline', 'description',
                        'startdate', 'enddate',
                        'location', 'location_link',
                        'maximum_attendees',

@@ -7,12 +7,12 @@ except ImportError:
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 
-from event import Event, Group
+from event import Event
 from attendee import Attend, AttendState, AttendeeComment, AttendStateChange, AttendeeAcceptPolicy
 from options import OptionGroup, Option, SubOption, Selection
 from payment import Payment
 
-__ALL__ = ['Group', 'Event', 'Attend', 'OptionGroup', 'Option', 'SubOption', 'Selection', 'AttendComment',
+__ALL__ = ['Event', 'Attend', 'OptionGroup', 'Option', 'SubOption', 'Selection', 'AttendComment',
            'AttendState', 'AttendStateChange', 'suspend_price_updates', 'resume_price_updates']
 
 # Global update modes
