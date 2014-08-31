@@ -385,7 +385,7 @@ class UserForm(forms.ModelForm):
             S2Fieldset(_('Other'),
                        'send_me_email', 'picture'),
             S2Fieldset(_('Access'),
-                       'is_active', 'is_staff', 'is_superuser', 'groups'))
+                       'is_active', 'is_staff', 'is_superuser'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())
