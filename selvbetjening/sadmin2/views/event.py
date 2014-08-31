@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.db.models import Count
+from selvbetjening.businesslogic.events.decorators import suspend_automatic_attendee_price_updates
 from selvbetjening.core.members.models import UserLocation
 from django.db import router
 
@@ -531,6 +532,7 @@ def _get_deleted_objects(objs):
 
 
 @sadmin_prerequisites
+@suspend_automatic_attendee_price_updates
 def event_attendee_delete(request, event_pk, attendee_pk):
 
     event = get_object_or_404(Event, pk=event_pk)
