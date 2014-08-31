@@ -147,7 +147,7 @@ LOGGING = {
             'propagate': True
         },
         'selvbetjening': {
-            'handlers': ['selvbetjening_db_log'],
+            'handlers': ['mail_admins', 'selvbetjening_db_log'],
             'level': 'INFO',
             'propagate': True
         }
