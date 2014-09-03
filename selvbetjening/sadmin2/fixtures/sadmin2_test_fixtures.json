@@ -5,7 +5,6 @@
   "fields": {
     "show_custom_signup_message": false,
     "startdate": "2014-12-12",
-    "group": null,
     "description": "Description 1",
     "move_to_accepted_policy": "always",
     "title": "Event 1",
@@ -24,7 +23,6 @@
   "fields": {
     "show_custom_signup_message": false,
     "startdate": "2014-12-12",
-    "group": null,
     "description": "Another event",
     "move_to_accepted_policy": "always",
     "title": "Event 2",

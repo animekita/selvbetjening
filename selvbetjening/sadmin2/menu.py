@@ -63,14 +63,6 @@ breadcrumbs = {
                      'url': 'sadmin2:users_create',
                      'parent': 'users'},
 
-    'users_groups': {'name': _('Groups'),
-                     'url': 'sadmin2:users_groups_list',
-                     'parent': 'users'},
-
-    'users_groups_create': {'name': _('Create'),
-                            'url': 'sadmin2:users_groups_create',
-                            'parent': 'users_groups'},
-
     'users_reports': {'name': _('Reports'),
                       'parent': 'users'},
 
@@ -85,11 +77,6 @@ breadcrumbs = {
     'users_reports_address': {'name': _('Address'),
                               'url': 'sadmin2:users_reports_address',
                               'parent': 'users_reports'},
-
-    # Assumes: context[group], kwargs[group_pk]
-    'users_group': {'name_callback': lambda context: context['group'].name,
-                    'url_callback': url_callback('sadmin2:users_group', ('group_pk',)),
-                    'parent': 'users_groups'},
 
     # Assumes: context[user], kwargs[user_pk]
     'user': {'name_callback': lambda context: context['user'].username,
@@ -335,7 +322,6 @@ sadmin2_menu_tab_events = (
 
 sadmin2_menu_tab_users = (
     {'id': 'users', 'name': _('Users'), 'url': 'sadmin2:users_list'},
-    {'id': 'groups', 'name': _('Groups'), 'url': 'sadmin2:users_groups_list'},
 
     {'id': 'reports',
      'name': _('Reports'),

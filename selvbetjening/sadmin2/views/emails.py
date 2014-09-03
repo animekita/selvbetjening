@@ -108,11 +108,11 @@ def template_preview(request, template_pk):
         form = selector_class()
 
     if instance is None:
-        email = template_instance.render_dummy()
+        ok, email, err = template_instance.render_dummy()
     elif template_instance.template_context == 'user':
-        email = template_instance.render_user(instance)
+        ok, email, err = template_instance.render_user(instance)
     else:
-        email = template_instance.render_attendee(instance)
+        ok, email, err = template_instance.render_attendee(instance)
 
     return render(request,
                   'sadmin2/emails/template_preview.html',
@@ -124,6 +124,7 @@ def template_preview(request, template_pk):
 
                       'template': template_instance,
                       'email': email,
+                      'email_err': err,
 
                       'form': form
                   })

@@ -8,17 +8,6 @@ from django.utils.translation import ugettext as _
 from selvbetjening.core.mailcenter.models import EmailSpecification
 
 
-class Group(models.Model):
-
-    class Meta:
-        app_label = 'events'
-
-    name = models.CharField(_(u'name'), max_length=255)
-
-    def __unicode__(self):
-        return self.name
-
-
 class AttendeeAcceptPolicy(object):
     manual = 'manual'
     always = 'always'
@@ -37,8 +26,6 @@ class Event(models.Model):
 
     class Meta:
         app_label = 'events'
-
-    group = models.ForeignKey(Group, blank=True, null=True)
 
     # presentation
 
