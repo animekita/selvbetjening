@@ -170,19 +170,16 @@ class ChoiceWidget(BaseWidget):
         get_or_create_choices -- list of (label, price) pairs
         """
 
-        empty_choice = [('', default_label)]
-
+        choices = []
         existing_choices = self.option.suboptions.filter(price__in=[price for price, label in get_or_create_choices])
 
         if len(existing_choices) == len(get_or_create_choices):
             # Fast path
             # We assume the choices found matches the choices we want (they have the same price).
 
-            return empty_choice + [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
+            choices = [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
 
         else:
-            choices = empty_choice
-
             for price, label in get_or_create_choices:
 
                 choice = None
@@ -196,7 +193,14 @@ class ChoiceWidget(BaseWidget):
 
                 choices.append(('suboption_%s' % choice.pk, self._label(choice)))
 
-            return choices
+        if self.required and len(choices) > 0:
+            empty_choice = []
+        elif self.required:
+            empty_choice = [('__EMPTY__', default_label)]  # __EMPTY__ is handled as a valid empty value, which passes the required check
+        else:
+            empty_choice = [('', default_label)]
+
+        return empty_choice + choices
 
     def get_field(self, attrs=None):
 
@@ -211,7 +215,7 @@ class ChoiceWidget(BaseWidget):
 
     def save_callback(self, attendee, value):
 
-        if value is not None and len(value) > 0:
+        if value is not None and len(value) > 0 and value != '__EMPTY__':
 
             _, pk = value.split('_')
 
