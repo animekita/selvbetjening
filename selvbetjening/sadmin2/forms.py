@@ -273,9 +273,7 @@ class OptionGroupForm(forms.ModelForm):
             S2Fieldset(None,
                        S2Field('name'), S2Field('description')),
             S2Fieldset(_('Conditions'),
-                       'minimum_selected', 'maximum_selected'),
-            S2Fieldset(_('Package'),
-                       'package_price'))
+                       'minimum_selected', 'maximum_selected'))
 
         self.helper.add_layout(layout)
         self.helper.add_input(S2SubmitUpdate() if 'instance' in kwargs else S2SubmitCreate())

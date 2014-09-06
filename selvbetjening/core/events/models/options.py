@@ -155,13 +155,6 @@ class OptionGroup(models.Model):
     minimum_selected = models.IntegerField(_('Minimum selected'), default=0)
     maximum_selected = models.IntegerField(_('Maximum selected'), default=0)
 
-    # Effects
-
-    # A package price modifier - if all options in a group are selected then we will
-    # apply this special package price modifier. We interpret this as disabled if set to 0.
-    # TODO deprecate, create a new option type for this
-    package_price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-
     # Special
 
     is_special = models.BooleanField(_('Special option group'), default=False)
