@@ -34,6 +34,10 @@ class BaseWidget(object):
 
         return value if value is not None else False
 
+    def selected_callback(self, value):
+
+        return not (value not in validators.EMPTY_VALUES or not value)
+
     def _log_change(self, action, selection, attendee):
 
         text = ''
@@ -85,6 +89,10 @@ class BooleanWidget(BaseWidget):
                 selection.delete()
             except Selection.DoesNotExist:
                 pass
+
+    def selected_callback(self, value):
+
+        return value is not None and value
 
     def initial_value(self, selection):
         return True
@@ -138,6 +146,10 @@ class TextWidget(BaseWidget):
             except Selection.DoesNotExist:
                 pass
 
+    def selected_callback(self, value):
+
+        return value is not None and len(value.strip()) > 0
+
     def initial_value(self, selection):
         return selection.text
 
@@ -170,19 +182,16 @@ class ChoiceWidget(BaseWidget):
         get_or_create_choices -- list of (label, price) pairs
         """
 
-        empty_choice = [('', default_label)]
-
+        choices = []
         existing_choices = self.option.suboptions.filter(price__in=[price for price, label in get_or_create_choices])
 
         if len(existing_choices) == len(get_or_create_choices):
             # Fast path
             # We assume the choices found matches the choices we want (they have the same price).
 
-            return empty_choice + [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
+            choices = [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
 
         else:
-            choices = empty_choice
-
             for price, label in get_or_create_choices:
 
                 choice = None
@@ -196,7 +205,14 @@ class ChoiceWidget(BaseWidget):
 
                 choices.append(('suboption_%s' % choice.pk, self._label(choice)))
 
-            return choices
+        if self.required and len(choices) > 0:
+            empty_choice = []
+        elif self.required:
+            empty_choice = [('__EMPTY__', default_label)]  # __EMPTY__ is handled as a valid empty value, which passes the required check
+        else:
+            empty_choice = [('', default_label)]
+
+        return empty_choice + choices
 
     def get_field(self, attrs=None):
 
@@ -211,7 +227,7 @@ class ChoiceWidget(BaseWidget):
 
     def save_callback(self, attendee, value):
 
-        if value is not None and len(value) > 0:
+        if self.selected_callback(value):
 
             _, pk = value.split('_')
 
@@ -246,6 +262,9 @@ class ChoiceWidget(BaseWidget):
             except Selection.DoesNotExist:
                 pass
 
+    def selected_callback(self, value):
+        return value is not None and len(value) > 0 and value != '__EMPTY__'
+
     def clean_callback(self, value):
         value = super(ChoiceWidget, self).clean_callback(value)
 
@@ -277,6 +296,9 @@ class AutoSelectBooleanWidget(BooleanWidget):
             widget=forms.HiddenInput(attrs=None))
 
     def clean_callback(self, value):
+        return True
+
+    def selected_callback(self, value):
         return True
 
     def initial_value(self, selection):
@@ -332,6 +354,9 @@ class AutoSelectChoiceWidget(ChoiceWidget):
             selection.save()
             self._log_change('changed', selection, attendee)
 
+    def selected_callback(self, value):
+        return True
+
 
 class DiscountWidget(TextWidget):
 
@@ -385,6 +410,9 @@ class DiscountWidget(TextWidget):
 
         except DiscountCode.DoesNotExist:
             raise ValidationError(_('Discount code not valid'))
+
+    def selected_callback(self, value):
+        return value is not None
 
     def initial_value(self, selection):
 

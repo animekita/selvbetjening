@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Anime Kita Selvbetjening VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-04 21:59+0100\n"
+"POT-Creation-Date: 2014-09-06 12:29+0200\n"
 "PO-Revision-Date: 2009-08-05 22:54+0100\n"
 "Last-Translator: . <.>\n"
 "Language-Team:  <en@li.org>\n"
@@ -18,97 +18,93 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: models/attendee.py:23
+#: models/attendee.py:30
 msgid "Waiting"
 msgstr "Venter"
 
-#: models/attendee.py:24
+#: models/attendee.py:31
 msgid "Accepted"
 msgstr "Accepteret"
 
-#: models/attendee.py:25
+#: models/attendee.py:32
 msgid "Attended"
 msgstr "Deltaget"
 
-#: models/event.py:16
-msgid "name"
-msgstr "Efternavn"
-
-#: models/event.py:30
+#: models/event.py:19
 msgid "Move attendees to accepted list manually"
 msgstr "Flyt deltagere til accepteret liste manuelt"
 
-#: models/event.py:31
+#: models/event.py:20
 msgid "Move attendees when a payment have been made"
 msgstr "Flyt deltagere når en betaling er modtaget"
 
-#: models/event.py:32
+#: models/event.py:21
 msgid "Always move to accepted list"
 msgstr "Altid flyt til accepteret liste"
 
-#: models/event.py:45
+#: models/event.py:32
 msgid "title"
 msgstr "Titel"
 
-#: models/event.py:46
+#: models/event.py:33
 msgid "tagline"
 msgstr "Slogan"
 
-#: models/event.py:47
+#: models/event.py:34
 msgid "description"
 msgstr "Beskrivelse"
 
-#: models/event.py:49
+#: models/event.py:36
 msgid "location"
 msgstr "Sted"
 
-#: models/event.py:50
+#: models/event.py:37
 msgid "location map url"
 msgstr "Kort URL"
 
-#: models/event.py:52
+#: models/event.py:39
 msgid "start date"
 msgstr "Start dato"
 
-#: models/event.py:53
+#: models/event.py:40
 msgid "end date"
 msgstr "Slut dato"
 
-#: models/event.py:55
+#: models/event.py:42
 msgid "Maximum attendees"
 msgstr "Maksimal antal deltagere"
 
-#: models/event.py:63
+#: models/event.py:50
 msgid "registration open"
 msgstr "Tilmelding åben"
 
-#: models/event.py:69 models/event.py:75 models/event.py:81
+#: models/event.py:57 models/event.py:63 models/event.py:69
 #, python-format
 msgid "The following variables are available: %s."
 msgstr "De følgende variabler er tilgængelige: %s."
 
-#: models/event.py:141
+#: models/event.py:165
 #, python-format
 msgid "%s"
 msgstr "%s"
 
-#: models/options.py:140 models/options.py:195
+#: models/options.py:148 models/options.py:195
 msgid "Name"
 msgstr "Navn"
 
-#: models/options.py:141 models/options.py:196
+#: models/options.py:149 models/options.py:196
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: models/options.py:143 models/options.py:198
+#: models/options.py:151 models/options.py:198
 msgid "Order"
 msgstr "Rækkefølge"
 
-#: models/options.py:147
+#: models/options.py:155
 msgid "Minimum selected"
 msgstr "Minimum antal valgt"
 
-#: models/options.py:148
+#: models/options.py:156
 msgid "Maximum selected"
 msgstr "Maksimum antal valgt"
 
@@ -144,20 +140,46 @@ msgstr "Kampagne kode"
 msgid "Type"
 msgstr "Type"
 
-#: models/options.py:219
+#: models/options.py:204
+msgid "Required"
+msgstr "Obligatorisk"
+
+#: models/options.py:224
 msgid ""
 "This option will automatically be visible in user invoices and at check-in "
 "if a non-zero price is set. You can not modify the price if the option has "
 "been selected by an attendee."
 msgstr ""
-"Hvis prisen er større end 0 vil denne valgmulighed være synlig i kvitteringer "
-"og ved check-ind. Du kan ikke ændre prisen så snart en bruger har valgt dette tilvalg."
+"Hvis prisen er større end 0 vil denne valgmulighed være synlig i "
+"kvitteringer og ved check-ind. Du kan ikke ændre prisen så snart en bruger "
+"har valgt dette tilvalg."
 
-#: options/widgets.py:131
+#: options/dynamic_selections.py:272
+#, python-format
+msgid "You must select at least %d option."
+msgid_plural "You must select at least %d options."
+msgstr[0] "Vælg minimum %d tilvalg nedenfor."
+msgstr[1] "Vælg minimum %d tilvalg nedenfor."
+
+#: options/dynamic_selections.py:277
+#, python-format
+msgid "You must select at most %d option."
+msgid_plural "You must select at most %d options."
+msgstr[0] "Vælg maksimum %d tilvalg nedenfor."
+msgstr[1] "Vælg maksimum %d tilvalg nedenfor."
+
+#: options/widgets.py:33
+msgid "This field is required."
+msgstr "Dette tilvalg er obligatorisk."
+
+#: options/widgets.py:278
 #, python-format
 msgid "Choice %s is not allowed"
 msgstr "Valgmulighed %s er ikke tilladt"
 
-#: options/widgets.py:238
+#: options/widgets.py:412
 msgid "Discount code not valid"
 msgstr "Kampagne koden er ikke gyldig"
+
+#~ msgid "name"
+#~ msgstr "Efternavn"

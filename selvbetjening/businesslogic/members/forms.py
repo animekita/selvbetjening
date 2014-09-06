@@ -10,6 +10,7 @@ from selvbetjening.core.user.models import SUser
 from selvbetjening.frontend.utilities.forms import *
 
 from countries.models import Country
+from selvbetjening.settings_base import POLICY
 
 
 def username_available_validator(username):
@@ -164,8 +165,6 @@ class ProfileEditForm(forms.ModelForm):
                   'phonenumber', 'street', 'postalcode', 'city', 'country', 'send_me_email',
                   'skype', 'msn', 'jabber')
 
-
-
     first_name = forms.CharField(max_length=50,
                                  widget=forms.TextInput(),
                                  label=_(u'First name'),
@@ -186,7 +185,8 @@ class ProfileEditForm(forms.ModelForm):
                                        required=False)
 
     country = forms.ModelChoiceField(Country.objects.all(),
-                                     label=_('Country'))
+                                     label=_('Country'),
+                                     required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProfileEditForm, self).__init__(*args, **kwargs)
@@ -205,6 +205,14 @@ class ProfileEditForm(forms.ModelForm):
 
         self.helper.add_layout(layout)
         self.helper.form_tag = False
+
+        self.fields['email'].required = True
+
+        if POLICY['VALIDATION.USER_LOCATION.REQUIRED']:
+            self.fields['street'].required = True
+            self.fields['postalcode'].required = True
+            self.fields['city'].required = True
+            self.fields['country'].required = True
 
 
 class UserWebsiteFormSet(BaseInlineFormSet):

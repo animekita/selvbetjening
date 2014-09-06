@@ -215,8 +215,7 @@ class EventTestCase(TestCase):
         response = self.client.post(url, {
             'name': 'NewGroup',
             'minimum_selected': 0,
-            'maximum_selected': 0,
-            'package_price': 0
+            'maximum_selected': 0
         }, follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -234,8 +233,7 @@ class EventTestCase(TestCase):
         response = self.client.post(url, {
             'name': 'NewGroupName',
             'minimum_selected': 0,
-            'maximum_selected': 0,
-            'package_price': 0
+            'maximum_selected': 0
         }, follow=True)
 
         self.assertEqual(response.status_code, 200)

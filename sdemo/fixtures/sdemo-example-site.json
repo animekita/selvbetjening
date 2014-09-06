@@ -143,8 +143,7 @@
   "fields": {
     "description": "", 
     "minimum_selected": 0, 
-    "is_special": true, 
-    "package_price": "0", 
+    "is_special": true,
     "event": 2, 
     "maximum_selected": 0, 
     "order": -100, 
@@ -157,8 +156,7 @@
   "fields": {
     "description": "", 
     "minimum_selected": 0, 
-    "is_special": false, 
-    "package_price": "0", 
+    "is_special": false,
     "event": 2, 
     "maximum_selected": 0, 
     "order": 0, 
@@ -171,8 +169,7 @@
   "fields": {
     "description": "", 
     "minimum_selected": 0, 
-    "is_special": false, 
-    "package_price": "0", 
+    "is_special": false,
     "event": 2, 
     "maximum_selected": 0, 
     "order": 0, 
