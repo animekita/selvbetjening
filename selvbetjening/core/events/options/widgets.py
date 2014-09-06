@@ -34,6 +34,10 @@ class BaseWidget(object):
 
         return value if value is not None else False
 
+    def selected_callback(self, value):
+
+        return not (value not in validators.EMPTY_VALUES or not value)
+
     def _log_change(self, action, selection, attendee):
 
         text = ''
@@ -86,6 +90,10 @@ class BooleanWidget(BaseWidget):
             except Selection.DoesNotExist:
                 pass
 
+    def selected_callback(self, value):
+
+        return value is not None and value
+
     def initial_value(self, selection):
         return True
 
@@ -137,6 +145,10 @@ class TextWidget(BaseWidget):
                 self._log_change('deleted', selection, attendee)
             except Selection.DoesNotExist:
                 pass
+
+    def selected_callback(self, value):
+
+        return value is not None and len(value.strip()) > 0
 
     def initial_value(self, selection):
         return selection.text
@@ -215,7 +227,7 @@ class ChoiceWidget(BaseWidget):
 
     def save_callback(self, attendee, value):
 
-        if value is not None and len(value) > 0 and value != '__EMPTY__':
+        if self.selected_callback(value):
 
             _, pk = value.split('_')
 
@@ -250,6 +262,9 @@ class ChoiceWidget(BaseWidget):
             except Selection.DoesNotExist:
                 pass
 
+    def selected_callback(self, value):
+        return value is not None and len(value) > 0 and value != '__EMPTY__'
+
     def clean_callback(self, value):
         value = super(ChoiceWidget, self).clean_callback(value)
 
@@ -281,6 +296,9 @@ class AutoSelectBooleanWidget(BooleanWidget):
             widget=forms.HiddenInput(attrs=None))
 
     def clean_callback(self, value):
+        return True
+
+    def selected_callback(self, value):
         return True
 
     def initial_value(self, selection):
@@ -336,6 +354,9 @@ class AutoSelectChoiceWidget(ChoiceWidget):
             selection.save()
             self._log_change('changed', selection, attendee)
 
+    def selected_callback(self, value):
+        return True
+
 
 class DiscountWidget(TextWidget):
 
@@ -389,6 +410,9 @@ class DiscountWidget(TextWidget):
 
         except DiscountCode.DoesNotExist:
             raise ValidationError(_('Discount code not valid'))
+
+    def selected_callback(self, value):
+        return value is not None
 
     def initial_value(self, selection):
 
