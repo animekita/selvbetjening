@@ -196,7 +196,7 @@ class ChoiceWidget(BaseWidget):
 
                 choice = None
                 for existing_choice in existing_choices:
-                    if existing_choice.price == price and existing_choice.label == label:
+                    if existing_choice.price == price and existing_choice.name == label:
                         choice = existing_choice
                         break
 
