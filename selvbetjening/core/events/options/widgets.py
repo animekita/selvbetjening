@@ -185,10 +185,8 @@ class ChoiceWidget(BaseWidget):
         choices = []
         existing_choices = self.option.suboptions.filter(price__in=[price for price, label in get_or_create_choices])
 
-        if len(existing_choices) == len(get_or_create_choices):
+        if len(existing_choices) == len(get_or_create_choices) and all([(choice.name, choice.price) in get_or_create_choices for choice in existing_choices]):
             # Fast path
-            # We assume the choices found matches the choices we want (they have the same price).
-
             choices = [('suboption_%s' % choice.pk, self._label(choice)) for choice in existing_choices]
 
         else:
