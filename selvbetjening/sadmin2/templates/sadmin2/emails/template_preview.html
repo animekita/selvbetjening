@@ -11,12 +11,13 @@
 {% block content %}
 
 <div class="panel panel-default">
-  <div class="panel-heading">Preview User</div>
+  <div class="panel-heading">Select context</div>
   <div class="panel-body">
       {% crispy form %}
   </div>
 </div>
 
+{% if email %}
 <div class="well well-lg">
 
     <h1>{{ subject }}</h1>
@@ -32,5 +33,13 @@
 
 {{ email.body_plain }}
 </pre>
+
+{% else %}
+    <div class="alert alert-danger">
+    <h1>Error rendering e-mail</h1>
+    <p>The following error occured when rendering the e-mail:</p>
+    <pre>{{ email_err.1 }}</pre>
+    </div>
+{% endif %}
 
 {% endblock %}

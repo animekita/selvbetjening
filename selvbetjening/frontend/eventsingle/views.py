@@ -176,7 +176,7 @@ def step1(request,
 
     user = request.user
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'userdata' in request.POST:
         form = form_class(request.POST, instance=user)
 
         if form.is_valid():

@@ -22,18 +22,6 @@ urlpatterns = patterns(
         'views.user.user_password',
         name='user_password'),
 
-
-    url(r'^users/groups/$',
-        'views.users.users_groups_list',
-        name='users_groups_list'),
-    url(r'^users/groups/create/$',
-        'views.users.users_groups_create',
-        name='users_groups_create'),
-
-    url(r'^users/groups/(?P<group_pk>[0-9]+)/$',
-        'views.users.users_group',
-        name='users_group'),
-
     url(r'^users/reports/users/$',
         'views.users.users_reports_users',
         name='users_reports_users'),

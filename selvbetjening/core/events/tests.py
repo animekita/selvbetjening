@@ -480,3 +480,51 @@ class FormSubmitTestCase(TestCase):
         }, user=user)
 
         self.assertFalse(form.is_valid())
+
+    def test_minimum_selected(self):
+
+        event = Event.objects.get(pk=2)
+        user = SUser.objects.get(pk=1)
+
+        group = OptionGroup.objects.get(pk=2)
+        group.minimum_selected = 2
+        group.save()
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        form = OptionGroupSelectionsFormSet({
+            'option_2': 'checked',
+            'option_3': 'checked'
+        }, user=user)
+
+        self.assertTrue(form.is_valid())
+
+        form = OptionGroupSelectionsFormSet({
+            'option_2': 'checked'
+        }, user=user)
+
+        self.assertFalse(form.is_valid())
+
+    def test_maximum_selected(self):
+
+        event = Event.objects.get(pk=2)
+        user = SUser.objects.get(pk=1)
+
+        group = OptionGroup.objects.get(pk=2)
+        group.maximum_selected = 1
+        group.save()
+
+        OptionGroupSelectionsFormSet = dynamic_selections_formset_factory(SCOPE.EDIT_REGISTRATION, event)
+
+        form = OptionGroupSelectionsFormSet({
+            'option_2': 'checked',
+            'option_3': 'checked'
+        }, user=user)
+
+        self.assertFalse(form.is_valid())
+
+        form = OptionGroupSelectionsFormSet({
+            'option_2': 'checked'
+        }, user=user)
+
+        self.assertTrue(form.is_valid())

@@ -4,6 +4,8 @@ from collections import OrderedDict
 from django import forms
 from django.db.models import Count, Q
 import operator
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from selvbetjening.core.events.options.scope import SCOPE
 from selvbetjening.core.events.options.typemanager import type_manager_factory
@@ -186,6 +188,9 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
         self.user = kwargs.pop('user')
 
         if self.attendee is not None:
+            self.user = self.attendee.user  # force the usage of attendee.user
+
+        if self.attendee is not None:
             initial = {}
 
             selections = kwargs.pop('selections', None)
@@ -240,13 +245,50 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
     def is_empty():
         return len(options) == 0
 
+    def clean(self):
+        cleaned_data = super(forms.Form, self).clean()
+
+        if scope == SCOPE.SADMIN:
+            # Do not enforce max/min for admin
+            return cleaned_data
+
+        if option_group_instance.minimum_selected <= 0 and option_group_instance.maximum_selected <= 0:
+            return cleaned_data
+
+        selected = 0
+
+        for option in options:
+            field_id = _pack_id('option', option.pk)
+
+            if getattr(option, scope):
+                # field is editable
+                value = cleaned_data.get(field_id, None)
+            else:
+                value = self.initial[field_id]
+
+            selected += 1 if self._selected_callbacks[field_id](value) else 0
+
+        if option_group_instance.minimum_selected > 0 and selected < option_group_instance.minimum_selected:
+            raise forms.ValidationError(ungettext_lazy('You must select at least %d option.',
+                                                       'You must select at least %d options.',
+                                                       option_group_instance.minimum_selected) % option_group_instance.minimum_selected)
+
+        if 0 < option_group_instance.maximum_selected < selected:
+            raise forms.ValidationError(ungettext_lazy('You must select at most %d option.',
+                                                       'You must select at most %d options.',
+                                                       option_group_instance.maximum_selected) % option_group_instance.maximum_selected)
+
+        return cleaned_data
+
     fields = {
-        'save_callbacks': {},
         '__init__': init,
         'save': save,
+        'is_empty': is_empty,
+        'clean': clean,
+        'save_callbacks': {},
+        '_selected_callbacks': {},
         'type_widgets': {},
-        'readonly': [],
-        'is_empty': is_empty
+        'readonly': []
     }
 
     for option in options:
@@ -261,6 +303,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
             attrs = {'data-depends-on': related_field}
 
         fields[field_id] = widget.get_field(attrs=attrs)
+        fields['_selected_callbacks'][field_id] = widget.selected_callback
 
         if scope == SCOPE.SADMIN or getattr(option, scope):  # The edit scope bit is set
             fields['clean_%s' % field_id] = clean_callback(field_id, related_field, widget.clean_callback)

@@ -147,7 +147,7 @@ LOGGING = {
             'propagate': True
         },
         'selvbetjening': {
-            'handlers': ['selvbetjening_db_log'],
+            'handlers': ['mail_admins', 'selvbetjening_db_log'],
             'level': 'INFO',
             'propagate': True
         }
@@ -240,6 +240,8 @@ PIPELINE_JS = {
 
 POLICY = dict()
 POLICY['PORTAL.EVENTREGISTRATION.SKIP_CONFIRMATION_ON_EMPTY_OPTIONS'] = False
+POLICY['PORTAL.EVENTREGISTRATION.COMBINED_EVENT'] = False
+POLICY['VALIDATION.USER_LOCATION.REQUIRED'] = False
 
 # SAdmin2
 
