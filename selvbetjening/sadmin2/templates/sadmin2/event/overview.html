@@ -20,9 +20,9 @@
                 <tbody>
                 <tr>
                     <th>Total</th>
-                    <td>{{status.waiting|default:0}}</td>
-                    <td>{{status.accepted|default:0}}</td>
-                    <td>{{status.attended|default:0}}</td>
+                    <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:state=waiting">{{status.waiting|default:0}}</a></td>
+                    <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:state=accepted">{{status.accepted|default:0}}</a></td>
+                    <td><a href="{% url "sadmin2:event_attendees" event_pk=event.pk %}?q=:state=attended">{{status.attended|default:0}}</a></td>
                 </tr>
                 <tr>
                     <th><i><abbr title="Nye brugere er personer som ikke har deltaget i et tidligere arrangement (approximation).">Nye</abbr></i></th>
