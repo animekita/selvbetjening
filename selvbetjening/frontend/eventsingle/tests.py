@@ -42,7 +42,7 @@ class SingleEventTestCase(TestCase):
 
         # Post, try to attend
         response = self.client.post(reverse('eventsingle_step2', kwargs={'event_pk': 3}), {
-            'register': 'do'
+            'quick_register': 'do'
         })
         self.assertEqual(response.status_code, 302)
 
@@ -63,7 +63,7 @@ class SingleEventTestCase(TestCase):
 
         # Post, try to attend
         response = self.client.post(reverse('eventsingle_step2', kwargs={'event_pk': 2}), {
-            'register': 'do'
+            'quick_register': 'do'
         })
         self.assertEqual(response.status_code, 200)
 
