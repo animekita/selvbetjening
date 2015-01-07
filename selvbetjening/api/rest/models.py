@@ -1,8 +1,10 @@
 
 from tastypie.authentication import Authentication
 from tastypie.resources import ModelResource
+from tastypie import fields
 
 from provider.oauth2.models import AccessToken
+from selvbetjening.core.events.models import Event, AttendState, Attend
 
 from selvbetjening.core.members.models import SUser
 
@@ -31,6 +33,9 @@ class OAuth2Authentication(Authentication):
 
 
 class AuthenticatedUserResource(ModelResource):
+
+    events_accepted = fields.ListField(readonly=True)
+
     class Meta:
         queryset = SUser.objects.all()
         resource_name = 'authenticated_user'
@@ -39,6 +44,10 @@ class AuthenticatedUserResource(ModelResource):
         excludes = ['password']
 
         authentication = OAuth2Authentication()
+
+    def dehydrate_events_accepted(self, bundle):
+        attends = Attend.objects.filter(user=bundle.obj).exclude(state=AttendState.waiting).select_related('event')
+        return [attend.event.pk for attend in attends]
 
     def get_object_list(self, request):
         return super(AuthenticatedUserResource, self).get_object_list(request).filter(pk=request.user.pk)
