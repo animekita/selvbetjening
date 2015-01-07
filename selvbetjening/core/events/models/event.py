@@ -129,6 +129,8 @@ class Event(models.Model):
 
     def copy_and_mutate_self(self):
 
+        from selvbetjening.core.events.options.typemanager import type_manager_factory
+
         optiongroups = list(self.optiongroup_set.all())
 
         self.pk = None
@@ -145,21 +147,32 @@ class Event(models.Model):
 
             self.optiongroup_set.add(group)
 
-            for option in options:
+            for _option in options:
 
-                suboptions = list(option.suboptions)
+                suboptions = list(_option.suboptions)
 
-                option.pk = None
-                option.save()
+                # fetch the correct "overloaded" option
+                type_manager = type_manager_factory(_option)
+                option = type_manager.get_model().objects.get(pk=_option.pk)
 
-                group.option_set.add(option)
+                # copy option in a way that is compatible with inheritance
+                from django.db.models import AutoField
+                fields = dict([(f.name, getattr(option, f.name))
+                               for f in option._meta.fields
+                                   if not isinstance(f, AutoField) and\
+                                       not f in option._meta.parents.values()])
+                new_obj = option.__class__(**fields)
+                new_obj.pk = None
+                new_obj.save()
+
+                group.option_set.add(new_obj)
 
                 for suboption in suboptions:
 
                     suboption.pk = None
                     suboption.save()
 
-                    option.suboption_set.add(suboption)
+                    new_obj.suboption_set.add(suboption)
 
     def __unicode__(self):
         return _(u'%s') % self.title

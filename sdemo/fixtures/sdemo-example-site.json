@@ -18,7 +18,7 @@
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": "2014-12-12",
+    "enddate": "2020-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
@@ -68,7 +68,7 @@
     "location_link": "", 
     "maximum_attendees": 0, 
     "notify_on_registration_update": null, 
-    "enddate": "2014-12-12",
+    "enddate": "2020-12-12",
     "show_custom_status_page": false, 
     "custom_signup_message": "", 
     "location": ""
@@ -505,32 +505,32 @@
   }
 },
 {
-  "pk": 2, 
-  "model": "events.attend", 
+  "pk": 2,
+  "model": "events.attend",
   "fields": {
     "check_in_timestamp": null,
-    "price": "300", 
-    "registration_date": "2013-10-25T14:36:13.731", 
-    "is_new": false, 
-    "paid": "0", 
-    "change_timestamp": "2013-10-25T14:36:13.730", 
-    "state": "accepted", 
-    "user": 2, 
+    "price": "300",
+    "registration_date": "2013-10-25T14:36:13.731",
+    "is_new": false,
+    "paid": "0",
+    "change_timestamp": "2013-10-25T14:36:13.730",
+    "state": "accepted",
+    "user": 2,
     "event": 2
   }
 },
 {
-  "pk": 3, 
-  "model": "events.attend", 
+  "pk": 3,
+  "model": "events.attend",
   "fields": {
     "check_in_timestamp": null,
-    "price": "0", 
-    "registration_date": "2013-10-26T21:30:13.839", 
-    "is_new": true, 
-    "paid": "0", 
-    "change_timestamp": "2013-10-26T21:30:13.839", 
-    "state": "accepted", 
-    "user": 1, 
+    "price": "0",
+    "registration_date": "2013-10-26T21:30:13.839",
+    "is_new": true,
+    "paid": "0",
+    "change_timestamp": "2013-10-26T21:30:13.839",
+    "state": "accepted",
+    "user": 1,
     "event": 3
   }
 }

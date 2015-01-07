@@ -18,6 +18,10 @@ a {
     color: #0e0e0e;
 }
 
+table a {
+    color: #002a80;
+}
+
 .main {
     background-color: #FFFFFF;
     border-radius: 5px;
