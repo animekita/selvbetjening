@@ -68,8 +68,8 @@ _stype_manager_register = {
         create_form=CreateDiscountOptionForm,
         update_form=option_form_factory(
             Option,
-            ('name', 'description', 'price', 'depends_on', 'notify_on_selection'),
-            ('name', 'type', 'description', 'price', 'depends_on', 'notify_on_selection'),
+            ('name', 'description', 'required', 'price', 'depends_on', 'notify_on_selection'),
+            ('name', 'type', 'description', 'required' 'price', 'depends_on', 'notify_on_selection'),
             'discount'
         )
     )
