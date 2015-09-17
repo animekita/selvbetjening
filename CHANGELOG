@@ -1,3 +1,7 @@
+8.8.1
+
+ * Small bugfix for options that can't be edited and have no value
+
 8.8.0
 
  * Return a list of accepted events in the REST API.
