@@ -264,7 +264,7 @@ def dynamic_selections_form_factory(scope, option_group_instance, helper_factory
                 # field is editable
                 value = cleaned_data.get(field_id, None)
             else:
-                value = self.initial[field_id]
+                value = self.initial.get(field_id, None)
 
             selected += 1 if self._selected_callbacks[field_id](value) else 0
 
