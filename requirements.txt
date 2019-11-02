@@ -2,7 +2,7 @@ PIL
 
 markdown
 
-Django==1.6.2
+Django==1.11.23
 South==0.8.2
 
 sorl-thumbnail==3.2.5
